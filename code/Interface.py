@@ -47,7 +47,7 @@ class BeachInterface(object):
     def __init__(self):
         self.u = utils
 
-    def Validate(self, data, target, specificity='', folds='', method='PLS', **args):
+    def Validate(self, data, target, specificity='', method='PLS', **args):
         '''This is the main function in the script. It uses the PLS modeling classes to build a predictive model.'''
         
         #parse the inputs

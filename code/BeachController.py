@@ -13,15 +13,22 @@ def ValidatePLS(data, target, folds='', **args):
     '''Creates a PLS model and tests its performance with cross-validation.'''
     
     #convert the data from a .NET DataTable or DataView into a numpy array
-    [headers, data] = utils.DotnetToArray(data)
+    if 'headers' not in args: [headers, data] = utils.DotnetToArray(data)
+    else: headers = args['headers']
     target = str(target)
     regulatory = args['regulatory_threshold']
     
-    #randomly assign the data to cross-validation folds
-    if not folds: folds = 5 
-    fold = utils.Partition(data, folds)
+    #Randomly assign the data to cross-validation folds unless that has already been done.
+    if folds=='': folds = 5
+    if type(folds) is np.ndarray:
+        fold = copy.copy(folds)
+        folds = np.arange(max(folds)) + 1
+    else:
+        fold = utils.Partition(data, folds)
+        folds = np.arange(folds) + 1
+    
+    #Set up the dictionary of all data.
     data_dict = dict( zip(headers, np.transpose(data)) )
-    folds = np.arange(folds)+1
     
     #Make a model for each fold and validate it.
     results = list()
@@ -55,7 +62,6 @@ def ValidatePLS(data, target, folds='', **args):
         exceedances = float(sum(exceedance == True))
         
         for prediction in predictions:
-            print prediction
             tp = np.where(validation_actual[predictions >= prediction] >= regulatory)[0].shape[0]
             fp = np.where(validation_actual[predictions >= prediction] < regulatory)[0].shape[0]
             tn = np.where(validation_actual[predictions < prediction] < regulatory)[0].shape[0]
@@ -130,16 +136,22 @@ def ValidateGAM(data, target, folds='', **args):
     '''Creates prospective models using Generalized Additive Models and uses cross-validation to assess their performance in prediction.'''
     
     #convert the data from a .NET DataTable or DataView into a numpy array
-    [headers, data] = utils.DotnetToArray(data)
-    #[headers, data] = [data.keys(), np.array(data.values()).T]
+    if 'headers' not in args: [headers, data] = utils.DotnetToArray(data)
+    else: headers = args['headers']
     target = str(target)
     regulatory = args['regulatory_threshold']
     
-    #randomly assign the data to cross-validation folds
-    if not folds: folds = 5 
-    fold = utils.Partition(data, folds)
+    #Randomly assign the data to cross-validation folds unless that has already been done.
+    if folds=='': folds = 5
+    if type(folds) is np.ndarray:
+        fold = copy.copy(folds)
+        folds = np.arange(max(folds)) + 1
+    else:
+        fold = utils.Partition(data, folds)
+        folds = np.arange(folds) + 1
+    
+    #Set up the dictionary of all data.
     data_dict = dict( zip(headers, np.transpose(data)) )
-    folds = np.arange(folds)+1
     
     #Make a model for each fold and validate it.
     results = list()
@@ -173,7 +185,6 @@ def ValidateGAM(data, target, folds='', **args):
         exceedances = float(sum(exceedance == True))
         
         for prediction in predictions:
-            print prediction
             tp = np.where(validation_actual[predictions >= prediction] >= regulatory)[0].shape[0]
             fp = np.where(validation_actual[predictions >= prediction] < regulatory)[0].shape[0]
             tn = np.where(validation_actual[predictions < prediction] < regulatory)[0].shape[0]
