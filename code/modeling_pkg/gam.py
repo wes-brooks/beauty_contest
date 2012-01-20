@@ -25,9 +25,12 @@ class Model(object):
         self.data_dictionary = model_struct['data_dictionary']
         self.target = model_struct['target']
         self.specificity = model_struct['specificity']
+        self.julian = model_struct['julian']
+        self.k = model_struct['k']
+        self.penalty = model_struct['penalty']
         
         #Get the data into R 
-        self.data_frame = utils.Dictionary_to_RDotNet(self.data_dictionary)
+        self.data_frame = utils.DictionaryToR(self.data_dictionary)
         self.data_dictionary = copy.deepcopy(self.data_dictionary)
         self.predictors = len(self.data_dictionary.keys()) - 1
         
@@ -38,18 +41,20 @@ class Model(object):
         
         formula = self.target + "~"
         for predictor in predictors:
-            formula += "s(" + predictor + ")+"
+            if self.julian: formula += "te(" + self.julian + ", " + predictor + ", k=" + str(self.k) + ")+"
+            else: formula += "te(" + predictor + ", k=" + str(self.k) + ")+"
         formula = formula[:-1]
         
         self.formula = r.Call('as.formula', obj=formula)
         self.gbm_params = {'formula' : self.formula, \
             'family' : 'gaussian', \
-            'data' : self.data_frame }        
+            'data' : self.data_frame, \
+            'lambda' : self.penalty }        
         self.model=r.Call(function='gam', **self.gbm_params).AsList()
 
         #Use cross-validation to find the best number of components in the model.
-        self.Get_Actual()
-        self.Get_Fitted()
+        self.GetActual()
+        self.GetFitted()
         
         #Establish a decision threshold
         self.threshold = model_struct['threshold']
@@ -61,38 +66,53 @@ class Model(object):
     
         #Check to see if a threshold has been specified in the function's arguments
         try: self.regulatory_threshold = args['threshold']
-        except KeyError: self.regulatory_threshold=2.3711   # if there is no 'threshold' key, then use the default (2.3711)
+        except KeyError: self.regulatory_threshold = 2.3711   # if there is no 'threshold' key, then use the default (2.3711)
         self.threshold = 0   #decision threshold
         
+        #Check to see if a julian day has been specified in the function's arguments
+        try: self.julian = args['julian']
+        except KeyError: self.julian = ""
+        
+        #Check to see if the maximum number of basis functions was specified. The default is 100.
+        try: self.k = args['k']
+        except KeyError: self.k = 100
+        
+        #Check to see if the penalty parameter was specified. The default is 1.4.
+        try: self.penalty = args['lambda']
+        except KeyError: self.penalty = 1.4
+        
         if 'specificity' in args: specificity=args['specificity']
-        else: specificity=0.9
+        else: specificity = 0.9
 
         #Store some object data
         self.data_dictionary = copy.deepcopy(args['data'])
         self.target = target = args['target']
                         
         #Get the data into R 
-        self.data_frame = utils.Dictionary_to_RDotNet(self.data_dictionary)
+        self.data_frame = utils.DictionaryToR(self.data_dictionary)
 
         #Generate a gam model in R.
         self.predictors = predictors = self.data_dictionary.keys()
         try: predictors.remove(self.target)
         except: pass
+        if self.julian: predictors.remove(self.julian)
         
         formula = self.target + "~"
         for predictor in predictors:
-            formula += "s(" + predictor + ")+"
+            if self.julian: formula += "te(" + self.julian + ", " + predictor + ", k=" + str(self.k) + ")+"
+            else: formula += "te(" + predictor + ", k=" + str(self.k) + ")+"
         formula = formula[:-1]
         
         self.formula = r.Call('as.formula', obj=formula)
         self.gbm_params = {'formula' : self.formula, \
             'family' : 'gaussian', \
-            'data' : self.data_frame }        
+            'data' : self.data_frame, \
+            'lambda' : self.penalty }        
         self.model=r.Call(function='gam', **self.gbm_params).AsList()
         
         #Use cross-validation to find the best number of components in the model.
-        self.Get_Actual()
-        self.Get_Fitted()
+        self.GetActual()
+        self.GetFitted()
         
         #Establish a decision threshold
         self.Threshold(specificity)
@@ -135,7 +155,7 @@ class Model(object):
 
 
     def Predict(self, data_dictionary):
-        data_frame = utils.Dictionary_to_RDotNet(data_dictionary)
+        data_frame = utils.DictionaryToR(data_dictionary)
         prediction_params = {'object': self.model, 'newdata': data_frame }
         prediction = r.Call(function='predict', **prediction_params).AsVector()
 
@@ -203,8 +223,8 @@ class Model(object):
                     
     def Count(self):
         #Count the number of true positives, true negatives, false positives, and false negatives.
-        self.Get_Actual()
-        self.Get_Fitted()
+        self.GetActual()
+        self.GetFitted()
         
         #initialize counts to zero:
         t_pos = 0
@@ -237,7 +257,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'gam'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold"]
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", "julian", 'k', 'penalty']
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

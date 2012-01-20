@@ -40,7 +40,7 @@ Partial Least Squares is quite similar to Principal Components Analysis except t
 Generalized Additive Models (GAMs) were first described by Hastie and Tibshirani. GAMs were developed as a higher-dimensional generalization of smoothing splines.\\
 
 
-\subsection{Boosted decision tree}
+\subsection{Boosted decision trees}
 The boosted decision tree uses the gbm package in R.\\
 
 

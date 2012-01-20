@@ -21,16 +21,17 @@ class Model(object):
         '''Recreate a gbm model from a serialized object'''
     
         #Load saved parameters from the serialized object.
-        self.regulatory_threshold = model_struct['regulatory_threshold']
-        self.threshold = model_struct['threshold']
         self.iterations = model_struct['iterations']
         self.cost = model_struct['cost']
-        self.specificity = self.cost[1]
         self.depth = model_struct['depth']
         self.shrinkage = model_struct['shrinkage']
         self.data_dictionary = model_struct['data_dictionary']
         self.target = model_struct['target']
-        self.weights = model_struct['weights']        
+        self.weights = model_struct['weights']  
+        self.fraction = model_struct['fraction']
+        self.folds = model_struct['folds']
+        self.trees = model_struct['trees']
+        self.actual = model_struct['actual']
         
         #Get the data into R 
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
@@ -43,26 +44,36 @@ class Model(object):
             'weights' : self.weights, \
             'interaction.depth' : self.depth, \
             'shrinkage' : self.shrinkage, \
-            'n.trees' : self.iterations }
+            'n.trees' : self.iterations, \
+            'bag.fraction' : self.fraction, \
+            'cv.folds' : self.folds }
         
         self.model=r.Call(function='gbm', **self.gbm_params).AsList()
-    
+        self.GetFitted()
+        
+        #Establish a decision threshold
+        self.specificity = model_struct['specificity']
+        self.threshold = model_struct['threshold']
+        self.regulatory_threshold = model_struct['regulatory_threshold']
 
     def Create(self, **args):
         '''Create a new gbm model object'''
     
         #Check to see if a threshold has been specified in the function's arguments
         try: self.regulatory_threshold = args['threshold']
-        except KeyError: self.regulatory_threshold=2.3711   # if there is no 'threshold' key, then use the default (2.3711)
+        except KeyError: self.regulatory_threshold = 2.3711   # if there is no 'threshold' key, then use the default (2.3711)
         self.threshold = 0   #decision threshold
 
         try: self.iterations = args['iterations']
-        except KeyError: self.iterations=500   # if there is no 'iterations' key, then use the default (400)
+        except KeyError: self.iterations = 2000   # if there is no 'iterations' key, then use the default (2000)
 
         #Cost: two values - the first is the cost of a false positive, the second is the cost of a false negative.
         try: self.cost = args['cost']
-        except KeyError: self.cost=[1,1]   # if there is no 'cost' key, then use the default [1,1] (=equal weight)
-        self.specificity = self.cost[1]      
+        except KeyError: self.cost = [1,1]   # if there is no 'cost' key, then use the default [1,1] (=equal weight)
+        
+        #
+        try: self.specificity = args['specificity']
+        except KeyError: self.specificity = 0.9   # if there is no 'specificity' key, then use the default 0.9  
 
         #depth: how many branches should be allowed per decision tree?
         try: self.depth = args['depth']
@@ -71,10 +82,20 @@ class Model(object):
         #shrinkage: learning rate parameter
         try: self.shrinkage = args['shrinkage']
         except KeyError: self.shrinkage = 0.01   # if there is no 'shrinkage' key, then use the default 0.01
+        
+        #bagging fraction: proportion of data used at each step
+        try: self.fraction = args['fraction']
+        except KeyError: self.fraction = 0.5   # if there is no 'fraction' key, then use the default 0.5
+        
+        #shrinkage: learning rate parameter
+        try: self.folds = args['folds']
+        except KeyError: self.folds = 5   # if there is no 'folds' key, then use the default 5-fold CV
 
         #Store some object data
-        self.data_dictionary = copy.deepcopy(args['data'])
+        self.data_dictionary = data = copy.deepcopy(args['data'])
         self.target = target = args['target']
+        self.array_actual = data[target][np.sum(np.isnan(data.values()), axis=0)==0]
+        self.actual = list(self.array_actual)
                 
         #Check to see if a weighting method has been specified in the function's arguments
         try:
@@ -114,9 +135,20 @@ class Model(object):
             'weights' : self.weights, \
             'interaction.depth' : self.depth, \
             'shrinkage' : self.shrinkage, \
-            'n.trees' : self.iterations }
+            'n.trees' : self.iterations, \
+            'bag.fraction' : self.fraction, \
+            'cv.folds' : self.folds }
         
-        self.model=r.Call(function='gbm', **self.gbm_params).AsList()
+        self.model = r.Call(function='gbm', **self.gbm_params).AsList()
+        
+        #Find the best number of iterations for predictive performance. Prefer to use CV.
+        perf_params = {'object':self.model, 'plot.it':False}
+        if self.folds > 1: perf_params['method'] = 'cv'
+        else: perf_params['method'] = 'OOB'
+        self.trees = r.Call(function='gbm.perf', **perf_params).AsNumeric()[0]
+        
+        self.GetFitted()
+        self.Threshold(self.specificity)
 
 
     def AssignWeights(self, method=0):
@@ -210,7 +242,7 @@ class Model(object):
 
 
     def Predict(self, data_dictionary):
-        data_frame = utils.Dictionary_to_RDotNet(data_dictionary)
+        data_frame = utils.DictionaryToR(data_dictionary)
         prediction_params = {'object': self.model, 'newdata': data_frame, 'n.trees': self.iterations }
         prediction = r.Call(function='predict', **prediction_params).AsVector()
 
@@ -238,8 +270,56 @@ class Model(object):
         raw = np.array(raw)
         
         return raw
+        
+        
+    def GetFitted(self, **params):
+        params = {'object':self.model, 'n.trees':self.trees, 'newdata':self.data_frame}
+        self.fitted = list(r.Call("predict", **params).AsNumeric())
+        self.array_fitted = np.array(self.fitted)
+    
+        '''try: ncomp = params['ncomp']
+        except KeyError:
+            try: ncomp = self.ncomp
+            except AttributeError: ncomp=1
+            
+        #Get the fitted counts from the model so we can compare them to the actual counts.
+        columns = self.predictors
+        fitted_values = np.array( self.model['fitted.values'].AsVector() )
+        rows = len(fitted_values) / columns
+        fitted_values.shape = (columns, rows)
+        fitted_values = fitted_values.transpose()[:,self.ncomp-1]
+        
+        #If this is the second stage of an AR model, then incorporate the AR predictions.
+        if hasattr(self, 'AR_part'):
+            mask = np.ones( self.AR_part.shape[0], dtype=bool )
+            #nan_rows = mlab.find( np.isnan(self.AR_part[:,0]) )
+            nan_rows = np.where( np.isnan(self.AR_part[:,0]) )[0]
+            mask[ nan_rows ] = False
+            fitted_values += self.AR_part[mask,0]
+        
+        self.array_fitted = fitted_values
+        self.array_residual = self.array_actual - self.array_fitted
+        
+        self.fitted = list(self.array_fitted)
+        self.residual = list(self.array_residual)'''
 
 
+    def Threshold(self, specificity=0.9):
+        self.specificity = specificity
+        
+        if not hasattr(self, 'fitted'):
+            self.GetFitted()
+
+        #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
+        try:
+            non_exceedances = self.array_fitted[np.where(self.array_actual < 2.3711)[0]]
+            self.threshold = utils.Quantile(non_exceedances, specificity)
+            self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
+
+        #This error should only happen if somehow there are no non-exceedances in the training data.
+        except IndexError: self.threshold = 0        
+        
+        
     def Plot(self, **plotargs ):
         try:
             ncomp = plotargs['ncomp']
@@ -254,7 +334,8 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'gbm'
-        elements_to_save = ["data_dictionary", "iterations", "threshold", "specificity", "target", "regulatory_threshold", "cost", "depth", "shrinkage", "weights"]
+        elements_to_save = ["data_dictionary", "iterations", "threshold", "specificity", "target", "regulatory_threshold",
+                                "cost", "depth", "shrinkage", "weights", 'trees', 'folds', 'fraction', 'actual']
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

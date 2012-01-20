@@ -1,31 +1,68 @@
 import numpy as np
-from .. import utils
-from copy import deepcopy
+import copy
+import utils
+import RDotNetWrapper as rdn
 
-#Fire up the interface to R
-import rpy2
-import rpy2.robjects as rob
-import rpy2.robjects.numpy2ri
-r = rob.r
+#Import the pls library into R, and connect python to R.
+rdn.r.EagerEvaluate("library(pls)") 
+r = rdn.Wrap()
 
 
 class Model(object): 
     '''represents a logistic regression model generated in R'''
 
-    def __init__(self, data_dictionary, model_target, **args):
+    def __init__(self, **args):
+        if "model_struct" in args: self.Deserialize( args['model_struct'] )
+        else: self.Create(**args)
+    
+    
+    def Deserialize(self, model_struct):
+        #Unpack the model_struct dictionary
+        self.data_dictionary = model_struct['data_dictionary']
+        self.target = model_struct['target']
+        self.specificity = model_struct['specificity']
+        self.weights = model_struct['weights']
+        
+        #Get the data into R 
+        self.data_frame = utils.DictionaryToR(self.data_dictionary)
+        self.data_dictionary = copy.deepcopy(self.data_dictionary)
+        self.predictors = len(self.data_dictionary.keys()) - 1
+        
+        #Generate a PLS model in R.
+        self.formula = r.Call('as.formula', obj=self.target + '~.')
+        self.logistic_params = {'formula' : self.formula, \
+            'family' : 'binomial', \
+            'data' : self.data_frame, \
+            'weights' : self.weights, \
+            'x' : True }
+        self.model = r.Call(function='glm', **self.logistic_params).AsList()
+
+        #Use cross-validation to find the best number of components in the model.
+        self.GetActual()
+        self.GetFitted()
+        
+        #Establish a decision threshold
+        self.specificity = model_struct['specificity']
+        self.threshold = model_struct['threshold']
+        self.regulatory_threshold = model_struct['regulatory_threshold']
+    
+    
+    def Create(self, **args):
         #Create a logistic model object
     
         #Check to see if a threshold has been specified in the function's arguments
         try: self.regulatory_threshold = args['threshold']
-        except KeyError: self.regulatory_threshold=2.3711   # if there is no 'threshold' key, then use the default (2.3711)
+        except KeyError: self.regulatory_threshold = 2.3711   # if there is no 'threshold' key, then use the default (2.3711)
         
         #Check to see if a specificity has been specified in the function's arguments
         try: self.specificity = args['specificity']
-        except KeyError: self.specificity=0.9
+        except KeyError: self.specificity = 0.9
         
-        #Store some object data
-        self.data_dictionary = deepcopy(data_dictionary)
-        self.model_target = model_target
+        #Get the data into R
+        data = args['data']
+        self.data_frame = utils.DictionaryToR(data)
+        self.data_dictionary = copy.deepcopy(data)
+        self.predictors = len(self.data_dictionary.keys()) - 1
                 
         #Check to see if a weighting method has been specified in the function's arguments
         try:
@@ -56,13 +93,15 @@ class Model(object):
             'data' : self.data_frame, \
             'weights' : self.weights, \
             'x' : True }
-        self.model=r.glm(**self.logistic_params)
+        self.model = r.Call(function='glm', **self.pls_params).AsList()
         
         #Select model components and a decision threshold
         self.SelectModel()
+        self.GetActual()
+        self.GetFitted()
         self.Threshold(self.specificity)
 
-
+        
     def AssignWeights(self, method=0):
         #Weight the observations in the training set based on their distance from the threshold.
         deviation = (self.data_dictionary[self.model_target]-self.regulatory_threshold)/np.std(self.data_dictionary[self.model_target])
@@ -96,8 +135,7 @@ class Model(object):
         else: weights = np.ones( len(deviation) )
             
         return weights
-            
-            
+                        
             
     def AssignLabels(self, raw):
         #Label observations as above or below the threshold.
@@ -106,7 +144,7 @@ class Model(object):
         
         
     def SelectModel(self, direction='back'):
-        self.model = r.step(self.model, direction=direction)
+        self.model = r.Call(function='step', object=self.model, direction=direction).AsList()
         
 
     def Extract(self, model_part, **args):
@@ -129,7 +167,7 @@ class Model(object):
     def Predict(self, data_dictionary):
         data_frame = utils.DictionaryToR(data_dictionary)
         prediction_params = {'object': self.model, 'newdata': data_frame }
-        prediction = r.predict(**prediction_params)
+        prediction = r.Call(function="predict", **prediction_params)
 
         #Translate the R output to a type that can be navigated in Python
         prediction = np.array(prediction).squeeze()
@@ -140,7 +178,7 @@ class Model(object):
         return prob
         
         
-    def _PredictExceedances(self, data_dictionary):        
+    def PredictExceedances(self, data_dictionary):        
         prediction = self.Predict(data_dictionary)
         return np.array(prediction >= self.threshold, dtype=int)
 

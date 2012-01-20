@@ -47,7 +47,7 @@ class BeachInterface(object):
     def __init__(self):
         self.u = utils
 
-    def Validate(self, data, target, specificity='', method='PLS', **args):
+    def Validate(self, data, target, method, specificity='', **args):
         '''This is the main function in the script. It uses the PLS modeling classes to build a predictive model.'''
         
         #parse the inputs
@@ -60,8 +60,7 @@ class BeachInterface(object):
         columns = ['specificity', 'true pos', 'true neg', 'false pos', 'false neg', 'total']
         
         #parse the modeling method and then call it
-        Validate = getattr(Control, "Validate" + method)
-        return Validate(data, target, **args)
+        return Control.Validate(data, target, method, **args)
         
 
     def SpecificityChart(self, validation_results):
