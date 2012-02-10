@@ -7,11 +7,21 @@ import utils
 import numpy as np
 import datetime
 
-et = {}
+class ValidationCounts(object):
+    def __init__(self):
+        self.tpos = 0
+        self.tneg = 0
+        self.fpos = 0
+        self.fneg = 0
+        self.predictions = np.array([])
+        self.truth = np.array([])
+    
+    
 beaches = {}
 
-beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':et, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
-methods = {"PLS":{}, "gbm":{'depth':2, 'weights':'float'}, "gam":{'k':50}}
+#beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
+beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
+methods = {"PLS":{}, "gbm":{'depth':2, 'weights':'float', 'minobsinnode':5, 'iterations':2500}} #, "gam":{'k':20}}
 cv_folds = 5
 B = 1
 result = "placeholder"
@@ -27,9 +37,14 @@ for beach in beaches.keys():
     datafile = beaches[beach]["file"]
     datafile = VBTools.IO.ExcelOleDb(datafile, firstRowHeaders=True)
     data = datafile.Read(datafile.GetWorksheetNames()[0])
+    datafile.CloseConnection()
     [headers, data] = utils.DotnetToArray(data)
+    
+    #Apply the specified transforms to the raw data.
+    for t in beaches[beach]['transforms']:
+        data[:,headers.index(t)] = beaches[beach]['transforms'][t](data[:,headers.index(t)])
 
-    #Remove the id column if it is present.
+    #Remove any columns we've specified.
     if beaches[beach]['remove']:
         for col in beaches[beach]['remove']:
             indx = headers.index(col)
@@ -37,16 +52,17 @@ for beach in beaches.keys():
             headers.remove(col)
     
     for b in range(B):
-        #Parition the data into cross-validation folds
+        #Partition the data into cross-validation folds.
         folds = utils.Partition(data, cv_folds)
-    
+        validation = dict(zip(methods.keys(), [ValidationCounts() for method in methods]))
+        
         for f in range(cv_folds+1)[1:]:
-            #Break this fold into test and training sets
-            training_set = data[np.where(folds==f),:].squeeze()
+            #Break this fold into test and training sets.
+            training_set = data[np.where(folds!=f),:].squeeze()
             inner_cv = utils.Partition(training_set, cv_folds)
             
-            #Prepare the test set for use in prediction
-            test_set = data[np.where(folds!=f),:]
+            #Prepare the test set for use in prediction.
+            test_set = data[np.where(folds==f),:].squeeze()
             test_dict = dict(zip(headers, np.transpose(test_set)))
             
             #Run the modeling routines.
@@ -77,18 +93,50 @@ for beach in beaches.keys():
                 
                 #Predict exceedances on the test set and add them to the results structure.
                 model.Threshold(specificity)
-                predictions = model.Predict(test_dict)
+                predictions = np.array(model.Predict(test_dict)).squeeze()
+                truth = np.array(test_dict[beaches[beach]['target']]).squeeze()
                 
+                #Calculate the predictive perfomance for the model
+                tpos = sum((predictions>=model.threshold) & (truth>=beaches[beach]['threshold']))
+                tneg = sum((predictions<model.threshold) & (truth<beaches[beach]['threshold']))
+                fpos = sum((predictions>=model.threshold) & (truth<beaches[beach]['threshold']))
+                fneg = sum((predictions<model.threshold) & (truth>=beaches[beach]['threshold']))
+                
+                #Add predictive performance stats to the aggregate.
+                validation[method].tpos = validation[method].tpos + tpos
+                validation[method].tneg = validation[method].tneg + tneg
+                validation[method].fpos = validation[method].fpos + fpos
+                validation[method].fneg = validation[method].fneg + fneg
+            
                 #Store the performance information.
                 #Open a file to which we will append the output.
                 out = open(output + beach + now + method + '_performance.out', 'a')
                 out.write("# fold = " + str(f) + "\n")
                 out.write("# threshold = " + str(model.threshold) + "\n")
+                out.write("# tpos = " + str(tpos) + "\n")
+                out.write("# tneg = " + str(tneg) + "\n")
+                out.write("# fpos = " + str(fpos) + "\n")
+                out.write("# fneg = " + str(fneg) + "\n")
                 out.write("# raw predictions:\n")
                 print >> out, predictions
+                out.write("# truth:\n")
+                print >> out, truth
                 
                 #Close the output file and move on.
                 out.close()
+            
+        for m in methods.keys():
+            #Store the performance information.
+            #Open a file to which we will append the output.
+            out = open(output + beach + now + m + '_performance.out', 'a')
+            out.write("# fold = overall performance\n")
+            out.write("# tpos = " + str(validation[m].tpos) + "\n")
+            out.write("# tneg = " + str(validation[m].tneg) + "\n")
+            out.write("# fpos = " + str(validation[m].fpos) + "\n")
+            out.write("# fneg = " + str(validation[m].fneg) + "\n")
+            
+            #Close the output file and move on.
+            out.close()
             
             
         

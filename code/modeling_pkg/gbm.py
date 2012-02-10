@@ -24,6 +24,7 @@ class Model(object):
         self.iterations = model_struct['iterations']
         self.cost = model_struct['cost']
         self.depth = model_struct['depth']
+        self.minobsinnode = model_struct['minobsinnode']
         self.shrinkage = model_struct['shrinkage']
         self.data_dictionary = model_struct['data_dictionary']
         self.target = model_struct['target']
@@ -46,6 +47,7 @@ class Model(object):
             'shrinkage' : self.shrinkage, \
             'n.trees' : self.iterations, \
             'bag.fraction' : self.fraction, \
+            'n.minobsinnode' : self.minobsinnode, \
             'cv.folds' : self.folds }
         
         self.model=r.Call(function='gbm', **self.gbm_params).AsList()
@@ -78,6 +80,10 @@ class Model(object):
         #depth: how many branches should be allowed per decision tree?
         try: self.depth = args['depth']
         except KeyError: self.depth = 1   # if there is no 'depth' key, then use the default 1 (decision stumps)  
+        
+        #n.minobsinnode: what is the fewest observations per node in the tree?
+        try: self.minobsinnode = args['minobsinnode']
+        except KeyError: self.minobsinnode = 10
 
         #shrinkage: learning rate parameter
         try: self.shrinkage = args['shrinkage']
@@ -137,6 +143,7 @@ class Model(object):
             'shrinkage' : self.shrinkage, \
             'n.trees' : self.iterations, \
             'bag.fraction' : self.fraction, \
+            'n.minobsinnode' : self.minobsinnode, \
             'cv.folds' : self.folds }
         
         self.model = r.Call(function='gbm', **self.gbm_params).AsList()
@@ -145,7 +152,9 @@ class Model(object):
         perf_params = {'object':self.model, 'plot.it':False}
         if self.folds > 1: perf_params['method'] = 'cv'
         else: perf_params['method'] = 'OOB'
-        self.trees = r.Call(function='gbm.perf', **perf_params).AsNumeric()[0]
+        
+        try: self.trees = r.Call(function='gbm.perf', **perf_params).AsNumeric()[0]
+        except ValueError: self.trees = self.iterations
         
         self.GetFitted()
         self.Threshold(self.specificity)
@@ -243,7 +252,7 @@ class Model(object):
 
     def Predict(self, data_dictionary):
         data_frame = utils.DictionaryToR(data_dictionary)
-        prediction_params = {'object': self.model, 'newdata': data_frame, 'n.trees': self.iterations }
+        prediction_params = {'object': self.model, 'newdata': data_frame, 'n.trees': self.trees }
         prediction = r.Call(function='predict', **prediction_params).AsVector()
 
         #Translate the R output to a type that can be navigated in Python
@@ -317,7 +326,9 @@ class Model(object):
             self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
-        except IndexError: self.threshold = 0        
+        except ZeroDivisionError:
+            self.threshold = 0        
+            self.specificity = 1
         
         
     def Plot(self, **plotargs ):
@@ -335,7 +346,7 @@ class Model(object):
         model_struct = dict()
         model_struct['model_type'] = 'gbm'
         elements_to_save = ["data_dictionary", "iterations", "threshold", "specificity", "target", "regulatory_threshold",
-                                "cost", "depth", "shrinkage", "weights", 'trees', 'folds', 'fraction', 'actual']
+                                "cost", "depth", "shrinkage", "weights", 'trees', 'folds', 'fraction', 'actual', 'minobsinnode']
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

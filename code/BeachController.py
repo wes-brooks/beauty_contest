@@ -24,11 +24,9 @@ def Validate(data, target, method, folds='', **args):
     #Randomly assign the data to cross-validation folds unless that has already been done.
     if folds=='': folds = 5
     if type(folds) is np.ndarray:
-        print "array"
         fold = copy.copy(folds)
         folds = np.arange(max(folds)) + 1
     else:
-        print "list"
         fold = utils.Partition(data, folds)
         folds = np.arange(folds) + 1
     
@@ -53,6 +51,7 @@ def Validate(data, target, method, folds='', **args):
         fitted = np.array(model.fitted)
         actual = np.array(model.actual)
         candidates = fitted[np.where(actual < regulatory)]
+        if len(candidates) == 0: candidates = fitted
         num_candidates = float(candidates.shape[0])
         num_exceedances = float(np.where(actual >= regulatory)[0].shape[0])
         

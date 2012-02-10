@@ -222,7 +222,9 @@ class Model(object):
             self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
-        except IndexError: self.threshold = 2.3711
+        except ZeroDivisionError:
+            self.threshold = 2.3711        
+            self.specificity = 1
 
 
     def Validate(self, validation_dict):
@@ -250,8 +252,10 @@ class Model(object):
 
     def GetActual(self):
         #Get the fitted counts from the model.
-        columns = self.predictors
         fitted_values = np.array( self.model['fitted.values'].AsVector() )
+        self.predictors = np.min([self.predictors, ((2 + np.sqrt(4 + 4*fitted_values.shape[0])) / 2) - 2])
+
+        columns = self.predictors
         rows = len(fitted_values) / columns
         fitted_values.shape = (columns, rows)
         fitted_values = fitted_values.transpose()[:,0]

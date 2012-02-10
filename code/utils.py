@@ -75,7 +75,7 @@ def DictionaryToR(data_dictionary, name=''):
         
         #Update the command and give the column a random name in R
         r_col_name = col.replace("[", ".").replace("]", ".").replace("(", ".").replace(")", ".").replace(",", ".").replace(" ", ".")
-        col_name = "col_" + str(random.random())[2:]
+        col_name = "col_" + str(random.random())[2:-4]
         command = command + r_col_name + "=" + col_name + ","
         r.SetSymbol(col_name, df[col])
         

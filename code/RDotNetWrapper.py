@@ -49,7 +49,7 @@ class Wrap():
 
             elif isinstance(params[item], RDotNet.SymbolicExpression):
                 #make sure we have a name by which we can refer to R objects
-                robj_name = "r_" + str(random.random())[2:]
+                robj_name = "r_" + str(random.random())[2:-4]
                 r.SetSymbol(robj_name, params[item])
                 params[item] = robj_name
                 
@@ -63,7 +63,7 @@ class Wrap():
                     temp = r.CreateCharacterVector( Array[str](temp) ).AsVector()
                     
                 #make sure we have a name by which we can refer to R objects
-                robj_name = "r_" + str(random.random())[2:]
+                robj_name = "r_" + str(random.random())[2:-4]
                 r.SetSymbol(robj_name, temp)
                 params[item] = robj_name
                 

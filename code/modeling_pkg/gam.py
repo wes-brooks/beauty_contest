@@ -35,14 +35,24 @@ class Model(object):
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a gam model in R.
+        rows = len(self.data_dictionary.values()[0])
+        unique_values = map(lambda(x): np.unique(x).shape[0]-1, np.array(self.data_dictionary.values()))
         self.predictors = predictors = self.data_dictionary.keys()
-        try: predictors.pop(self.target)
+        try:
+            indx = predictors.index(self.target)
+            del(unique_values[indx])
+            predictors.remove(self.target)
         except: pass
+        if self.julian:
+            indx = predictors.index(self.julian)
+            del(unique_values[indx])
+            predictors.remove(self.julian)
+        self.k = np.min([self.k, np.floor(rows / len(predictors))])        
         
         formula = self.target + "~"
-        for predictor in predictors:
-            if self.julian: formula += "te(" + self.julian + ", " + predictor + ", k=" + str(self.k) + ")+"
-            else: formula += "te(" + predictor + ", k=" + str(self.k) + ")+"
+        for i in range(len(predictors)):
+            if self.julian: formula += "te(" + self.julian + ", " + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
+            else: formula += "s(" + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
         formula = formula[:-1]
         
         self.formula = r.Call('as.formula', obj=formula)
@@ -92,15 +102,24 @@ class Model(object):
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
 
         #Generate a gam model in R.
+        rows = len(self.data_dictionary.values()[0])
+        unique_values = map(lambda(x): np.unique(x).shape[0]-1, np.array(self.data_dictionary.values()))
         self.predictors = predictors = self.data_dictionary.keys()
-        try: predictors.remove(self.target)
+        try:
+            indx = predictors.index(self.target)
+            del(unique_values[indx])
+            predictors.remove(self.target)
         except: pass
-        if self.julian: predictors.remove(self.julian)
+        if self.julian:
+            indx = predictors.index(self.julian)
+            del(unique_values[indx])
+            predictors.remove(self.julian)
+        self.k = np.min([self.k, np.floor(rows / len(predictors))])        
         
         formula = self.target + "~"
-        for predictor in predictors:
-            if self.julian: formula += "te(" + self.julian + ", " + predictor + ", k=" + str(self.k) + ")+"
-            else: formula += "te(" + predictor + ", k=" + str(self.k) + ")+"
+        for i in range(len(predictors)):
+            if self.julian: formula += "te(" + self.julian + ", " + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
+            else: formula += "s(" + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
         formula = formula[:-1]
         
         self.formula = r.Call('as.formula', obj=formula)
@@ -136,7 +155,9 @@ class Model(object):
             self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
-        except IndexError: self.threshold = 2.3711
+        except ZeroDivisionError:
+            self.threshold = 2.3711
+            self.specificity = 1
         
 
     def Extract(self, model_part, **args):
