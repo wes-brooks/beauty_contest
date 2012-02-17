@@ -34,6 +34,7 @@ class Model(object):
         self.pls_params = {'formula' : self.formula, \
             'data' : self.data_frame, \
             'validation' : 'LOO', \
+            'method' : 'oscorespls', \
             'x' : True }
         self.model = r.Call(function='plsr', **self.pls_params).AsList()
 
@@ -70,6 +71,7 @@ class Model(object):
         self.pls_params = {'formula' : self.formula, \
             'data' : self.data_frame, \
             'validation' : 'LOO', \
+            'method' : 'oscorespls', \
             'x' : True }
         self.model = r.Call(function='plsr', **self.pls_params).AsList()
 
