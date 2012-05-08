@@ -27,6 +27,7 @@ sys.path[3] = root + '\\bin\\IronPython 2.7\\DLLs'
 sys.path[2] = root + '\\bin\\IronPython 2.7\\Lib'
 sys.path[1] = root + '\\bin\\IronPython 2.7'
 sys.path[1] = root + '\\bin'
+print sys.path
 clr.AddReference("mtrand.dll")
 clr.AddReference("System.Data")
 clr.AddReference("DotNetExtensions")

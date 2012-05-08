@@ -21,7 +21,7 @@ beaches = {}
 
 #beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
 beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
-methods = {"PLS":{}, "gbm":{'depth':2, 'weights':'float', 'minobsinnode':5, 'iterations':2500}} #, "gam":{'k':20}}
+methods = {"PLS":{}, "gbm":{'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001}} #, "gam":{'k':20}}
 cv_folds = 5
 B = 1
 result = "placeholder"
@@ -83,7 +83,7 @@ for beach in beaches.keys():
                 out.close()
                 
                 #Set the threshold for predicting the reserved test set
-                indx = np.where(results[0]['tpos'] >= results[0]['fpos'])
+                indx = np.where(results[0]['tpos'] >= results[0]['fpos'] and results[0]['specificity'] > 0.8)
                 if indx[0].shape[0] > 0:
                     specificity = np.min(results[0]['specificity'][indx])
                 else:
