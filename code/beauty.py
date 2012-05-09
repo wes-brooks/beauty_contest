@@ -83,13 +83,8 @@ for beach in beaches.keys():
                 out.close()
                 
                 #Set the threshold for predicting the reserved test set
-                indx = np.where(results[0]['tpos'] >= results[0]['fpos'] and results[0]['specificity'] > 0.8)
-                if indx[0].shape[0] > 0:
-                    specificity = np.min(results[0]['specificity'][indx])
-                else:
-                    indx = np.where(results[0]['tpos'] >= results[0]['fneg'])
-                    if indx[0].shape[0] > 0:
-                        specificity = np.max(results[0]['specificity'][indx])
+                indx = np.where(results[0]['fneg'] >= results[0]['fpos'] and results[0]['specificity'] > 0.8)
+                specificity = np.min(results[0]['specificity'][indx])
                 
                 #Predict exceedances on the test set and add them to the results structure.
                 model.Threshold(specificity)
