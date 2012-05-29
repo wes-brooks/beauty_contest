@@ -38,7 +38,7 @@ class Model(object):
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
 
         #Generate a gbm model in R.
-        self.formula = r.Call('as.formula', obj=self.target + '~.')
+        self.formula = r.Call('as.formula', obj=utils.SanitizeVariableName(self.target) + '~.')
         self.gbm_params = {'formula' : self.formula, \
             'distribution' : 'bernoulli', \
             'data' : self.data_frame, \
@@ -134,7 +134,7 @@ class Model(object):
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
 
         #Generate a gbm model in R.
-        self.formula = r.Call('as.formula', obj=self.target + '~.')
+        self.formula = r.Call('as.formula', obj=utils.SanitizeVariableName(self.target) + '~.')
         self.gbm_params = {'formula' : self.formula, \
             'distribution' : 'bernoulli', \
             'data' : self.data_frame, \
@@ -250,15 +250,15 @@ class Model(object):
         return part
 
 
-    def Predict(self, data_dictionary):
+    def Predict(self, data_dictionary, **kwargs):
         data_frame = utils.DictionaryToR(data_dictionary)
         prediction_params = {'object': self.model, 'newdata': data_frame, 'n.trees': self.trees }
         prediction = r.Call(function='predict', **prediction_params).AsVector()
 
         #Translate the R output to a type that can be navigated in Python
-        prediction = np.array(prediction).squeeze()
+        prediction = np.array(prediction, dtype=float).squeeze()
         
-        return list(prediction)
+        return [float(item) for item in prediction]
         
 
     def Validate(self, data_dictionary):
@@ -284,7 +284,7 @@ class Model(object):
     def GetFitted(self, **params):
         params = {'object':self.model, 'n.trees':self.trees, 'newdata':self.data_frame}
         self.fitted = list(r.Call("predict", **params).AsNumeric())
-        self.array_fitted = np.array(self.fitted)
+        self.array_fitted = np.array(self.fitted, dtype='float')
     
         '''try: ncomp = params['ncomp']
         except KeyError:
@@ -321,7 +321,7 @@ class Model(object):
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
         try:
-            non_exceedances = self.array_fitted[np.where(self.array_actual < 2.3711)[0]]
+            non_exceedances = self.array_fitted[np.where(self.array_actual < self.regulatory_threshold)[0]]
             self.threshold = utils.Quantile(non_exceedances, specificity)
             self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
 

@@ -6,6 +6,7 @@ from numpy import where, nonzero
 
 from dateutil import parser, relativedelta
 from datetime import datetime
+import re
 
 import RDotNetWrapper as rdn
 from System import Array
@@ -26,7 +27,7 @@ def Converter(value):
     except ValueError: return np.nan
 
 
-def DotnetToArray(data):
+def DotnetToArray(data, remove=[]):
     '''Copy the contents of a .NET DataView into a numpy array with a list of headers'''
     
     #First import the libraries that are needed just for this step:
@@ -49,12 +50,25 @@ def DotnetToArray(data):
     
     #Now copy the NaN-free rows of the DataView into an array:
     raw_table = [ list(row) for row in data_view ]
-    data_array = np.array( raw_table )[flags]
+    
+    #Remove any columns that have been marked for removal:
+    if remove and hasattr(remove, '__iter__'):
+        for item in remove:
+            [row.pop(headers.index(item)) for row in raw_table]
+            headers.remove(item)
+        
+    data_array = np.array(raw_table)[flags]
     data_array = np.array(data_array, dtype=float)
 
     return [headers, data_array]
-
-
+    
+    
+def SanitizeVariableName(var):
+    #First remove any leading characters that are not letters, then any other characters that are not alphanumeric.
+    var = re.sub("^[^a-zA-Z]+", "", var)
+    return re.sub("[^a-zA-Z0-9]+", "", var)
+        
+        
 def DictionaryToR(data_dictionary, name=''):
     '''Moves a python dictionary into an R data frame'''
     
@@ -74,7 +88,7 @@ def DictionaryToR(data_dictionary, name=''):
             df[col] = r.CreateCharacterVector( Array[str](data_dictionary[col]) ).AsVector()
         
         #Update the command and give the column a random name in R
-        r_col_name = col.replace("[", ".").replace("]", ".").replace("(", ".").replace(")", ".").replace(",", ".").replace(" ", ".")
+        r_col_name = SanitizeVariableName(col)
         col_name = "col_" + str(random.random())[2:-4]
         command = command + r_col_name + "=" + col_name + ","
         r.SetSymbol(col_name, df[col])
@@ -107,7 +121,7 @@ def Quantile(list, q):
         return np.nan
     else:
         list = np.sort(list)
-        position = np.floor(q * (len(list)-1) )
+        position = np.ceil(q * (len(list)-1) )
         
         #if len(list) > position+1 : position += 1
         

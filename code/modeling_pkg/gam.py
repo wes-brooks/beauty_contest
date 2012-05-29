@@ -49,10 +49,10 @@ class Model(object):
             predictors.remove(self.julian)
         self.k = np.min([self.k, np.floor(rows / len(predictors))])        
         
-        formula = self.target + "~"
+        formula = utils.SanitizeVariableName(self.target) + "~"
         for i in range(len(predictors)):
-            if self.julian: formula += "te(" + self.julian + ", " + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
-            else: formula += "s(" + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
+            if self.julian: formula += "s(" + utils.SanitizeVariableName(predictors[i]) + ", k=" + str(np.min([self.k, unique_values[i]])) + ", by=" + utils.SanitizeVariableName(self.julian) + ")+"
+            else: formula += "s(" + utils.SanitizeVariableName(predictors[i]) + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
         formula = formula[:-1]
         
         self.formula = r.Call('as.formula', obj=formula)
@@ -116,10 +116,10 @@ class Model(object):
             predictors.remove(self.julian)
         self.k = np.min([self.k, np.floor(rows / len(predictors))])        
         
-        formula = self.target + "~"
+        formula = utils.SanitizeVariableName(self.target) + "~"
         for i in range(len(predictors)):
-            if self.julian: formula += "te(" + self.julian + ", " + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
-            else: formula += "s(" + predictors[i] + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
+            if self.julian: formula += "s(" + utils.SanitizeVariableName(predictors[i]) + ", k=" + str(np.min([self.k, unique_values[i]])) + ", by=" + utils.SanitizeVariableName(self.julian) + ")+"
+            else: formula += "s(" + utils.SanitizeVariableName(predictors[i]) + ", k=" + str(np.min([self.k, unique_values[i]])) + ")+"
         formula = formula[:-1]
         
         self.formula = r.Call('as.formula', obj=formula)

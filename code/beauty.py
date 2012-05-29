@@ -20,9 +20,10 @@ class ValidationCounts(object):
 beaches = {}
 
 #beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
-beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
-methods = {"PLS":{}, "gbm":{'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001}} #, "gam":{'k':20}}
-cv_folds = 5
+#beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
+beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
+methods = {"PLS":{}, "gbm":{'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':1000, 'shrinkage':0.001}, "gam":{'k':50, 'julian':'jday'}}
+cv_folds = 3
 B = 1
 result = "placeholder"
 output = "../output/"
@@ -38,18 +39,19 @@ for beach in beaches.keys():
     datafile = VBTools.IO.ExcelOleDb(datafile, firstRowHeaders=True)
     data = datafile.Read(datafile.GetWorksheetNames()[0])
     datafile.CloseConnection()
-    [headers, data] = utils.DotnetToArray(data)
+    if 'remove' in beaches[beach]: [headers, data] = utils.DotnetToArray(data, remove=beaches[beach]['remove'])
+    else: [headers, data] = utils.DotnetToArray(data)
     
     #Apply the specified transforms to the raw data.
     for t in beaches[beach]['transforms']:
         data[:,headers.index(t)] = beaches[beach]['transforms'][t](data[:,headers.index(t)])
 
     #Remove any columns we've specified.
-    if beaches[beach]['remove']:
-        for col in beaches[beach]['remove']:
-            indx = headers.index(col)
-            data = np.delete(data, indx, 1)
-            headers.remove(col)
+    #if beaches[beach]['remove']:
+    #    for col in beaches[beach]['remove']:
+    #        indx = headers.index(col)
+    #        data = np.delete(data, indx, 1)
+    #        headers.remove(col)
     
     for b in range(B):
         #Partition the data into cross-validation folds.
@@ -83,7 +85,8 @@ for beach in beaches.keys():
                 out.close()
                 
                 #Set the threshold for predicting the reserved test set
-                indx = np.where(results[0]['fneg'] >= results[0]['fpos'] and results[0]['specificity'] > 0.8)
+                indx = [i for i in range(len(results[0]['fneg'])) if results[0]['fneg'][i] >= results[0]['fpos'][i] and results[0]['specificity'][i] > 0.8]
+                #indx = np.where(results[0]['fneg'] >= results[0]['fpos'] and results[0]['specificity'] > 0.8)
                 specificity = np.min(results[0]['specificity'][indx])
                 
                 #Predict exceedances on the test set and add them to the results structure.
@@ -108,6 +111,8 @@ for beach in beaches.keys():
                 out = open(output + beach + now + method + '_performance.out', 'a')
                 out.write("# fold = " + str(f) + "\n")
                 out.write("# threshold = " + str(model.threshold) + "\n")
+                out.write("# requested specificity = " + str(specificity) + "\n")
+                out.write("# actual training-set specificity = " + str(model.specificity) + "\n")
                 out.write("# tpos = " + str(tpos) + "\n")
                 out.write("# tneg = " + str(tneg) + "\n")
                 out.write("# fpos = " + str(fpos) + "\n")

@@ -71,7 +71,7 @@ class BeachInterface(object):
 
     def GetPossibleSpecificities(self, model):   
         '''Find out what values specificity could take if we count out one non-exceedance at a time.'''
-        thresholds = np.sort(model.array_fitted[np.where(model.array_actual < 2.3711)[0]])
+        thresholds = np.sort(model.array_fitted[np.where(model.array_actual < model.regulatory_threshold)[0]])
         specificities = [x/float(thresholds.shape[0]) for x in range(thresholds.shape[0])]
         return [list(thresholds), list(specificities)]
         

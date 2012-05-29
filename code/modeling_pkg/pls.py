@@ -1,6 +1,7 @@
 ﻿import numpy as np
 import random
 import copy
+import re
 from random import choice
 import utils
 import RDotNetWrapper as rdn
@@ -30,14 +31,18 @@ class Model(object):
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a PLS model in R.
-        self.formula = r.Call('as.formula', obj=self.target + '~.')
+        self.formula = r.Call('as.formula', obj=utils.SanitizeVariableName(self.target) + '~.')
         self.pls_params = {'formula' : self.formula, \
             'data' : self.data_frame, \
             'validation' : 'LOO', \
             'method' : 'oscorespls', \
             'x' : True }
         self.model = r.Call(function='plsr', **self.pls_params).AsList()
-
+                
+        #Get the number of columns from the validation step
+        #(Might be fewer than the number of predictor variables if n<p)
+        self.ncomp_max = list(r.Call(function="dim", x=self.model['validation'].AsList()['pred']).AsNumeric())[2]
+            
         #Use cross-validation to find the best number of components in the model.
         self.GetActual()
         self.ncomp = model_struct['ncomp']
@@ -67,14 +72,17 @@ class Model(object):
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a PLS model in R.
-        self.formula = r.Call('as.formula', obj=self.target + '~.')
+        self.formula = r.Call('as.formula', obj=utils.SanitizeVariableName(self.target) + '~.')
         self.pls_params = {'formula' : self.formula, \
             'data' : self.data_frame, \
             'validation' : 'LOO', \
             'method' : 'oscorespls', \
             'x' : True }
         self.model = r.Call(function='plsr', **self.pls_params).AsList()
-
+        
+        #Get the number of columns from the validation step
+        #(Might be fewer than the number of predictor variables if n<p)
+        self.ncomp_max = list(r.Call(function="dim", x=self.model['validation'].AsList()['pred']).AsNumeric())[2]
         #Use cross-validation to find the best number of components in the model.
         self.GetActual()
         self.CrossValidation(**args)
@@ -108,7 +116,7 @@ class Model(object):
         elif model_part == 'names':
             part = ["Intercept"]
             part.extend( self.data_frame.ColumnNames )
-            try: part.remove(self.target)
+            try: part.remove(utils.SanitizeVariableName(self.target))
             except: pass
         
         #otherwise, go to the data structure itself
@@ -123,10 +131,11 @@ class Model(object):
         prediction_params = {'object': self.model, 'newdata': data_frame }
         
         prediction = r.Call(function='predict', **prediction_params).AsVector()
+        prediction = np.array(prediction, dtype=float)
         
         #Reshape the vector of predictions
-        columns = self.predictors
-        prediction = np.array( prediction )
+        columns = min(self.predictors, self.ncomp_max)
+        
         rows = len(prediction) / columns
         prediction.shape = (columns, rows)
         prediction = prediction.transpose()
@@ -134,21 +143,22 @@ class Model(object):
         return prediction
         
         
-    def PredictExceedances(self, data_dictionary):
+    def PredictExceedances(self, data_dictionary, **kwargs):
         prediction = self.PredictValues(data_dictionary)
         return np.array(prediction[:,self.ncomp-1] >= self.threshold, dtype=int)
         
         
-    def PredictExceedanceProbability(self, data_dictionary):
-        prediction = self.PredictValues(data_dictionary)[:,self.ncomp-1]
+    def PredictExceedanceProbability(self, data_dictionary, **kwargs):
+        prediction = self.PredictValues(data_dictionary)[:,self.ncomp-1].squeeze()
         se = self.Extract('RMSEP')
-        exceedance_probability = 1-r.Call(function='pnorm', q=self.threshold-prediction/se)
-        return list(exceedance_probability)
+        nonexceedance_probability = r.Call(function='pnorm', q=np.array((self.threshold-prediction)/se, dtype=float)).AsVector()
+        exceedance_probability = [float(1-item) for item in nonexceedance_probability]
+        return exceedance_probability
 
         
-    def Predict(self, data_dictionary):
+    def Predict(self, data_dictionary, **kwargs):
         prediction = self.PredictValues(data_dictionary)
-        return list(prediction[:,self.ncomp-1].squeeze())
+        return [float(item) for item in prediction[:,self.ncomp-1].squeeze()]
         
         
     def CrossValidation(self, cv_method=0, **args):
@@ -158,7 +168,7 @@ class Model(object):
         #method 0: select the fewest components with PRESS within 1 stdev of the least PRESS (by the bootstrap)
         if cv_method == 0: #Use the bootstrap to find the standard deviation of the MSEP
             #Get the leave-one-out CV error from R:
-            columns = self.predictors
+            columns = min(self.predictors, self.ncomp_max)
             cv = np.array( validation['pred'].AsVector() )
             rows = len(cv) / columns
             cv.shape = (columns, rows)
@@ -219,13 +229,13 @@ class Model(object):
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
         try:
-            non_exceedances = self.array_fitted[np.where(self.array_actual < 2.3711)[0]]
+            non_exceedances = self.array_fitted[np.where(self.array_actual < self.regulatory_threshold)[0]]
             self.threshold = utils.Quantile(non_exceedances, specificity)
             self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
         except ZeroDivisionError:
-            self.threshold = 2.3711        
+            self.threshold = self.regulatory_threshold        
             self.specificity = 1
 
 
@@ -254,10 +264,9 @@ class Model(object):
 
     def GetActual(self):
         #Get the fitted counts from the model.
+        columns = min(self.predictors, self.ncomp_max)
         fitted_values = np.array( self.model['fitted.values'].AsVector() )
-        self.predictors = np.min([self.predictors, ((2 + np.sqrt(4 + 4*fitted_values.shape[0])) / 2) - 2])
-
-        columns = self.predictors
+        
         rows = len(fitted_values) / columns
         fitted_values.shape = (columns, rows)
         fitted_values = fitted_values.transpose()[:,0]
@@ -287,7 +296,7 @@ class Model(object):
             except AttributeError: ncomp=1
             
         #Get the fitted counts from the model so we can compare them to the actual counts.
-        columns = self.predictors
+        columns = min(self.predictors, self.ncomp_max)
         fitted_values = np.array( self.model['fitted.values'].AsVector() )
         rows = len(fitted_values) / columns
         fitted_values.shape = (columns, rows)
@@ -365,384 +374,3 @@ class Model(object):
         
     def ToString(self):
         return "PLS model"
-        
-        
-
-
-class Model_Wrapper(object):
-    '''Contains several models that, together, cover the possible prediction space'''
-
-    def __init__(self, data, target, **args):
-        self.target = target
-        self.model_frame = copy.deepcopy(data)
-        self.model_data = np.array(data.values()).transpose()
-        self.headers = data.keys()
-        if 'AR_part' in args: self.AR_part = copy.copy(args['AR_part'])
-
-
-
-    def Split(self, wedge=None, breakpoint=None, **args):
-        finished = False
-        i=0
-        self.models = list()
-        self.wedge = wedge
-        self.breakpoint = breakpoint
-
-        #Decide how many submodels we're making.
-        if breakpoint is None:
-            breaks=0
-        else:
-            breakpoint = np.array( np.sort(breakpoint), ndmin=1 )
-            breaks = len(breakpoint) 
-    
-        #Make the submodels
-        while not finished:
-            if i>0: lower_bound = breakpoint[i-1]
-            else: lower_bound = -np.infty
-            if i<breaks:
-                upper_bound = breakpoint[i]
-            else:
-                upper_bound = np.infty
-                finished = True
-
-            #Find which rows of data lie in this division.
-            upper_rows = np.where( self.model_data[:,self.headers.index(wedge)] > lower_bound )[0]
-            lower_rows = np.where( self.model_data[:,self.headers.index(wedge)] <= upper_bound )[0]
-
-            #Now create a data dictionary with the data for this division.
-            rows = filter( lambda x: x in upper_rows, lower_rows )
-            submodel_data = self.model_data[rows,:]
-            submodel_frame = dict(zip(self.headers, np.transpose(submodel_data)))
-            if hasattr(self, 'AR_part'):
-                args['AR_part'] = self.AR_part[rows,:]
-                
-
-            #Generate this submodel and add it to the list.
-            self.f = submodel_frame
-            submodel = Model(data=submodel_frame, target=self.target, **args)
-            self.models.append(submodel)
-            i+=1
-
-
-
-    def Generate_Models(self, specificity=0.9, breakpoint='', breaks=0, balance_method=1, wedge='julian', **args):
-        self.specificity = specificity
-        self.wedge = wedge
-
-        #Default is not to tune the split date. This will be overridden if the breakpoint is not specified.
-        tune = False
-
-        if not breakpoint:
-            wedge_values = np.unique( self.model_frame[wedge] )
-            med = np.median(wedge_values)
-            breakpoint = med
-            tune = True
-        else: pass
-
-        if breaks>0:
-            self.Split(wedge, breakpoint, **args)
-            self.Assign_Thresholds(**args)
-            
-            if tune:
-                self.Tune_Split(balance_method=balance_method, **args)
-            
-        else:
-            self.Split(wedge, **args)
-            self.Assign_Thresholds(**args)
-            
-        self.Get_Actual()
-
-
-
-    def Tune_Split(self, balance_method=1, **args):
-        self.imbalance = list()
-        possible_breaks = np.unique( self.model_frame[self.wedge] )
-        
-        #Sweep through the possible break points and find the imbalance at each
-        for breakpoint in possible_breaks[10:-10]:
-            self.Split(wedge=self.wedge, breakpoint = breakpoint, **args)
-            self.Assign_Thresholds(**args)
-            
-            self.imbalance.append( [self.breakpoint, self.Imbalance(method=balance_method)] )
-                
-        
-        #select the break point with the minimal imbalance
-        self.imbalance = np.array(self.imbalance)
-        optimal_split = np.argmin( self.imbalance[:,1] )
-        breakpoint = self.imbalance[optimal_split,0]
-        
-        #split on the optimal break point and refit the model.
-        self.Split(wedge=self.wedge, breakpoint=self.breakpoint)
-        self.Assign_Thresholds(**args)
-        
-    
-    
-    def Assign_Thresholds(self, **args):
-        #Assign the decision thresholds
-        
-        try: method=args['threshold_method']
-        except KeyError: method=1
-        
-        try: self.specificity=args['specificity']
-        except KeyError: pass
-        
-        if method == 0: self.Threshold_on_Proportions()
-        elif method == 1: self.Threshold_on_Counts()
-            
-        
-        
-    def Threshold_on_Counts(self):
-        counts = list()
-        fitted_sorted = list()
-        submodels = range( len(self.models) )
-        winner = 0 #Begin with the first submodel
-
-        for model in self.models:
-            #Count the number of data points in the model and sort the fitted values.
-            t_pos = 0.
-            f_pos = 0.
-            [f_neg, t_neg] = self.Initial_Counts(model)
-            fit_order = list( np.argsort(model.array_fitted) )
-
-            counts.append([t_pos, t_neg, f_pos, f_neg])      
-            fitted_sorted.append(fit_order)
-
-        counts = np.array(counts)
-        [sensitivity, specificity] = self.Combined_Accuracy(counts)
-        specificity_limit = self.specificity
-
-        #Descend through the fitted counts to find the best decision threshold.
-        while(specificity > specificity_limit):
-            try:
-
-                index = fitted_sorted[winner].pop()
-                self.models[winner].threshold = self.models[winner].fitted[index]
-
-                if (self.models[winner].actual[index] >= 2.3711): #A hit: continue to play the 'winner'
-                    counts[winner,0] += 1. #t_pos
-                    counts[winner,3] -= 1. #f_neg
-
-                if (self.models[winner].actual[index] < 2.3711): #A miss: find a new 'winner'
-                    counts[winner,2] += 1. #f_pos
-                    counts[winner,1] -= 1. #t_neg
-
-                    #Select a new 'winner', then repair the list of submodels.
-                    last = winner
-                    submodels.remove(last)
-                    try: winner = choice( submodels )
-                    except IndexError: winner=last
-                    submodels.append(last)
-
-                #Update the combined sensitivity, specificity.     
-                [sensitivity, specificity] = self.Combined_Accuracy(counts)
-            
-            except IndexError:
-                submodels.remove(winner)
-                winner = choice( submodels )
-
-        self.thresholding_counts = counts
-
-
-    def Threshold_on_Proportions(self):
-        counts = list()
-        submodels = range( len(self.models) )
-
-        for model in self.models:
-            #Set the threshold of each submodel using the overall specificity limit.
-            model.Threshold( self.specificity )
-
-            counts.append(model.Count())
-
-        counts = np.array(counts)
-        self.thresholding_counts = counts
-
-
-    def Initial_Counts(self, model):
-        f_neg = 0.
-        t_neg = 0.
-
-        #Count the true number of exceedances, non-exceedances. Stored in the model.
-        for k in range(len(model.fitted)):
-            if (model.actual[k] >= 2.3711): f_neg += 1
-            if (model.actual[k] < 2.3711): t_neg += 1
-
-        return [f_neg, t_neg]
-
-
-
-    def Combined_Accuracy(self, counts):
-        t_pos = np.sum(counts[:,0])
-        t_neg = np.sum(counts[:,1])
-        f_pos = np.sum(counts[:,2])
-        f_neg = np.sum(counts[:,3])
-
-        try:
-            specificity = t_neg/(t_neg + f_pos)
-        except ZeroDivisionError:
-            specificity = 0.
-
-        try:
-            sensitivity = t_pos/(t_pos + f_neg)
-        except ZeroDivisionError:
-            sensitivity = 1.
-
-        return [sensitivity, specificity]
-
-
-
-    def Imbalance(self, method=1):
-        submodels = len(self.models)
-        SS_model = 0
-        SS_tot = 0
-        errors = 0
-        
-        for i in range(submodels):
-            if method == 0 : SS_tot += self.thresholding_counts[i,3]**2
-            elif method == 1 : SS_tot += ( float(self.thresholding_counts[i,3]) / sum(self.thresholding_counts[i,:]))**2
-            elif method == 2 : SS_tot += ( float(self.thresholding_counts[i,3]) / (self.thresholding_counts[i,0] + self.thresholding_counts[i,3]))**2
-            
-            if method == 0 : SS_model += self.thresholding_counts[i,3]
-            elif method == 1 : SS_model += float(self.thresholding_counts[i,3]) / sum(self.thresholding_counts[i,:])
-            elif method == 2 : SS_model += float(self.thresholding_counts[i,3]) / (self.thresholding_counts[i,0] + self.thresholding_counts[i,3])
-            
-            errors += self.thresholding_counts[i,2] + self.thresholding_counts[i,3]
-
-        if method == 3 : return errors
-        
-        else:        
-            SS_model = (SS_model**2)/submodels
-            return SS_tot - SS_model
-        
-    
-    def Predict(self, validation_frame):
-        finished = False
-        predictions = list()
-        i=0
-
-        validation_array = np.array(validation_frame.values()).transpose()
-        validation_headers = validation_frame.keys()
-    
-        #Decide how many submodels we're making.
-        if self.breakpoint is None:
-            breaks=0
-        else:
-            self.breakpoint = np.array( np.sort(self.breakpoint), ndmin=1 )
-            breaks = len(self.breakpoint) 
-    
-        #Make the submodels
-        while not finished:
-            if i>0: lower_bound = self.breakpoint[i-1]
-            else: lower_bound = -np.infty
-
-            if i<breaks:
-                upper_bound = self.breakpoint[i]
-            else:
-                upper_bound = np.infty
-                finished = True
-
-            #Find which rows of data lie in this division.
-            upper_rows = np.where( validation_array[:,validation_headers.index(self.wedge)] > lower_bound )[0]
-            lower_rows = np.where( validation_array[:,validation_headers.index(self.wedge)] <= upper_bound )[0]
-
-            #Now create a data dictionary with the data for this division.
-            rows = filter( lambda x: x in upper_rows, lower_rows )
-            submodel_data = validation_array[rows,:]
-            submodel_frame = dict(zip(validation_headers, np.transpose(submodel_data)))
-
-            #Make predictions on the split models  
-            subseason_predictions = self.models[i].Predict(submodel_frame)[:, self.models[i].ncomp-1 ]
-            predictions.extend(subseason_predictions)
-            
-            #Next submodel
-            i += 1
-            
-        predictions = np.array(predictions).squeeze()
-        return predictions
-    
-    
-    
-    
-    def Validate(self, validation_frame, **args):
-        finished = False
-        self.predictions = list()
-        self.prediction_residuals = list()
-        i=0
-        raw = list()
-        validation_array = np.array(validation_frame.values()).transpose()
-        validation_headers = validation_frame.keys()
-           
-        #Decide how many submodels we're making.
-        if self.breakpoint is None:
-            breaks=0
-        else:
-            self.breakpoint = np.array( np.sort(self.breakpoint), ndmin=1 )
-            breaks = len(self.breakpoint)
-    
-        #Make the submodels
-        while not finished:
-            if i>0: lower_bound = self.breakpoint[i-1]
-            else: lower_bound = -np.infty
-
-            if i<breaks:
-                upper_bound = self.breakpoint[i]
-            else:
-                upper_bound = np.infty
-                finished = True
-
-            #Find which rows of data lie in this division.
-            upper_rows = np.where( validation_array[:,validation_headers.index(self.wedge)] > lower_bound )[0]
-            lower_rows = np.where( validation_array[:,validation_headers.index(self.wedge)] <= upper_bound )[0]
-
-            #Now create a data dictionary with the data for this division.
-            rows = filter( lambda x: x in upper_rows, lower_rows )
-
-            #If this CV fold has nothing on one side of the split, then return a row of zeros
-            if len(rows)>0:
-                submodel_data = validation_array[rows,:]
-                submodel_frame = dict(zip(validation_headers, np.transpose(submodel_data)))
-                #if hasattr(args, 'AR_part'): args['AR_part'] = AR_part[rows]
-    
-                #Make predictions on the split models  
-                predictions = self.models[i].Predict(submodel_frame)[:, self.models[i].ncomp-1 ]
-                if 'AR_part' in args:
-                    predictions += args['AR_part'][rows]
-                
-                actual = submodel_frame[self.target]
-                self.actual = actual
-                self.i = i
-                self.predictions.extend(predictions)
-                residuals = actual - predictions
-                self.prediction_residuals.extend(residuals)
-                
-                for k in range(len(predictions)):
-                    self.k = k
-                    t_pos = int(predictions[k] >= self.models[i].threshold and actual[k] >= 2.3711)
-                    t_neg = int(predictions[k] <  self.models[i].threshold and actual[k] < 2.3711)
-                    f_pos = int(predictions[k] >= self.models[i].threshold and actual[k] < 2.3711)
-                    f_neg = int(predictions[k] <  self.models[i].threshold and actual[k] >= 2.3711)
-                    raw.append([t_pos, t_neg, f_pos, f_neg])
-            else:
-                pass
-
-            i+=1
-
-        raw = np.array(raw)
-        return raw
-        
-        
-    def Get_Actual(self):
-        self.actual = list()
-        self.fitted = list()
-        self.residual = list()
-        
-        for m in self.models:
-            self.actual.extend(m.actual)
-            self.fitted.extend(m.fitted)
-            self.residual.extend(m.residual)
-            
-            
-
-    def Plot(self, **plotargs):
-        for model in self.models:
-            model.Plot(**plotargs)
-            

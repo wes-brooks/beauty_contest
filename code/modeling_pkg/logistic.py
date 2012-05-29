@@ -29,7 +29,7 @@ class Model(object):
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a PLS model in R.
-        self.formula = r.Call('as.formula', obj=self.target + '~.')
+        self.formula = r.Call('as.formula', obj=utils.SanitizeVariablename(self.target) + '~.')
         self.logistic_params = {'formula' : self.formula, \
             'family' : 'binomial', \
             'data' : self.data_frame, \
@@ -87,7 +87,7 @@ class Model(object):
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
 
         #Generate a logistic regression model in R.
-        self.formula = r['as.formula'](self.model_target + '~.')
+        self.formula = r.Call('as.formula', obj=utils.SanitizeVariablename(self.model_target) + '~.')
         self.logistic_params = {'formula' : self.formula, \
             'family' : 'binomial', \
             'data' : self.data_frame, \
@@ -266,10 +266,10 @@ class Model(object):
         
         for obs in range( len(self.fitted) ):
             if self.fitted[obs] >= self.threshold:
-                if self.actual[obs] >= 2.3711: t_pos += 1
+                if self.actual[obs] >= self.regulatory_threshold: t_pos += 1
                 else: f_pos += 1
             else:
-                if self.actual[obs] >= 2.3711: f_neg += 1
+                if self.actual[obs] >= self.regulatory_threshold: f_neg += 1
                 else: t_neg += 1
         
         return [t_pos, t_neg, f_pos, f_neg]
@@ -285,3 +285,14 @@ class Model(object):
         r['''dev.new''']()
         r.plot(self.model, **plotargs)
 
+        
+    def Serialize(self):
+        model_struct = dict()
+        model_struct['model_type'] = 'logistic'
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights']
+        
+        for element in elements_to_save:
+            try: model_struct[element] = getattr(self, element)
+            except KeyError: raise Exception('The required ' + element + ' was not found in the model to be serialized.')
+            
+        return model_struct
