@@ -39,8 +39,8 @@ def Validate(data, target, method, folds='', **args):
         model_data = data[fold!=f,:]
         validation_data = data[fold==f,:]
         
-        model_dict = dict( zip(headers, np.transpose(model_data)) )
-        validation_dict = dict( zip(headers, np.transpose(validation_data)) )
+        model_dict = dict(zip(headers, np.transpose(model_data)))
+        validation_dict = dict(zip(headers, np.transpose(validation_data)))
 
         model = module.Model(data=model_dict, target=target, **args)  
 
@@ -94,10 +94,10 @@ def Validate(data, target, method, folds='', **args):
         fpos = np.array(fpos)
         fneg = np.array(fneg)
         
-        result = dict(threshold=threshold, sensitivity=sensitivity, specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg )
+        result = dict(threshold=threshold, sensitivity=sensitivity, specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
         results.append(result)
 
-    model = module.Model(data=data_dict, target=target, **args)
+    model = module.Model(data=data_dict, target=target, **args)               
     
     return (results, model)
   

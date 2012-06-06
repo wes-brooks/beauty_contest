@@ -22,8 +22,8 @@ beaches = {}
 #beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
-methods = {"PLS":{}, "gbm":{'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':1000, 'shrinkage':0.001}, "gam":{'k':50, 'julian':'jday'}}
-cv_folds = 3
+methods = {"PLS":{}, "gbm":{'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001}}#, "gam":{'k':50, 'julian':'jday'}}
+cv_folds = 5
 B = 1
 result = "placeholder"
 output = "../output/"
@@ -74,6 +74,7 @@ for beach in beaches.keys():
                                                         regulatory_threshold=beaches[beach]['threshold'], headers=headers, **methods[method])
                 model = result[1]
                 results = result[0]
+                thresholding = dict(zip(['specificity', 'tpos', 'tneg', 'fpos', 'fneg'], Interface.Control.SpecificityChart(results)))
                 
                 #Store the thresholding information.
                 #Open a file to which we will append the output.
@@ -85,9 +86,9 @@ for beach in beaches.keys():
                 out.close()
                 
                 #Set the threshold for predicting the reserved test set
-                indx = [i for i in range(len(results[0]['fneg'])) if results[0]['fneg'][i] >= results[0]['fpos'][i] and results[0]['specificity'][i] > 0.8]
+                indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i] and thresholding['specificity'][i] > 0.8]
                 #indx = np.where(results[0]['fneg'] >= results[0]['fpos'] and results[0]['specificity'] > 0.8)
-                specificity = np.min(results[0]['specificity'][indx])
+                specificity = np.min(np.array(thresholding['specificity'])[indx])
                 
                 #Predict exceedances on the test set and add them to the results structure.
                 model.Threshold(specificity)
