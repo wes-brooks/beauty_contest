@@ -72,5 +72,7 @@ class Wrap():
             
         command = command[:-2] + ")"
         
+        print command
         result = self.r.EagerEvaluate(command)
+        
         return result
