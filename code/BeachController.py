@@ -45,7 +45,7 @@ def Validate(data, target, method, folds='', **args):
         model = module.Model(data=model_dict, target=target, **args)  
 
         predictions = np.array(model.Predict(validation_dict))
-        validation_actual = validation_dict[ target ]
+        validation_actual = validation_dict[target]
         exceedance = np.array(validation_actual > regulatory, dtype=bool)
         
         fitted = np.array(model.fitted)

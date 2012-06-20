@@ -11,4 +11,4 @@ Description: Iterate between censReg and lars to find a
 Depends: lars, censReg
 License: GPL-3
 LazyLoad: yes
-Built: R 2.13.0; ; 2012-06-13 19:24:33 UTC; windows
+Built: R 2.13.0; ; 2012-06-20 19:27:34 UTC; windows

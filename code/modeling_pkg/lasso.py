@@ -120,8 +120,10 @@ class Model(object):
 
 
     def PredictValues(self, data_dictionary, **args):
-        data_frame = utils.DictionaryToR(data_dictionary)
-        prediction_params = {'object': self.model, 'newdata': data_frame }
+        data = copy.copy(data_dictionary)
+        data.pop(self.target)
+        data_frame = utils.DictionaryToR(data)
+        prediction_params = {'object': self.model, 'newx': data_frame }
         
         prediction = r.Call(function='predict.censlars', **prediction_params).AsVector()
         prediction = np.array(prediction, dtype=float)
@@ -169,20 +171,20 @@ class Model(object):
 
 
     def GetActual(self):
-        fitted_values = np.array(self.model['censreg']['actual'].AsVector())
-
-        #Recover the actual counts by adding the residuals to the fitted counts.
-        residual_values = np.array(self.model['lars']['residuals'].AsVector())
-        residual_values = residual_values.transpose()
+        fitted = np.array(self.model['censreg'].AsList()['actual'].AsVector())
         
-        self.array_actual = np.array(fitted_values+residual_values).squeeze()
+        #Recover the actual counts by adding the residuals to the fitted counts.
+        residuals = np.array(self.model['lars'].AsList()['residuals'].AsVector())
+        #residuals = residual_values.transpose()
+        
+        self.array_actual = np.array(fitted + residuals).squeeze()
         self.actual = list(self.array_actual)
         
         
     def GetFitted(self, **params):            
-        fitted_values = np.array(self.model['lars']['fitted'].AsVector())
+        fitted = np.array(self.model['lars'].AsList()['fitted'].AsVector())
         
-        self.array_fitted = fitted_values
+        self.array_fitted = fitted
         self.array_residual = self.array_actual - self.array_fitted
         
         self.fitted = list(self.array_fitted)
