@@ -95,8 +95,12 @@ class Model(object):
         
         #use R's coef function to extract the model coefficients
         if model_part == 'coef':
-            part = list(r.Call(function='coef', object=self.model, ncomp=self.ncomp, intercept=True).AsVector())
-            
+            step = self.model['lars'].AsList()['lambda.index'].AsVector()[0] #r.Call(function='coef', object=self.model, ncomp=self.ncomp, intercept=True).AsList()
+            coefobj = r.Call(function='coef', object=self.model.lars.AsList().model, mode='step', s=step)
+            names = list(r.Call(function='names', x=coefobj).AsVector())
+            coefs = list(coefobj.AsVector())
+            part = dict(zip(names, coefs))
+        
         #use R's MSEP function to estimate the variance.
         elif model_part == 'MSEP':
             part = self.model['lars']['MSEP']
@@ -197,7 +201,7 @@ class Model(object):
         self.names.remove(self.target)
 
         #Now get the model coefficients from R.
-        coefficients = np.array( self.Extract('coef') )
+        coefficients = np.array(self.Extract('coef'))
         coefficients = coefficients.flatten()
         
         #Get the standard deviations (from the data_dictionary) and package the influence in a dictionary.
