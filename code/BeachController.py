@@ -1,5 +1,5 @@
-from modeling_pkg import pls, gbm, gam, logistic, lasso#, pls_parallel
-methods = {'pls':pls, 'boosting':gbm, 'gbm':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso}
+from modeling_pkg import pls, gbm, gam, logistic, lasso, adalasso#, pls_parallel
+methods = {'pls':pls, 'boosting':gbm, 'gbm':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso':adalasso}
 
 import utils
 import sys
@@ -67,10 +67,10 @@ def Validate(data, target, method, folds='', **args):
         exceedances = float(sum(exceedance == True))
         
         for prediction in predictions:
-            tp = np.where(validation_actual[predictions >= prediction] >= regulatory)[0].shape[0]
-            fp = np.where(validation_actual[predictions >= prediction] < regulatory)[0].shape[0]
-            tn = np.where(validation_actual[predictions < prediction] < regulatory)[0].shape[0]
-            fn = np.where(validation_actual[predictions < prediction] >= regulatory)[0].shape[0]
+            tp = np.where(validation_actual[predictions > prediction] > regulatory)[0].shape[0]
+            fp = np.where(validation_actual[predictions > prediction] <= regulatory)[0].shape[0]
+            tn = np.where(validation_actual[predictions <= prediction] <= regulatory)[0].shape[0]
+            fn = np.where(validation_actual[predictions <= prediction] > regulatory)[0].shape[0]
         
             tpos.append(tp)
             fpos.append(fp)
@@ -79,8 +79,12 @@ def Validate(data, target, method, folds='', **args):
             
             try: candidate_threshold = np.max(candidates[np.where(candidates <= prediction)])
             except: candidate_threshold = np.min(candidates)
-            specificity.append(np.where(fitted[actual < regulatory] < candidate_threshold)[0].shape[0] / num_candidates)
-            sensitivity.append(np.where(fitted[actual >= regulatory] >= candidate_threshold)[0].shape[0] / num_exceedances)
+            
+            try: specificity.append(np.where(fitted[actual <= regulatory] <= candidate_threshold)[0].shape[0] / num_candidates)
+            except ZeroDivisionError: specificity.append(1)
+            
+            try: sensitivity.append(np.where(fitted[actual > regulatory] > candidate_threshold)[0].shape[0] / num_exceedances)
+            except ZeroDivisionError: sensitivity.append(1)
             
             #the first candidate threshold that would be below this threshold
             try: threshold.append(max(fitted[fitted < prediction]))
@@ -135,36 +139,7 @@ def SpecificityChart(results):
                 fpos[-1] = fpos[-1] + fold['tneg'][0] + fold['fpos'][0] #all non-exceedances incorrectly classified
         
     return [spec, tpos, tneg, fpos, fneg]
-       
-
-def ValidateGBM(model_dict, validation_dict, target, **args):
-    '''Creates and tests prospective models using boosted decision trees.'''
-    
-    #Pick the model building parameters out of args
-    try: weights = list( args['weights'] )   #Gradient-descent boosting, with observations down-weighted near the threshold.
-    except KeyError: weights = ['both']
-
-    try: costs = list( args['specificity'] )   #Gradient-descent boosting, with exceedances given more weight.
-    except KeyError: costs = [1]
-
-    costs = [ [1,i] for i in costs ]
-
-    results = list()
-
-    #Test models w/ midseason split
-    for weight in weights:
-        for cost in costs:
-        
-            l=gbm.Model(data=model_dict, target=target, cost=cost, weights=weight, iterations=boosting_iterations, **args)
  
-            summary = Summarize(l, validation_dict, **args)
-            #summary.insert( 1, weight)
-            #summary.insert( 1, np.nan)
-            
-            results.append( summary )
-
-    return results
-
     
 def Model(data_dict, target='', **args):
     '''Creates a Model object of the desired class, with the specified parameters.'''

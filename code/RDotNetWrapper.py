@@ -20,8 +20,8 @@ from System import Array
 import numpy as np
 
 #Fire up the interface to R
-os.environ["R_HOME"] = dlls + '\\R-2.13.2'
-RDotNet.REngine.SetDllDirectory(dlls + '\\R-2.13.2\\bin\\i386')
+os.environ["R_HOME"] = dlls + '\\R-2.15.1'
+RDotNet.REngine.SetDllDirectory(dlls + '\\R-2.15.1\\bin\\i386')
 r = RDotNet.REngine.CreateInstance("RDotNet", output=RDotNet.Internals.OutputMode.Quiet)
 
 #This class wraps the R.NET functionality and makes calling r functions simpler.

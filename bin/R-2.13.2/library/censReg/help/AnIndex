@@ -1,8 +1,0 @@
-censReg	censReg
-coef.censReg	coef.censReg
-coef.summary.censReg	coef.summary.censReg
-logLik.censReg	coef.censReg
-print.censReg	censReg
-print.summary.censReg	summary.censReg
-summary.censReg	summary.censReg
-vcov.censReg	coef.censReg

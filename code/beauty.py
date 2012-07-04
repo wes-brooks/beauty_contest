@@ -17,13 +17,20 @@ class ValidationCounts(object):
         self.truth = np.array([])
     
     
-beaches = {}
-
+beaches = dict()
 #beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
 beaches['hika'] = {'file':'../data/Hika.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-methods = {"lasso":{'left':0, 'right':3.383743576}} #{"PLS":{}, "gbm":{'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001}}#, "gam":{'k':50, 'julian':'jday'}}
+
+methods = dict()
+#methods["lasso"] = {'left':0, 'right':3.383743576}
+#methods["PLS"] = {}
+#methods["gbm"] = {'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001}
+#methods["gam"] = {'k':50, 'julian':'jday'}
+#methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
+methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
+
 cv_folds = 5
 B = 1
 result = "placeholder"

@@ -36,7 +36,7 @@ import System
 import pickle
 
 #Set the R_HOME environment variable
-os.environ["R_HOME"] = cwd + '\\bin\\R-2.13.2'
+os.environ["R_HOME"] = cwd + '\\bin\\R-2.15.1'
 
 import utils
 import BeachController as Control
