@@ -1,0 +1,20 @@
+#
+# Submit file for a master/worker set up where the master runs
+# on the submitting machine (via the local universe) and a number
+# of workers run on remote machines (via vanilla universe). We
+# tell the workers the hostname of the master
+#
+#################################################################
+# Comparability Computations
+#################################################################
+
+universe = vanilla
+log = output/comp_$(Cluster).log
+error = output/comp_$(Cluster)_$(Process).err
+executable = worker.bat
+requirements = ((Target.OpSys=="WINNT61" || Target.OpSys=="WINNT52")  && (Target.Arch=="X86_64") && (PoolName=="CIDA"))
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+transfer_input_files = unzip.exe, zip.exe, beauty.zip
+transfer_output_files = output
+queue 2

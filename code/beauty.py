@@ -21,16 +21,16 @@ beaches = dict()
 #beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
-beaches['hika'] = {'file':'../data/Hika.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['hika'] = {'file':'../data/Hika.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
 #methods["lasso"] = {'left':0, 'right':3.383743576}
 #methods["PLS"] = {}
-methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':0}
-methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
+methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+#methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-#methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
+methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
 
 cv_folds = 5
 B = 1
@@ -45,11 +45,22 @@ now = ".".join(now)
 for beach in beaches.keys():
     #Read the beach's data.
     datafile = beaches[beach]["file"]
-    datafile = VBTools.IO.ExcelOleDb(datafile, firstRowHeaders=True)
-    data = datafile.Read(datafile.GetWorksheetNames()[0])
-    datafile.CloseConnection()
-    if 'remove' in beaches[beach]: [headers, data] = utils.DotnetToArray(data, remove=beaches[beach]['remove'])
-    else: [headers, data] = utils.DotnetToArray(data)
+    #datafile = VBTools.IO.ExcelOleDb(datafile, firstRowHeaders=True)
+    #data = datafile.Read(datafile.GetWorksheetNames()[0])
+    #datafile.CloseConnection()
+    #if 'remove' in beaches[beach]: [headers, data] = utils.DotnetToArray(data, remove=beaches[beach]['remove'])
+    #else: [headers, data] = utils.DotnetToArray(data)
+    
+    [headers, data] = utils.ReadCSV(datafile)
+    raw_table = [list(row) for row in data]
+    if 'remove' in beaches[beach]:
+        for item in beaches[beach]['remove']:
+            item = item.lower()
+            [row.pop(headers.index(item)) for row in raw_table]
+            headers.remove(item)
+        
+    data = np.array(raw_table, dtype=float)
+    #else: [headers, data] = utils.DotnetToArray(data)
     
     #Apply the specified transforms to the raw data.
     for t in beaches[beach]['transforms']:

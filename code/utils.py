@@ -66,7 +66,7 @@ def DotnetToArray(data, remove=[]):
 def SanitizeVariableName(var):
     #First remove any leading characters that are not letters, then any other characters that are not alphanumeric.
     var = re.sub("^[^a-zA-Z]+", "", var)
-    return re.sub("[^a-zA-Z0-9]+", "", var)
+    return re.sub("[^a-zA-Z0-9]+", "", var).lower()
         
         
 def DictionaryToR(data_dictionary, name=''):

@@ -156,8 +156,13 @@ class Model(object):
         try: self.trees = r.Call(function='gbm.perf', **perf_params).AsNumeric()[0]
         except ValueError: self.trees = self.iterations
         
+        print "number of trees: " + str(self.trees)
+        
         self.GetFitted()
         self.Threshold(self.specificity)
+        
+        print "gbm self.actual: " + str(self.actual)
+        print "gbm self.fitted: " + str(self.fitted)
 
 
     def AssignWeights(self, method=0):
@@ -230,7 +235,7 @@ class Model(object):
         #discretized = np.zeros(raw.shape[0], dtype=int)
         #discretized[ raw >= self.regulatory_threshold ] = 1
         #discretized[ raw < self.regulatory_threshold ] = -1
-        discretized = np.array(raw >= self.regulatory_threshold, dtype=int)
+        discretized = np.array(raw > self.regulatory_threshold, dtype=int)
         
         return discretized
         
@@ -270,10 +275,10 @@ class Model(object):
         raw = list()
     
         for k in range(len(predictions)):
-            t_pos = int(predictions[k] >= self.threshold and actual[k] >= self.regulatory_threshold)
-            t_neg = int(predictions[k] <  self.threshold and actual[k] < self.regulatory_threshold)
-            f_pos = int(predictions[k] >= self.threshold and actual[k] < self.regulatory_threshold)
-            f_neg = int(predictions[k] <  self.threshold and actual[k] >= self.regulatory_threshold)
+            t_pos = int(predictions[k] > self.threshold and actual[k] > self.regulatory_threshold)
+            t_neg = int(predictions[k] <=  self.threshold and actual[k] <= self.regulatory_threshold)
+            f_pos = int(predictions[k] > self.threshold and actual[k] <= self.regulatory_threshold)
+            f_neg = int(predictions[k] <=  self.threshold and actual[k] > self.regulatory_threshold)
             raw.append([t_pos, t_neg, f_pos, f_neg])
         
         raw = np.array(raw)
@@ -284,7 +289,7 @@ class Model(object):
     def GetFitted(self, **params):
         params = {'object':self.model, 'n.trees':self.trees, 'newdata':self.data_frame}
         self.fitted = list(r.Call("predict", **params).AsNumeric())
-        self.array_fitted = np.array(self.fitted, dtype='float')
+        self.array_fitted = np.array(self.fitted, dtype='float').squeeze()
     
         '''try: ncomp = params['ncomp']
         except KeyError:
@@ -321,9 +326,9 @@ class Model(object):
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
         try:
-            non_exceedances = self.array_fitted[np.where(self.array_actual < self.regulatory_threshold)[0]]
+            non_exceedances = self.array_fitted[np.where(self.array_actual <= self.regulatory_threshold)[0]]
             self.threshold = utils.Quantile(non_exceedances, specificity)
-            self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
+            self.specificity = float(sum(non_exceedances <= self.threshold)) / non_exceedances.shape[0]
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
         except ZeroDivisionError:

@@ -109,6 +109,9 @@ class Model(object):
         self.GetActual()
         self.GetFitted()
         self.Threshold(self.specificity)
+        
+        print "adalasso sefl.actual: " + str(self.actual)
+        print "adalasso self.fitted: " + str(self.fitted)
 
         
     def AssignWeights(self, method=0):
