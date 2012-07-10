@@ -19,10 +19,13 @@ function(formula, data, family, weights, max.iter=20, tol=1e-25, s=NULL, verbose
     result[['response']] = response.name
     result[['predictors']] = predictor.names
         
+    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))#, env=as.environment(model.data))
+    result[['adapt']] = adapt = initial_step(formula=f, data=model.data, family=family, weights=weights, verbose=verbose, ...)    
+    
     #Get the initial lasso estimate
     y = as.matrix(model.data[,response.col])
     x = as.matrix(model.data[,-response.col])
-    result[['lasso']] = lasso_step(y=y, x=x, family=family, weights=weights, s=s, verbose=verbose, ...)
+    result[['lasso']] = lasso_step(y=y, x=x, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=adapt, ...)
     
     #prepare for iteration
     iter = 1

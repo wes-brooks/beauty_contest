@@ -36,6 +36,7 @@ def Validate(data, target, method, folds='', **args):
     #Make a model for each fold and validate it.
     results = list()
     for f in folds:
+        print "inner fold: " + str(f)
         model_data = data[fold!=f,:]
         validation_data = data[fold==f,:]
         
@@ -66,18 +67,23 @@ def Validate(data, target, method, folds='', **args):
         non_exceedances = float(sum(exceedance == False))
         exceedances = float(sum(exceedance == True))
         
-        for prediction in predictions:
-            tp = np.where(validation_actual[predictions > prediction] > regulatory)[0].shape[0]
-            fp = np.where(validation_actual[predictions > prediction] <= regulatory)[0].shape[0]
-            tn = np.where(validation_actual[predictions <= prediction] <= regulatory)[0].shape[0]
-            fn = np.where(validation_actual[predictions <= prediction] > regulatory)[0].shape[0]
+        for candidate in candidates:
+            #for prediction in predictions:
+            #tp = np.where(validation_actual[predictions > prediction] > regulatory)[0].shape[0]
+            tp = np.where(validation_actual[predictions > candidate] > regulatory)[0].shape[0]
+            #fp = np.where(validation_actual[predictions > prediction] <= regulatory)[0].shape[0]
+            fp = np.where(validation_actual[predictions > candidate] <= regulatory)[0].shape[0]
+            #tn = np.where(validation_actual[predictions <= prediction] <= regulatory)[0].shape[0]
+            tn = np.where(validation_actual[predictions <= candidate] <= regulatory)[0].shape[0]
+            #fn = np.where(validation_actual[predictions <= prediction] > regulatory)[0].shape[0]
+            fn = np.where(validation_actual[predictions <= candidate] > regulatory)[0].shape[0]
         
             tpos.append(tp)
             fpos.append(fp)
             tneg.append(tn)
             fneg.append(fn)
             
-            try: candidate_threshold = np.max(candidates[np.where(candidates <= prediction)])
+            try: candidate_threshold = candidate #np.max(candidates[np.where(candidates <= prediction)])
             except: candidate_threshold = np.min(candidates)
             
             try: specificity.append(np.where(fitted[actual <= regulatory] <= candidate_threshold)[0].shape[0] / num_candidates)
@@ -86,9 +92,10 @@ def Validate(data, target, method, folds='', **args):
             try: sensitivity.append(np.where(fitted[actual > regulatory] > candidate_threshold)[0].shape[0] / num_exceedances)
             except ZeroDivisionError: sensitivity.append(1)
             
-            #the first candidate threshold that would be below this threshold
-            try: threshold.append(max(fitted[fitted < prediction]))
-            except: threshold.append(max(fitted))
+            #the first candidate threshold that would be below this threshold, or the smallest candidate if none are below.
+            #try: threshold.append(max(fitted[fitted < prediction]))
+            try: threshold.append(candidate)
+            except: threshold.append(min(fitted))
         
         specificity = np.array(specificity)
         sensitivity = np.array(sensitivity)

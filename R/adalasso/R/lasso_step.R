@@ -38,7 +38,7 @@ function(y, x, family, weights, adaptive.object=NULL, s=NULL, verbose=FALSE, ...
     result[['model']] = model = glmnet(x=xs, y=y, family=family, weights=weights, lambda=s, ...)
     
     result[['cv.model']] = cv.model = cv.glmnet(y=y, x=xs, nfolds=dim(x)[1], family=family, weights=weights, ...)
-    result[['lambda']] = lambda = cv.model$lambda.min
+    result[['lambda']] = lambda = cv.model$lambda.1se
     nonzero = as.vector(predict(model, type='nonzero', s=lambda))
     if (verbose) {print(nonzero)}
     

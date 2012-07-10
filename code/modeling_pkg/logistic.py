@@ -216,7 +216,8 @@ class Model(object):
         #Find the optimal decision threshold
         #fitted = np.array(self.model[np.where(np.array(self.model.names)=='fitted.values')[0]])
         self.threshold = utils.Quantile(self.fitted[self.data_dictionary[self.target]==0], specificity)
-
+        try: self.specificity = len(np.where(self.fitted[self.actual<=self.regulatory_threshold] <= self.threshold)[0]) / len(self.fitted[self.actual<=self.regulatory_threshold])
+        except ZeroDivisionError: self.specificity = 1
 
     def Validate(self, data_dictionary):
         predictions = self.Predict(data_dictionary)

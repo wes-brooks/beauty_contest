@@ -6,6 +6,8 @@ adalasso-package        Use the adaptive lasso for shrinkage and
 adaptive_step           The glm step (to get adaptive penalty weights)
                         for adaptive lasso shrinkage and selection in a
                         generalized linear model
+initial_step            The first glm step uses each variable as a
+                        predictor, one at a time.
 lasso_step              The glmnet step (shrinks and selects model
                         coefficients) for adaptive lasso shrinkage and
                         selection in a generalized linear model

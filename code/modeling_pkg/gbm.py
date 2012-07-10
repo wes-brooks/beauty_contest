@@ -94,7 +94,7 @@ class Model(object):
         except KeyError: self.fraction = 0.5   # if there is no 'fraction' key, then use the default 0.5
         
         #shrinkage: learning rate parameter
-        try: self.folds = args['folds']
+        try: self.folds = args['gbm.folds']
         except KeyError: self.folds = 5   # if there is no 'folds' key, then use the default 5-fold CV
 
         #Store some object data

@@ -26,10 +26,11 @@ beaches['hika'] = {'file':'../data/Hika.xlsx', 'target':'logEC', 'remove':['beac
 methods = dict()
 #methods["lasso"] = {'left':0, 'right':3.383743576}
 #methods["PLS"] = {}
-#methods["gbm"] = {'depth':5, 'weights':'float', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001}
+methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':0}
+methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
+#methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
 
 cv_folds = 5
 B = 1
@@ -67,6 +68,7 @@ for beach in beaches.keys():
         validation = dict(zip(methods.keys(), [ValidationCounts() for method in methods]))
         
         for f in range(cv_folds+1)[1:]:
+            print "outer fold: " + str(f)
             #Break this fold into test and training sets.
             training_set = data[np.where(folds!=f),:].squeeze()
             inner_cv = utils.Partition(training_set, cv_folds)
@@ -97,9 +99,8 @@ for beach in beaches.keys():
                 indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i] and thresholding['specificity'][i] > 0.8]
                 if not indx:
                     indx = [i for i in range(len(thresholding['fneg'])) if thresholding['specificity'][i] > 0.8]
-                #indx = np.where(results[0]['fneg'] >= results[0]['fpos'] and results[0]['specificity'] > 0.8)
                 specificity = np.min(np.array(thresholding['specificity'])[indx])
-                
+                                
                 #Predict exceedances on the test set and add them to the results structure.
                 model.Threshold(specificity)
                 predictions = np.array(model.Predict(test_dict)).squeeze()

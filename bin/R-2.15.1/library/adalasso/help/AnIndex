@@ -2,5 +2,6 @@ adalasso-package	adalasso-package
 adalasso	adalasso-package
 adalasso	adalasso
 adaptive_step	adaptive_step
+initial_step	initial_step
 lasso_step	lasso_step
 predict.adalasso	predict.adalasso

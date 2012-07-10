@@ -18,6 +18,16 @@ function(formula, data, left=-Inf, right=Inf) {
     #Make the call to censReg
     wrap[['model']] = censReg(formula=formula, data=model.data, left=left, right=right)
     
+    adaweight = vector()
+    for (name in names(data)[-which(names(data)==response.name)]) {
+        if (name %in% predictor.names) {
+            adaweight = c(adaweight, 1/coefs[[name]])
+        } else {
+            adaweight = c(adaweight, 1)
+        }
+    }
+    wrap[['adaweight']] = adaweight
+    
     #Include some additional data in the wrapped object:
     wrap[['logSigma']] = wrap[['model']]$estimate[['logSigma']]
     wrap[['coef']] = wrap[['model']]$estimate[1:(length(predictor.names)+1)]

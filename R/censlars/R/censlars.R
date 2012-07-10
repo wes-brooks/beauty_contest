@@ -12,14 +12,17 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25) {
         model.data = model.data[-na.rows,]
 
     #Pull out the relevant data
-    response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
-    predictor.names = attr(terms(formula, data=data), 'term.labels')
+    result[['response']] = response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
+    result[['predictors']] = predictor.names = attr(terms(formula, data=data), 'term.labels')
     response.col = which(names(model.data)==response.name)
+        
+    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''), env=as.environment(model.data))
+    result[['censreg']] = cens = initial_step(formula=f, data=model.data, left=left, right=right)
         
     #Get the initial lasso estimate
     y = as.matrix(model.data[,response.col])
     x = as.matrix(model.data[,-response.col])
-    result[['lars']] = lars_step(y=y, x=x)
+    result[['lars']] = lars_step(y=y, x=x, adaptive.object=result[['censreg']])
     
     #prepare for iteration
     iter = 1
@@ -32,7 +35,7 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25) {
     while (iter<=max.iter && change>tol) {
         f = as.formula(paste(paste(response.name, "~", sep=''), paste(result[['lars']][['vars']], collapse='+'), sep=''), env=as.environment(model.data))
         result[['censreg']] = cens = censReg_step(formula=f, data=model.data, left=left, right=right)
-        result[['lars']] = lars_step(y=as.matrix(result[['censreg']][['latent']]), x=as.matrix(model.data[,-response.col]))
+        result[['lars']] = lars_step(y=as.matrix(result[['censreg']][['latent']]), x=as.matrix(model.data[,-response.col]), adaptive.object=result[['censreg']])
         result[['lambda']] = c(result[['lambda']], result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]])
         
         change = abs(lambda.former - tail(result[['lambda']], 1))
