@@ -1,5 +1,5 @@
 censReg_step <-
-function(formula, data, left=-Inf, right=Inf) {
+function(formula, data, left=-Inf, right=Inf, prev.object) {
     #Create the object that will hold the output
     wrap = list()
     wrap[['formula']] = as.formula(formula)
@@ -17,16 +17,21 @@ function(formula, data, left=-Inf, right=Inf) {
     
     #Make the call to censReg
     wrap[['model']] = censReg(formula=formula, data=model.data, left=left, right=right)
+    coefs = coef(wrap[['model']])
     
+    vars = vector()
     adaweight = vector()
     for (name in names(data)[-which(names(data)==response.name)]) {
         if (name %in% predictor.names) {
             adaweight = c(adaweight, 1/coefs[[name]])
         } else {
-            adaweight = c(adaweight, 1)
+            pred.loc = which(prev.object[['predictor.names']]==name)
+            adaweight = c(adaweight, prev.object[['adaweight']][pred.loc])
         }
+        vars = c(vars, name)
     }
     wrap[['adaweight']] = adaweight
+    wrap[['predictor.names']] = vars
     
     #Include some additional data in the wrapped object:
     wrap[['logSigma']] = wrap[['model']]$estimate[['logSigma']]

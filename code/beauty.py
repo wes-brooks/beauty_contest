@@ -24,13 +24,13 @@ beaches = dict()
 beaches['hika'] = {'file':'../data/Hika.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
-#methods["lasso"] = {'left':0, 'right':3.383743576}
+methods["lasso"] = {'left':0, 'right':3.383743576}
 #methods["PLS"] = {}
-methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+#methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
 #methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
+#methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
 
 cv_folds = 5
 B = 1
@@ -42,6 +42,25 @@ now = datetime.datetime.now()
 now = [str(now.year), str(now.month), str(now.day), str(now.hour), str(now.minute), str(now.second)]
 now = ".".join(now)
 
+
+def AreaUnderROC(predictions, actual):
+    #Begin by assuming that we call every observation an exceedance
+    area = 0
+    spec_last = 0
+    sens_last = 1
+    
+    for k in range(len(actual)):
+        sens = float(sum(actual[:k])) / sum(actual)
+        spec = 
+        area = area + (results['specificity'][k] - spec_last) * sens_last
+        sens_last = results['sensitivity'][k]
+        spec_last = results['specificity'][k]
+        
+    return area
+
+
+#What SpecificityChart wants: dict(specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
+    
 for beach in beaches.keys():
     #Read the beach's data.
     datafile = beaches[beach]["file"]
@@ -78,6 +97,9 @@ for beach in beaches.keys():
         folds = utils.Partition(data, cv_folds)
         validation = dict(zip(methods.keys(), [ValidationCounts() for method in methods]))
         
+        boolPred = dict(zip(methods.keys(), [list() for method in methods]))
+        boolTruth = dict(zip(methods.keys(), [list() for method in methods]))
+        
         for f in range(cv_folds+1)[1:]:
             print "outer fold: " + str(f)
             #Break this fold into test and training sets.
@@ -95,7 +117,7 @@ for beach in beaches.keys():
                                                         regulatory_threshold=beaches[beach]['threshold'], headers=headers, **methods[method])
                 model = result[1]
                 results = result[0]
-                thresholding = dict(zip(['specificity', 'tpos', 'tneg', 'fpos', 'fneg'], Interface.Control.SpecificityChart(results)))
+                thresholding = dict(zip(['specificity', 'sensitivity', 'tpos', 'tneg', 'fpos', 'fneg'], Interface.Control.SpecificityChart(results)))
                 
                 #Store the thresholding information.
                 #Open a file to which we will append the output.
@@ -107,15 +129,21 @@ for beach in beaches.keys():
                 out.close()
                 
                 #Set the threshold for predicting the reserved test set
-                indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i] and thresholding['specificity'][i] > 0.8]
-                if not indx:
-                    indx = [i for i in range(len(thresholding['fneg'])) if thresholding['specificity'][i] > 0.8]
+                #indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i] and thresholding['specificity'][i] > 0.8]
+                #if not indx:
+                #    indx = [i for i in range(len(thresholding['fneg'])) if thresholding['specificity'][i] > 0.8]
+                indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i]]
                 specificity = np.min(np.array(thresholding['specificity'])[indx])
                                 
                 #Predict exceedances on the test set and add them to the results structure.
                 model.Threshold(specificity)
                 predictions = np.array(model.Predict(test_dict)).squeeze()
                 truth = np.array(test_dict[beaches[beach]['target']]).squeeze()
+                
+                #These will be used to calculate the area under the ROC curve:
+                order = np.argsort(truth)
+                boolPred[method].extend(list(np.array(predictions > model.threshold, dtype=bool)[order]))
+                boolTruth[method].extend(list(np.array(truth > beaches[beach]['threshold'], dtype=bool)[order]))
                 
                 #Calculate the predictive perfomance for the model
                 tpos = sum((predictions>=model.threshold) & (truth>=beaches[beach]['threshold']))
@@ -139,7 +167,7 @@ for beach in beaches.keys():
                 out.write("# tpos = " + str(tpos) + "\n")
                 out.write("# tneg = " + str(tneg) + "\n")
                 out.write("# fpos = " + str(fpos) + "\n")
-                out.write("# fneg = " + str(fneg) + "\n")
+                out.write("# fneg = " + str(fneg) + "\n")                
                 out.write("# raw predictions:\n")
                 print >> out, predictions
                 out.write("# truth:\n")
@@ -153,6 +181,7 @@ for beach in beaches.keys():
             #Open a file to which we will append the output.
             out = open(output + beach + now + m + '_performance.out', 'a')
             out.write("# fold = overall performance\n")
+            out.write("# Area under ROC curve = " + str(Interface.Control.AreaUnderROC(boolPred[method], boolTruth[method]) + "\n")
             out.write("# tpos = " + str(validation[m].tpos) + "\n")
             out.write("# tneg = " + str(validation[m].tneg) + "\n")
             out.write("# fpos = " + str(validation[m].fpos) + "\n")

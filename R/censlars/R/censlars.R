@@ -34,7 +34,7 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25) {
     #Repeat until convergence
     while (iter<=max.iter && change>tol) {
         f = as.formula(paste(paste(response.name, "~", sep=''), paste(result[['lars']][['vars']], collapse='+'), sep=''), env=as.environment(model.data))
-        result[['censreg']] = cens = censReg_step(formula=f, data=model.data, left=left, right=right)
+        result[['censreg']] = cens = censReg_step(formula=f, data=model.data, left=left, right=right, prev.object=result[['censreg']])
         result[['lars']] = lars_step(y=as.matrix(result[['censreg']][['latent']]), x=as.matrix(model.data[,-response.col]), adaptive.object=result[['censreg']])
         result[['lambda']] = c(result[['lambda']], result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]])
         

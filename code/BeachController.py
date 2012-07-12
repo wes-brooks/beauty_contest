@@ -120,6 +120,7 @@ def SpecificityChart(results):
     specificities = np.unique( np.sort(specificities) )
     
     spec = []
+    sens = []
     tpos = []
     tneg = []
     fpos = []
@@ -133,9 +134,9 @@ def SpecificityChart(results):
         spec.append(specificity)
         
         for fold in results:
-            indx = list(np.where(fold['specificity'] <= specificity)[0])
+            indx = list(np.where(fold['specificity'] >= specificity)[0])
             if indx:
-                indx = indx[ np.argmax(fold['specificity'][indx]) ]
+                indx = indx[ np.argmin(fold['specificity'][indx]) ]
             
                 tpos[-1] += fold['tpos'][indx]
                 fpos[-1] += fold['fpos'][indx]
@@ -144,9 +145,11 @@ def SpecificityChart(results):
             else:
                 tpos[-1] = tpos[-1] + fold['tpos'][0] + fold['fneg'][0] #all exceedances correctly classified
                 fpos[-1] = fpos[-1] + fold['tneg'][0] + fold['fpos'][0] #all non-exceedances incorrectly classified
+                
+        sens.append(float(tpos[-1]) / (tpos[-1] + fneg[-1]))
         
-    return [spec, tpos, tneg, fpos, fneg]
- 
+    return [spec, sens, tpos, tneg, fpos, fneg]
+
     
 def Model(data_dict, target='', **args):
     '''Creates a Model object of the desired class, with the specified parameters.'''

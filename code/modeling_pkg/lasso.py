@@ -137,7 +137,7 @@ class Model(object):
         
     def PredictExceedances(self, data_dictionary, **kwargs):
         prediction = self.PredictValues(data_dictionary)
-        return np.array(prediction >= self.threshold, dtype=int)
+        return np.array(prediction > self.threshold, dtype=int)
         
         
     def PredictExceedanceProbability(self, data_dictionary, **kwargs):
@@ -164,9 +164,9 @@ class Model(object):
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
         try:
-            non_exceedances = self.array_fitted[np.where(self.array_actual < self.regulatory_threshold)[0]]
+            non_exceedances = self.array_fitted[np.where(self.array_actual <= self.regulatory_threshold)[0]]
             self.threshold = utils.Quantile(non_exceedances, specificity)
-            self.specificity = float(sum(non_exceedances < self.threshold))/non_exceedances.shape[0]
+            self.specificity = float(sum(non_exceedances <= self.threshold))/non_exceedances.shape[0]
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
         except ZeroDivisionError:
@@ -227,11 +227,11 @@ class Model(object):
         f_neg = 0
         
         for obs in range( len(self.fitted) ):
-            if self.fitted[obs] >= self.threshold:
-                if self.actual[obs] >= 2.3711: t_pos += 1
+            if self.fitted[obs] > self.threshold:
+                if self.actual[obs] > self.regulatory_threshold: t_pos += 1
                 else: f_pos += 1
             else:
-                if self.actual[obs] >= 2.3711: f_neg += 1
+                if self.actual[obs] > self.regulatory_threshold: f_neg += 1
                 else: t_neg += 1
         
         return [t_pos, t_neg, f_pos, f_neg]
