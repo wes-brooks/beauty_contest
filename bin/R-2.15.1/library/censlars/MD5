@@ -1,13 +1,13 @@
-d5b758439c278c8434d445325662bcf4 *DESCRIPTION
+f2c96cda57c2477a90edad841a88ca54 *DESCRIPTION
 dd6cef1fead2f1478212ec5966ae2f98 *INDEX
 c994c3db89c2b1259718e18155b84288 *Meta/Rd.rds
 2953542d75cf01de8090ae2ca00d1036 *Meta/hsearch.rds
 5bd1df1cd3750546d738e2354df117d0 *Meta/links.rds
-0c7516c574b38305961c657f9aa44b32 *Meta/package.rds
+4a01ee58042788eecf687264e36ba6d6 *Meta/package.rds
 70a2a8bf03fff8fdaf2f64975e92289f *NAMESPACE
 240d28d145138a75831809e31a480bad *R/censlars
-2e682ccdf854ac5ab5d2a7af728dd8f9 *R/censlars.rdb
-d1e2e31ce708168aee512a799f014bdb *R/censlars.rdx
+fd50d1bd4041ba6ab14d73c580c7b3cb *R/censlars.rdb
+05083eafba2048541f554f403807ba9d *R/censlars.rdx
 6ddb98db50448efade04fc41b51c47f6 *help/AnIndex
 8dec960a2e6312687d2f076f5114d6b1 *help/aliases.rds
 12433d0e81700935eb234a0af441316e *help/censlars.rdb

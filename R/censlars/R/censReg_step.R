@@ -24,6 +24,8 @@ function(formula, data, left=-Inf, right=Inf, prev.object) {
     for (name in names(data)[-which(names(data)==response.name)]) {
         if (name %in% predictor.names) {
             adaweight = c(adaweight, 1/coefs[[name]])
+        } else if (is.null(prev.object)) {
+            adaweight = c(adaweight, 1)
         } else {
             pred.loc = which(prev.object[['predictor.names']]==name)
             adaweight = c(adaweight, prev.object[['adaweight']][pred.loc])

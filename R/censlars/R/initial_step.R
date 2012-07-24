@@ -17,7 +17,7 @@ initial_step <- function(formula, data, family, weights, verbose=FALSE, left, ri
     coefs = list()
     for (predictor in names(data)[-which(names(data)==response.name)]) {
         f = as.formula(paste(eval(response.name), "~", eval(predictor), sep=""))
-        result[['model']] = model = censReg(formula=f, data=data, left=left, right=right)
+        result[['model']] = model = lm(formula=f, data=data)
         coefs[[predictor]] = coef(model)[[predictor]]
         adaweight = c(adaweight, abs(1/coefs[[predictor]]))
         predictor.names = c(predictor.names, predictor)

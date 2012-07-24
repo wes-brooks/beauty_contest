@@ -24,6 +24,8 @@ class Model(object):
         self.weights = model_struct['weights']
         self.s = model_struct['s']
         self.formula = model_struct['formula']
+        self.adapt = model_struct['adapt']
+        self.overshrink = model_struct['overshrink']
         
         #Get the data into R 
         self.nobs = len(self.data_dictionary[self.target])
@@ -37,7 +39,9 @@ class Model(object):
             'data' : self.data_frame, \
             'weights' : self.weights, \
             's' : self.s, \
-            'verbose' : True }
+            'verbose' : True, \
+            'adapt' : self.adapt, \
+            'overshrink' : self.overshrink}
         self.model = r.Call(function='adalasso', **self.logistic_params).AsList()
 
         #Use cross-validation to find the best number of components in the model.
@@ -63,7 +67,13 @@ class Model(object):
         
         #Set the direction for stepwise variable selection
         try: self.s = s = args['lambda']
-        except KeyError: self.s = s = ''    
+        except KeyError: self.s = s = ''   
+
+        try: self.adapt = args['adapt']
+        except KeyError: self.adapt = False
+
+        try: self.overshrink = args['overshrink']
+        except KeyError: self.overshrink = False           
         
         #Get the data into R
         data = args['data']
@@ -102,7 +112,9 @@ class Model(object):
             'data' : self.data_frame, \
             'weights' : self.weights, \
             's' : self.s, \
-            'verbose' : True }
+            'verbose' : True, \
+            'adapt' : self.adapt, \
+            'overshrink' : self.overshrink}
         self.model = r.Call(function='adalasso', **self.logistic_params).AsList()
         
         #Select model components and a decision threshold
@@ -130,6 +142,7 @@ class Model(object):
                 
                 #now find all the observations that meet both criteria simultaneously
                 rows = filter( lambda x: x in first_slice, second_slice )
+                rows = [int(r) for r in rows]
                 
                 #Decide how many times to replicate each slice of data
                 if i<0:
@@ -137,7 +150,7 @@ class Model(object):
                 else:
                     replicates = i
                     
-                weights[rows] = replicates + 1
+                if rows: weights[rows] = replicates + 1
                 
         #Continuous weighting: weight is the observation's distance (in standard deviations) from the threshold.      
         elif method == 2:
@@ -292,7 +305,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'logistic'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', 's', 'formula']
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', 's', 'formula', 'adapt', 'overshrink']
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

@@ -26,6 +26,8 @@ class Model(object):
         self.specificity = model_struct['specificity']
         self.left = model_struct['left']
         self.right = model_struct['right']
+        self.adapt = model_struct['adapt']
+        self.overshrink = model_struct['overshrink']
         
         #Get the data into R 
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
@@ -37,7 +39,9 @@ class Model(object):
         self.pls_params = {'formula' : self.formula, \
             'data' : self.data_frame, \
             'left' : self.left, \
-            'right' : self.right }
+            'right' : self.right, \
+            'adapt' : self.adapt, \
+            'overshrink' : self.overshrink}
         self.model = r.Call(function='censlars', **self.pls_params).AsList()
                             
         #Get some information out of the model.
@@ -64,6 +68,12 @@ class Model(object):
         if 'right' in args: self.right=args['right']
         else: self.right=np.inf
         
+        if 'adapt' in args: self.adapt=args['adapt']
+        else: self.adapt=False
+        
+        if 'overshrink' in args: self.overshrink=args['overshrink']
+        else: self.overshrink=False
+        
         if 'specificity' in args: specificity=args['specificity']
         else: specificity=0.9
         
@@ -78,7 +88,9 @@ class Model(object):
         self.pls_params = {'formula' : self.formula, \
             'data' : self.data_frame, \
             'left' : self.left, \
-            'right' : self.right }
+            'right' : self.right, \
+            'adapt' : self.adapt, \
+            'overshrink' : self.overshrink}
         self.model = r.Call(function='censlars', **self.pls_params).AsList()
                 
         #Get some information out of the model
@@ -240,7 +252,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'lasso'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", "left", "right"]
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", "left", "right", "adapt", "overshrink"]
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

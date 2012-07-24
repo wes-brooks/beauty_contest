@@ -6,6 +6,7 @@ import VBTools
 import utils
 import numpy as np
 import datetime
+import copy
 
 class ValidationCounts(object):
     def __init__(self):
@@ -24,13 +25,13 @@ beaches = dict()
 beaches['hika'] = {'file':'../data/Hika.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
-methods["lasso"] = {'left':0, 'right':3.383743576}
+#methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':False, 'overshrink':True}
 #methods["PLS"] = {}
 #methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
 #methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-#methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001}
+methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001, 'adapt':True, 'overshrink':True}
 
 cv_folds = 5
 B = 1
@@ -43,18 +44,85 @@ now = [str(now.year), str(now.month), str(now.day), str(now.hour), str(now.minut
 now = ".".join(now)
 
 
-def AreaUnderROC(predictions, actual):
+def AreaUnderROC(raw):
+    threshold = raw['threshold']
+    
+    tp = []
+    tn = []
+    fp = []
+    fn = []
+    sp = []
+    
+    for fold in range(len(raw['train'])):
+        tpos = []
+        tneg = []
+        fpos = []
+        fneg = []
+        spec = []
+        
+        training_exc = np.array(raw['train'][fold] > threshold, dtype=bool)
+        training_nonexc = np.array(raw['train'][fold] <= threshold, dtype=bool)
+        thresholds = raw['fitted'][fold][training_nonexc]
+        order = np.argsort(thresholds)
+        
+        for i in range(len(order)):
+            k = order[i]
+            test_exc = len(raw['validate'][fold] > thresholds[k])
+            train_exc = len(raw['train'][fold] > thresholds[k])
+            test_flag = len(raw['predicted'][fold] > thresholds[k])
+            train_flag = len(raw['fitted'][fold] > thresholds[k])
+            
+            spec.append(float(i+1)/len(thresholds))
+            tpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] > threshold)[0].shape[0])
+            tneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] <= threshold)[0].shape[0])
+            fpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] <= threshold)[0].shape[0])
+            fneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] > threshold)[0].shape[0])
+        
+        tp.append(tpos)
+        tn.append(tneg)
+        fp.append(fpos)
+        fn.append(fneg)
+        sp.append(np.array(spec, dtype=float))
+    
+    specs = []
+    [specs.extend(s) for s in sp]
+    specs = np.sort(np.unique(specs))
+    
+    tpos = []
+    tneg = []
+    fpos = []
+    fneg = []
+    spec = []
+    
+    folds = len(tp)
+    
+    for s in specs:
+        tpos.append(0)
+        tneg.append(0)
+        fpos.append(0)
+        fneg.append(0)
+        spec.append(s)
+        
+        for f in range(folds):
+            indx = list(np.where(sp[f] >= s)[0])
+            indx = indx[np.argmin(sp[f][indx])]
+            
+            tpos[-1] += tp[f][indx]
+            tneg[-1] += tn[f][indx]
+            fpos[-1] += fp[f][indx]
+            fneg[-1] += fn[f][indx]
+            
     #Begin by assuming that we call every observation an exceedance
     area = 0
     spec_last = 0
     sens_last = 1
     
-    for k in range(len(actual)):
-        sens = float(sum(actual[:k])) / sum(actual)
-        spec = 
-        area = area + (results['specificity'][k] - spec_last) * sens_last
-        sens_last = results['sensitivity'][k]
-        spec_last = results['specificity'][k]
+    for k in range(len(specs)):
+        sens = float(tpos[k]) / (tpos[k] + fneg[k])
+        sp = float(tneg[k]) / (tneg[k] + fpos[k])
+        area = area + (sp - spec_last) * sens_last
+        sens_last = copy.copy(sens)
+        spec_last = copy.copy(sp)
         
     return area
 
@@ -97,8 +165,7 @@ for beach in beaches.keys():
         folds = utils.Partition(data, cv_folds)
         validation = dict(zip(methods.keys(), [ValidationCounts() for method in methods]))
         
-        boolPred = dict(zip(methods.keys(), [list() for method in methods]))
-        boolTruth = dict(zip(methods.keys(), [list() for method in methods]))
+        ROC = dict(zip(methods.keys(), [{'train':[], 'fitted':[], 'validate':[], 'predicted':[], 'threshold':beaches[beach]['threshold']} for method in methods]))
         
         for f in range(cv_folds+1)[1:]:
             print "outer fold: " + str(f)
@@ -132,9 +199,10 @@ for beach in beaches.keys():
                 #indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i] and thresholding['specificity'][i] > 0.8]
                 #if not indx:
                 #    indx = [i for i in range(len(thresholding['fneg'])) if thresholding['specificity'][i] > 0.8]
-                indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i]]
-                specificity = np.min(np.array(thresholding['specificity'])[indx])
-                                
+                indx = [int(i) for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i]]
+                if not indx: specificity = 0.9
+                else: specificity = np.min(np.array(thresholding['specificity'])[indx])
+                
                 #Predict exceedances on the test set and add them to the results structure.
                 model.Threshold(specificity)
                 predictions = np.array(model.Predict(test_dict)).squeeze()
@@ -142,14 +210,16 @@ for beach in beaches.keys():
                 
                 #These will be used to calculate the area under the ROC curve:
                 order = np.argsort(truth)
-                boolPred[method].extend(list(np.array(predictions > model.threshold, dtype=bool)[order]))
-                boolTruth[method].extend(list(np.array(truth > beaches[beach]['threshold'], dtype=bool)[order]))
+                ROC[method]['validate'].append(truth)
+                ROC[method]['predicted'].append(predictions)
+                ROC[method]['train'].append(model.actual)
+                ROC[method]['fitted'].append(model.fitted)
                 
                 #Calculate the predictive perfomance for the model
-                tpos = sum((predictions>=model.threshold) & (truth>=beaches[beach]['threshold']))
-                tneg = sum((predictions<model.threshold) & (truth<beaches[beach]['threshold']))
-                fpos = sum((predictions>=model.threshold) & (truth<beaches[beach]['threshold']))
-                fneg = sum((predictions<model.threshold) & (truth>=beaches[beach]['threshold']))
+                tpos = sum((predictions>model.threshold) & (truth>beaches[beach]['threshold']))
+                tneg = sum((predictions<=model.threshold) & (truth<=beaches[beach]['threshold']))
+                fpos = sum((predictions>model.threshold) & (truth<=beaches[beach]['threshold']))
+                fneg = sum((predictions<=model.threshold) & (truth>beaches[beach]['threshold']))
                 
                 #Add predictive performance stats to the aggregate.
                 validation[method].tpos = validation[method].tpos + tpos
@@ -181,7 +251,7 @@ for beach in beaches.keys():
             #Open a file to which we will append the output.
             out = open(output + beach + now + m + '_performance.out', 'a')
             out.write("# fold = overall performance\n")
-            out.write("# Area under ROC curve = " + str(Interface.Control.AreaUnderROC(boolPred[method], boolTruth[method]) + "\n")
+            out.write("# Area under ROC curve = " + str(AreaUnderROC(ROC[method])) + "\n")
             out.write("# tpos = " + str(validation[m].tpos) + "\n")
             out.write("# tneg = " + str(validation[m].tneg) + "\n")
             out.write("# fpos = " + str(validation[m].fpos) + "\n")

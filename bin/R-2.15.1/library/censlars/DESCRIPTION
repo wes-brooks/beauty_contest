@@ -9,4 +9,4 @@ Description: Iterate between censReg and lars to find a shrunk-and-selected line
 Depends: lars, censReg
 License: GPL-3
 LazyLoad: yes
-Built: R 2.15.1; ; 2012-07-11 23:23:53 UTC; windows
+Built: R 2.15.1; ; 2012-07-23 19:34:43 UTC; windows

@@ -1,5 +1,5 @@
 censlars <-
-function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25) {
+function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25, adapt=TRUE, overshrink=TRUE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "censlars"
@@ -17,25 +17,31 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25) {
     response.col = which(names(model.data)==response.name)
         
     f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''), env=as.environment(model.data))
-    result[['censreg']] = cens = initial_step(formula=f, data=model.data, left=left, right=right)
+    if (adapt) {
+        result[['censreg']] = cens = initial_step(formula=f, data=model.data, left=left, right=right)
+    } else {
+        result[['censreg']] = NULL
+    }
         
     #Get the initial lasso estimate
     y = as.matrix(model.data[,response.col])
     x = as.matrix(model.data[,-response.col])
-    result[['lars']] = lars_step(y=y, x=x, adaptive.object=result[['censreg']])
+    result[['lars']] = lars_step(y=y, x=x, adaptive.object=result[['censreg']], overshrink=FALSE, adapt=FALSE)
     
     #prepare for iteration
     iter = 1
     change = tol+1
     lambda.former = result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]]
-    result[['lambda']] = c(lambda.former)
-    
+    result[['lambda']] = c(lambda.former)    
     
     #Repeat until convergence
     while (iter<=max.iter && change>tol) {
+        #Use censReg to impute the logEC
         f = as.formula(paste(paste(response.name, "~", sep=''), paste(result[['lars']][['vars']], collapse='+'), sep=''), env=as.environment(model.data))
         result[['censreg']] = cens = censReg_step(formula=f, data=model.data, left=left, right=right, prev.object=result[['censreg']])
-        result[['lars']] = lars_step(y=as.matrix(result[['censreg']][['latent']]), x=as.matrix(model.data[,-response.col]), adaptive.object=result[['censreg']])
+        
+        #Now fit the LARS model
+        result[['lars']] = lars_step(y=as.matrix(result[['censreg']][['latent']]), x=as.matrix(model.data[,-response.col]), adaptive.object=result[['censreg']], overshrink=overshrink, adapt=adapt)
         result[['lambda']] = c(result[['lambda']], result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]])
         
         change = abs(lambda.former - tail(result[['lambda']], 1))
