@@ -1,49 +1,56 @@
 lasso_step <-
-function(y, x, family, weights, adaptive.object=NULL, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, ...) {
+function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, ...) {
     result = list()
+    
+    #Pull out the relevant data
+    response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
+    response.col = which(names(data)==response.name)
+    predictor.names = attr(terms(formula, data=data), 'term.labels')
+    
+    y = as.matrix(data[,response.col])
+    x = as.matrix(data[,-response.col])
     
     m <- ncol(x)
     n <- nrow(x)
     
-    if (adapt==TRUE) {
-        one <- rep(1, n)
-        result[['meanx']] = meanx <- drop(one %*% x)/n
-        x.centered <- scale(x, meanx, FALSE)         # first subtracts mean
-        normx <- sqrt(drop(one %*% (x.centered^2)))
-        names(normx) <- NULL
-        xs = x.centered
-        for (k in 1:dim(x.centered)[2]) {
-            if (normx[k]!=0) {
-                xs[,k] = xs[,k] / normx[k]
-            } else {
-                xs[,k] = rep(0, dim(xs)[1])
-                normx[k] = Inf #This should allow the lambda-finding step to work.
-            }
-        }
+    #Set up the lists to hold the adaptive elements:
+    result[['meanx']] = list()
+    result[['coef.scale']] = list()
+    xs = x
+    
+    for (predictor in predictor.names) {
+        #Center the appropriate column of the design matrix
+        k = which(names(data)[-which(names(data)==response.name)] == predictor)
         
-        if (is.null(adaptive.object)) { 
-            #Use the glmnet algorithm to fit the model
-            result[['coef.scale']] = coef.scale = 1/normx
-        } else {  
-            ada.weight = adaptive.object[['adaweight']]                      # weights for adaptive lasso
-            for (k in 1:dim(x.centered)[2]) {
-                if (!is.na(ada.weight[k])) {
-                    xs[,k] = xs[,k] * ada.weight[k]
-                } else {
-                    xs[,k] = rep(0, dim(xs)[1])
-                    ada.weight[k] = 0 #This should allow the lambda-finding step to work.
-                }
+        if (adapt==TRUE) {
+            #We will center each column of this matrix:
+            result[['meanx']][[predictor]] = mean(data[[predictor]])
+            xs[,k] = xs[,k] - result[['meanx']][[predictor]]
+            
+            #Scale the column for unit norm
+            result[['normx']][[predictor]] <- sqrt(sum(xs[,k]^2))
+            
+            if (result[['normx']][[predictor]] == 0) {
+                result[['normx']][[predictor]] = Inf #This should allow the lambda-finding step to work.
             }
-            result[['coef.scale']] = coef.scale = ada.weight/normx 
-        }    
-    } else {
-        result[['meanx']] = rep(0, m)
-        result[['coef.scale']] = rep(1, m)
-        xs = x
+                
+            if (is.null(adaptive.object)) { 
+                result[['coef.scale']][[predictor]] = 1 / result[['normx']][[predictor]]
+            } else {  
+                if (is.na(adaptive.object[['adaweight']][[predictor]])) {
+                    adaptive.object[['adaweight']][[predictor]] = 0 #This should allow the lambda-finding step to work.
+                }
+                result[['coef.scale']][[predictor]] = adaptive.object[['adaweight']][[predictor]] / result[['normx']][[predictor]]
+            }
+            xs[,k] = xs[,k] * result[['coef.scale']][[predictor]]
+        } else {
+            result[['meanx']][[predictor]] = 0
+            result[['coef.scale']][[predictor]] = 1
+        }
     }
     
     result[['model']] = model = glmnet(x=xs, y=y, family=family, weights=weights, lambda=s, ...)
-    result[['cv.model']] = cv.model = cv.glmnet(y=y, x=xs, nfolds=n, family=family, weights=weights, lambda=s, ...)
+    result[['cv']] = cv.model = cv.glmnet(y=y, x=xs, nfolds=n, family=family, weights=weights, lambda=s, ...)
     
     if (overshrink==TRUE) {
         result[['lambda']] = lambda = cv.model$lambda.1se

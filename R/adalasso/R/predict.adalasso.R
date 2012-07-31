@@ -7,6 +7,10 @@ function(object, newx, ...) {
         pred.data = pred.data[,-response.col]
     }
     
-    pred.data = scale(pred.data, center=object[['lasso']][['meanx']], scale=1/object[['lasso']][['coef.scale']])
+    for (predictor in names(object[['lasso']][['coef.scale']])) {
+        k = which(names(pred.data) == predictor)
+        pred.data[,k] = (pred.data[,k] - object[['lasso']][['meanx']][[predictor]]) * object[['lasso']][['coef.scale']][[predictor]]
+    }
+    
     return(predict(object[['lasso']][['model']], newx=pred.data, ...))
 }

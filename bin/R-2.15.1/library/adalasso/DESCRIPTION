@@ -8,4 +8,4 @@ Depends: R (>= 2.15.0), glmnet (>= 1.7.4)
 Maintainer: Wesley Brooks <brooks.wesley@gmail.com>
 Description: Use the adaptive lasso for shrinkage and selection in a Generalized Linear Model, including when when p > n.
 License: GPL-3
-Built: R 2.15.1; ; 2012-07-23 21:02:19 UTC; windows
+Built: R 2.15.1; ; 2012-07-31 18:23:57 UTC; windows

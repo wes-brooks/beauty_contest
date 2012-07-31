@@ -5,6 +5,7 @@ function(formula, data, family, weights, verbose=FALSE, ...) {
     
     #Pull out the relevant data
     response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
+    response.col = which(names(data)==response.name)
     predictor.names = attr(terms(formula, data=data), 'term.labels')
     
     #Drop any rows with NA values

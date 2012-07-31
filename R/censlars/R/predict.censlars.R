@@ -1,12 +1,16 @@
 predict.censlars <- 
 function(object, newx, ...) {
+    pred.data = as.matrix(newx)    
+    
     if (object[['response']] %in% names(newx)) {
         response.col = which(names(newx) == object[['response']])
-        pred.data = newx[,-response.col]
-    } else {
-        pred.data = newx
+        pred.data = pred.data[,-response.col]
     }
     
-    pred.data = scale(pred.data, center=object[['lars']][['meanx']], scale=1/object[['lars']][['coef.scale']])
+    for (predictor in names(object[['lars']][['coef.scale']])) {
+        k = which(names(pred.data) == predictor)
+        pred.data[,k] = (pred.data[,k] - object[['lars']][['meanx']][[predictor]]) * object[['lars']][['coef.scale']][[predictor]]
+    }
+
     return(predict(object[['lars']][['model']], newx=pred.data, s=tail(object[['lambda']],1), mode='lambda', type='fit')[['fit']])
 }

@@ -22,7 +22,7 @@ class Model(object):
         self.target = model_struct['target']
         self.specificity = model_struct['specificity']
         self.weights = model_struct['weights']
-        self.s = model_struct['s']
+        #self.s = model_struct['s']
         self.formula = model_struct['formula']
         self.adapt = model_struct['adapt']
         self.overshrink = model_struct['overshrink']
@@ -38,7 +38,7 @@ class Model(object):
             'family' : 'binomial', \
             'data' : self.data_frame, \
             'weights' : self.weights, \
-            's' : self.s, \
+            #'s' : self.s, \
             'verbose' : True, \
             'adapt' : self.adapt, \
             'overshrink' : self.overshrink}
@@ -66,8 +66,8 @@ class Model(object):
         except KeyError: self.specificity = 0.9
         
         #Set the direction for stepwise variable selection
-        try: self.s = s = args['lambda']
-        except KeyError: self.s = s = ''   
+        #try: self.s = s = args['lambda']
+        #except KeyError: self.s = s = ''   
 
         try: self.adapt = args['adapt']
         except KeyError: self.adapt = False
@@ -111,7 +111,7 @@ class Model(object):
             'family' : 'binomial', \
             'data' : self.data_frame, \
             'weights' : self.weights, \
-            's' : self.s, \
+            #'s' : self.s, \
             'verbose' : True, \
             'adapt' : self.adapt, \
             'overshrink' : self.overshrink}
@@ -305,7 +305,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'logistic'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', 's', 'formula', 'adapt', 'overshrink']
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', 'formula', 'adapt', 'overshrink']
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

@@ -1,8 +1,8 @@
 censReg_step <-
 function(formula, data, left=-Inf, right=Inf, prev.object) {
     #Create the object that will hold the output
-    wrap = list()
-    wrap[['formula']] = as.formula(formula)
+    result = list()
+    result[['formula']] = as.formula(formula)
     
     #Pull out the relevant data
     response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
@@ -10,39 +10,29 @@ function(formula, data, left=-Inf, right=Inf, prev.object) {
     
     #Drop any rows with NA values
     model.data = data[,c(response.name, predictor.names)]
-    na.rows = (which(is.na(model.data))-1) %% dim(model.data)[1] + 1
-    if (length(na.rows)>0)
-        model.data = model.data[-na.rows,]
-    wrap[['data']] = model.data
     
     #Make the call to censReg
-    wrap[['model']] = censReg(formula=formula, data=model.data, left=left, right=right)
-    coefs = coef(wrap[['model']])
+    result[['model']] = censReg(formula=formula, data=model.data, left=left, right=right)
+    coefs = coef(result[['model']])
     
-    vars = vector()
-    adaweight = vector()
-    for (name in names(data)[-which(names(data)==response.name)]) {
-        if (name %in% predictor.names) {
-            adaweight = c(adaweight, 1/coefs[[name]])
-        } else if (is.null(prev.object)) {
-            adaweight = c(adaweight, 1)
+    adaweight = list()
+    for (predictor in names(data)[-which(names(data)==response.name)]) {
+        if (predictor %in% predictor.names) {
+            adaweight[[predictor]] = 1 / coefs[[predictor]]
         } else {
-            pred.loc = which(prev.object[['predictor.names']]==name)
-            adaweight = c(adaweight, prev.object[['adaweight']][pred.loc])
+            adaweight[[predictor]] = prev.object[['adaweight']][[predictor]]
         }
-        vars = c(vars, name)
     }
-    wrap[['adaweight']] = adaweight
-    wrap[['predictor.names']] = vars
+    result[['adaweight']] = adaweight
     
     #Include some additional data in the wrapped object:
-    wrap[['logSigma']] = wrap[['model']]$estimate[['logSigma']]
-    wrap[['coef']] = wrap[['model']]$estimate[1:(length(predictor.names)+1)]
-    wrap[['x']] = as.matrix(cbind(rep(1,dim(model.data)[1]), model.data[,-1]))
-    wrap[['actual']] = model.data[,response.name]
-    wrap[['fitted']] = wrap[['x']] %*% as.matrix(wrap[['coef']])
-    wrap[['latent']] = sapply(1:length(wrap[['actual']]), function(x) {ifelse(wrap[['actual']][x]<=left, min(wrap[['fitted']][x], left), ifelse(wrap[['actual']][x]>=right, max(wrap[['fitted']][x], right), wrap[['actual']][x]))})
+    result[['logSigma']] = result[['model']]$estimate[['logSigma']]
+    result[['coef']] = result[['model']]$estimate[1:(length(predictor.names)+1)]
+    result[['x']] = as.matrix(cbind(rep(1,dim(model.data)[1]), model.data[,-1]))
+    result[['actual']] = model.data[,response.name]
+    result[['fitted']] = result[['x']] %*% as.matrix(result[['coef']])
+    result[['latent']] = sapply(1:length(result[['actual']]), function(x) {ifelse(result[['actual']][x]<=left, min(result[['fitted']][x], left), ifelse(result[['actual']][x]>=right, max(result[['fitted']][x], right), result[['actual']][x]))})
     
-    return(wrap)
+    return(result)
 }
 

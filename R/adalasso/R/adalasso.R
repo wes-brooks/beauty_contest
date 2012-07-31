@@ -6,35 +6,35 @@ function(formula, data, family, weights, max.iter=20, tol=1e-25, s=NULL, verbose
     result[['formula']] = as.formula(formula, env=data)
     
     #Drop any rows with NA values
-    model.data = data
-    na.rows = (which(is.na(model.data))-1) %% dim(model.data)[1] + 1
+    data = data
+    na.rows = (which(is.na(data))-1) %% dim(data)[1] + 1
     if (length(na.rows)>0)
-        model.data = model.data[-na.rows,]
+        data = data[-na.rows,]
+    result[['data']] = data
 
     #Pull out the relevant data
     response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
     predictor.names = attr(terms(formula, data=data), 'term.labels')
-    response.col = which(names(model.data)==response.name)
+    response.col = which(names(data)==response.name)
     
     result[['response']] = response.name
     result[['predictors']] = predictor.names
     
-    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))#, env=as.environment(model.data))
+    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))#, env=as.environment(data))
     if (adapt) {
-        result[['adapt']] = adapt = initial_step(formula=f, data=model.data, family=family, weights=weights, verbose=verbose, ...)
+        result[['adapt']] = initial_step(formula=f, data=data, family=family, weights=weights, verbose=verbose, ...)
     } else {
         result[['adapt']] = NULL
-    } 
+    }
     
-    #Get the initial lasso estimate
-    y = as.matrix(model.data[,response.col])
-    x = as.matrix(model.data[,-response.col])
-    result[['lasso']] = lasso_step(y=y, x=x, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=adapt, adapt=FALSE, overshrink=FALSE, ...)
+    #Get the adaptive lasso estimate
+    y = as.matrix(data[,response.col])
+    x = as.matrix(data[,-response.col])
+    result[['lasso']] = lasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, overshrink=overshrink, ...)
     result[['lambda']] = result[['lasso']][['lambda']]
     
-    result[['fitted.values']] = predict(result, newx=as.matrix(model.data[,-response.col]), s=tail(result[['lambda']], 1), type="response")
-    #result[['actual']] = result[['adapt']][['data']][[response.name]]
-    result[['actual']] = as.vector(model.data[,response.name])
+    result[['fitted.values']] = predict(result, newx=as.matrix(data[,-response.col]), s=result[['lambda']], type="response")
+    result[['actual']] = as.vector(data[,response.name])
     result[['residuals']] = result[['actual']] - result[['fitted.values']]
     
     return(result)

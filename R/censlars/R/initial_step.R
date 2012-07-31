@@ -4,28 +4,21 @@ initial_step <- function(formula, data, family, weights, verbose=FALSE, left, ri
     
     #Pull out the relevant data
     response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
+    response.col = which(names(data)==response.name)
+    predictor.names = attr(terms(formula, data=data), 'term.labels')
     
-    #Drop any rows with NA values
-    na.rows = (which(is.na(data))-1) %% dim(data)[1] + 1
-    if (length(na.rows)>0)
-        data = data[-na.rows,]
-    result[['data']] = data
-    
-    #Make the calls to glm
-    adaweight = vector()
-    predictor.names = vector()
+    #Make the calls to lm
+    adaweight = list()
     coefs = list()
     for (predictor in names(data)[-which(names(data)==response.name)]) {
         f = as.formula(paste(eval(response.name), "~", eval(predictor), sep=""))
-        result[['model']] = model = lm(formula=f, data=data)
+        model = lm(formula=f, data=data)
         coefs[[predictor]] = coef(model)[[predictor]]
-        adaweight = c(adaweight, abs(1/coefs[[predictor]]))
-        predictor.names = c(predictor.names, predictor)
+        adaweight[[predictor]] = abs(1/coefs[[predictor]])
     }
     
     result[['coefs']] = coefs
-    result[['adaweight']] = adaweight   
-    result[['predictor.names']] = predictor.names
+    result[['adaweight']] = adaweight
     
     return(result)
 }

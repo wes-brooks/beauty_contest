@@ -23,15 +23,16 @@ beaches = dict()
 #beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
 beaches['hika'] = {'file':'../data/Hika.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['huntington'] = {'file':'../data/HuntingtonBeach.csv', 'target':'logecoli', 'remove':[], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
-#methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':False, 'overshrink':True}
+methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True}
 #methods["PLS"] = {}
 #methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
 #methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-methods['adalasso'] = {'weights':'discrete', 'lambda':np.arange(5000.)/1000 + 0.001, 'adapt':True, 'overshrink':True}
+#methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
 
 cv_folds = 5
 B = 1
@@ -126,6 +127,80 @@ def AreaUnderROC(raw):
         
     return area
 
+    
+def OutputROC(raw):
+    threshold = raw['threshold']
+    
+    tp = []
+    tn = []
+    fp = []
+    fn = []
+    sp = []
+    
+    for fold in range(len(raw['train'])):
+        tpos = []
+        tneg = []
+        fpos = []
+        fneg = []
+        spec = []
+        
+        training_exc = np.array(raw['train'][fold] > threshold, dtype=bool)
+        training_nonexc = np.array(raw['train'][fold] <= threshold, dtype=bool)
+        thresholds = raw['fitted'][fold][training_nonexc]
+        order = np.argsort(thresholds)
+        
+        for i in range(len(order)):
+            k = order[i]
+            test_exc = len(raw['validate'][fold] > thresholds[k])
+            train_exc = len(raw['train'][fold] > thresholds[k])
+            test_flag = len(raw['predicted'][fold] > thresholds[k])
+            train_flag = len(raw['fitted'][fold] > thresholds[k])
+            
+            spec.append(float(i+1)/len(thresholds))
+            tpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] > threshold)[0].shape[0])
+            tneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] <= threshold)[0].shape[0])
+            fpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] <= threshold)[0].shape[0])
+            fneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] > threshold)[0].shape[0])
+        
+        tp.append(tpos)
+        tn.append(tneg)
+        fp.append(fpos)
+        fn.append(fneg)
+        sp.append(np.array(spec, dtype=float))
+    
+    specs = []
+    [specs.extend(s) for s in sp]
+    specs = np.sort(np.unique(specs))
+    
+    tpos = []
+    tneg = []
+    fpos = []
+    fneg = []
+    spec = []
+    
+    folds = len(tp)
+    
+    for s in specs:
+        tpos.append(0)
+        tneg.append(0)
+        fpos.append(0)
+        fneg.append(0)
+        spec.append(s)
+        
+        for f in range(folds):
+            indx = list(np.where(sp[f] >= s)[0])
+            indx = indx[np.argmin(sp[f][indx])]
+            
+            tpos[-1] += tp[f][indx]
+            tneg[-1] += tn[f][indx]
+            fpos[-1] += fp[f][indx]
+            fneg[-1] += fn[f][indx]
+            
+    result = np.array([spec, tpos, tneg, fpos, fneg], dtype=float)
+    outfile = "../output/ROC.csv"
+    np.savetxt(outfile, result.T, delimiter=",")
+    
+    
 
 #What SpecificityChart wants: dict(specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
     
@@ -212,8 +287,8 @@ for beach in beaches.keys():
                 order = np.argsort(truth)
                 ROC[method]['validate'].append(truth)
                 ROC[method]['predicted'].append(predictions)
-                ROC[method]['train'].append(model.actual)
-                ROC[method]['fitted'].append(model.fitted)
+                ROC[method]['train'].append(np.array(model.actual).squeeze())
+                ROC[method]['fitted'].append(np.array(model.fitted).squeeze())
                 
                 #Calculate the predictive perfomance for the model
                 tpos = sum((predictions>model.threshold) & (truth>beaches[beach]['threshold']))
@@ -259,6 +334,8 @@ for beach in beaches.keys():
             
             #Close the output file and move on.
             out.close()
+            
+            OutputROC(ROC[method])
             
             
         
