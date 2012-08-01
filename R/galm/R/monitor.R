@@ -1,5 +1,5 @@
 monitor <-
-function(obj) {
+function(obj, data, output) {
     minEval = min(obj$evaluations)
     filter = obj$evaluations == minEval
     bestObjectCount = sum(rep(1, obj$popSize)[filter])

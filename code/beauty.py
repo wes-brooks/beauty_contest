@@ -26,13 +26,15 @@ beaches['hika'] = {'file':'../data/Hika.csv', 'target':'logec', 'remove':['beach
 #beaches['huntington'] = {'file':'../data/HuntingtonBeach.csv', 'target':'logecoli', 'remove':[], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
-methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True}
+#methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True}
 #methods["PLS"] = {}
 #methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
 #methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
 #methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
+#methods["galm"] = {}
+methods["adapt"] = {'adapt':True, 'overshrink':False}
 
 cv_folds = 5
 B = 1

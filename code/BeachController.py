@@ -1,5 +1,5 @@
-from modeling_pkg import pls, gbm, gam, logistic, lasso, adalasso#, pls_parallel
-methods = {'pls':pls, 'boosting':gbm, 'gbm':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso':adalasso}
+from modeling_pkg import adapt #pls, gbm, gam, logistic, lasso, adalasso, galm, adapt#, pls_parallel
+methods = {'adapt':adapt} #{'pls':pls, 'boosting':gbm, 'gbm':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso':adalasso, 'galm':galm, 'adapt':adapt}
 
 import utils
 import sys
@@ -45,7 +45,7 @@ def Validate(data, target, method, folds='', **args):
 
         model = module.Model(data=model_dict, target=target, **args)  
 
-        predictions = np.array(model.Predict(validation_dict))
+        predictions = np.array(model.Predict(validation_dict)).squeeze()
         validation_actual = validation_dict[target]
         exceedance = np.array(validation_actual > regulatory, dtype=bool)
         

@@ -1,5 +1,5 @@
 evalBIC <-
-function(chromosome=c()) {
+function(chromosome=c(), data, output) {
     returnVal = Inf
     minLV = 2
     if (sum(chromosome) >= minLV) {

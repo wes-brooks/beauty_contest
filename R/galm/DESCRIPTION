@@ -7,4 +7,4 @@ Author: Wesley Brooks
 Maintainer: Wesley Brooks <wrbrooks@usgs.gov>
 Description: Builds a linear model using the genetic algorithm for variable selection
 License: GPL-3
-Depends: R, genalg
+Depends: R
