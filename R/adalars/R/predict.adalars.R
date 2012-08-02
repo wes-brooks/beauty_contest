@@ -4,12 +4,11 @@ function(obj, newx, ...) {
     
     if (obj[['response']] %in% names(newx)) {
         response.col = which(names(newx) == obj[['response']])
-        pred.data = pred.data[,-response.col]
+        pred.data = pred.data[,obj[['lars']][['predictors']]]
     }
     
-    for (predictor in names(obj[['lars']][['coef.scale']])) {
-        k = which(names(pred.data) == predictor)
-        pred.data[,k] = (pred.data[,k] - obj[['lars']][['meanx']][[predictor]]) * obj[['lars']][['coef.scale']][[predictor]]
+    for (predictor in names(obj[['lars']][['predictors']])) {
+        pred.data[[predictor]] = (pred.data[[predictor]] - obj[['lars']][['meanx']][[predictor]]) * obj[['lars']][['coef.scale']][[predictor]]
     }
 
     return(predict(obj[['lars']][['model']], newx=pred.data, s=obj[['lambda']], mode='lambda', type='fit')[['fit']])
