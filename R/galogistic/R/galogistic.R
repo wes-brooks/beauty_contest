@@ -1,4 +1,4 @@
-galm <-function(formula, data, population=200, generations=100, mutateRate=0.02, zeroOneRatio=10, verbose=TRUE) {
+galogistic <-function(formula, data, population=200, generations=100, mutateRate=0.02, zeroOneRatio=10, verbose=TRUE, family, weights=NULL) {
     #Create the object that will hold the output
     result = list()
     
@@ -20,20 +20,20 @@ galm <-function(formula, data, population=200, generations=100, mutateRate=0.02,
     
     #Maximum number of predictor variables:
     m = ncol(data) - 1
-    result[['ga']] = rbga.bin(size=m, zeroToOneRatio=zeroOneRatio, evalFunc=evalBIC, monitorFunc=monitor, mutationChance=mutateRate, popSize=population, iters=generations, verbose=verbose, data=data, output=result[['response']])
+    result[['ga']] = rbga.bin.logistic(size=m, zeroToOneRatio=zeroOneRatio, evalFunc=evalBIC_logistic, monitorFunc=galogistic_monitor, mutationChance=mutateRate, popSize=population, iters=generations, verbose=verbose, data=data, output=result[['response']], family=family, weights=weights)
     
     indx = which.min(result[['ga']]$evaluations)
     indiv = as.logical(drop(result[["ga"]]$population[indx,]))
     
     result[['vars']] = predictor.names[indiv]
     result[['formula']] = as.formula(paste(response.name, "~", paste(result[['vars']], collapse="+"), sep=""))
-    result[["model"]] = lm(formula=result[['formula']], data=data)
+    result[["model"]] = glm(formula=result[['formula']], data=data, family=family, weights=weights)
     
     result[['fitted']] = fitted(result[['model']])
     result[['residuals']] = residuals(result[['model']])
     result[['actual']] = result[['fitted']] + result[['residuals']]
     
-    class(result) = "galm"
+    class(result) = "galogistic"
     
     result
 }

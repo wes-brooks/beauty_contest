@@ -1,4 +1,4 @@
-lars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, adapt=FALSE) {
+censlars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, adapt=FALSE) {
     result = list()
     
     #Pull out the relevant data

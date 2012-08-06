@@ -1,4 +1,4 @@
-initial_step <- function(formula, data, family, weights, verbose=FALSE, left, right, ...) {
+censlars_initial_step <- function(formula, data, family, weights, verbose=FALSE, left, right, ...) {
     #Create the object that will hold the output
     result <- list()
     

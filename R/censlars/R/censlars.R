@@ -19,13 +19,13 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25, adapt=TRUE
         
     f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''), env=as.environment(data))
     if (adapt) {
-        result[['censreg']] = initial_step(formula=f, data=data, left=left, right=right)
+        result[['censreg']] = censlars_initial_step(formula=f, data=data, left=left, right=right)
     } else {
         result[['censreg']] = NULL
     }
         
 
-    result[['lars']] = lars_step(formula=formula, data=data, adaptive.object=NULL, overshrink=TRUE, adapt=FALSE)
+    result[['lars']] = censlars_step(formula=formula, data=data, adaptive.object=NULL, overshrink=TRUE, adapt=FALSE)
     
     #prepare for iteration
     iter = 1
@@ -40,7 +40,7 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25, adapt=TRUE
         result[['censreg']] = censReg_step(formula=f, data=data, left=left, right=right, prev.object=result[['censreg']])
         
         #Now fit the LARS model
-        result[['lars']] = lars_step(formula=f, data=data, adaptive.object=result[['censreg']], overshrink=overshrink, adapt=adapt)
+        result[['lars']] = censlars_step(formula=f, data=data, adaptive.object=result[['censreg']], overshrink=overshrink, adapt=adapt)
         result[['lambda']] = c(result[['lambda']], result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]])
         
         change = abs(lambda.former - tail(result[['lambda']], 1))

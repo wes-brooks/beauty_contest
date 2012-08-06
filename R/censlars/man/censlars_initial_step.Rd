@@ -1,5 +1,5 @@
-\name{initial_step}
-\alias{initial_step}
+\name{censlars_initial_step}
+\alias{censlars_initial_step}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Get the intial coefficient estimates for all of the predictor variables
@@ -9,7 +9,7 @@ Get the intial coefficient estimates for all of the predictor variables
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-initial_step(formula, data, left = -Inf, right = Inf)
+censlars_initial_step(formula, data, left = -Inf, right = Inf)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

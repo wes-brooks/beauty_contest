@@ -4,7 +4,7 @@ import utils
 import RDotNetWrapper as rdn
 
 #Import the pls library into R, and connect python to R.
-rdn.r.EagerEvaluate("library(adalasso)")
+rdn.r.EagerEvaluate("library(galogistic)")
 r = rdn.Wrap()
 
 
@@ -22,10 +22,11 @@ class Model(object):
         self.target = model_struct['target']
         self.specificity = model_struct['specificity']
         self.weights = model_struct['weights']
-        #self.s = model_struct['s']
+        self.population = model_struct['population']
+        self.generations = model_struct['generations']
+        self.mutate = model_struct['mutate']
+        self.ZOR = model_struct['ZOR']
         self.formula = model_struct['formula']
-        self.adapt = model_struct['adapt']
-        self.overshrink = model_struct['overshrink']
         
         #Get the data into R 
         self.nobs = len(self.data_dictionary[self.target])
@@ -38,11 +39,13 @@ class Model(object):
             'family' : 'binomial', \
             'data' : self.data_frame, \
             'weights' : self.weights, \
-            #'s' : self.s, \
-            'verbose' : True, \
-            'adapt' : self.adapt, \
-            'overshrink' : self.overshrink}
-        self.model = r.Call(function='adalasso', **self.logistic_params).AsList()
+            'family' : 'binomial', \
+            'population' : self.population, \
+            'generations' : self.generations, \
+            'mutateRate' : self.mutate, \
+            'zeroOneRatio' : self.ZOR, \
+            'verbose' : True }
+        self.model = r.Call(function='galogistic', **self.logistic_params).AsList()
 
         #Use cross-validation to find the best number of components in the model.
         self.GetActual()
@@ -64,17 +67,7 @@ class Model(object):
         #Check to see if a specificity has been specified in the function's arguments
         try: self.specificity = args['specificity']
         except KeyError: self.specificity = 0.9
-        
-        #Set the direction for stepwise variable selection
-        #try: self.s = s = args['lambda']
-        #except KeyError: self.s = s = ''   
 
-        try: self.adapt = args['adapt']
-        except KeyError: self.adapt = False
-
-        try: self.overshrink = args['overshrink']
-        except KeyError: self.overshrink = False           
-        
         #Get the data into R
         data = args['data']
         self.target = target = args['target']
@@ -83,6 +76,18 @@ class Model(object):
         self.data_dictionary = copy.deepcopy(data)
         self.predictors = len(self.data_dictionary.keys()) - 1
                 
+        if 'population' in args: self.population=args['population']
+        else: self.population=200
+        
+        if 'generations' in args: self.generations=args['generations']
+        else: self.generations=100
+        
+        if 'mutate' in args: self.mutate=args['mutate']
+        else: self.mutate=0.02
+        
+        if 'ZOR' in args: self.ZOR=args['ZOR']
+        else: self.ZOR=10       
+         
         #Check to see if a weighting method has been specified in the function's arguments
         try:
             #integer (discrete) weighting
@@ -111,11 +116,13 @@ class Model(object):
             'family' : 'binomial', \
             'data' : self.data_frame, \
             'weights' : self.weights, \
-            #'s' : self.s, \
-            'verbose' : True, \
-            'adapt' : self.adapt, \
-            'overshrink' : self.overshrink}
-        self.model = r.Call(function='adalasso', **self.logistic_params).AsList()
+            'family' : 'binomial', \
+            'population' : self.population, \
+            'generations' : self.generations, \
+            'mutateRate' : self.mutate, \
+            'zeroOneRatio' : self.ZOR, \
+            'verbose' : True }
+        self.model = r.Call(function='galogistic', **self.logistic_params).AsList()
         
         #Select model components and a decision threshold
         self.GetActual()
@@ -183,7 +190,7 @@ class Model(object):
     def Predict(self, data_dictionary):
         data_frame = utils.DictionaryToR(data_dictionary)
         prediction_params = {'obj':self.model, 'newx':data_frame}
-        prediction = r.Call(function="predict.adalasso", **prediction_params).AsVector()
+        prediction = r.Call(function="predict.galogistic", **prediction_params).AsVector()
 
         #Translate the R output to a type that can be navigated in Python
         prob = np.array(prediction).squeeze()
@@ -195,12 +202,25 @@ class Model(object):
         return np.array(prediction >= self.threshold, dtype=int)
 
 
-    def Threshold(self, specificity=0.9):
-        #Find the optimal decision threshold
-        #fitted = np.array(self.model[np.where(np.array(self.model.names)=='fitted.values')[0]])
-        self.threshold = utils.Quantile(self.fitted[self.data_dictionary[self.target]==0], specificity)
-        try: self.specificity = float(len(np.where(self.fitted[self.data_dictionary[self.target]==0] <= self.threshold)[0])) / len(self.fitted[self.data_dictionary[self.target]==0])
-        except ZeroDivisionError: self.specificity = 1
+    def Threshold(self, specificity=0.92):
+        self.specificity = specificity
+    
+        if not hasattr(self, 'actual'):
+            self.GetActual()
+        
+        if not hasattr(self, 'fitted'):
+            self.GetFitted()
+
+        #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
+        try:
+            non_exceedances = self.array_fitted[np.where(self.array_actual <= self.regulatory_threshold)[0]]
+            self.threshold = utils.Quantile(non_exceedances, specificity)
+            self.specificity = float(sum(non_exceedances <= self.threshold))/non_exceedances.shape[0]
+
+        #This error should only happen if somehow there are no non-exceedances in the training data.
+        except ZeroDivisionError:
+            self.threshold = self.regulatory_threshold        
+            self.specificity = 1
 
 
     def Validate(self, data_dictionary):
@@ -224,46 +244,24 @@ class Model(object):
 
 
     def GetActual(self):
-        #Get the fitted counts from the model.
-        fitted_values = np.array(self.Extract('fitted.values').AsVector())
-        fitted_values = np.squeeze(fitted_values)
-
+        fitted = np.array(self.model['actual'].AsVector())
+        
         #Recover the actual counts by adding the residuals to the fitted counts.
-        residual_values = np.array(self.Extract('residuals').AsVector())
-        residual_values = np.squeeze(residual_values)
+        residuals = np.array(self.model['residuals'].AsVector())
+        #residuals = residual_values.transpose()
         
-        self.actual = np.array(fitted_values + residual_values).squeeze()
-        
-        
-    def GetFitted(self, **params):
-        #Get the fitted counts from the model so we can compare them to the actual counts.
-        fitted_values = np.array(self.Extract('fitted.values').AsVector())
-        fitted_values = np.squeeze(fitted_values)
-        self.fitted = np.array(fitted_values).squeeze()
-        self.residual = self.actual-self.fitted
+        self.array_actual = np.array(fitted + residuals).squeeze()
+        self.actual = list(self.array_actual)
         
         
-    def GetInfluence(self):
-        #Get the model terms from R's model object
-        terms = self.Extract('terms')
-        terms = str(terms)
+    def GetFitted(self, **params):            
+        fitted = np.array(self.model['fitted'].AsVector())
         
-        #Get the covariate names
-        self.names = self.data_dictionary.keys()
-        self.names.remove(self.target)
-
-        #Now get the model coefficients from R.
-        coefficients = np.array( self.Extract('coef') )
-        coefficients = coefficients.flatten()
+        self.array_fitted = fitted
+        self.array_residual = self.array_actual - self.array_fitted
         
-        #Get the standard deviations (from the data_dictionary) and package the influence in a dictionary.
-        raw_influence = list()
-        
-        for i in range( len(self.names) ):
-            standard_deviation = np.std( self.data_dictionary[self.names[i]] )
-            raw_influence.append( abs(standard_deviation * coefficients[i+1]) )
-            
-        self.influence = dict( zip(raw_influence/np.sum(raw_influence), self.names) )
+        self.fitted = list(self.array_fitted)
+        self.residual = list(self.array_residual)
             
             
     def Count(self):
@@ -302,7 +300,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'logistic'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', 'formula', 'adapt', 'overshrink']
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', "population", 'generations', 'mutate', 'ZOR', 'formula']
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

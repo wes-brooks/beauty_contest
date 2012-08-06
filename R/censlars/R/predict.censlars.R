@@ -1,5 +1,5 @@
 predict.censlars <- 
-function(object, newx, ...) {
+function(object, newx) {
     pred.data = as.matrix(newx)    
     
     if (object[['response']] %in% names(newx)) {
