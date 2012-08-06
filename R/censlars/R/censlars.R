@@ -15,7 +15,7 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25, adapt=TRUE
     #Pull out the relevant data
     result[['response']] = response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
     result[['predictors']] = predictor.names = attr(terms(formula, data=data), 'term.labels')
-    response.col = which(names(data)==response.name)
+    response.col = which(colnames(data)==response.name)
         
     f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''), env=as.environment(data))
     if (adapt) {

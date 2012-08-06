@@ -34,7 +34,7 @@ methods = dict()
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
 #methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
 #methods["galm"] = {}
-methods["adapt"] = {'adapt':True, 'overshrink':False}
+methods["adapt"] = {'adapt':True, 'overshrink':True}
 
 cv_folds = 5
 B = 1

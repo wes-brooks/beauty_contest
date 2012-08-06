@@ -1,21 +1,16 @@
-lars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, adapt=FALSE) {
+adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, adapt=FALSE) {
     result = list()
     
     #Pull out the relevant data
     response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
-    response.col = which(names(data)==response.name)
-    predictor.names = names(data)[-which(names(data)==response.name)]
+    response.col = which(colnames(data)==response.name)
+    predictor.names = colnames(data)[-which(colnames(data)==response.name)]
     
-    #Get the initial lasso estimate
-    if (!is.null(adaptive.object)) {
-        y = as.matrix(adaptive.object[['latent']])
-    } else {
-        y = as.matrix(data[,response.col])
-    }
+    y = as.matrix(data[,response.col])
     x = as.matrix(data[,-response.col])
 
-    names(x) = predictor.names
-    names(y) = response.name
+    colnames(x) = predictor.names
+    colnames(y) = response.name
     
     m <- ncol(x)
     n <- nrow(x)
@@ -29,11 +24,11 @@ lars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, ada
     for (predictor in predictor.names) {        
         if (adapt==TRUE) {
             #First, center this column of the design matrix
-            result[['meanx']][[predictor]] = mean(data[[predictor]])
-            xs[[predictor]] = xs[[predictor]] - result[['meanx']][[predictor]]      
+            result[['meanx']][[predictor]] = mean(data[,predictor])
+            xs[,predictor] = xs[,predictor] - result[['meanx']][[predictor]]      
             
             #Now scale it for unit norm
-            result[['normx']][[predictor]] <- sqrt(sum(xs[[predictor]]^2))
+            result[['normx']][[predictor]] <- sqrt(sum(xs[,predictor]**2))
 
             if (result[['normx']][[predictor]] == 0) {
                 result[['normx']][[predictor]] = Inf #This should allow the lambda-finding step to work.
@@ -51,7 +46,7 @@ lars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, ada
             result[['meanx']][[predictor]] = 0
             result[['coef.scale']][[predictor]] = 1
         }
-        xs[[predictor]] = xs[[predictor]] * result[['coef.scale']][[predictor]] 
+        xs[,predictor] = xs[,predictor] * result[['coef.scale']][[predictor]] 
     }
     
     result[['model']] = model = lars(x=xs, y=y, type='lar', max.steps=p.max)
@@ -74,7 +69,7 @@ lars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, ada
     result[['coefs']] = coefs$coefficients[which(coefs$coefficients>0)]
     result[['MSEP']] = cv$cv[lambda.index]
     result[['RMSEP']] = sqrt(result[['MSEP']])
-    result[['Intercept']] = predict(model, newx=matrix(0,1,dim(x)[2]), type='fit', s=lambda.index, mode='step')$fit
+    result[['Intercept']] = predict(model, newx=matrix(0,1,dim(xs)[2]), type='fit', s=lambda.index, mode='step')$fit
     
     return(result)
 }

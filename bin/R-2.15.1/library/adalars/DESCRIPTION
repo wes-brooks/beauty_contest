@@ -9,4 +9,4 @@ Description: Use the adaptive lasso for shrinkage and variable selection in a li
 Depends: lars
 License: GPL-3
 LazyLoad: yes
-Built: R 2.15.1; ; 2012-08-02 20:29:51 UTC; unix
+Built: R 2.15.1; ; 2012-08-06 16:47:33 UTC; windows

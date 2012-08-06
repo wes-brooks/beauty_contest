@@ -1,5 +1,5 @@
-\name{lars_step}
-\alias{lars_step}
+\name{adalars_step}
+\alias{adalars_step}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Uses the lars package to select variables based on the imputed observations that come out of the censReg step.
@@ -9,7 +9,7 @@ Uses the lars package to select variables based on the imputed observations that
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-lars_step(y, x)
+adalars_step(y, x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

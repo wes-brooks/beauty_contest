@@ -13,22 +13,22 @@ function(formula, data, adapt=TRUE, overshrink=TRUE) {
     result[['data']] = data
 
     #Pull out the relevant data
-    result[['response']] = response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
-    result[['predictors']] = predictor.names = attr(terms(formula, data=data), 'term.labels')
-    response.col = which(names(data)==response.name)
+    result[['response']] = rownames(attr(terms(formula, data=data), 'factors'))[1]
+    result[['predictors']] = colnames(data)[-which(colnames(data)==result[['response']])]
+    response.col = which(colnames(data)==result[['response']])
         
-    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''), env=as.environment(data))
+    f = as.formula(paste(paste(result[['response']], "~", sep=''), paste(result[['predictors']], collapse='+'), sep=''), env=as.environment(data))
     if (adapt) {
-        result[['censreg']] = initial_step(formula=f, data=data)
+        result[['adapt']] = adalars_initial_step(formula=f, data=data)
     } else {
-        result[['censreg']] = NULL
+        result[['adapt']] = NULL
     }
 
-    result[['lars']] = lars_step(formula=formula, data=data, adaptive.object=NULL, overshrink=TRUE, adapt=FALSE)
+    result[['lars']] = adalars_step(formula=formula, data=data, adaptive.object=result[['adapt']], overshrink=overshrink, adapt=adapt)
     result[['lambda']] = result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]]
     
     result[['fitted']] = predict.adalars(result, data)
-    result[['actual']] = data[[response.name]]
+    result[['actual']] = data[,result[['response']]]
     result[['residuals']] = result[['actual']] - result[['fitted']]
 
     return(result)

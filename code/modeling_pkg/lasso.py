@@ -139,7 +139,7 @@ class Model(object):
         data = copy.copy(data_dictionary)
         data.pop(self.target)
         data_frame = utils.DictionaryToR(data)
-        prediction_params = {'object': self.model, 'newx': data_frame }
+        prediction_params = {'obj': self.model, 'newx': data_frame }
         
         prediction = r.Call(function='predict.censlars', **prediction_params).AsVector()
         prediction = np.array(prediction, dtype=float)
