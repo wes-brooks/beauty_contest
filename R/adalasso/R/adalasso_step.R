@@ -1,10 +1,10 @@
-lasso_step <-
+adalasso_step <-
 function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, ...) {
     result = list()
     
     #Pull out the relevant data
     response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
-    response.col = which(names(data)==response.name)
+    response.col = which(colnames(data)==response.name)
     predictor.names = attr(terms(formula, data=data), 'term.labels')
     
     y = as.matrix(data[,response.col])
@@ -19,16 +19,13 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
     xs = x
     
     for (predictor in predictor.names) {
-        #Center the appropriate column of the design matrix
-        k = which(names(data)[-which(names(data)==response.name)] == predictor)
-        
         if (adapt==TRUE) {
             #We will center each column of this matrix:
-            result[['meanx']][[predictor]] = mean(data[[predictor]])
-            xs[,k] = xs[,k] - result[['meanx']][[predictor]]
+            result[['meanx']][[predictor]] = mean(data[,predictor])
+            xs[,predictor] = xs[,predictor] - result[['meanx']][[predictor]]
             
             #Scale the column for unit norm
-            result[['normx']][[predictor]] <- sqrt(sum(xs[,k]^2))
+            result[['normx']][[predictor]] <- sqrt(sum(xs[,predictor]**2))
             
             if (result[['normx']][[predictor]] == 0) {
                 result[['normx']][[predictor]] = Inf #This should allow the lambda-finding step to work.
@@ -42,7 +39,7 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
                 }
                 result[['coef.scale']][[predictor]] = adaptive.object[['adaweight']][[predictor]] / result[['normx']][[predictor]]
             }
-            xs[,k] = xs[,k] * result[['coef.scale']][[predictor]]
+            xs[,predictor] = xs[,predictor] * result[['coef.scale']][[predictor]]
         } else {
             result[['meanx']][[predictor]] = 0
             result[['coef.scale']][[predictor]] = 1
@@ -63,8 +60,8 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
     
     #Handle the case that the lasso selects no variables
     if (is.null(nonzero[[1]])) {
-        indx = min(which(result[['cv.model']][['nzero']]>0))
-        result[['lambda']] = lambda = result[['cv.model']]$lambda[indx]
+        indx = min(which(result[['cv']][['nzero']]>0), na.rm=TRUE)
+        result[['lambda']] = lambda = result[['cv']]$lambda[indx]
         nonzero = as.vector(predict(model, type='nonzero', s=lambda))    
         if (verbose) {print(paste("indx: ", indx, ", lambda: ", lambda, ", nonzero: ", nonzero, sep=''))}
     }

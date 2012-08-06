@@ -1,5 +1,5 @@
-from modeling_pkg import adapt #pls, gbm, gam, logistic, lasso, adalasso, galm, adapt#, pls_parallel
-methods = {'adapt':adapt} #{'pls':pls, 'boosting':gbm, 'gbm':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso':adalasso, 'galm':galm, 'adapt':adapt}
+from modeling_pkg import adapt, pls, gbm, gam, logistic, lasso, adalasso, galm, adapt#, pls_parallel
+methods = {'pls':pls, 'boosting':gbm, 'gbm':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso':adalasso, 'galm':galm, 'adapt':adapt}
 
 import utils
 import sys

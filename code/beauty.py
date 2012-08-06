@@ -32,9 +32,9 @@ methods = dict()
 #methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-#methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
+methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
 #methods["galm"] = {}
-methods["adapt"] = {'adapt':True, 'overshrink':True}
+#methods["adapt"] = {'adapt':True, 'overshrink':True}
 
 cv_folds = 5
 B = 1

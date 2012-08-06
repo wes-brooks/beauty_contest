@@ -1,5 +1,5 @@
-\name{initial_step}
-\alias{initial_step}
+\name{adalasso_initial_step}
+\alias{adalasso_initial_step}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 The first glm step uses each variable as a predictor, one at a time.
@@ -9,7 +9,7 @@ The first glm step uses each variable as a predictor, one at a time.
 The first glm step uses each variable as a predictor, one at a time.
 }
 \usage{
-initial_step(formula, data, family, weights, ...)
+adalasso_initial_step(formula, data, family, weights, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

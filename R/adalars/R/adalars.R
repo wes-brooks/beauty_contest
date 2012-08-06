@@ -6,7 +6,6 @@ function(formula, data, adapt=TRUE, overshrink=TRUE) {
     result[['formula']] = as.formula(formula, env=data)
     
     #Drop any rows with NA values
-    data = data
     na.rows = (which(is.na(data))-1) %% dim(data)[1] + 1
     if (length(na.rows)>0)
         data = data[-na.rows,]
@@ -14,7 +13,7 @@ function(formula, data, adapt=TRUE, overshrink=TRUE) {
 
     #Pull out the relevant data
     result[['response']] = rownames(attr(terms(formula, data=data), 'factors'))[1]
-    result[['predictors']] = colnames(data)[-which(colnames(data)==result[['response']])]
+    result[['predictors']] = attr(terms(formula, data=data), 'term.labels')
     response.col = which(colnames(data)==result[['response']])
         
     f = as.formula(paste(paste(result[['response']], "~", sep=''), paste(result[['predictors']], collapse='+'), sep=''), env=as.environment(data))

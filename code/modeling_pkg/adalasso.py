@@ -185,7 +185,7 @@ class Model(object):
 
     def Predict(self, data_dictionary):
         data_frame = utils.DictionaryToR(data_dictionary)
-        prediction_params = {'object':self.model, 'newx':data_frame, 'type':'response', 's':float(self.model['lasso'].AsList()['lambda'].AsNumeric()[0])}
+        prediction_params = {'obj':self.model, 'newx':data_frame}
         prediction = r.Call(function="predict.adalasso", **prediction_params).AsVector()
 
         #Translate the R output to a type that can be navigated in Python

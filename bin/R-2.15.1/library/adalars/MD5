@@ -1,13 +1,13 @@
-fdc6ae4c4a7acf379069bc0b381c2722 *DESCRIPTION
+07021f6bc48093763be5dcc37ae390f1 *DESCRIPTION
 61ee10797258b893e61dcf77e363369f *INDEX
 8eb206b4231daeaee24d5252a6ce9d26 *Meta/Rd.rds
 7f3b2f8438eb27feba88041ab9b61da6 *Meta/hsearch.rds
 e83b1078707adc8f94a2f83b88ec8628 *Meta/links.rds
-e4e52500abdedc54f0de4e3d10038cac *Meta/package.rds
+22a9ca18d320a127a54f3e52aa04cd1c *Meta/package.rds
 3d99a2202ddf30c91e1efec959daaa0f *NAMESPACE
 240d28d145138a75831809e31a480bad *R/adalars
-b4ce6c6be3883f3057d9d5ce25133c6a *R/adalars.rdb
-620b7918b17e00198be6c0a8cb9c8994 *R/adalars.rdx
+9bf0235a6945697db378e1d466e82721 *R/adalars.rdb
+4e988485e283b8c2e7b86f20f05c0bc6 *R/adalars.rdx
 308d25991425b44934592d0ee2f7e60d *help/AnIndex
 1d7f15e97f5b212304e29859b2b70c91 *help/adalars.rdb
 558149c40a2e5d3d1074ee1fcd6513be *help/adalars.rdx

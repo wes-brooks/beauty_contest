@@ -4,10 +4,10 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
     #Pull out the relevant data
     response.name = rownames(attr(terms(formula, data=data), 'factors'))[1]
     response.col = which(colnames(data)==response.name)
-    predictor.names = colnames(data)[-which(colnames(data)==response.name)]
+    predictor.names = attr(terms(formula, data=data), 'term.labels')
     
     y = as.matrix(data[,response.col])
-    x = as.matrix(data[,-response.col])
+    x = as.matrix(data[,predictor.names])
 
     colnames(x) = predictor.names
     colnames(y) = response.name

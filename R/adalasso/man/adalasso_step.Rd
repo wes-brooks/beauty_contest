@@ -1,5 +1,5 @@
-\name{lasso_step}
-\alias{lasso_step}
+\name{adalasso_step}
+\alias{adalasso_step}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 The glmnet step (shrinks and selects model coefficients) for adaptive lasso shrinkage and selection in a generalized linear model
@@ -8,7 +8,7 @@ The glmnet step (shrinks and selects model coefficients) for adaptive lasso shri
 The glmnet step (shrinks and selects model coefficients) for adaptive lasso shrinkage and selection in a generalized linear model
 }
 \usage{
-lasso_step(y, x, family, weights, adaptive.object = NULL, s = NULL, ...)
+adalasso_step(y, x, family, weights, adaptive.object = NULL, s = NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

@@ -1,7 +1,7 @@
 predict.adalars <- 
 function(obj, newx, ...) {
     pred.data = as.matrix(newx)    
-    predictors = obj[['lars']][['predictors']]
+    predictors = obj[['predictors']]
     colnames(pred.data) = colnames(newx)
     pred.data = pred.data[,predictors]
     
@@ -11,7 +11,6 @@ function(obj, newx, ...) {
     }
     
     for (predictor in predictors) {
-        k = which(colnames(pred.data)==predictor)
         pred.data[,predictor] = (pred.data[,predictor] - obj[['lars']][['meanx']][[predictor]]) * obj[['lars']][['coef.scale']][[predictor]]
     }
     
