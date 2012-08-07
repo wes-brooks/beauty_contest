@@ -9,12 +9,13 @@
 #################################################################
 
 universe = vanilla
-log = output/comp_$(Cluster).log
-error = output/comp_$(Cluster)_$(Process).err
+log = logs/comp_$(Cluster).log
+error = logs/comp_$(Cluster)_$(Process).err
+output = output/out
 executable = worker.bat
 requirements = ((Target.OpSys=="WINNT61" || Target.OpSys=="WINNT52")  && (Target.Arch=="X86_64") && (PoolName=="CIDA"))
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
-transfer_input_files = unzip.exe, zip.exe, beauty.zip
+transfer_input_files = unzip.exe, zip.exe, beauty.zip, code
 transfer_output_files = output
 queue 2

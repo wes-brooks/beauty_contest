@@ -23,6 +23,15 @@ beaches = dict()
 #beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
 beaches['hika'] = {'file':'../data/Hika.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['FS'] = {'file':'../data/FS-VB.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['KR'] = {'file':'../data/KR-VB4.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['MS'] = {'file':'../data/MS-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['NS'] = {'file':'../data/NS-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['PT1'] = {'file':'../data/PT1-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['PT2'] = {'file':'../data/PT2-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['PT3'] = {'file':'../data/PT3-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['RA'] = {'file':'../data/RA-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+#beaches['TH'] = {'file':'../data/TH-VB.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
 #beaches['huntington'] = {'file':'../data/HuntingtonBeach.csv', 'target':'logecoli', 'remove':[], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
@@ -32,8 +41,8 @@ methods = dict()
 #methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-methods['galogistic'] = {'weights':'discrete', 'generations':100}
-#methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
+methods['galogistic'] = {'weights':'discrete', 'generations':3}
+methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
 #methods["galm"] = {}
 #methods["adapt"] = {'adapt':True, 'overshrink':True}
 
@@ -41,6 +50,7 @@ cv_folds = 5
 B = 1
 result = "placeholder"
 output = "../output/"
+#output = "../"
 
 #Set the timestamp we'll use to identify the output files.
 now = datetime.datetime.now()
@@ -329,16 +339,16 @@ for beach in beaches.keys():
             #Open a file to which we will append the output.
             out = open(output + beach + now + m + '_performance.out', 'a')
             out.write("# fold = overall performance\n")
-            out.write("# Area under ROC curve = " + str(AreaUnderROC(ROC[method])) + "\n")
-            out.write("# tpos = " + str(validation[m].tpos) + "\n")
-            out.write("# tneg = " + str(validation[m].tneg) + "\n")
-            out.write("# fpos = " + str(validation[m].fpos) + "\n")
-            out.write("# fneg = " + str(validation[m].fneg) + "\n")
+            out.write("# Area under ROC curve = " + str(AreaUnderROC(ROC[m])) + "\n")
+            out.write("# total.tpos = " + str(validation[m].tpos) + "\n")
+            out.write("# total.tneg = " + str(validation[m].tneg) + "\n")
+            out.write("# total.fpos = " + str(validation[m].fpos) + "\n")
+            out.write("# total.fneg = " + str(validation[m].fneg) + "\n")
             
             #Close the output file and move on.
             out.close()
             
-            OutputROC(ROC[method])
+            #OutputROC(ROC[method])
             
             
         
