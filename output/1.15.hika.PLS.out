@@ -1,0 +1,17 @@
+# Seed = 0.465295313804
+# Site = hika
+# Method = PLS
+# Area under ROC curve = 0.545218295218
+# total.tpos = 8
+# total.tneg = 56
+# total.fpos = 18
+# total.fneg = 18
+# Seed = 0.465295313804
+# Site = hika
+# Method = PLS
+# Area under ROC curve = 0.545218295218
+# total.tpos = 8
+# total.tneg = 56
+# total.fpos = 18
+# total.fneg = 18
+# variables: qmin24, beachsc, qmean72, qmean48, qmin12, qmean1, qmean24, qmin6, qmean2, qmin120, qmax24, qmean120, qmean6, qmean12

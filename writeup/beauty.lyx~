@@ -87,8 +87,20 @@ Describe the data here
 Materials and Methods
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsection
+PLS
+\end_layout
 
+\begin_layout Subsection
+GBM
+\end_layout
+
+\begin_layout Subsection
+Logistic regression
+\end_layout
+
+\begin_layout Subsection
+Linear regression
 \end_layout
 
 \end_body

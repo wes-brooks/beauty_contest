@@ -1,6 +1,7 @@
 import Interface
 import clr
 import os
+import sys
 clr.AddReference("VBTools")
 import VBTools
 import utils
@@ -22,30 +23,62 @@ beaches = dict()
 #beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 #beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
-beaches['hika'] = {'file':'../data/Hika.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-#beaches['FS'] = {'file':'../data/FS-VB.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['KR'] = {'file':'../data/KR-VB4.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['MS'] = {'file':'../data/MS-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['NS'] = {'file':'../data/NS-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['PT1'] = {'file':'../data/PT1-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['PT2'] = {'file':'../data/PT2-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['PT3'] = {'file':'../data/PT3-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['RA'] = {'file':'../data/RA-VB1.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
-#beaches['TH'] = {'file':'../data/TH-VB.csv', 'target':'logec', 'remove':['beachEColiValue'], 'threshold':2.3711, 'transforms':[]}
+beaches['hika'] = {'file':'../data/HK-v2.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['FS'] = {'file':'../data/FS-v1.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['KR'] = {'file':'../data/KR-v2.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['MS'] = {'file':'../data/MS-v3.1data.csv', 'target':'observation', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['NS'] = {'file':'../data/NS-v1.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['PT1'] = {'file':'../data/PT1-v1.1data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['PT2'] = {'file':'../data/PT2-v1.1data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['PT3'] = {'file':'../data/PT3-v1.1data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['RA'] = {'file':'../data/RA-v2.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'CDTTime'], 'threshold':2.3711, 'transforms':[]}
+beaches['TH'] = {'file':'../data/TH-v2.1data.csv', 'target':'observation', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
 #beaches['huntington'] = {'file':'../data/HuntingtonBeach.csv', 'target':'logecoli', 'remove':[], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
 #methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True}
-#methods["PLS"] = {}
-#methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
-#methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':10000, 'shrinkage':0.001, 'gbm.folds':5}
+methods["PLS"] = {}
+methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
+methods["gbm2"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+methods["gbmcv2"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-methods['galogistic'] = {'weights':'discrete', 'generations':3}
+methods['galogistic'] = {'weights':'discrete', 'generations':100}
 methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
-#methods["galm"] = {}
-#methods["adapt"] = {'adapt':True, 'overshrink':True}
+methods['galogistic2'] = {'weights':'none', 'generations':100}
+methods['adalasso2'] = {'weights':'none', 'adapt':True, 'overshrink':True}
+methods["galm"] = {'generations':100}
+methods["adapt"] = {'adapt':True, 'overshrink':True}
 
+
+#We call this script with command line arguments from Condor
+if len(sys.argv) > 1:
+    f = open("../seeds.txt", 'r')
+    seeds = f.readlines()
+    f.close()
+    
+    cluster = int(sys.argv[1])
+    process = int(sys.argv[2])
+    sites = beaches.keys()
+    
+    s = len(sites)
+    m = len(methods.keys())
+    d = divmod(process, s)
+    mm = divmod(d[0], m)
+    
+    locs = [sites[d[1]]]    
+    tasks = [methods.keys()[mm[1]]]
+    seed = float(seeds[s*mm[0]+d[1]].strip())
+    np.random.seed(seed)
+else: 
+    cluster = "na"
+    process = "na"
+    locs = beaches.keys()
+    tasks = methods.keys()
+    seed = ''
+    
+    
 cv_folds = 5
 B = 1
 result = "placeholder"
@@ -53,9 +86,8 @@ output = "../output/"
 #output = "../"
 
 #Set the timestamp we'll use to identify the output files.
-now = datetime.datetime.now()
-now = [str(now.year), str(now.month), str(now.day), str(now.hour), str(now.minute), str(now.second)]
-now = ".".join(now)
+prefix = [str(cluster), str(process)]
+prefix = ".".join(prefix)
 
 
 def AreaUnderROC(raw):
@@ -217,7 +249,9 @@ def OutputROC(raw):
 
 #What SpecificityChart wants: dict(specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
     
-for beach in beaches.keys():
+for beach in locs:
+    first = dict(zip(tasks, [True for k in tasks]))
+
     #Read the beach's data.
     datafile = beaches[beach]["file"]
     #datafile = VBTools.IO.ExcelOleDb(datafile, firstRowHeaders=True)
@@ -227,6 +261,7 @@ for beach in beaches.keys():
     #else: [headers, data] = utils.DotnetToArray(data)
     
     [headers, data] = utils.ReadCSV(datafile)
+    print data.shape
     raw_table = [list(row) for row in data]
     if 'remove' in beaches[beach]:
         for item in beaches[beach]['remove']:
@@ -258,6 +293,10 @@ for beach in beaches.keys():
         for f in range(cv_folds+1)[1:]:
             print "outer fold: " + str(f)
             #Break this fold into test and training sets.
+            print folds
+            print f
+            print np.where(folds!=f)
+            print data.shape
             training_set = data[np.where(folds!=f),:].squeeze()
             inner_cv = utils.Partition(training_set, cv_folds)
             
@@ -266,7 +305,15 @@ for beach in beaches.keys():
             test_dict = dict(zip(headers, np.transpose(test_set)))
             
             #Run the modeling routines.
-            for method in methods.keys():
+            for method in tasks:
+                if first[method]:
+                    out = open(output + ".".join([prefix, beach, method, "out"]), 'a')            
+                    if seed: out.write("# Seed = " + str(seed) + "\n") 
+                    out.write("# Site = " + beach + "\n")
+                    out.write("# Method = " + method + "\n")
+                    out.close()
+                    first[method] = False
+            
                 #Run this modeling method against the beach data.
                 result = Interface.Interface.Validate(training_set, beaches[beach]['target'], method=method, folds=inner_cv,
                                                         regulatory_threshold=beaches[beach]['threshold'], headers=headers, **methods[method])
@@ -276,12 +323,12 @@ for beach in beaches.keys():
                 
                 #Store the thresholding information.
                 #Open a file to which we will append the output.
-                out = open(output + beach + now + method + '_raw_models.out', 'a')
-                out.write("#" + method + "\n")
-                print >> out, result
+                #out = open(output + beach + now + method + '_raw_models.out', 'a')
+                #out.write("#" + method + "\n")                
+                #print >> out, result
                 
                 #Close the output file and move on.
-                out.close()
+                #out.close()
                 
                 #Set the threshold for predicting the reserved test set
                 #indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i] and thresholding['specificity'][i] > 0.8]
@@ -317,7 +364,7 @@ for beach in beaches.keys():
             
                 #Store the performance information.
                 #Open a file to which we will append the output.
-                out = open(output + beach + now + method + '_performance.out', 'a')
+                out = open(output + ".".join([prefix, beach, method, "out"]), 'a')
                 out.write("# fold = " + str(f) + "\n")
                 out.write("# threshold = " + str(model.threshold) + "\n")
                 out.write("# requested specificity = " + str(specificity) + "\n")
@@ -334,16 +381,21 @@ for beach in beaches.keys():
                 #Close the output file and move on.
                 out.close()
             
-        for m in methods.keys():
+        for m in tasks:
             #Store the performance information.
+            #First, create a model for variable selection:
+            data_set = data.squeeze()
+            data_dict = dict(zip(headers, np.transpose(data_set)))
+            model = Interface.Control.methods[m.lower()].Model(data=data_dict, target=beaches[beach]['target'], regulatory_threshold=beaches[beach]['threshold'], **methods[m])
+            
             #Open a file to which we will append the output.
-            out = open(output + beach + now + m + '_performance.out', 'a')
-            out.write("# fold = overall performance\n")
+            out = open(output + ".".join([prefix, beach, m, "out"]), 'a')            
             out.write("# Area under ROC curve = " + str(AreaUnderROC(ROC[m])) + "\n")
-            out.write("# total.tpos = " + str(validation[m].tpos) + "\n")
-            out.write("# total.tneg = " + str(validation[m].tneg) + "\n")
-            out.write("# total.fpos = " + str(validation[m].fpos) + "\n")
-            out.write("# total.fneg = " + str(validation[m].fneg) + "\n")
+            out.write("# aggregate.tpos = " + str(validation[m].tpos) + "\n")
+            out.write("# aggregate.tneg = " + str(validation[m].tneg) + "\n")
+            out.write("# aggregate.fpos = " + str(validation[m].fpos) + "\n")
+            out.write("# aggregate.fneg = " + str(validation[m].fneg) + "\n")
+            out.write("# variables: " + ", ".join(model.vars) + "\n")
             
             #Close the output file and move on.
             out.close()

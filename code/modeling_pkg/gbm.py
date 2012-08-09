@@ -52,12 +52,14 @@ class Model(object):
         
         self.model=r.Call(function='gbm', **self.gbm_params).AsList()
         self.GetFitted()
+        self.GetInfluence()
         
         #Establish a decision threshold
         self.specificity = model_struct['specificity']
         self.threshold = model_struct['threshold']
         self.regulatory_threshold = model_struct['regulatory_threshold']
 
+        
     def Create(self, **args):
         '''Create a new gbm model object'''
     
@@ -156,13 +158,9 @@ class Model(object):
         try: self.trees = r.Call(function='gbm.perf', **perf_params).AsNumeric()[0]
         except ValueError: self.trees = self.iterations
         
-        print "number of trees: " + str(self.trees)
-        
         self.GetFitted()
         self.Threshold(self.specificity)
-        
-        print "gbm self.actual: " + str(self.actual)
-        print "gbm self.fitted: " + str(self.fitted)
+        self.GetInfluence()
 
 
     def AssignWeights(self, method=0):
@@ -186,9 +184,9 @@ class Model(object):
                 if i<=0:
                     replicates = 0
                 else:
-                    replicates = 2*i
-                    
-                weights[rows] = replicates + 1
+                    replicates = 2*i                  
+                
+                if rows: weights[rows] = replicates + 1
                 
         #Continuous weighting: weight is the observation's distance (in standard deviations) from the threshold.      
         elif method == 2:
@@ -334,6 +332,19 @@ class Model(object):
         except ZeroDivisionError:
             self.threshold = 0        
             self.specificity = 1
+        
+    
+    def GetInfluence(self):
+        summary = r.Call(function='summary.gbm', object=self.model, plotit=False).AsList()
+        indx = [int(i) for i in summary[0].AsVector()]
+
+        influence = list(summary[1].AsVector())
+        levels = r.Call(function='levels', x=summary[0]).AsVector()  
+        vars = [levels[i-1] for i in indx]
+        
+        #Create a dictionary with all the influences and a list of those variables with influence greater than 1%.
+        self.influence = dict(zip(vars, influence))
+        self.vars = [str(vars[k]) for k in range(len(vars)) if influence[k]>5]
         
         
     def Plot(self, **plotargs ):

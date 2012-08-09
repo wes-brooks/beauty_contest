@@ -72,7 +72,9 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Beach health yadda yadda yadda
+This paper reports the result of an experiment to compare several modeling
+ techniques.
+ 
 \end_layout
 
 \begin_layout Section
@@ -88,19 +90,35 @@ Materials and Methods
 \end_layout
 
 \begin_layout Subsection
-PLS
-\end_layout
-
-\begin_layout Subsection
-GBM
-\end_layout
-
-\begin_layout Subsection
-Logistic regression
+Cross-validation scheme
 \end_layout
 
 \begin_layout Standard
+Five-fold cross-validation was used 
+\end_layout
 
+\begin_layout Subsection
+Modeling methods
+\end_layout
+
+\begin_layout Subsubsection
+PLS
+\end_layout
+
+\begin_layout Standard
+Partial Least Squares regression...
+\end_layout
+
+\begin_layout Subsubsection
+GBM
+\end_layout
+
+\begin_layout Subsubsection
+Logistic regression
+\end_layout
+
+\begin_layout Subsubsection
+Linear regression
 \end_layout
 
 \end_body

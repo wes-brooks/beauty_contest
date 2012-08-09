@@ -102,6 +102,7 @@ class Model(object):
         #Get some information out of the model
         self.GetActual()
         self.GetFitted()
+        self.vars = [str(v) for v in self.model['vars'].AsVector()]
         
         #Establish a decision threshold
         self.Threshold(specificity)

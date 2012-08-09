@@ -1,0 +1,9 @@
+# Seed = 0.465295313804
+# Site = hika
+# Method = gbm
+# Area under ROC curve = 0.714656964657
+# total.tpos = 11
+# total.tneg = 64
+# total.fpos = 10
+# total.fneg = 15
+# variables: rainsum48, beachsc, stdevseawatertemperaturecover72hrx128y13sigma0, rainsum120, rainsum72, meancloudcoverover1hr12813, wvparlmean1, wvperpmean12, meancloudcoverover24hr12813, stdevairtempcover6hr12813, wndperpmean24, meancloudcoverover12hr12813, wvperpmean24, meancloudcoverover2hr12813, stdevseawatertemperaturecover6hrx128y13sigma0, wvhmean1, wvhmean24, wvparlmean2, stdevseawatertemperaturecover120hrx128y13sigma0, meairtempcover120hr12813, stdevairtempcover12hr12813, meairtempcover72hr12813, wndparlmean12, meanseawatertemperaturecover120hrx128y13sigma0, stdevseawatertemperaturecover48hrx128y13sigma0, jday, stdevairtempcover48hr12813, stdevseawatertemperaturecover24hrx128y13sigma0, logbeachturbiditybeach

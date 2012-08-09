@@ -43,6 +43,7 @@ class Model(object):
         #Get some information out of the model.
         self.GetActual()
         self.GetFitted()
+        self.vars = [str(v) for v in self.model['lars'].AsList()['vars'].AsVector()]
         
         #Establish a decision threshold
         self.specificity = model_struct['specificity']
@@ -84,6 +85,7 @@ class Model(object):
         #Get some information out of the model
         self.GetActual()
         self.GetFitted()
+        self.vars = [str(v) for v in self.model['lars'].AsList()['vars'].AsVector()]
         
         #Establish a decision threshold
         self.Threshold(specificity)

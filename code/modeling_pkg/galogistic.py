@@ -50,6 +50,7 @@ class Model(object):
         #Use cross-validation to find the best number of components in the model.
         self.GetActual()
         self.GetFitted()
+        self.vars = [str(v) for v in self.model['vars'].AsVector()]
         
         #Establish a decision threshold
         self.specificity = model_struct['specificity']
@@ -127,7 +128,8 @@ class Model(object):
         #Select model components and a decision threshold
         self.GetActual()
         self.GetFitted()
-        self.Threshold(self.specificity)
+        self.Threshold(self.specificity)        
+        self.vars = [str(v) for v in self.model['vars'].AsVector()]
 
         
     def AssignWeights(self, method=0):

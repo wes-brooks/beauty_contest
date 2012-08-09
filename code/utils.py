@@ -282,7 +282,6 @@ def WriteCSV(array, columns, location):
 
 def Partition(data, folds):
     '''Partition the data set into random, equal-sized folds for cross-validation'''
-    
     #If we've called for leave-one-out CV (folds will be like 'n' or 'LOO' or 'leave-one-out')
     if str(folds).lower()[0]=='l' or str(folds).lower()[0]=='n' or folds>data.shape[0]:
         fold = range(data.shape[0])

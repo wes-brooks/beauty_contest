@@ -47,6 +47,7 @@ class Model(object):
         self.GetActual()
         self.ncomp = model_struct['ncomp']
         self.GetFitted()
+        self.GetInfluence()
         
         #Establish a decision threshold
         self.specificity = model_struct['specificity']
@@ -87,6 +88,7 @@ class Model(object):
         self.GetActual()
         self.CrossValidation(**args)
         self.GetFitted()
+        self.GetInfluence()
         
         #Establish a decision threshold
         self.Threshold(specificity)
@@ -317,8 +319,7 @@ class Model(object):
         self.residual = list(self.array_residual)
         
         
-    def GetInfluence(self):
-        
+    def GetInfluence(self):        
         #Get the covariate names
         self.names = self.data_dictionary.keys()
         self.names.remove(self.target)
@@ -334,8 +335,9 @@ class Model(object):
             standard_deviation = np.std( self.data_dictionary[self.names[i]] )
             raw_influence.append( float(abs(standard_deviation * coefficients[i+1])) )
  
-        self.influence = dict( zip([float(x/sum(raw_influence)) for x in raw_influence], self.names) )
-        return self.influence
+        influence = [float(x/sum(raw_influence)) for x in raw_influence]
+        self.influence = dict( zip(influence, self.names) )
+        self.vars = [self.names[v] for v in range(len(influence)) if influence[v]>0.05]
             
             
     def Count(self):
