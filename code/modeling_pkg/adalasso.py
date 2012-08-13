@@ -38,7 +38,6 @@ class Model(object):
             'family' : 'binomial', \
             'data' : self.data_frame, \
             'weights' : self.weights, \
-            #'s' : self.s, \
             'verbose' : True, \
             'adapt' : self.adapt, \
             'overshrink' : self.overshrink}
@@ -74,7 +73,7 @@ class Model(object):
         except KeyError: self.adapt = False
 
         try: self.overshrink = args['overshrink']
-        except KeyError: self.overshrink = False           
+        except KeyError: self.overshrink = False              
         
         #Get the data into R
         data = args['data']
@@ -112,7 +111,6 @@ class Model(object):
             'family' : 'binomial', \
             'data' : self.data_frame, \
             'weights' : self.weights, \
-            #'s' : self.s, \
             'verbose' : True, \
             'adapt' : self.adapt, \
             'overshrink' : self.overshrink}

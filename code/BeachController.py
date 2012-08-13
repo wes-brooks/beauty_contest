@@ -1,5 +1,5 @@
 from modeling_pkg import adapt, pls, gbm, gam, logistic, lasso, adalasso, galm, adapt, galogistic#, pls_parallel
-methods = {'pls':pls, 'boosting':gbm, 'gbm':gbm, 'gbmcv':gbm, 'gbm2':gbm, 'gbmcv2':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso':adalasso, 'adalasso2':adalasso, 'galm':galm, 'adapt':adapt, 'galogistic':galogistic, 'galogistic2':galogistic}
+methods = {'pls':pls, 'boosting':gbm, 'gbm-unweighted':gbm, 'gbmcv-unweighted':gbm, 'gbm-weighted':gbm, 'gbmcv-weighted':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso-unweighted-adaptive':adalasso, 'adalasso-unweighted-preconditioned':adalasso, 'adalasso-weighted-adaptive':adalasso, 'adalasso-weighted-preconditioned':adalasso, 'galm':galm, 'adapt':adapt, 'galogistic-unweighted':galogistic, 'galogistic-weighted':galogistic, 'precondition':adapt}
 
 import utils
 import sys

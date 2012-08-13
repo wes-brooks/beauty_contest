@@ -1,5 +1,5 @@
 adalasso <-
-function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=TRUE, overshrink=FALSE, ...) {
+function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalasso"
@@ -22,7 +22,7 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=TRUE, over
     
     f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))#, env=as.environment(data))
     if (adapt) {
-        result[['adapt']] = adalasso_initial_step(formula=f, data=data, family=family, weights=weights, verbose=verbose, ...)
+        result[['adapt']] = adalasso_initial_step(formula=f, data=data, family=family, weights=weights, verbose=verbose)
     } else {
         result[['adapt']] = NULL
     }
@@ -30,7 +30,7 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=TRUE, over
     #Get the adaptive lasso estimate
     y = as.matrix(data[,response.col])
     x = as.matrix(data[,-response.col])
-    result[['lasso']] = adalasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, overshrink=overshrink, ...)
+    result[['lasso']] = adalasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, overshrink=overshrink)
     result[['lambda']] = result[['lasso']][['lambda']]
     
     result[['fitted.values']] = predict(result, newx=data)

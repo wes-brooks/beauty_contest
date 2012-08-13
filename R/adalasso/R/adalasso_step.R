@@ -1,5 +1,5 @@
 adalasso_step <-
-function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, ...) {
+function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE) {
     result = list()
     
     #Pull out the relevant data
@@ -46,8 +46,14 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
         }
     }
     
-    result[['model']] = model = glmnet(x=xs, y=y, family=family, weights=weights, lambda=s, ...)
-    result[['cv']] = cv.model = cv.glmnet(y=y, x=xs, nfolds=n, family=family, weights=weights, lambda=s, ...)
+    if (family=='binomial') {
+        print("family is binomial")
+        result[['model']] = model = glmnet(x=xs, y=as.matrix(cbind(y, 1-y), nrow(x), 2), family=family, weights=weights, lambda=s)
+        result[['cv']] = cv.model = cv.glmnet(y=as.matrix(cbind(y, 1-y), nrow(x), 2), x=xs, nfolds=n, family=family, weights=weights, lambda=s)
+    } else {
+        result[['model']] = model = glmnet(x=xs, y=y, family=family, weights=weights, lambda=s)
+        result[['cv']] = cv.model = cv.glmnet(y=y, x=xs, nfolds=n, family=family, weights=weights, lambda=s)
+    }
     
     if (overshrink==TRUE) {
         result[['lambda']] = lambda = cv.model$lambda.1se
@@ -63,8 +69,8 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
         indx = min(which(result[['cv']][['nzero']]>0), na.rm=TRUE)
         result[['lambda']] = lambda = result[['cv']]$lambda[indx]
         nonzero = as.vector(predict(model, type='nonzero', s=lambda))    
-        if (verbose) {print(paste("indx: ", indx, ", lambda: ", lambda, ", nonzero: ", nonzero, sep=''))}
     }
+    if (verbose) {print(paste("indx: ", indx, ", lambda: ", lambda, ", nonzero: ", nonzero, sep=''))}
     
     coefs = coef(model, s=lambda)
     result[['coef']] = as.list(coefs)[nonzero+1]

@@ -38,18 +38,21 @@ beaches['TH'] = {'file':'../data/TH-v2.1data.csv', 'target':'observation', 'remo
 methods = dict()
 #methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True}
 methods["PLS"] = {}
-methods["gbm"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
-methods["gbmcv"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
-methods["gbm2"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
-methods["gbmcv2"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
+methods["gbm-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+methods["gbmcv-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
+methods["gbm-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+methods["gbmcv-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
 #methods["gam"] = {'k':50, 'julian':'jday'}
 #methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-methods['galogistic'] = {'weights':'discrete', 'generations':100}
-methods['adalasso'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
-methods['galogistic2'] = {'weights':'none', 'generations':100}
-methods['adalasso2'] = {'weights':'none', 'adapt':True, 'overshrink':True}
+methods['galogistic-weighted'] = {'weights':'discrete', 'generations':100}
+methods['adalasso-weighted-adaptive'] = {'weights':'discrete', 'adapt':True, 'overshrink':True}
+#methods['adalasso-weighted-preconditioned'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':True}
+methods['galogistic-unweighted'] = {'weights':'none', 'generations':100}
+methods['adalasso-unweighted-adaptive'] = {'weights':'none', 'adapt':True, 'overshrink':True}
+#methods['adalasso-unweighted-preconditioned'] = {'weights':'none', 'adapt':False, 'overshrink':True, 'precondition':True}
 methods["galm"] = {'generations':100}
-methods["adapt"] = {'adapt':True, 'overshrink':True}
+methods["adapt"] = {'adapt':True, 'overshrink':True, 'precondition':False}
+methods["precondition"] = {'adapt':False, 'overshrink':True, 'precondition':True}
 
 
 #We call this script with command line arguments from Condor
