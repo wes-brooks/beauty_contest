@@ -15,6 +15,7 @@ function(formula, data, adapt=TRUE, overshrink=TRUE, precondition=FALSE) {
     result[['response']] = rownames(attr(terms(formula, data=data), 'factors'))[1]
     result[['predictors']] = attr(terms(formula, data=data), 'term.labels')
     response.col = which(colnames(data)==result[['response']])
+    result[['actual']] = data[,response.col]
         
     f = as.formula(paste(paste(result[['response']], "~", sep=''), paste(result[['predictors']], collapse='+'), sep=''), env=as.environment(data))
     if (adapt) {
@@ -27,7 +28,6 @@ function(formula, data, adapt=TRUE, overshrink=TRUE, precondition=FALSE) {
     result[['lambda']] = result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]]
     
     result[['fitted']] = predict.adalars(result, data)
-    result[['actual']] = data[,result[['response']]]
     result[['residuals']] = result[['actual']] - result[['fitted']]
 
     return(result)

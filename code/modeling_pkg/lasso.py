@@ -187,13 +187,13 @@ class Model(object):
 
 
     def GetActual(self):
-        fitted = np.array(self.model['censreg'].AsList()['actual'].AsVector())
+        self.array_actual = np.array(self.model['censreg'].AsList()['actual'].AsVector()).squeeze
         
         #Recover the actual counts by adding the residuals to the fitted counts.
-        residuals = np.array(self.model['lars'].AsList()['residuals'].AsVector())
+        #residuals = np.array(self.model['lars'].AsList()['residuals'].AsVector())
         #residuals = residual_values.transpose()
         
-        self.array_actual = np.array(fitted + residuals).squeeze()
+        #self.array_actual = np.array(fitted + residuals).squeeze()
         self.actual = list(self.array_actual)
         
         

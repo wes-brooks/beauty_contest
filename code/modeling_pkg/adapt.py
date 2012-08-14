@@ -46,6 +46,7 @@ class Model(object):
         self.GetActual()
         self.GetFitted()
         self.vars = [str(v) for v in self.model['lars'].AsList()['vars'].AsVector()]
+        self.coefs = [float(v) for v in self.model['lars'].AsList()['coefs'].AsVector()]
         
         #Establish a decision threshold
         self.specificity = model_struct['specificity']
@@ -92,6 +93,7 @@ class Model(object):
         self.GetActual()
         self.GetFitted()
         self.vars = [str(v) for v in self.model['lars'].AsList()['vars'].AsVector()]
+        self.coefs = [float(v) for v in self.model['lars'].AsList()['coefs'].AsVector()]
         
         #Establish a decision threshold
         self.Threshold(specificity)
@@ -172,7 +174,15 @@ class Model(object):
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
         try:
+            print "regulatory threshold: " + str(self.regulatory_threshold)
+            print "array_fitted: " + str(self.array_fitted)
+            print "array_actual: " + str(self.array_actual)
+            print "fitted: " + str(self.fitted)
+            print "actual: " + str(self.actual)
+            print "condition: " + str(np.where(self.array_actual <= self.regulatory_threshold))
             non_exceedances = self.array_fitted[np.where(self.array_actual <= self.regulatory_threshold)[0]]
+            print "ne: " + str(non_exceedances)
+            print "spec: " + str(specificity)
             self.threshold = utils.Quantile(non_exceedances, specificity)
             self.specificity = float(sum(non_exceedances <= self.threshold))/non_exceedances.shape[0]
 
@@ -183,13 +193,13 @@ class Model(object):
 
 
     def GetActual(self):
-        fitted = np.array(self.model['actual'].AsVector())
+        self.array_actual = np.array(self.model['actual'].AsVector()).squeeze()
         
         #Recover the actual counts by adding the residuals to the fitted counts.
-        residuals = np.array(self.model['residuals'].AsVector())
+        #residuals = np.array(self.model['residuals'].AsVector())
         #residuals = residual_values.transpose()
         
-        self.array_actual = np.array(fitted + residuals).squeeze()
+        #self.array_actual = np.array(fitted + residuals).squeeze()
         self.actual = list(self.array_actual)
         
         

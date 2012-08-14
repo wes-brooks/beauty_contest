@@ -123,6 +123,9 @@ def Quantile(list, q):
         list = np.sort(list)
         position = np.ceil(q * (len(list)-1) )
         
+        print "list: length: " + str(len(list)) + ", values: " + str(list)
+        print "q: " + str(q)
+        print "position: " + str(position)
         #if len(list) > position+1 : position += 1
         
         return list[position]
