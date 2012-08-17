@@ -164,7 +164,7 @@ logistic = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100
 }
 
 
-lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100) {
+lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, nlambda=100, lambda.min.ratio=1000, lambda=NULL) {
     #Create the object that will hold the output
     result = list()
     class(result) = "glimp"
@@ -184,9 +184,9 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100) {
     
     y = as.matrix(data[,response.col])
     x = as.matrix(data[,predictor.names])
-    x = scale(x, center=TRUE, scale=FALSE)
+    x = scale(x, center=TRUE, scale=TRUE)
     meanx = attr(x, "scaled:center")
-    normx = 1 / attr(x, "scaled:scale")
+    scalex = attr(x, "scaled:scale")
     
     x = cbind(rep(1,nrow(x)), x)
     
@@ -195,40 +195,60 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100) {
     
     #Define some constants
     eps = 1e-5   
-	lambda.ratio = 100
-    lmax = max(abs(cor(x[,-1],y))) / 2.28
-    l = seq(from=lmax/lambda.ratio, to=lmax, length.out=lambda.ratio)
+    if (is.null(lambda)) {
+        lmax = max(abs(cor(x[,-1],y)))
+        ll = seq(from=lmax, to=lmax/lambda.min.ratio, length.out=nlambda)
+    } else {
+        print(lambda)
+        ll = as.vector(lambda)
+    }
     alpha = 1
     b0 = mean(y)
     b = matrix(0, ncol(x), 1)
     b[1]=b0
-    
-    lambda = tail(l, 50)[1]
-    
-	fitted = x %*% b
 	
-	rss.old = 0
-	iter=0
-	finished = FALSE
-	
-	while (finished==FALSE) {
-		
-		for (k in 2:length(b)) {
-			partial = y-fitted + x[,k]*b[k]
-			b[k] = S(sum(x[,k]*partial), lambda) / sum(x[,k]**2)
-			fitted = x %*% b
-			
-		}
-		partial = y-fitted + x[,1]*b[1]
-		b[1] = S(sum(x[,1]*partial), lambda) / sum(x[,1]**2)
-		
-		rss = sum((y-fitted)**2)
-		
-		iter = iter + 1
-		if (abs(rss - rss.old)<tol || iter>=max.iter) {finished = TRUE}
-		rss.old = rss
-	}
-	
-	cat(paste("Iterations: ", iter, "\n", sep=""))
-	return(b)
+    beta = list()
+
+    for (j in 1:length(ll)) {
+        l = ll[j]
+        if (j>1) {
+            b=beta[[j-1]]
+            #b[1] = b[1] + sum(b[-1]*meanx)
+            #b[-1] = b[-1] * scalex
+        }  
+
+        fitted = x %*% b
+        obj.old = 0
+        iter=0
+        finished = FALSE
+
+        while (finished==FALSE) {
+            for (k in 2:length(b)) {
+                partial = y-fitted + x[,k]*b[k]
+                b[k] = S(sum(x[,k]*partial), l) / sum(x[,k]**2)
+                fitted = x %*% b                
+            }
+
+            partial = y-fitted + x[,1]*b[1]
+            b[1] = sum(x[,1]*partial) / sum(x[,1]**2)
+            
+            obj = 0.5*mean((y-fitted)**2) + l*sum(abs(b))
+            
+            iter = iter+1
+            if (abs(obj - obj.old)<tol || iter>=max.iter) {finished = TRUE}
+            obj.old = obj
+        }
+        
+        cat(paste("Iterations: ", iter, "\n", sep=""))
+        
+        beta[[j]] = b
+
+        #for (k in 2:length(b)) {       
+        #    beta[[j]][k] = b[k] / scalex[k-1]
+        #    beta[[j]][1] = b[1] - b[k]*meanx[k-1]
+        #    b[1] = b[1] - sum(b[-1]/scalex * meanx)
+        #}
+    }
+
+	return(list(beta=beta, meanx=meanx, scalex=scalex))
 }
