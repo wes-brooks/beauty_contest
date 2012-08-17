@@ -200,7 +200,7 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100) {
     l = seq(from=lmax/lambda.ratio, to=lmax, length.out=lambda.ratio)
     alpha = 1
     b0 = mean(y)
-    b = matrix(rnorm(n=ncol(x)), ncol(x), 1)
+    b = matrix(0, ncol(x), 1)
     b[1]=b0
     
     lambda = tail(l, 50)[1]
