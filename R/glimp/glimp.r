@@ -164,7 +164,7 @@ logistic = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100
 }
 
 
-lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, nlambda=100, lambda.min.ratio=1000, lambda=NULL) {
+lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, nlambda=100, lambda.min.ratio=100, lambda=NULL) {
     #Create the object that will hold the output
     result = list()
     class(result) = "glimp"
@@ -184,11 +184,20 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
     
     y = as.matrix(data[,response.col])
     x = as.matrix(data[,predictor.names])
-    x = scale(x, center=TRUE, scale=TRUE)
-    meanx = attr(x, "scaled:center")
-    scalex = attr(x, "scaled:scale")
+    
+    meanx = vector()
+    normx = vector()
+    for (k in 1:ncol(x)) {
+        meanx = c(meanx, mean(x[,k]))
+        normx = c(normx, sqrt(sum((x[,k]-meanx[k])**2)))
+        #x[,k] = (x[,k]-meanx[k])/normx[k]
+    }
     
     x = cbind(rep(1,nrow(x)), x)
+    
+    meany = mean(y)
+    normy = sqrt(sum((y-meany)**2))
+    #y = (y-meany) / normy    
     
     result[['response']] = response.name
     result[['predictors']] = predictor.names
@@ -196,13 +205,13 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
     #Define some constants
     eps = 1e-5   
     if (is.null(lambda)) {
-        lmax = max(abs(cor(x[,-1],y)))
+        lmax = max(abs(cor(x[,-1],y))) * sqrt(mean((y-mean(y))**2))
         ll = seq(from=lmax, to=lmax/lambda.min.ratio, length.out=nlambda)
-    } else {
-        print(lambda)
+    } else {        
         ll = as.vector(lambda)
     }
-    alpha = 1
+    print(ll)
+    
     b0 = mean(y)
     b = matrix(0, ncol(x), 1)
     b[1]=b0
@@ -225,30 +234,36 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
         while (finished==FALSE) {
             for (k in 2:length(b)) {
                 partial = y-fitted + x[,k]*b[k]
-                b[k] = S(sum(x[,k]*partial), l) / sum(x[,k]**2)
+                b[k] = S(sum(x[,k]*partial)/sum(x[,k]**2), l)
                 fitted = x %*% b                
             }
 
             partial = y-fitted + x[,1]*b[1]
             b[1] = sum(x[,1]*partial) / sum(x[,1]**2)
+            fitted = x %*% b 
             
-            obj = 0.5*mean((y-fitted)**2) + l*sum(abs(b))
+            obj = 0.5*mean((y-fitted)**2) + l*sum(abs(b[-1]))
             
             iter = iter+1
-            if (abs(obj - obj.old)<tol || iter>=max.iter) {finished = TRUE}
+            if (abs(obj-obj.old)<tol || iter>=max.iter) {finished = TRUE}
             obj.old = obj
         }
         
         cat(paste("Iterations: ", iter, "\n", sep=""))
         
         beta[[j]] = b
+    }
+    
+    for (i in 1:length(beta)) {
+        #beta[[i]][1] = beta[[i]][1] / nrow(x)**2
+        #beta[[i]][-1] = beta[[i]][-1] / normx
+        #beta[[i]] = beta[[i]] * normy
+        #beta[[i]][1] = beta[[i]][1] - sum(beta[[i]][-1]*meanx)
+        #beta[[i]][1] = beta[[i]][1] + meany
 
-        #for (k in 2:length(b)) {       
-        #    beta[[j]][k] = b[k] / scalex[k-1]
-        #    beta[[j]][1] = b[1] - b[k]*meanx[k-1]
-        #    b[1] = b[1] - sum(b[-1]/scalex * meanx)
-        #}
+        rownames(beta[[i]]) = c("(Intercept)", predictor.names)
+        beta[[i]] = Matrix(beta[[i]])
     }
 
-	return(list(beta=beta, meanx=meanx, scalex=scalex))
+	return(list(beta=beta, meanx=meanx, normx=normx, x=x))
 }
