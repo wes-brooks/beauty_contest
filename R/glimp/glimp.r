@@ -187,10 +187,13 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
     
     meanx = vector()
     normx = vector()
+    ssx = vector()
     for (k in 1:ncol(x)) {
         meanx = c(meanx, mean(x[,k]))
-        normx = c(normx, sqrt(sum((x[,k]-meanx[k])**2)))
+        normx = c(normx, sum((x[,k]-meanx[k])**2))
         #x[,k] = (x[,k]-meanx[k])/normx[k]
+        x[,k] = x[,k]-meanx[k]
+        ssx = c(ssx, sum(x[,k]**2))
     }
     
     x = cbind(rep(1,nrow(x)), x)
@@ -227,6 +230,7 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
         }  
 
         fitted = x %*% b
+        print(fitted)
         obj.old = 0
         iter=0
         finished = FALSE
@@ -234,7 +238,8 @@ lasso = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
         while (finished==FALSE) {
             for (k in 2:length(b)) {
                 partial = y-fitted + x[,k]*b[k]
-                b[k] = S(sum(x[,k]*partial)/sum(x[,k]**2), l)
+                partial = partial-mean(partial)
+                b[k] = S(sum(x[,k]*partial)/ssx[k-1], l/ssx[k-1])
                 fitted = x %*% b                
             }
 
