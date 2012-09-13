@@ -23,13 +23,8 @@ glimp = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
         x[,k] = (x[,k]-meanx[k])/normx[k]
     }
     
-    x = cbind(rep(1,nrow(x)), x)
-
-    s = svd(x)   #  if you don't know what svd is, you should!  It's great.
-    F = s$u  %*% diag(1/s$d)  %*%  t(s$u)
-    x = F%*%x
-    #pY = F%*%z
-    #fit = lars(pX, pY)   #  You could replace "lars" with your favorite sparse regression function.  I have tried 
+    #x = as.matrix(x)
+    x = as.matrix(cbind(rep(1,nrow(x)), x))
     
     if (is.null(lambda)) {
         lmax = max(abs(cor(x[,-1],y))) * sqrt(mean((y-mean(y))**2))
@@ -46,63 +41,62 @@ glimp = function(formula, data, family, weights=NULL, tol=1e-10, max.iter=100, n
     beta = list()
 
     for (j in 1:length(ll)) {
+        print(j)
+
         l = ll[j]
         if (j>1) {b=beta[[j-1]]}  
 
         eta = x %*% b
         fitted = ifelse(eta<eps.inv, eps, ifelse(eta>-eps.inv, 1-eps, exp(eta)/(1+exp(eta))))
         w = as.vector(fitted*(1-fitted))
+        W = diag(sqrt(w))
 
         obj.old = 0
         iter=0
         finished = FALSE
 
         while (finished==FALSE) {
-            #print(fitted)
-            #print(w)
-    
-            #z = as.matrix((y-fitted)/w + eta, nrow(x), 1)
-            #b = solve(t(x) %*% diag(w) %*% x) %*% t(x) %*% diag(w) %*% z
-            #print(b)
-            for (k in 2:length(b)) {
-                #print(w)
-                z = (y-fitted)/w + x[,k]*b[k]
-                
-                z = F%*%z
 
-                b[k] = lsfit(x=as.matrix(x[,k], nrow(x), 1), y=as.matrix(z, nrow(x), 1), wt=as.vector(w), intercept=TRUE)$coef[2]
-                #b[k] = sum(w*(z-mean(z))*x[,k]) / sum(w*x[,k]**2)
+            for (k in 2:length(b)) {
+                #Re-compute the preconditioning matrix at each iteration?
+                s = svd(W%*%x)   #  if you don't know what svd is, you should!  It's great.
+                F.W = s$u  %*% diag(1/s$d)  %*%  t(s$u)
+                x.W = F.W %*% W %*% x
+
+                z = as.matrix((y-fitted)/w + x[,k]*b[k], nrow(x), 1)
+                z.W = F.W %*% z 
+                z.W = z.W - mean(z.W)               
+
+                b[k] = lsfit(x=x.W, y=z.W, intercept=FALSE)$coef[2]
                 b[k] = S(b[k], l*sqrt(n)) 
             
                 eta = x %*% b
-                #print(eta)
                 fitted = ifelse(eta<eps.inv, eps, ifelse(eta>-eps.inv, 1-eps, exp(eta) / (1+exp(eta))))
-                #fitted = as.vector(exp(eta) / (1+exp(eta)))
-                #fitted = ifelse(fitted<eps, eps, ifelse(fitted>1-eps, 1-eps, fitted))
-                w = fitted*(1-fitted)
+
+                w = as.vector(fitted*(1-fitted))        
+                W = diag(sqrt(w))
             }
-            #print(fitted)
-            #print(w)
+
+            s = svd(W%*%x)
+            F.W = s$u  %*% diag(1/s$d)  %*%  t(s$u)
+
             z = (y-fitted)/w + x[,1]*b[1]
-            z = F%*%z
-            b[1] = mean(z)
-    
-            #print(z)
-            #print(b)
+            z.W = F.W %*% z
+            b[1] = mean(z.W)
     
             eta = x %*% b
             fitted = ifelse(eta<eps.inv, eps, ifelse(eta>-eps.inv, 1-eps, exp(eta)/(1+exp(eta))))
-            #fitted = as.vector(exp(eta) / (1+exp(eta)))
-            #fitted = ifelse(fitted<eps, eps, ifelse(fitted>1-eps, 1-eps, fitted))
+
             w = as.vector(fitted*(1-fitted))
-    
-            #print(eta)            
+            W = diag(sqrt(w))
     
             obj = sum(w*(y*eta - (1+exp(eta)))) #+ l*sum(abs(b[-1]))
             
             iter = iter+1
             cat(paste("obj=", obj, ", obj.old=", obj.old, "\n", sep=""))
-            if (abs(obj-obj.old)<tol || iter>=max.iter) {finished = TRUE}
+
+            convergence = try(if (abs(obj-obj.old)<tol || iter>=max.iter) {finished = TRUE})
+            if (class(convergence)=='try-error') {finished=TRUE}
             obj.old = obj
         }
     
