@@ -23,36 +23,40 @@ beaches = dict()
 ##beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
 ##beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 ##beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
-#beaches['hika'] = {'file':'../data/HK_v3.2_plsdata.csv', 'target':'observation', 'remove':['beachEColiValue', 'time'], 'threshold':2.3711, 'transforms':[]}
-#beaches['FS'] = {'file':'../data/FS-v2.x.csv', 'target':'observation', 'remove':['beachEColiValue', 'datetime'], 'threshold':2.3711, 'transforms':[]}
-beaches['KR'] = {'file':'../data/KR-v2.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-#beaches['MS'] = {'file':'../data/MS-v3.1data.csv', 'target':'observation', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-#beaches['NS'] = {'file':'../data/NS-v1.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-#beaches['PT1'] = {'file':'../data/PT1-v1.1data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-#beaches['PT2'] = {'file':'../data/PT2-v1.1data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-#beaches['PT3'] = {'file':'../data/PT3-v1.1data.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-#beaches['RA'] = {'file':'../data/RA-v2.0data.csv', 'target':'logec', 'remove':['beachEColiValue', 'CDTTime'], 'threshold':2.3711, 'transforms':[]}
-#beaches['TH'] = {'file':'../data/TH-v2.1data.csv', 'target':'observation', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['hika'] = {'file':'../data/Hika.csv', 'target':'observation', 'remove':['beachEColiValue', 'time'], 'threshold':2.3711, 'transforms':[]}
+beaches['fisher'] = {'file':'../data/Fisher.csv', 'target':'observation', 'remove':['beachEColiValue', 'datetime'], 'threshold':2.3711, 'transforms':[]}
+beaches['kreher'] = {'file':'../data/Kreher.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['maslowski'] = {'file':'../data/Maslowski.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['neshotah'] = {'file':'../data/Neshotah.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['pointconcessions'] = {'file':'../data/PointConcessions.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['pointlakeshore'] = {'file':'../data/PointLakeshore.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['pointlighthouse'] = {'file':'../data/PointLighthouse.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+beaches['redarrow'] = {'file':'../data/RedArrow.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'CDTTime'], 'threshold':2.3711, 'transforms':[]}
+beaches['thompson'] = {'file':'../data/Thompson.csv', 'target':'observation', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
 ##beaches['huntington'] = {'file':'../data/HuntingtonBeach.csv', 'target':'logecoli', 'remove':[], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
 ##methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True, 'precondition':False}
-#methods["PLS"] = {}
-#methods["gbm-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
-#methods["gbmcv-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
-#methods["gbm-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
-#methods["gbmcv-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
+methods["PLS"] = {}
+methods["gbm-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+methods["gbmcv-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
+methods["gbm-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+methods["gbmcv-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
 ##methods["gam"] = {'k':50, 'julian':'jday'}
 ##methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-#methods['galogistic-weighted'] = {'weights':'discrete', 'generations':100, mutate=0.05}
-#methods['adalasso-weighted-adaptive'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False}
+methods['galogistic-weighted'] = {'weights':'discrete', 'generations':100, 'mutate':0.05}
+methods['adalasso-weighted'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False}
 ##methods['adalasso-weighted-preconditioned'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':True}
-#methods['galogistic-unweighted'] = {'weights':'none', 'generations':100, mutate=0.05}
-#methods['adalasso-unweighted-adaptive'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False}
+methods['galogistic-unweighted'] = {'weights':'none', 'generations':100, 'mutate':0.05}
+methods['adalasso-unweighted'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False}
+methods['adalasso-unweighted-select'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+methods['adalasso-weighted-select'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
 ##methods['adalasso-unweighted-preconditioned'] = {'weights':'none', 'adapt':False, 'overshrink':True, 'precondition':True}
-#methods["galm"] = {'generations':100, mutate=0.05}
-#methods["adapt"] = {'adapt':True, 'overshrink':True, 'precondition':False}
-methods["spls"] = {}
+methods["galm"] = {'generations':100, 'mutate':0.05}
+methods["adapt"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':False}
+methods["adapt-select"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+methods["spls"] = {'selectvars':False}
+methods["spls-select"] = {'selectvars':True}
 ##methods["precondition"] = {'adapt':False, 'overshrink':True, 'precondition':True}
 
 

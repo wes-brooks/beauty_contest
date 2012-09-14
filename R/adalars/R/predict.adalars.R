@@ -5,15 +5,20 @@ function(obj, newx, ...) {
     colnames(pred.data) = colnames(newx)
     pred.data = pred.data[,predictors]
     
-    if (obj[['response']] %in% colnames(pred.data)) {
-        response.col = which(colnames(pred.data) == obj[['response']])
-        pred.data = pred.data[,-response.col]
+    if (obj[['selectvars']] == TRUE) {
+        predictions = predict(obj[['lm']], newx, ...)
+    } else {
+        if (obj[['response']] %in% colnames(pred.data)) {
+            response.col = which(colnames(pred.data) == obj[['response']])
+            pred.data = pred.data[,-response.col]
+        }
+        
+        for (predictor in predictors) {
+            pred.data[,predictor] = (pred.data[,predictor] - obj[['lars']][['meanx']][[predictor]]) * obj[['lars']][['coef.scale']][[predictor]]
+        }
+        
+        predictions = predict(obj[['lars']][['model']], newx=pred.data, s=obj[['lambda']], mode='lambda', type='fit')[['fit']]
     }
     
-    for (predictor in predictors) {
-        pred.data[,predictor] = (pred.data[,predictor] - obj[['lars']][['meanx']][[predictor]]) * obj[['lars']][['coef.scale']][[predictor]]
-    }
-    
-    predictions = predict(obj[['lars']][['model']], newx=pred.data, s=obj[['lambda']], mode='lambda', type='fit')[['fit']]
     return(predictions)
 }

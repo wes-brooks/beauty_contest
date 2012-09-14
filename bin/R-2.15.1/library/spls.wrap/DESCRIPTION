@@ -9,4 +9,4 @@ Maintainer: Wesley Brooks <wrbrooks@usgs.gov>
 Description: Wraps the spls package for variable selection and model-building.
 License: GPL-3
 Depends: spls
-Built: R 2.15.1; ; 2012-09-05 22:58:24 UTC; windows
+Built: R 2.15.1; ; 2012-09-10 16:02:11 UTC; windows

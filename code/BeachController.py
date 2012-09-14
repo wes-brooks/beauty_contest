@@ -1,5 +1,5 @@
 from modeling_pkg import adapt, pls, gbm, gam, logistic, lasso, adalasso, galm, adapt, galogistic, spls#, pls_parallel
-methods = {'pls':pls, 'boosting':gbm, 'gbm-unweighted':gbm, 'gbmcv-unweighted':gbm, 'gbm-weighted':gbm, 'gbmcv-weighted':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso-unweighted-adaptive':adalasso, 'adalasso-unweighted-preconditioned':adalasso, 'adalasso-weighted-adaptive':adalasso, 'adalasso-weighted-preconditioned':adalasso, 'galm':galm, 'adapt':adapt, 'galogistic-unweighted':galogistic, 'galogistic-weighted':galogistic, 'precondition':adapt, 'spls':spls}
+methods = {'pls':pls, 'boosting':gbm, 'gbm-unweighted':gbm, 'gbmcv-unweighted':gbm, 'gbm-weighted':gbm, 'gbmcv-weighted':gbm, 'gam':gam, 'logistic':logistic, 'lasso':lasso, 'adalasso-unweighted':adalasso, 'adalasso-unweighted-preconditioned':adalasso,'adalasso-unweighted-select':adalasso, 'adalasso-weighted':adalasso, 'adalasso-weighted-select':adalasso, 'adalasso-weighted-preconditioned':adalasso, 'galm':galm, 'adapt':adapt, 'galogistic-unweighted':galogistic, 'galogistic-weighted':galogistic, 'precondition':adapt, 'spls':spls, 'spls-select':spls, 'adapt-select':adapt}
 
 import utils
 import sys

@@ -1,0 +1,1247 @@
+['..\\bin', 'C:\\Condor\\execute\\dir_3008\\bin', 'C:\\Condor\\execute\\dir_3008\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_3008\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_3008\\bin\\IronPython 2.7\\Lib\\site-packages', 'C:\\Condor\\execute\\dir_3008\\code', 'C:\\Condor\\execute\\dir_3008\\code', 'C:\\Condor\\execute\\dir_3008\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_3008\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_3008\\bin\\IronPython 2.7', 'C:\\Condor\\execute\\dir_3008\\bin\\IronPython 2.7\\lib\\site-packages']
+Loading required package: lars
+Loaded lars 1.1
+
+
+Attaching package: 'pls'
+
+The following object(s) are masked from 'package:stats':
+
+    loadings
+
+Loading required package: survival
+Loading required package: splines
+Loading required package: lattice
+Loaded gbm 1.6.3.2
+
+This is mgcv 1.7-18. For overview type 'help("mgcv-package")'.
+Loading required package: censReg
+Loading required package: maxLik
+Loading required package: miscTools
+Loading required package: glmnet
+Loading required package: Matrix
+Loaded glmnet 1.7.4
+
+Loading required package: spls
+Loading required package: MASS
+Loading required package: nnet
+s: 10
+m: 16
+d: (10, 5)
+mm: (0, 10)
+locs: ['kreher']
+tasks: ['spls-select']
+seed: 0.499913376269
+['kreher']
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.8
+position: 55.0
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.6
+position: 41.0
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.4
+position: 28.0
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.2
+position: 14.0
+outer fold: 1
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.8
+position: 43.0
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.6
+position: 32.0
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.4
+position: 22.0
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.2
+position: 11.0
+inner fold: 1.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_67113574, data=r_86452957, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.65, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_84080897, newx=r_38272526)
+inner fold: 2.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_79924263, data=r_95411628, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.15, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_75154861, newx=r_60089552)
+inner fold: 3.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_50500008, data=r_20760986, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.65, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_44778310, newx=r_17424262)
+inner fold: 4.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_74668010, data=r_18186294, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.7, K = 3
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_58235990, newx=r_67027111)
+inner fold: 5.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_45407892, data=r_060846586, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.2, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_23524680, newx=r_53024086)
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_78638652, data=r_86328878, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.75, K = 3
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+list: length: 44, values: [0.179961962072 0.305812141511 0.449078458231 0.515420677755 0.632145369504
+ 0.642138343248 0.668101859958 0.678379410951 0.691888808556 0.798418905489
+ 0.839338005945 0.905995230884 1.02547106482 1.04995675809 1.05273198086
+ 1.06875449472 1.08100552382 1.11183719831 1.20129270292 1.23542199496
+ 1.24871083975 1.29469320867 1.39125968337 1.45086779808 1.46091962404
+ 1.47023760704 1.47442209710 1.48090015752 1.48375708799 1.57292806235
+ 1.64881743840 1.67408027462 1.69261086384 1.76979807485 1.77103720560
+ 1.80109932475 1.83920071614 1.85817632864 1.92150111547 1.98971284112
+ 2.28003510646 2.35122091678 2.36163488603 2.39166926196]
+q: 0.9
+position: 39.0
+predict(obj=r_0065279989, newx=r_55725753)
+outer fold: 2
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.8
+position: 44.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.6
+position: 33.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.4
+position: 22.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.2
+position: 11.0
+inner fold: 1.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_073371116, data=r_82412575, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.5, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_39199318, newx=r_097092832)
+inner fold: 2.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_72782187, data=r_16072475, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.1, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_2908752, newx=r_91726914)
+inner fold: 3.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_7521822, data=r_39516266, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.45, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_31310342, newx=r_20384463)
+inner fold: 4.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_86892230, data=r_0093757309, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.35, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_47241561, newx=r_72121230)
+inner fold: 5.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_44390841, data=r_44801625, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.1, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_85875847, newx=r_90226629)
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_0061587463, data=r_88712656, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.1, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+list: length: 45, values: [-0.279576594725 -0.0449032016923 0.0650498907822 0.110201020311
+ 0.209712699265 0.286919393791 0.44134730403 0.456148524735 0.486099876908
+ 0.516060405917 0.613158308978 0.70421797209 0.72326315371 0.726567212976
+ 0.776271726317 0.819137539126 0.952698231117 0.993019503509 1.02549653353
+ 1.04756997394 1.12382682863 1.12996291790 1.18671447809 1.25655464206
+ 1.27071027101 1.28743195779 1.29231192343 1.34004259561 1.44756253499
+ 1.47887941766 1.52798884824 1.58895493413 1.63651258116 1.64132677398
+ 1.65626920155 1.68066479330 1.72395784078 1.80496355927 2.03744844454
+ 2.09617004096 2.10748078868 2.21823770922 2.22952790989 2.24055948683
+ 2.26804752929]
+q: 0.771428571429
+position: 34.0
+predict(obj=r_1625965, newx=r_69327065)
+outer fold: 3
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.8
+position: 44.0
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.6
+position: 33.0
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.4
+position: 22.0
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.2
+position: 11.0
+inner fold: 1.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_78957575, data=r_1142423, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.75, K = 3
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_36186208, newx=r_14782683)
+inner fold: 2.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_53352171, data=r_40672187, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.75, K = 3
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_23252282, newx=r_38015901)
+inner fold: 3.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_62369200, data=r_30133272, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.85, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_17119736, newx=r_49962587)
+inner fold: 4.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_10596793, data=r_7949016, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.65, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_37602987, newx=r_17709139)
+inner fold: 5.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_97043415, data=r_061576665, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.85, K = 4
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_94367896, newx=r_52978371)
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_10247072, data=r_37992637, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.55, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+list: length: 47, values: [0.129363564916 0.186899519493 0.208452549384 0.220719392207 0.253413605315
+ 0.493143881389 0.499861993705 0.662435814019 0.754669771651 0.815799699736
+ 0.874298230855 0.921696126323 0.955531683436 0.959761203193 0.976985736491
+ 0.981983153474 0.998435461879 1.02731443080 1.04546093794 1.08551431132
+ 1.09182352124 1.1038386056 1.10668963527 1.11461692369 1.13349130000
+ 1.15905071568 1.20491468432 1.21043832513 1.24618199532 1.26334199674
+ 1.35164437439 1.35195010237 1.37869811820 1.37974576731 1.40363726915
+ 1.45186167388 1.51676520969 1.54424100248 1.57282558311 1.72329546510
+ 1.76957119365 1.89231963904 1.89907220856 2.14682156188 2.29498077352
+ 2.54235767878 2.68784205128]
+q: 0.948717948718
+position: 44.0
+predict(obj=r_48408566, newx=r_21467347)
+outer fold: 4
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.8
+position: 44.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.6
+position: 33.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.4
+position: 22.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.2
+position: 11.0
+inner fold: 1.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_72542198, data=r_93812880, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.6, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_36964873, newx=r_28778970)
+inner fold: 2.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_35239770, data=r_91407010, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.1, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_5752191, newx=r_61065789)
+inner fold: 3.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_76530623, data=r_26626578, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.7, K = 4
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_61266111, newx=r_044970037)
+inner fold: 4.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_52004582, data=r_74623955, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.85, K = 3
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_052151051, newx=r_97871345)
+inner fold: 5.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_4529885, data=r_32893209, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.9, K = 3
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_45181538, newx=r_16741703)
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_085434658, data=r_59586190, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.85, K = 4
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+list: length: 44, values: [0.21273719138 0.314501210815 0.406221938938 0.407749610601 0.482109020129
+ 0.529314537307 0.597602328324 0.731685432702 0.736268076338 0.858164047063
+ 0.926873079595 0.947982329134 0.964938585567 1.01139812042 1.01883853465
+ 1.06428767615 1.11348750447 1.12849503911 1.14528728962 1.20738612306
+ 1.23069606927 1.24932798809 1.26452566511 1.29947521314 1.31173444909
+ 1.37715457410 1.38429587313 1.45545111827 1.46710472751 1.51279324582
+ 1.53116920660 1.60962320712 1.66134989678 1.67221112830 1.73107362860
+ 1.80784695279 1.82819859199 1.89175081576 2.16547457798 2.16991677005
+ 2.30348149999 2.40209548904 2.41732905159 2.68288394428]
+q: 0.852941176471
+position: 37.0
+predict(obj=r_67369314, newx=r_63387382)
+outer fold: 5
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.8
+position: 44.0
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.6
+position: 33.0
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.4
+position: 22.0
+list: length: 56, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55]
+q: 0.2
+position: 11.0
+inner fold: 1.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_64523238, data=r_47451977, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.25, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_44430786, newx=r_83527682)
+inner fold: 2.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_093254248, data=r_82453174, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.9, K = 3
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_5634898, newx=r_15596819)
+inner fold: 3.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_60801299, data=r_65961593, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.3, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_19093601, newx=r_071269128)
+inner fold: 4.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_82783253, data=r_18714198, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.1, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_95405185, newx=r_18258050)
+inner fold: 5.0
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_21184677, data=r_9942643, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.15, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_87471666, newx=r_35341865)
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_5578062, data=r_59729165, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.1, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+list: length: 44, values: [-0.0182332498869 0.0484684488667 0.0967477645311 0.258029443284
+ 0.359758351056 0.451764532144 0.664188865189 0.674111546304 0.721949591378
+ 0.75334494237 0.785531624059 0.786564925324 0.800581387747 0.844206298357
+ 0.900851963982 0.911761206406 0.917526322357 1.05719524142 1.16470732297
+ 1.17952424667 1.20122924376 1.26109461984 1.28288239053 1.33508128291
+ 1.35345129631 1.35895837445 1.39449978525 1.40557878281 1.43164940487
+ 1.45959647652 1.51124414159 1.53972073794 1.54711415639 1.59228612878
+ 1.64416661186 1.64793459101 1.73564753948 1.80774481087 1.82324708880
+ 1.96150428039 2.10640381537 2.14801797013 2.19714415316 2.30192430044]
+q: 0.970588235294
+position: 42.0
+predict(obj=r_30082110, newx=r_79077332)
+as.formula(obj='logecoli~.')
+spls.wrap(formula=r_81875741, data=r_23291860, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.75, K = 4
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+list: length: 56, values: [-0.193933844132 0.188803734576 0.213748824385 0.398230435167
+ 0.410007370852 0.470870527483 0.525169048174 0.527287402947 0.646598779769
+ 0.691095971876 0.707992665657 0.764314972387 0.764324464804 0.841652127071
+ 0.868649255048 0.941613182679 1.01737360440 1.10048294549 1.13351813683
+ 1.13882239863 1.16433284971 1.19539758192 1.19829234539 1.20395821605
+ 1.21812086734 1.22115981501 1.27939107924 1.29396309221 1.30668136985
+ 1.31144080158 1.33060377677 1.34601915577 1.40542478687 1.42404510078
+ 1.43994503865 1.44423619620 1.46927687732 1.50280377806 1.55356033774
+ 1.58540551218 1.62238737075 1.64479921480 1.64975807523 1.67726424216
+ 1.69070479422 1.69714475538 1.75620192210 1.75877305896 1.77256380146
+ 1.89685886513 1.98152034624 2.17019657792 2.18550790299 2.33066896771
+ 2.34829235010 2.57889197745]
+q: 0.9
+position: 50.0

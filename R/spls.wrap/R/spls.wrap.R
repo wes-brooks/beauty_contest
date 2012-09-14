@@ -1,5 +1,5 @@
 spls.wrap <-
-function(formula, data, K=NULL, eta=seq(0.1,0.9,0.05), kappa=0.5, select="pls2", fit="simpls", eps=1e-4, maxstep=100, trace=FALSE) {
+function(formula, data, K=NULL, eta=seq(0.1,0.9,0.05), kappa=0.5, select="pls2", fit="simpls", eps=1e-4, maxstep=100, trace=FALSE, selectvars=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "spls.wrap"
@@ -42,23 +42,39 @@ function(formula, data, K=NULL, eta=seq(0.1,0.9,0.05), kappa=0.5, select="pls2",
     
     cv = cv.spls(x=x, y=y, K=K, eta=eta, fit=fit, select=select, scale.x=FALSE, scale.y=FALSE, plot.it=FALSE)
     m = spls(x=x, y=y, K=cv$K.opt, eta=cv$eta.opt, kappa=kappa, select=select, fit=fit, scale.x=FALSE, scale.y=FALSE, eps=eps, maxstep=maxstep, trace=trace)
-    ci = ci.spls(m, plot.it=FALSE)
-    coef = correct.spls(ci, plot.it=FALSE)
+    ci = try(ci.spls(m, plot.it=FALSE))
+    if (class(ci)=='try-error') {
+        print("error! x:")
+        print(x)
+        coef=coef(m)
+    } else {
+        coef = correct.spls(ci, plot.it=FALSE)
+    }
     
-    result[['Intercept']] = as.numeric(m$mu)
-    result[['meanx']] = meanx
-    result[['normx']] = normx
-    
-    coef = coef / normx
-    result[['Intercept']] = result[['Intercept']] - sum(coef*meanx)
+    result[['vars']] = predictor.names[which(abs(coef)>0)]
+        
+    if (selectvars==TRUE) {
+        variables = paste(result[['vars']], collapse="+")
+        f = as.formula(paste(response.name, "~", variables, sep=""))
+        m = lm(formula=f, data=data)
+        coef = matrix(0, length(result[['predictors']]), 1)
+        for (v in names(m$coef[-1])) {
+            i = which(result[['predictors']]==v)
+            coef[i,1] = as.matrix(m$coef[[v]])
+        }
+        result[['Intercept']] = m$coef[["(Intercept)"]]
+        result[['fitted']] = m$fitted
+    } else {
+        result[['meanx']] = meanx
+        result[['normx']] = normx  
+        coef = coef / normx
+        result[['Intercept']] = as.numeric(m$mu) - sum(coef*meanx)
+        result[['fitted']] = result[['Intercept']] + x.orig %*% coef
+    }    
     
     result[['coef']] = coef    
-    
-    result[['fitted']] = result[['Intercept']] + x.orig %*% coef
     result[['actual']] = y
-    result[['residuals']] = result[['actual']] - result[['fitted']] 
-
-    result[['vars']] = predictor.names[which(abs(coef)>0)]
+    result[['residuals']] = result[['actual']] - result[['fitted']]    
     
     return(result)
 }

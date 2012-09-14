@@ -1,0 +1,515 @@
+['..\\bin', 'C:\\Condor\\execute\\dir_3688\\bin', 'C:\\Condor\\execute\\dir_3688\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_3688\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_3688\\bin\\IronPython 2.7\\Lib\\site-packages', 'C:\\Condor\\execute\\dir_3688\\code', 'C:\\Condor\\execute\\dir_3688\\code', 'C:\\Condor\\execute\\dir_3688\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_3688\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_3688\\bin\\IronPython 2.7', 'C:\\Condor\\execute\\dir_3688\\bin\\IronPython 2.7\\lib\\site-packages']
+Loading required package: lars
+Loaded lars 1.1
+
+
+Attaching package: 'pls'
+
+The following object(s) are masked from 'package:stats':
+
+    loadings
+
+Loading required package: survival
+Loading required package: splines
+Loading required package: lattice
+Loaded gbm 1.6.3.2
+
+This is mgcv 1.7-18. For overview type 'help("mgcv-package")'.
+Loading required package: censReg
+Loading required package: maxLik
+Loading required package: miscTools
+Loading required package: glmnet
+Loading required package: Matrix
+Loaded glmnet 1.7.4
+
+Loading required package: spls
+Loading required package: MASS
+Loading required package: nnet
+s: 10
+m: 16
+d: (5, 3)
+mm: (0, 5)
+locs: ['maslowski']
+tasks: ['adalasso-unweighted-select']
+seed: 0.0563749333115
+['maslowski']
+list: length: 74, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73]
+q: 0.8
+position: 59.0
+list: length: 74, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73]
+q: 0.6
+position: 44.0
+list: length: 74, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73]
+q: 0.4
+position: 30.0
+list: length: 74, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73]
+q: 0.2
+position: 15.0
+outer fold: 1
+list: length: 58, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57]
+q: 0.8
+position: 46.0
+list: length: 58, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57]
+q: 0.6
+position: 35.0
+list: length: 58, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57]
+q: 0.4
+position: 23.0
+list: length: 58, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57]
+q: 0.2
+position: 12.0
+inner fold: 1.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_48927151, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_11559379, data=r_31181051)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.144981749666517, nonzero: 10,60"
+predict.adalasso(obj=r_021004906, newx=r_064359590)
+inner fold: 2.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_29450501, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_045099279, data=r_51830550)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.144409401815547, nonzero: 35,60"
+predict.adalasso(obj=r_67211149, newx=r_075767659)
+inner fold: 3.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_57750381, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_72671720, data=r_88746974)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.136825865999474, nonzero: 35"
+predict.adalasso(obj=r_9429226, newx=r_62418512)
+inner fold: 4.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_68677887, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_2974239, data=r_70490725)
+[1] "family is binomial"
+[1]  5 10 61 69 74
+[1] "lambda: 0.0989338825948082, nonzero: 5,10,61,69,74"
+predict.adalasso(obj=r_85227437, newx=r_55128867)
+inner fold: 5.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_23875575, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_84069752, data=r_34882788)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.11927202348894, nonzero: 34"
+predict.adalasso(obj=r_80581540, newx=r_5345892)
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_31884241, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_70911057, data=r_37843001)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.115783620398564, nonzero: 10,60,74"
+list: length: 51, values: [5.67672068706e-05 0.000146391647706 0.000156168680606 0.000180167732233
+ 0.000341346594977 0.000385888742226 0.000501516136095 0.000616166568371
+ 0.000761916662484 0.00124040028586 0.00148015708446 0.00238721551424
+ 0.00265658767763 0.0029496185216 0.00308474259193 0.00426012732848
+ 0.00457951125898 0.00604523343755 0.00661857806963 0.00700923186657
+ 0.00728045245095 0.0104831590827 0.0106654430151 0.0110233338915
+ 0.0125485867757 0.013166759778 0.0142127370193 0.0151273297726
+ 0.0153830400962 0.0172381592633 0.0192197231774 0.0250050784915
+ 0.042074918676 0.0429611885953 0.0452999251246 0.0544424654153
+ 0.0547298258767 0.0623231229869 0.0884790802875 0.0894436239524
+ 0.113551863375 0.15706385683 0.173182776183 0.192550169127 0.221471658343
+ 0.228155528289 0.263734688597 0.265664907007 0.306770099314 0.354725095395
+ 0.411249048948]
+q: 0.0212765957447
+position: 2.0
+predict.adalasso(obj=r_56659310, newx=r_23053478)
+outer fold: 2
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.8
+position: 47.0
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.6
+position: 35.0
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.4
+position: 24.0
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.2
+position: 12.0
+inner fold: 1.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_59027063, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_90976825, data=r_80879719)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.176550503645483, nonzero: 69"
+predict.adalasso(obj=r_28328949, newx=r_32944324)
+inner fold: 2.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_090503918, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_62277338, data=r_88860618)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.17007980969339, nonzero: 42"
+predict.adalasso(obj=r_60985609, newx=r_69613850)
+inner fold: 3.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_063044931, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_45466830, data=r_11235595)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.143264679199884, nonzero: 69"
+predict.adalasso(obj=r_6455478, newx=r_17996566)
+inner fold: 4.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_52971860, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_7517964, data=r_73538071)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.132553092710952, nonzero: 5,24"
+predict.adalasso(obj=r_98642316, newx=r_924597)
+inner fold: 5.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_44212119, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_40466359, data=r_75077194)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.142222591965791, nonzero: 24,69"
+predict.adalasso(obj=r_94640893, newx=r_34591007)
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_48247540, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_8430737, data=r_87643375)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.1481828022185, nonzero: 69"
+list: length: 53, values: [0.0510624949497 0.0510624949497 0.0510624949497 0.0510624949497
+ 0.0510624949497 0.0510624949497 0.0510624949497 0.0510624949497
+ 0.0527839648901 0.0527839648901 0.0527839648901 0.0527839648901
+ 0.0527839648901 0.0527839648901 0.0527839648901 0.0527839648901
+ 0.0527839648901 0.0527839648901 0.0527839648901 0.0527839648901
+ 0.0527839648901 0.0527839648901 0.0527839648901 0.0545601339138
+ 0.0545601339138 0.0545601339138 0.0545601339138 0.0545601339138
+ 0.0545601339138 0.0545601339138 0.0545601339138 0.0545601339138
+ 0.0545601339138 0.056392512371 0.056392512371 0.056392512371
+ 0.058282636789 0.0602320692063 0.0602320692063 0.0602320692063
+ 0.0602320692063 0.0643152290397 0.0643152290397 0.0643152290397
+ 0.066452200644 0.0732646037445 0.0756748828217 0.0781577685295
+ 0.13318286829 0.1501770378 0.178964976399 0.194903612118 0.538753314967]
+q: 0.0425531914894
+position: 3.0
+predict.adalasso(obj=r_082221415, newx=r_16438758)
+outer fold: 3
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.8
+position: 48.0
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.6
+position: 36.0
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.4
+position: 24.0
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.2
+position: 12.0
+inner fold: 1.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_16331841, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_33310475, data=r_79383589)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.172618463115087, nonzero: 2"
+predict.adalasso(obj=r_17820073, newx=r_27068561)
+inner fold: 2.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_85226531, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_27229313, data=r_34432250)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.153681955707492, nonzero: 2"
+predict.adalasso(obj=r_36137091, newx=r_33437153)
+inner fold: 3.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_71091245, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_11483962, data=r_90891776)
+[1] "family is binomial"
+[1] 2
+[1] "lambda: 0.143971459275974, nonzero: 2"
+predict.adalasso(obj=r_75523490, newx=r_69051183)
+inner fold: 4.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_64163403, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_5743894, data=r_53803660)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.171070409663522, nonzero: 2"
+predict.adalasso(obj=r_89350567, newx=r_15253973)
+inner fold: 5.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_25938959, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_20643938, data=r_077367284)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.107180298405919, nonzero: 10,61"
+predict.adalasso(obj=r_1711633, newx=r_12361068)
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_72444476, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_4296621, data=r_6730643)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.157918034141314, nonzero: 2"
+list: length: 54, values: [0.0176179571366 0.0176179571366 0.0279246766968 0.0279246766968
+ 0.0279246766968 0.0279246766968 0.0279246766968 0.0279246766968
+ 0.0279246766968 0.0439909499474 0.0439909499474 0.0439909499474
+ 0.0439909499474 0.0439909499474 0.0439909499474 0.0439909499474
+ 0.0439909499474 0.0439909499474 0.0439909499474 0.0439909499474
+ 0.0439909499474 0.0439909499474 0.0439909499474 0.0439909499474
+ 0.0439909499474 0.0439909499474 0.0439909499474 0.0439909499474
+ 0.0439909499474 0.0439909499474 0.0439909499474 0.0439909499474
+ 0.0439909499474 0.0439909499474 0.0439909499474 0.068648059009
+ 0.068648059009 0.068648059009 0.068648059009 0.068648059009 0.068648059009
+ 0.068648059009 0.068648059009 0.068648059009 0.068648059009 0.068648059009
+ 0.068648059009 0.068648059009 0.105599002256 0.105599002256 0.105599002256
+ 0.15904296061 0.232503767713 0.666040148103]
+q: 0.0204081632653
+position: 2.0
+predict.adalasso(obj=r_65895298, newx=r_62115785)
+outer fold: 4
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.8
+position: 47.0
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.6
+position: 35.0
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.4
+position: 24.0
+list: length: 59, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58]
+q: 0.2
+position: 12.0
+inner fold: 1.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_89422125, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_75986613, data=r_76284702)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.199469787959906, nonzero: 68"
+predict.adalasso(obj=r_72430059, newx=r_49305962)
+inner fold: 2.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_62019211, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_43354986, data=r_51771437)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.155958134590992, nonzero: 69"
+predict.adalasso(obj=r_42491219, newx=r_6290423)
+inner fold: 3.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_36677342, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_53581964, data=r_77869129)
+[1] "family is binomial"
+[1] 10 61 74
+[1] "lambda: 0.0731142370538417, nonzero: 10,61,74"
+predict.adalasso(obj=r_39895536, newx=r_82940925)
+inner fold: 4.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_43044440, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_11353462, data=r_95513909)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.18638900030433, nonzero: 68"
+predict.adalasso(obj=r_95614182, newx=r_93350279)
+inner fold: 5.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_933938, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_79231757, data=r_21997734)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.181175346697661, nonzero: 68"
+predict.adalasso(obj=r_37715449, newx=r_17234952)
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_95156375, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_65833209, data=r_8075947)
+[1] "family is binomial"
+[1]  6  9 10 22 41 68 69 74
+[1] "lambda: 0.0680619034466872, nonzero: 6,9,10,22,41,68,69,74"
+list: length: 52, values: [2.65148993104e-07 5.91738815891e-06 1.1660379746e-05 1.74050121163e-05
+ 1.92935024159e-05 3.72024187661e-05 4.85740562136e-05 7.7091533457e-05
+ 8.61602774834e-05 0.000115057785129 0.000124854197619 0.000248271552137
+ 0.000306104618378 0.000385472131758 0.000484467910417 0.000533915686505
+ 0.000682644115798 0.00148062420617 0.00225259406713 0.00237033889838
+ 0.00241338971275 0.00275607265645 0.00410407768593 0.00440190671746
+ 0.00566857198293 0.00607456027177 0.00665110552121 0.00681483298606
+ 0.00838187495418 0.0095440030133 0.00973626902092 0.0108482774945
+ 0.0123148897458 0.0139500432107 0.0265267057533 0.0307141751596
+ 0.0352135636986 0.043495900566 0.0477087369681 0.0494469604789
+ 0.0559103785929 0.067696644475 0.0701400269113 0.074636188744
+ 0.0856795295658 0.115222505721 0.203299034773 0.242924719505 0.281402068
+ 0.3374814634 0.358646263749 0.406502626989]
+q: 0.0208333333333
+position: 2.0
+predict.adalasso(obj=r_78989700, newx=r_70911711)
+outer fold: 5
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.8
+position: 48.0
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.6
+position: 36.0
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.4
+position: 24.0
+list: length: 60, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59]
+q: 0.2
+position: 12.0
+inner fold: 1.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_49842410, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_10419293, data=r_22853502)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.187914113270031, nonzero: 35"
+predict.adalasso(obj=r_59164923, newx=r_94473042)
+inner fold: 2.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_87840558, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_37932819, data=r_067459106)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.180427989868993, nonzero: 53,69"
+predict.adalasso(obj=r_36338733, newx=r_92195992)
+inner fold: 3.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_74416268, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_89693676, data=r_97181489)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.172604161954039, nonzero: 35"
+predict.adalasso(obj=r_96985893, newx=r_77158333)
+inner fold: 4.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_3552178, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_74449757, data=r_19303681)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.15604850678594, nonzero: 60,61"
+predict.adalasso(obj=r_72939156, newx=r_046402891)
+inner fold: 5.0
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_21862033, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_21382571, data=r_67013379)
+[1] "family is binomial"
+[1] 2
+[1] "lambda: 0.158094910967381, nonzero: 2"
+predict.adalasso(obj=r_96822752, newx=r_99421988)
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_026266904, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_5868517, data=r_85264134)
+[1] "family is binomial"
+$`1`
+NULL
+
+[1] "lambda: 0.168216424584392, nonzero: 35"
+list: length: 54, values: [0.0238142394062 0.0245434524767 0.0245881744126 0.0246441620571
+ 0.024756421429 0.0252777165137 0.0257491801797 0.0268308109388
+ 0.0274325774628 0.0277494132586 0.0279211336939 0.0281554373191
+ 0.0282793369951 0.029310557532 0.0309620516407 0.0310018723706
+ 0.0310018723706 0.0314423886696 0.032091324004 0.0328330630853
+ 0.0335591293051 0.0336577588427 0.0337707379371 0.0337707379371
+ 0.0341826128137 0.0345406143443 0.0346989995569 0.0354988918606
+ 0.035807823962 0.0360000469726 0.0360296863723 0.036089018618
+ 0.0375955610257 0.0392418351163 0.0394947905594 0.0398126426126
+ 0.0401323412076 0.0404861494777 0.0410047956614 0.041069962013
+ 0.0431780778915 0.0434660583259 0.0488145734928 0.0496125135707
+ 0.0584413963665 0.0612522154358 0.0818238648865 0.096592525308
+ 0.146135641851 0.163729640014 0.164414157885 0.210054068132 0.27955202849
+ 0.666683915936]
+q: 0.0208333333333
+position: 2.0
+predict.adalasso(obj=r_65608632, newx=r_86665375)
+as.formula(obj='logecoli~ .')
+adalasso(formula=r_30159443, family='binomial', verbose=TRUE, adapt=TRUE, overshrink=TRUE, selectvars=TRUE, weights=r_49346354, data=r_03703477)
+[1] "family is binomial"
+[1]  5  6 10 22 35 41 61 69 74
+[1] "lambda: 0.0600559922046039, nonzero: 5,6,10,22,35,41,61,69,74"
+list: length: 66, values: [1.26730642891e-07 2.68014341967e-07 4.29468099931e-06 4.65455285328e-06
+ 1.6827451389e-05 1.79171619464e-05 1.94258133607e-05 1.95852504611e-05
+ 2.25919695097e-05 2.30701435689e-05 2.41235115353e-05 2.74283082279e-05
+ 4.80906584701e-05 6.75443796727e-05 9.20519992817e-05 9.43936965631e-05
+ 9.76244883481e-05 0.000130482843329 0.000134765993327 0.000231452801353
+ 0.000261815731316 0.000473307456102 0.000575053977658 0.000640598799771
+ 0.000654903016763 0.000999450699603 0.00108044486289 0.00123688247438
+ 0.00134269010536 0.00136654551188 0.00143736966799 0.00146790531492
+ 0.00184950606494 0.0023699879266 0.00279163111976 0.00344114643196
+ 0.00370952664479 0.00496224178105 0.0051710719055 0.00540844204596
+ 0.00879164689445 0.011154873416 0.0123508187516 0.0129134365741
+ 0.0132856995734 0.013482457401 0.0206583633481 0.0248474673115
+ 0.0257009584657 0.0321943374104 0.0411556904717 0.042118686474
+ 0.0494589219523 0.0495219869002 0.0589390130624 0.0766443416828
+ 0.0882609979549 0.122598884724 0.128894269143 0.181006419585
+ 0.231446848002 0.246297296707 0.289954382178 0.314249992294 0.316408462108
+ 0.327230228496]
+q: 0.9
+position: 59.0

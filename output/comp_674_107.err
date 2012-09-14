@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "beauty.py", line 283, in <module>
+  File "C:\Condor\execute\dir_2100\code\utils.py", line 252, in ReadCSV
+IOError: [Errno 2] Could not find file 'C:\Condor\execute\dir_2100\data\Thomspson.csv'.: ../data/Thomspson.csv

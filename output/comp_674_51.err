@@ -1,0 +1,74 @@
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+Warning: invalid encountered in less_equal
+
+Unhandled Exception: System.AccessViolationException: Attempted to read or write protected memory. This is often an indication that other memory is corrupt.
+   at RDotNet.Internals.DirectNativeMethods._R_tryEval(IntPtr statement, IntPtr environment, Boolean& errorOccurred)
+   at RDotNet.Internals.DirectNativeMethods.R_tryEval(IntPtr statement, IntPtr environment, Boolean& errorOccurred)
+   at RDotNet.Expression.TryEvaluate(Environment environment, SymbolicExpression& result)
+   at RDotNet.REngine.Parse(String statement, StringBuilder incompleteStatement)
+   at RDotNet.REngine.<Evaluate>d__0.MoveNext()
+   at System.Linq.Enumerable.LastOrDefault[TSource](IEnumerable`1 source)
+   at RDotNet.REngine.EagerEvaluate(String statement)
+   at CallSite.Target(Closure , CallSite , CodeContext , Object , Object )
+   at Call$275(Closure , PythonFunction , Object , Object , Object )
+   at Microsoft.Scripting.Interpreter.LightLambda.Run4[T0,T1,T2,T3,TRet](T0 arg0, T1 arg1, T2 arg2, T3 arg3)
+   at CallSite.Target(Closure , CallSite , CodeContext , Object , Object , Object )
+   at Microsoft.Scripting.Interpreter.DynamicInstruction`5.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.LightLambda.Run3[T0,T1,T2,TRet](T0 arg0, T1 arg1, T2 arg2)
+   at IronPython.Runtime.PythonFunction.FunctionCaller`2.Call2(CallSite site, CodeContext context, Object func, T0 arg0, T1 arg1)
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute4[T0,T1,T2,T3,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
+   at IronPython.Runtime.PythonFunction.FunctionCaller`2.Call2(CallSite site, CodeContext context, Object func, T0 arg0, T1 arg1)
+   at IronPython.Runtime.Method.MethodBinding`1.SelfTarget(CallSite site, CodeContext context, Object target, T0 arg0)
+   at IronPython.Compiler.Ast.CallExpression.Invoke1Instruction.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.LightLambda.Run6[T0,T1,T2,T3,T4,T5,TRet](T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+   at Microsoft.Scripting.Interpreter.FuncCallInstruction`8.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.LightLambda.Run7[T0,T1,T2,T3,T4,T5,T6,TRet](T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+   at Microsoft.Scripting.Interpreter.DynamicInstruction`7.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.LightLambda.Run7[T0,T1,T2,T3,T4,T5,T6,TRet](T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+   at Microsoft.Scripting.Interpreter.FuncCallInstruction`9.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.LightLambda.Run11[T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,TRet](T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
+   at Microsoft.Scripting.Interpreter.DynamicInstruction`11.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.LightLambda.Run10[T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,TRet](T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
+   at Microsoft.Scripting.Interpreter.DynamicInstruction`10.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.Interpreter.Run(InterpretedFrame frame)
+   at Microsoft.Scripting.Interpreter.LightLambda.Run1[T0,TRet](T0 arg0)
+   at IronPython.Compiler.RuntimeScriptCode.InvokeTarget(Scope scope)
+   at IronPython.Compiler.RuntimeScriptCode.Run(Scope scope)
+   at IronPython.Hosting.PythonCommandLine.RunFileWorker(String fileName)
+   at IronPython.Hosting.PythonCommandLine.RunFile(String fileName)
+   at Microsoft.Scripting.Hosting.Shell.CommandLine.Run()
+   at IronPython.Hosting.PythonCommandLine.Run()
+   at Microsoft.Scripting.Hosting.Shell.CommandLine.Run(ScriptEngine engine, IConsole console, ConsoleOptions options)
+   at Microsoft.Scripting.Hosting.Shell.ConsoleHost.RunCommandLine()
+   at Microsoft.Scripting.Hosting.Shell.ConsoleHost.ExecuteInternal()
+   at PythonConsoleHost.ExecuteInternal()
+   at Microsoft.Scripting.Hosting.Shell.ConsoleHost.Execute()
+   at Microsoft.Scripting.Hosting.Shell.ConsoleHost.Run(String[] args)
+   at PythonConsoleHost.Main(String[] args)

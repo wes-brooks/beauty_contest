@@ -27,6 +27,7 @@ class Model(object):
         self.adapt = model_struct['adapt']
         self.overshrink = model_struct['overshrink']
         self.precondition = model_struct['precondition']
+        self.selectvars = model_struct['selectvars']
         
         #Get the data into R 
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
@@ -39,7 +40,8 @@ class Model(object):
             'data' : self.data_frame, \
             'adapt' : self.adapt, \
             'overshrink' : self.overshrink, \
-            'precondition' : self.precondition}
+            'precondition' : self.precondition, \
+            'selectvars' : self.selectvars}
         self.model = r.Call(function='adalars', **self.pls_params).AsList()
                             
         #Get some information out of the model.
@@ -71,6 +73,9 @@ class Model(object):
         if 'precondition' in args: self.precondition=args['precondition']
         else: self.precondition=False
         
+        if 'selectvars' in args: self.selectvars=args['selectvars']
+        else: self.selectvars=False
+        
         if 'specificity' in args: specificity=args['specificity']
         else: specificity=0.9
         
@@ -86,7 +91,8 @@ class Model(object):
             'data' : self.data_frame, \
             'adapt' : self.adapt, \
             'overshrink' : self.overshrink, \
-            'precondition' : self.precondition}
+            'precondition' : self.precondition, \
+            'selectvars' : self.selectvars}
         self.model = r.Call(function='adalars', **self.pls_params).AsList()
                 
         #Get some information out of the model
@@ -258,7 +264,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'lasso'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", "adapt", "overshrink", "precondition"]
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", "adapt", "overshrink", "precondition", "selectvars"]
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

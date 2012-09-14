@@ -1,9 +1,10 @@
 adalasso <-
-function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE) {
+function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, selectvars=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalasso"
     result[['formula']] = as.formula(formula, env=data)
+    result[['selectvars']] = selectvars
     
     #Drop any rows with NA values
     data = data
@@ -33,9 +34,19 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, ove
     result[['lasso']] = adalasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, overshrink=overshrink)
     result[['lambda']] = result[['lasso']][['lambda']]
     
-    result[['fitted.values']] = predict(result, newx=data)
-    result[['actual']] = as.vector(data[,response.name])
-    result[['residuals']] = result[['actual']] - result[['fitted.values']]
-    
+    if (selectvars==TRUE) {
+        variables = paste(result[['lasso']][['vars']], collapse="+")
+        f = as.formula(paste(result[['response']], "~", variables, sep=""))
+        m = glm(formula=f, data=data, family=family, weights=weights)
+        result[['glm']] = m
+        result[['fitted.values']] = m$fitted
+        result[['actual']] = as.vector(data[,response.name])
+        result[['residuals']] = result[['actual']] - result[['fitted.values']]
+    } else {    
+        result[['fitted.values']] = predict(result, newx=data)
+        result[['actual']] = as.vector(data[,response.name])
+        result[['residuals']] = result[['actual']] - result[['fitted.values']]
+    }
+        
     return(result)
 }

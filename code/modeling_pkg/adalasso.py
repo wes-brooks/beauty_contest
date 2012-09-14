@@ -26,6 +26,7 @@ class Model(object):
         self.formula = model_struct['formula']
         self.adapt = model_struct['adapt']
         self.overshrink = model_struct['overshrink']
+        self.selectvars = model_struct['selectvars']
         
         #Get the data into R 
         self.nobs = len(self.data_dictionary[self.target])
@@ -40,7 +41,8 @@ class Model(object):
             'weights' : self.weights, \
             'verbose' : True, \
             'adapt' : self.adapt, \
-            'overshrink' : self.overshrink}
+            'overshrink' : self.overshrink, \
+            'selectvars' : self.selectvars}
         self.model = r.Call(function='adalasso', **self.logistic_params).AsList()
 
         #Use cross-validation to find the best number of components in the model.
@@ -71,6 +73,9 @@ class Model(object):
 
         try: self.adapt = args['adapt']
         except KeyError: self.adapt = False
+        
+        try: self.selectvars = args['selectvars']
+        except KeyError: self.selectvars = False
 
         try: self.overshrink = args['overshrink']
         except KeyError: self.overshrink = False              
@@ -113,7 +118,8 @@ class Model(object):
             'weights' : self.weights, \
             'verbose' : True, \
             'adapt' : self.adapt, \
-            'overshrink' : self.overshrink}
+            'overshrink' : self.overshrink, \
+            'selectvars' : self.selectvars}
         self.model = r.Call(function='adalasso', **self.logistic_params).AsList()
         
         #Select model components and a decision threshold
@@ -302,7 +308,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'logistic'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', 'formula', 'adapt', 'overshrink']
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", 'weights', 'formula', 'adapt', 'overshrink', 'selectvars']
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)

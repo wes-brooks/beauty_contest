@@ -70,7 +70,7 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
         result[['lambda']] = lambda = result[['cv']]$lambda[indx]
         nonzero = as.vector(predict(model, type='nonzero', s=lambda))    
     }
-    if (verbose) {print(paste("indx: ", indx, ", lambda: ", lambda, ", nonzero: ", nonzero, sep=''))}
+    if (verbose) {print(paste("lambda: ", lambda, ", nonzero: ", paste(nonzero, collapse=","), sep=''))}
     
     coefs = coef(model, s=lambda)
     result[['coef']] = as.list(coefs)[nonzero+1]

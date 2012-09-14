@@ -24,6 +24,7 @@ class Model(object):
         self.data_dictionary = model_struct['data_dictionary']
         self.target = model_struct['target']
         self.specificity = model_struct['specificity']
+        self.selectvars = model_struct['selectvars']
         
         #Get the data into R 
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
@@ -33,7 +34,8 @@ class Model(object):
         #Generate a PLS model in R.
         self.formula = r.Call('as.formula', obj=utils.SanitizeVariableName(self.target) + '~.')
         self.spls_params = {'formula' : self.formula, \
-            'data' : self.data_frame }
+            'data' : self.data_frame, \
+            'selectvars' : self.selectvars}
         self.model = r.Call(function='spls.wrap', **self.spls_params).AsList()
                             
         #Get some information out of the model.
@@ -54,6 +56,9 @@ class Model(object):
 
         self.target = args['target']
         
+        if 'selectvars' in args: self.selectvars=args['selectvars']
+        else: self.selectvars=False
+        
         if 'specificity' in args: specificity=args['specificity']
         else: specificity=0.90
         
@@ -66,7 +71,8 @@ class Model(object):
         #Generate a PLS model in R.
         self.formula = r.Call('as.formula', obj=utils.SanitizeVariableName(self.target) + '~.')
         self.spls_params = {'formula' : self.formula, \
-            'data' : self.data_frame }
+            'data' : self.data_frame, \
+            'selectvars' : self.selectvars}
         self.model = r.Call(function='spls.wrap', **self.spls_params).AsList()
                 
         #Get some information out of the model
@@ -229,7 +235,7 @@ class Model(object):
     def Serialize(self):
         model_struct = dict()
         model_struct['model_type'] = 'spls'
-        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold"]
+        elements_to_save = ["data_dictionary", "threshold", "specificity", "target", "regulatory_threshold", "selectvars"]
         
         for element in elements_to_save:
             try: model_struct[element] = getattr(self, element)
