@@ -20,4 +20,4 @@ when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_input_files = unzip.exe, zip.exe, data, code, bin, seeds.txt
 transfer_output_files = output
 notification = Never
-queue 160
+queue 32000
