@@ -23,39 +23,39 @@ beaches = dict()
 ##beaches['edgewater'] = {'file':'../data/edgewater.xls', 'target':'LogEC', 'transforms':{}, 'remove':['id', 'year', 'month'], 'threshold':2.3711}
 ##beaches['redarrow'] = {'file':'../data/RedArrow2010-11_for_workshop.xls', 'target':'EColiValue', 'transforms':{'EColiValue':np.log10}, 'remove':['pdate'], 'threshold':2.3711}
 ##beaches['redarrow'] = {'file':'../data/RA-VB1.xlsx', 'target':'logEC', 'remove':['beachEColiValue', 'CDTTime', 'beachTurbidityBeach', 'tribManitowocRiverTribTurbidity'], 'threshold':2.3711, 'transforms':[]}
-beaches['hika'] = {'file':'../data/Hika.csv', 'target':'observation', 'remove':['beachEColiValue', 'time'], 'threshold':2.3711, 'transforms':[]}
-beaches['fisher'] = {'file':'../data/Fisher.csv', 'target':'observation', 'remove':['beachEColiValue', 'datetime'], 'threshold':2.3711, 'transforms':[]}
-beaches['kreher'] = {'file':'../data/Kreher.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-beaches['maslowski'] = {'file':'../data/Maslowski.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-beaches['neshotah'] = {'file':'../data/Neshotah.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-beaches['pointconcessions'] = {'file':'../data/PointConcessions.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['hika'] = {'file':'../data/Hika.csv', 'target':'observation', 'remove':['beachEColiValue', 'time'], 'threshold':2.3711, 'transforms':[]}
+#beaches['fisher'] = {'file':'../data/Fisher.csv', 'target':'observation', 'remove':['beachEColiValue', 'datetime'], 'threshold':2.3711, 'transforms':[]}
+#beaches['kreher'] = {'file':'../data/Kreher.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['maslowski'] = {'file':'../data/Maslowski.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['neshotah'] = {'file':'../data/Neshotah.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['pointconcessions'] = {'file':'../data/PointConcessions.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
 beaches['pointlakeshore'] = {'file':'../data/PointLakeshore.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-beaches['pointlighthouse'] = {'file':'../data/PointLighthouse.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
-beaches['redarrow'] = {'file':'../data/RedArrow.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'CDTTime'], 'threshold':2.3711, 'transforms':[]}
-beaches['thompson'] = {'file':'../data/Thompson.csv', 'target':'observation', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['pointlighthouse'] = {'file':'../data/PointLighthouse.csv', 'target':'logec', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
+#beaches['redarrow'] = {'file':'../data/RedArrow.csv', 'target':'logecoli', 'remove':['beachEColiValue', 'CDTTime'], 'threshold':2.3711, 'transforms':[]}
+#beaches['thompson'] = {'file':'../data/Thompson.csv', 'target':'observation', 'remove':['beachEColiValue', 'dates'], 'threshold':2.3711, 'transforms':[]}
 ##beaches['huntington'] = {'file':'../data/HuntingtonBeach.csv', 'target':'logecoli', 'remove':[], 'threshold':2.3711, 'transforms':[]}
 
 methods = dict()
 ##methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True, 'precondition':False}
-methods["PLS"] = {}
-methods["gbm-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
-methods["gbmcv-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
-methods["gbm-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
-methods["gbmcv-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
+#methods["PLS"] = {}
+#methods["gbm-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+#methods["gbmcv-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
+#methods["gbm-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+#methods["gbmcv-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
 ##methods["gam"] = {'k':50, 'julian':'jday'}
 ##methods['logistic'] = {'weights':'discrete', 'stepdirection':'both'}
-methods['galogistic-weighted'] = {'weights':'discrete', 'generations':100, 'mutate':0.05}
-methods['adalasso-weighted'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False}
+#methods['galogistic-weighted'] = {'weights':'discrete', 'generations':100, 'mutate':0.05}
+#methods['adalasso-weighted'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False}
 ##methods['adalasso-weighted-preconditioned'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':True}
-methods['galogistic-unweighted'] = {'weights':'none', 'generations':100, 'mutate':0.05}
-methods['adalasso-unweighted'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False}
-methods['adalasso-unweighted-select'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
-methods['adalasso-weighted-select'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+#methods['galogistic-unweighted'] = {'weights':'none', 'generations':100, 'mutate':0.05}
+#methods['adalasso-unweighted'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False}
+#methods['adalasso-unweighted-select'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+#methods['adalasso-weighted-select'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
 ##methods['adalasso-unweighted-preconditioned'] = {'weights':'none', 'adapt':False, 'overshrink':True, 'precondition':True}
-methods["galm"] = {'generations':100, 'mutate':0.05}
-methods["adapt"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':False}
-methods["adapt-select"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
-methods["spls"] = {'selectvars':False}
+#methods["galm"] = {'generations':100, 'mutate':0.05}
+#methods["adapt"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':False}
+#methods["adapt-select"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+#methods["spls"] = {'selectvars':False}
 methods["spls-select"] = {'selectvars':True}
 ##methods["precondition"] = {'adapt':False, 'overshrink':True, 'precondition':True}
 
@@ -82,13 +82,13 @@ if len(sys.argv) > 1:
     
     locs = [sites[d[1]]]    
     tasks = [methods.keys()[mm[1]]]
-    seed = float(seeds[s*mm[0]+d[1]].strip())
+    seed = 1000 * float(seeds[s*mm[0]+d[1]].strip())
     
     print "locs: " + str(locs)
     print "tasks: " + str(tasks)
     print "seed: " + str(seed)
     
-    np.random.seed(seed)
+    #np.random.seed(seed)
 else: 
     cluster = "na"
     process = "na"
@@ -136,7 +136,7 @@ def AreaUnderROC(raw):
             test_flag = len(raw['predicted'][fold] > thresholds[k])
             train_flag = len(raw['fitted'][fold] > thresholds[k])
             
-            spec.append(float(i+1)/len(thresholds))
+            spec.append(np.where(thresholds <= thresholds[k])[0].shape[0]/len(thresholds))
             tpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] > threshold)[0].shape[0])
             tneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] <= threshold)[0].shape[0])
             fpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] <= threshold)[0].shape[0])
@@ -184,7 +184,7 @@ def AreaUnderROC(raw):
     for k in range(len(specs)):
         sens = float(tpos[k]) / (tpos[k] + fneg[k])
         sp = float(tneg[k]) / (tneg[k] + fpos[k])
-        area = area + (sp - spec_last) * sens_last
+        area += (sp - spec_last) * sens
         sens_last = copy.copy(sens)
         spec_last = copy.copy(sp)
         
@@ -304,7 +304,7 @@ for beach in locs:
     
     for b in range(B):
         #Partition the data into cross-validation folds.
-        folds = utils.Partition(data, cv_folds)
+        folds = utils.Partition(data, cv_folds, seed) + 1
         validation = dict(zip(methods.keys(), [ValidationCounts() for method in methods]))
         
         ROC = dict(zip(methods.keys(), [{'train':[], 'fitted':[], 'validate':[], 'predicted':[], 'threshold':beaches[beach]['threshold']} for method in methods]))
@@ -392,6 +392,10 @@ for beach in locs:
                 print >> out, predictions
                 out.write("# truth:\n")
                 print >> out, truth
+                out.write("# fitted:\n")
+                print >> out, model.fitted
+                out.write("# actual:\n")
+                print >> out, model.actual
                 
                 #Close the output file and move on.
                 out.close()

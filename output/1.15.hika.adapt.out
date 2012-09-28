@@ -1,9 +1,0 @@
-# Seed = 0.465295313804
-# Site = hika
-# Method = adapt
-# Area under ROC curve = 0.727650727651
-# total.tpos = 9
-# total.tneg = 64
-# total.fpos = 10
-# total.fneg = 17
-# variables: meancloudcoverover12hr12813, rainsum48, logbeachturbiditybeach, rainsum72, wndparlmean12

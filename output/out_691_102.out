@@ -1,0 +1,312 @@
+['..\\bin', 'C:\\Condor\\execute\\dir_896\\bin', 'C:\\Condor\\execute\\dir_896\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_896\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_896\\bin\\IronPython 2.7\\Lib\\site-packages', 'C:\\Condor\\execute\\dir_896\\code', 'C:\\Condor\\execute\\dir_896\\code', 'C:\\Condor\\execute\\dir_896\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_896\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_896\\bin\\IronPython 2.7', 'C:\\Condor\\execute\\dir_896\\bin\\IronPython 2.7\\lib\\site-packages']
+Loading required package: lars
+Loaded lars 1.1
+
+
+Attaching package: 'pls'
+
+The following object(s) are masked from 'package:stats':
+
+    loadings
+
+Loading required package: survival
+Loading required package: splines
+Loading required package: lattice
+Loaded gbm 1.6.3.2
+
+This is mgcv 1.7-18. For overview type 'help("mgcv-package")'.
+Loading required package: censReg
+Loading required package: maxLik
+Loading required package: miscTools
+Loading required package: glmnet
+Loading required package: Matrix
+Loaded glmnet 1.7.4
+
+Loading required package: spls
+Loading required package: MASS
+Loading required package: nnet
+s: 10
+m: 16
+d: (10, 2)
+mm: (0, 10)
+locs: ['pointconcessions']
+tasks: ['spls-select']
+seed: 0.248954351978
+['pointconcessions']
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.8
+position: 55.0
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.6
+position: 41.0
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.4
+position: 28.0
+list: length: 69, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68]
+q: 0.2
+position: 14.0
+outer fold: 1
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.8
+position: 43.0
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.6
+position: 32.0
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.4
+position: 22.0
+list: length: 54, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53]
+q: 0.2
+position: 11.0
+inner fold: 1.0
+as.formula(obj='logec~.')
+spls.wrap(formula=r_41690764, data=r_062615277, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.9, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_63838746, newx=r_39826688)
+inner fold: 2.0
+as.formula(obj='logec~.')
+spls.wrap(formula=r_69316418, data=r_75259125, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.85, K = 1
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_6059655, newx=r_88787796)
+inner fold: 3.0
+as.formula(obj='logec~.')
+spls.wrap(formula=r_061811534, data=r_50851256, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.65, K = 4
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_58298764, newx=r_24600496)
+inner fold: 4.0
+as.formula(obj='logec~.')
+spls.wrap(formula=r_76032200, data=r_59082032, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.9, K = 2
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_85404545, newx=r_56109692)
+inner fold: 5.0
+as.formula(obj='logec~.')
+spls.wrap(formula=r_21433664, data=r_29743037, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.55, K = 4
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+predict(obj=r_2901662, newx=r_42925028)
+as.formula(obj='logec~.')
+spls.wrap(formula=r_11175441, data=r_29325074, selectvars=TRUE)
+eta = 0.1 
+eta = 0.15 
+eta = 0.2 
+eta = 0.25 
+eta = 0.3 
+eta = 0.35 
+eta = 0.4 
+eta = 0.45 
+eta = 0.5 
+eta = 0.55 
+eta = 0.6 
+eta = 0.65 
+eta = 0.7 
+eta = 0.75 
+eta = 0.8 
+eta = 0.85 
+eta = 0.9 
+
+Optimal parameters: eta = 0.55, K = 4
+10 % completed...
+20 % completed...
+30 % completed...
+40 % completed...
+50 % completed...
+60 % completed...
+70 % completed...
+80 % completed...
+90 % completed...
+100 % completed...
+list: length: 49, values: [-0.0488653425947 -0.0273240729357 0.0885323162267 0.194092587958
+ 0.209355689948 0.274481985314 0.289921152612 0.414187257293 0.543791280723
+ 0.584173753289 0.623580615858 0.626781029145 0.660864661667 0.72790547385
+ 0.747122521381 0.794184397889 0.799340549 0.980105132633 1.02096337996
+ 1.05789942658 1.19260074013 1.19538454107 1.22118835866 1.24633653086
+ 1.257678575 1.29379276383 1.31817014049 1.31939314211 1.32385261806
+ 1.32426972498 1.33481683018 1.39307228400 1.40933897738 1.42629130995
+ 1.43523401132 1.52185878496 1.57619961236 1.68274792538 1.71186838238
+ 1.74245415926 1.74297284302 1.91387565178 1.93293460964 1.97493996076
+ 2.00903474640 2.03776625299 2.17999553354 2.26095486616 2.37517257290]
+q: 0.9
+position: 44.0
+predict(obj=r_29035129, newx=r_448520)
+outer fold: 2
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.8
+position: 44.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.6
+position: 33.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.4
+position: 22.0
+list: length: 55, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54]
+q: 0.2
+position: 11.0
+inner fold: 1.0
+as.formula(obj='logec~.')
+spls.wrap(formula=r_068959605, data=r_68271836, selectvars=TRUE)
+eta = 0.1 
+Error in b.ust[valb >= 0] <- valb[valb >= 0] * (sign(b))[valb >= 0] : 
+  NAs are not allowed in subscripted assignments

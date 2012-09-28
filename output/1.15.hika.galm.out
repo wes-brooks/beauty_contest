@@ -1,9 +1,0 @@
-# Seed = 0.465295313804
-# Site = hika
-# Method = galm
-# Area under ROC curve = 0.721933471933
-# total.tpos = 8
-# total.tneg = 62
-# total.fpos = 12
-# total.fneg = 18
-# variables: beachsc, meancloudcoverover1hr12813, dirwvhperpmean1, meancloudcoverover24hr12813, stdevseawatertemperaturecover120hrx128y13sigma0, rainsum72

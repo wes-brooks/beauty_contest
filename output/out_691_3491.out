@@ -1,0 +1,424 @@
+['..\\bin', 'C:\\Condor\\execute\\dir_617420\\bin', 'C:\\Condor\\execute\\dir_617420\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_617420\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_617420\\bin\\IronPython 2.7\\Lib\\site-packages', 'C:\\Condor\\execute\\dir_617420\\code', 'C:\\Condor\\execute\\dir_617420\\code', 'C:\\Condor\\execute\\dir_617420\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_617420\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_617420\\bin\\IronPython 2.7', 'C:\\Condor\\execute\\dir_617420\\bin\\IronPython 2.7\\lib\\site-packages']
+Loading required package: lars
+Loaded lars 1.1
+
+
+Attaching package: 'pls'
+
+The following object(s) are masked from 'package:stats':
+
+    loadings
+
+Loading required package: survival
+Loading required package: splines
+Loading required package: lattice
+Loaded gbm 1.6.3.2
+
+This is mgcv 1.7-18. For overview type 'help("mgcv-package")'.
+Loading required package: censReg
+Loading required package: maxLik
+Loading required package: miscTools
+Loading required package: glmnet
+Loading required package: Matrix
+Loaded glmnet 1.7.4
+
+Loading required package: spls
+Loading required package: MASS
+Loading required package: nnet
+s: 10
+m: 16
+d: (349, 1)
+mm: (21, 13)
+locs: ['pointlakeshore']
+tasks: ['PLS']
+seed: 0.0819532286426
+['pointlakeshore']
+list: length: 78, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77]
+q: 0.8
+position: 62.0
+list: length: 78, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77]
+q: 0.6
+position: 47.0
+list: length: 78, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77]
+q: 0.4
+position: 31.0
+list: length: 78, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77]
+q: 0.2
+position: 16.0
+outer fold: 1
+list: length: 61, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60]
+q: 0.8
+position: 48.0
+list: length: 61, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60]
+q: 0.6
+position: 36.0
+list: length: 61, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60]
+q: 0.4
+position: 24.0
+list: length: 61, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60]
+q: 0.2
+position: 12.0
+inner fold: 1.0
+as.formula(obj='logec~.')
+plsr(formula=r_93784973, x=TRUE, data=r_65537519, method='oscorespls', validation='LOO')
+dim(x=r_87350328)
+coef(object=r_51625134, ncomp=1, intercept=TRUE)
+predict(newdata=r_75826126, object=r_73032504)
+inner fold: 2.0
+as.formula(obj='logec~.')
+plsr(formula=r_60267628, x=TRUE, data=r_79948378, method='oscorespls', validation='LOO')
+dim(x=r_90852829)
+coef(object=r_68246583, ncomp=1, intercept=TRUE)
+predict(newdata=r_81097389, object=r_23209001)
+inner fold: 3.0
+as.formula(obj='logec~.')
+plsr(formula=r_98173529, x=TRUE, data=r_013057486, method='oscorespls', validation='LOO')
+dim(x=r_82090791)
+coef(object=r_81112563, ncomp=1, intercept=TRUE)
+predict(newdata=r_63711275, object=r_028439607)
+inner fold: 4.0
+as.formula(obj='logec~.')
+plsr(formula=r_24926743, x=TRUE, data=r_64315809, method='oscorespls', validation='LOO')
+dim(x=r_41171185)
+coef(object=r_39173084, ncomp=1, intercept=TRUE)
+predict(newdata=r_62459609, object=r_80510840)
+inner fold: 5.0
+as.formula(obj='logec~.')
+plsr(formula=r_078463813, x=TRUE, data=r_01024350, method='oscorespls', validation='LOO')
+dim(x=r_67289752)
+coef(object=r_83994828, ncomp=1, intercept=TRUE)
+predict(newdata=r_35988908, object=r_1340243)
+as.formula(obj='logec~.')
+plsr(formula=r_12888607, x=TRUE, data=r_31284168, method='oscorespls', validation='LOO')
+dim(x=r_046505075)
+coef(object=r_049413351, ncomp=1, intercept=TRUE)
+list: length: 51, values: [1.38097571115 1.39178157272 1.39356668489 1.39516961434 1.40824559261
+ 1.42596444925 1.42723814554 1.43211288268 1.43334697366 1.43361404606
+ 1.43846736663 1.43904940266 1.44450446425 1.44857894460 1.44981024968
+ 1.45158579964 1.46385792337 1.46400281630 1.46634434607 1.47120037813
+ 1.47514554920 1.47630861579 1.47885546129 1.48095772949 1.48185657804
+ 1.49050880093 1.49324835534 1.49457456739 1.50507041791 1.51388067413
+ 1.51942522067 1.54327598218 1.58011680373 1.58494229657 1.58815882565
+ 1.59988747718 1.60983973388 1.61559364947 1.61755574182 1.63489269771
+ 1.68225338055 1.72056171979 1.73820174804 1.74145332287 1.76220727751
+ 1.77962266573 1.88208864991 1.88619900251 1.92944212639 1.99554555234
+ 2.11155916059]
+q: 0.904761904762
+position: 46.0
+predict(newdata=r_063864562, object=r_74658119)
+outer fold: 2
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.8
+position: 50.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.6
+position: 38.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.4
+position: 25.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='logec~.')
+plsr(formula=r_26817407, x=TRUE, data=r_21123329, method='oscorespls', validation='LOO')
+dim(x=r_54093047)
+coef(object=r_30572790, ncomp=1, intercept=TRUE)
+predict(newdata=r_43775479, object=r_87583717)
+inner fold: 2.0
+as.formula(obj='logec~.')
+plsr(formula=r_58866528, x=TRUE, data=r_77306409, method='oscorespls', validation='LOO')
+dim(x=r_63605788)
+coef(object=r_73563078, ncomp=1, intercept=TRUE)
+predict(newdata=r_83524254, object=r_77591656)
+inner fold: 3.0
+as.formula(obj='logec~.')
+plsr(formula=r_18041740, x=TRUE, data=r_47619432, method='oscorespls', validation='LOO')
+dim(x=r_83495775)
+coef(object=r_12831243, ncomp=1, intercept=TRUE)
+predict(newdata=r_19457913, object=r_46627504)
+inner fold: 4.0
+as.formula(obj='logec~.')
+plsr(formula=r_64459434, x=TRUE, data=r_7581549, method='oscorespls', validation='LOO')
+dim(x=r_73619279)
+coef(object=r_043557563, ncomp=1, intercept=TRUE)
+predict(newdata=r_88262349, object=r_82480477)
+inner fold: 5.0
+as.formula(obj='logec~.')
+plsr(formula=r_68226433, x=TRUE, data=r_44088457, method='oscorespls', validation='LOO')
+dim(x=r_182682)
+coef(object=r_83793689, ncomp=1, intercept=TRUE)
+predict(newdata=r_1293821, object=r_66663979)
+as.formula(obj='logec~.')
+plsr(formula=r_50830336, x=TRUE, data=r_68516464, method='oscorespls', validation='LOO')
+dim(x=r_033967879)
+coef(object=r_98953452, ncomp=1, intercept=TRUE)
+list: length: 54, values: [1.39186163584 1.39437731534 1.39838014798 1.39923074207 1.39977858223
+ 1.40617470106 1.40750813320 1.41052433771 1.41692033819 1.41832665203
+ 1.41916230726 1.42026610014 1.42221049159 1.42239705659 1.42341942897
+ 1.42406402436 1.42574245250 1.42674418232 1.43137417997 1.43238889322
+ 1.43256479585 1.43554788604 1.43883602563 1.44121952301 1.44166502591
+ 1.44700176700 1.44758629354 1.45209938782 1.45227384552 1.45558418083
+ 1.45955583969 1.46756135553 1.46916114965 1.48267816228 1.51340145429
+ 1.51516142093 1.52561730407 1.52656062609 1.52714791293 1.52717942274
+ 1.53187227 1.54155849572 1.56232217461 1.59932370046 1.60720350887
+ 1.61349241849 1.62606095743 1.62858826681 1.6596117129 1.66469251336
+ 1.69313479551 1.75831691967 1.77221407206 1.80150223048]
+q: 0.857142857143
+position: 46.0
+predict(newdata=r_63622386, object=r_077475815)
+outer fold: 3
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.8
+position: 49.0
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.6
+position: 37.0
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.4
+position: 25.0
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='logec~.')
+plsr(formula=r_0029556276, x=TRUE, data=r_69958139, method='oscorespls', validation='LOO')
+dim(x=r_26313436)
+coef(object=r_85989524, ncomp=1, intercept=TRUE)
+predict(newdata=r_67203899, object=r_85259544)
+inner fold: 2.0
+as.formula(obj='logec~.')
+plsr(formula=r_46939887, x=TRUE, data=r_3558403, method='oscorespls', validation='LOO')
+dim(x=r_63585884)
+coef(object=r_24772370, ncomp=8, intercept=TRUE)
+predict(newdata=r_44279923, object=r_97820546)
+inner fold: 3.0
+as.formula(obj='logec~.')
+plsr(formula=r_90834288, x=TRUE, data=r_30844943, method='oscorespls', validation='LOO')
+dim(x=r_35257574)
+coef(object=r_36389705, ncomp=1, intercept=TRUE)
+predict(newdata=r_49604863, object=r_12990567)
+inner fold: 4.0
+as.formula(obj='logec~.')
+plsr(formula=r_97195754, x=TRUE, data=r_98577359, method='oscorespls', validation='LOO')
+dim(x=r_44252364)
+coef(object=r_72683464, ncomp=1, intercept=TRUE)
+predict(newdata=r_78154859, object=r_39527337)
+inner fold: 5.0
+as.formula(obj='logec~.')
+plsr(formula=r_25444554, x=TRUE, data=r_34449491, method='oscorespls', validation='LOO')
+dim(x=r_33931057)
+coef(object=r_50349991, ncomp=1, intercept=TRUE)
+predict(newdata=r_15924766, object=r_98114536)
+as.formula(obj='logec~.')
+plsr(formula=r_34219985, x=TRUE, data=r_51158933, method='oscorespls', validation='LOO')
+dim(x=r_3639906)
+coef(object=r_68050198, ncomp=1, intercept=TRUE)
+list: length: 53, values: [1.34902151355 1.35209476341 1.35796161679 1.35916789843 1.36008584360
+ 1.36959756180 1.37118979660 1.37657782892 1.38571873306 1.38929953433
+ 1.38967228088 1.39215880883 1.39230277023 1.39263441990 1.39430918350
+ 1.39471665844 1.39656740194 1.39813916724 1.40249297986 1.40353132440
+ 1.41212235908 1.41667302815 1.42059305142 1.42309026083 1.42557982408
+ 1.42825909358 1.43139939927 1.43185834979 1.43803538551 1.44170677372
+ 1.44715278010 1.45866376796 1.47591116114 1.51674897114 1.51694988122
+ 1.52389468613 1.53458878494 1.54157290512 1.55007762148 1.59995180346
+ 1.63853913816 1.64589416162 1.65568494874 1.66437813487 1.66612408012
+ 1.66933775152 1.67827885822 1.76539587394 1.76605499464 1.77140748239
+ 1.85318666122 1.87414041980 1.91863166211]
+q: 0.837209302326
+position: 44.0
+predict(newdata=r_97383683, object=r_99837726)
+outer fold: 4
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.8
+position: 50.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.6
+position: 38.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.4
+position: 25.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='logec~.')
+plsr(formula=r_69653235, x=TRUE, data=r_86575584, method='oscorespls', validation='LOO')
+dim(x=r_34002579)
+coef(object=r_34432113, ncomp=1, intercept=TRUE)
+predict(newdata=r_90677643, object=r_29391439)
+inner fold: 2.0
+as.formula(obj='logec~.')
+plsr(formula=r_63179778, x=TRUE, data=r_22448333, method='oscorespls', validation='LOO')
+dim(x=r_987052)
+coef(object=r_95896222, ncomp=1, intercept=TRUE)
+predict(newdata=r_45393164, object=r_36285989)
+inner fold: 3.0
+as.formula(obj='logec~.')
+plsr(formula=r_44312923, x=TRUE, data=r_62089571, method='oscorespls', validation='LOO')
+dim(x=r_31269730)
+coef(object=r_50815108, ncomp=1, intercept=TRUE)
+predict(newdata=r_52473595, object=r_87037207)
+inner fold: 4.0
+as.formula(obj='logec~.')
+plsr(formula=r_99720440, x=TRUE, data=r_44264159, method='oscorespls', validation='LOO')
+dim(x=r_58889389)
+coef(object=r_067261891, ncomp=1, intercept=TRUE)
+predict(newdata=r_76531382, object=r_96084677)
+inner fold: 5.0
+as.formula(obj='logec~.')
+plsr(formula=r_62335372, x=TRUE, data=r_76088641, method='oscorespls', validation='LOO')
+dim(x=r_18432782)
+coef(object=r_99552524, ncomp=1, intercept=TRUE)
+predict(newdata=r_60629517, object=r_98861032)
+as.formula(obj='logec~.')
+plsr(formula=r_19625073, x=TRUE, data=r_51152430, method='oscorespls', validation='LOO')
+dim(x=r_057484240)
+coef(object=r_68546980, ncomp=1, intercept=TRUE)
+list: length: 53, values: [1.37343555687 1.37643340280 1.39552880964 1.40167116551 1.40854168898
+ 1.40955298403 1.41142840641 1.41519871713 1.41554270114 1.41630579359
+ 1.41641266038 1.41814675800 1.41863368292 1.41959442574 1.42184831826
+ 1.42468184058 1.42594188772 1.42662549509 1.43248792109 1.44065108068
+ 1.44735376947 1.44832056839 1.45074494299 1.45339811173 1.45464333069
+ 1.46300409313 1.47046833648 1.47346545367 1.48107690254 1.49863461758
+ 1.53547779346 1.53613644172 1.53831816464 1.55133366231 1.55393826087
+ 1.55943644138 1.55989361271 1.57345366621 1.57819972934 1.61538021534
+ 1.61987821174 1.65613713747 1.66198095220 1.67192227624 1.67443696961
+ 1.67946594514 1.68709422058 1.70024236965 1.74272713313 1.77893635470
+ 1.81103656454 1.86491833484 1.88845358566]
+q: 0.888888888889
+position: 47.0
+predict(newdata=r_67367384, object=r_80697859)
+outer fold: 5
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.8
+position: 50.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.6
+position: 38.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.4
+position: 25.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='logec~.')
+plsr(formula=r_92379821, x=TRUE, data=r_84144299, method='oscorespls', validation='LOO')
+dim(x=r_76079236)
+coef(object=r_098990326, ncomp=1, intercept=TRUE)
+predict(newdata=r_68086221, object=r_93183982)
+inner fold: 2.0
+as.formula(obj='logec~.')
+plsr(formula=r_45453115, x=TRUE, data=r_87424297, method='oscorespls', validation='LOO')
+dim(x=r_8615288)
+coef(object=r_80643001, ncomp=1, intercept=TRUE)
+predict(newdata=r_080952394, object=r_65402660)
+inner fold: 3.0
+as.formula(obj='logec~.')
+plsr(formula=r_42300569, x=TRUE, data=r_0072305533, method='oscorespls', validation='LOO')
+dim(x=r_83426558)
+coef(object=r_76591607, ncomp=1, intercept=TRUE)
+predict(newdata=r_014793158, object=r_62125998)
+inner fold: 4.0
+as.formula(obj='logec~.')
+plsr(formula=r_73469332, x=TRUE, data=r_085269556, method='oscorespls', validation='LOO')
+dim(x=r_46095468)
+coef(object=r_9697397, ncomp=1, intercept=TRUE)
+predict(newdata=r_46845109, object=r_4316839)
+inner fold: 5.0
+as.formula(obj='logec~.')
+plsr(formula=r_17888793, x=TRUE, data=r_74110755, method='oscorespls', validation='LOO')
+dim(x=r_67468832)
+coef(object=r_18445007, ncomp=1, intercept=TRUE)
+predict(newdata=r_996276, object=r_072579862)
+as.formula(obj='logec~.')
+plsr(formula=r_45360871, x=TRUE, data=r_11726305, method='oscorespls', validation='LOO')
+dim(x=r_42715743)
+coef(object=r_15311251, ncomp=1, intercept=TRUE)
+list: length: 53, values: [1.39693008517 1.40007714789 1.40080919382 1.40116306765 1.40537840284
+ 1.40700138539 1.40784777131 1.41316689313 1.41427417259 1.41469011612
+ 1.41555233532 1.41665387724 1.41759471977 1.41832363836 1.41890915735
+ 1.41920314177 1.42049899365 1.42349918682 1.42749144338 1.42804001839
+ 1.42818280165 1.43196511574 1.43289435282 1.43300501611 1.43336339437
+ 1.43829796370 1.44144547046 1.44160986397 1.44219979964 1.44748522281
+ 1.45403827190 1.48231146944 1.48637812348 1.48881930516 1.48977063577
+ 1.49069674609 1.49899278959 1.49964114987 1.50010316312 1.50974165189
+ 1.51098338519 1.53768458951 1.56385448256 1.56836162657 1.56980733280
+ 1.57199967559 1.57408865606 1.57664477971 1.58835281420 1.62715922048
+ 1.62939160944 1.69403389286 1.70646540270]
+q: 0.863636363636
+position: 45.0
+predict(newdata=r_5017515, object=r_87122307)
+as.formula(obj='logec~.')
+plsr(formula=r_15660724, x=TRUE, data=r_46227796, method='oscorespls', validation='LOO')
+dim(x=r_389743)
+coef(object=r_3828985, ncomp=1, intercept=TRUE)
+list: length: 66, values: [1.38418605288 1.38674999936 1.39182937668 1.39293082200 1.39373606582
+ 1.40186886530 1.40333441007 1.40792469325 1.41479741888 1.41578963602
+ 1.41765814029 1.41907550111 1.41934124434 1.42156330887 1.42162397477
+ 1.42168110944 1.42318704226 1.42355794115 1.42541003667 1.42656645196
+ 1.43045432477 1.43174183306 1.43174867936 1.43400622232 1.4387113502
+ 1.44244009949 1.44356225171 1.44601107099 1.44813732618 1.45058201131
+ 1.45265189100 1.45300534540 1.45560851456 1.45598433121 1.46099103442
+ 1.46422215848 1.46849393994 1.47370247299 1.47890877563 1.49365477466
+ 1.52906859938 1.52909696452 1.53009354489 1.53498369320 1.54338854196
+ 1.54454608662 1.54809826861 1.55100717815 1.55723368790 1.56279388093
+ 1.59695281782 1.60092606356 1.63452096330 1.64060790375 1.64955915714
+ 1.65670991670 1.66155037274 1.66177456877 1.67025376304 1.70882047044
+ 1.74465055632 1.74527973560 1.75213848436 1.82153008823 1.84093258405
+ 1.87960215986]
+q: 0.9
+position: 59.0

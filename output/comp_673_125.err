@@ -1,5 +1,0 @@
-  File "beauty.py", line 47
-    methods['galogistic-weighted'] = {'weights':'discrete', 'generations':100, mutate=0.05}
-
-                                                                                     ^
-SyntaxError: invalid syntax

@@ -283,22 +283,19 @@ def WriteCSV(array, columns, location):
     out_file.close()
 
 
-def Partition(data, folds):
+def Partition(data, folds, seed=''):
     '''Partition the data set into random, equal-sized folds for cross-validation'''
     #If we've called for leave-one-out CV (folds will be like 'n' or 'LOO' or 'leave-one-out')
     if str(folds).lower()[0]=='l' or str(folds).lower()[0]=='n' or folds>data.shape[0]:
         fold = range(data.shape[0])
     
     #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
-    else:
+    else:       
         #Initialization
-        indices = range(data.shape[0])
-        fold = np.ones(data.shape[0]) * folds
-        quantiles = np.arange(folds, dtype=float) / folds
-        
-        #Proceed through the quantiles in reverse order, labelling the ith fold at each step. Ignore the zeroth quantile.
-        for i in range(folds)[::-1][:-1]:
-            fold[:Quantile(indices, quantiles[i])+1] = i
+        if seed: np.random.seed(seed)
+        n = data.shape[0]
+        index = np.arange(n, dtype=float)
+        fold = np.floor(index * folds / n)
             
         #Now permute the fold assignments
         fold = np.random.permutation(fold)

@@ -51,10 +51,10 @@ def Validate(data, target, method, folds='', **args):
         
         fitted = np.array(model.fitted)
         actual = np.array(model.actual)
-        candidates = fitted[np.where(actual < regulatory)]
+        candidates = fitted[np.where(actual <= regulatory)]
         if len(candidates) == 0: candidates = fitted
         num_candidates = float(candidates.shape[0])
-        num_exceedances = float(np.where(actual >= regulatory)[0].shape[0])
+        num_exceedances = float(np.where(actual > regulatory)[0].shape[0])
         
         specificity = list()
         sensitivity = list()

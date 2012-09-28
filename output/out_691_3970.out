@@ -1,0 +1,421 @@
+['..\\bin', 'C:\\Condor\\execute\\dir_4408\\bin', 'C:\\Condor\\execute\\dir_4408\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_4408\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_4408\\bin\\IronPython 2.7\\Lib\\site-packages', 'C:\\Condor\\execute\\dir_4408\\code', 'C:\\Condor\\execute\\dir_4408\\code', 'C:\\Condor\\execute\\dir_4408\\bin\\IronPython 2.7\\Lib', 'C:\\Condor\\execute\\dir_4408\\bin\\IronPython 2.7\\DLLs', 'C:\\Condor\\execute\\dir_4408\\bin\\IronPython 2.7', 'C:\\Condor\\execute\\dir_4408\\bin\\IronPython 2.7\\lib\\site-packages']
+Loading required package: lars
+Loaded lars 1.1
+
+
+Attaching package: 'pls'
+
+The following object(s) are masked from 'package:stats':
+
+    loadings
+
+Loading required package: survival
+Loading required package: splines
+Loading required package: lattice
+Loaded gbm 1.6.3.2
+
+This is mgcv 1.7-18. For overview type 'help("mgcv-package")'.
+Loading required package: censReg
+Loading required package: maxLik
+Loading required package: miscTools
+Loading required package: glmnet
+Loading required package: Matrix
+Loaded glmnet 1.7.4
+
+Loading required package: spls
+Loading required package: MASS
+Loading required package: nnet
+s: 10
+m: 16
+d: (397, 0)
+mm: (24, 13)
+locs: ['fisher']
+tasks: ['PLS']
+seed: 0.842488673837
+['fisher']
+list: length: 79, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77 78]
+q: 0.8
+position: 63.0
+list: length: 79, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77 78]
+q: 0.6
+position: 47.0
+list: length: 79, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77 78]
+q: 0.4
+position: 32.0
+list: length: 79, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ 75 76 77 78]
+q: 0.2
+position: 16.0
+outer fold: 1
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.8
+position: 49.0
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.6
+position: 37.0
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.4
+position: 25.0
+list: length: 62, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='observation~.')
+plsr(formula=r_43899529, x=TRUE, data=r_29549686, method='oscorespls', validation='LOO')
+dim(x=r_17335460)
+coef(object=r_48704879, ncomp=1, intercept=TRUE)
+predict(newdata=r_9481361, object=r_3584547)
+inner fold: 2.0
+as.formula(obj='observation~.')
+plsr(formula=r_62936394, x=TRUE, data=r_33311350, method='oscorespls', validation='LOO')
+dim(x=r_20119887)
+coef(object=r_61153611, ncomp=3, intercept=TRUE)
+predict(newdata=r_33736310, object=r_39738436)
+inner fold: 3.0
+as.formula(obj='observation~.')
+plsr(formula=r_67234564, x=TRUE, data=r_35351652, method='oscorespls', validation='LOO')
+dim(x=r_8326394)
+coef(object=r_3098178, ncomp=1, intercept=TRUE)
+predict(newdata=r_90300637, object=r_41425768)
+inner fold: 4.0
+as.formula(obj='observation~.')
+plsr(formula=r_76495956, x=TRUE, data=r_36326305, method='oscorespls', validation='LOO')
+dim(x=r_20311090)
+coef(object=r_66005585, ncomp=3, intercept=TRUE)
+predict(newdata=r_8853006, object=r_15442972)
+inner fold: 5.0
+as.formula(obj='observation~.')
+plsr(formula=r_93008429, x=TRUE, data=r_71592474, method='oscorespls', validation='LOO')
+dim(x=r_97489878)
+coef(object=r_65470669, ncomp=3, intercept=TRUE)
+predict(newdata=r_7013158, object=r_28695077)
+as.formula(obj='observation~.')
+plsr(formula=r_40398779, x=TRUE, data=r_10495259, method='oscorespls', validation='LOO')
+dim(x=r_3755829)
+coef(object=r_34372976, ncomp=3, intercept=TRUE)
+list: length: 50, values: [1.28399851434 1.28939094091 1.29875761740 1.31770853263 1.31839573441
+ 1.32315073423 1.33066315175 1.33747481838 1.33896796327 1.37409750234
+ 1.44634565793 1.44830904808 1.45561638763 1.45935539767 1.45937710389
+ 1.47976685392 1.48574483009 1.51267783952 1.51283131485 1.54722078322
+ 1.55206722452 1.55223561996 1.55637334558 1.55802085662 1.55870296453
+ 1.57619718681 1.58203942506 1.58244105240 1.58550368507 1.61930705935
+ 1.62672533768 1.66299938578 1.66359048958 1.66831095086 1.70319822767
+ 1.71718846881 1.73397792713 1.76677915864 1.78672216792 1.80941382492
+ 1.82622803906 1.82843157985 1.84917585655 1.87519839879 1.99086192299
+ 2.16112151589 2.22390638579 2.25028607232 2.38041276170 2.39192823054]
+q: 0.928571428571
+position: 46.0
+predict(newdata=r_88738768, object=r_43111107)
+outer fold: 2
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.8
+position: 50.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.6
+position: 38.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.4
+position: 25.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='observation~.')
+plsr(formula=r_27975951, x=TRUE, data=r_3775128, method='oscorespls', validation='LOO')
+dim(x=r_13580449)
+coef(object=r_25272291, ncomp=4, intercept=TRUE)
+predict(newdata=r_086736952, object=r_54317257)
+inner fold: 2.0
+as.formula(obj='observation~.')
+plsr(formula=r_081896428, x=TRUE, data=r_12164653, method='oscorespls', validation='LOO')
+dim(x=r_057854168)
+coef(object=r_33259038, ncomp=1, intercept=TRUE)
+predict(newdata=r_29533200, object=r_62525684)
+inner fold: 3.0
+as.formula(obj='observation~.')
+plsr(formula=r_7418729, x=TRUE, data=r_75514854, method='oscorespls', validation='LOO')
+dim(x=r_81232122)
+coef(object=r_74362351, ncomp=1, intercept=TRUE)
+predict(newdata=r_066208290, object=r_89241021)
+inner fold: 4.0
+as.formula(obj='observation~.')
+plsr(formula=r_9097069, x=TRUE, data=r_51389072, method='oscorespls', validation='LOO')
+dim(x=r_86076753)
+coef(object=r_4499754, ncomp=1, intercept=TRUE)
+predict(newdata=r_50893685, object=r_36235255)
+inner fold: 5.0
+as.formula(obj='observation~.')
+plsr(formula=r_42961919, x=TRUE, data=r_90782390, method='oscorespls', validation='LOO')
+dim(x=r_72187328)
+coef(object=r_9385973, ncomp=1, intercept=TRUE)
+predict(newdata=r_51308016, object=r_43013201)
+as.formula(obj='observation~.')
+plsr(formula=r_70268176, x=TRUE, data=r_61683627, method='oscorespls', validation='LOO')
+dim(x=r_69210287)
+coef(object=r_58180252, ncomp=2, intercept=TRUE)
+list: length: 51, values: [0.70842599274 1.12038368303 1.29464095003 1.33188298442 1.35010521427
+ 1.36735091846 1.36757539982 1.36870628016 1.38215174418 1.38590115424
+ 1.38684231150 1.40230675110 1.41435160051 1.42384669093 1.43725252062
+ 1.44234025114 1.45221351821 1.47939912613 1.48774079915 1.49006084463
+ 1.49301823719 1.49535724246 1.49639524928 1.51757310559 1.52505482986
+ 1.57959441313 1.61906251014 1.63352836139 1.64350299904 1.65737050325
+ 1.65754519473 1.65959861291 1.69394776349 1.70554494883 1.71322829245
+ 1.75374877516 1.78376782727 1.84140499456 1.85299948946 1.85346420497
+ 1.87640433101 1.93180987424 1.93725465131 1.95852782748 1.98023948168
+ 2.01171502443 2.02323354579 2.03957777464 2.12368086560 2.30348524344
+ 3.02655562374]
+q: 0.948717948718
+position: 48.0
+predict(newdata=r_53256406, object=r_62555583)
+outer fold: 3
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.8
+position: 51.0
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.6
+position: 38.0
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.4
+position: 26.0
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='observation~.')
+plsr(formula=r_6641008, x=TRUE, data=r_94452085, method='oscorespls', validation='LOO')
+dim(x=r_15747237)
+coef(object=r_42554839, ncomp=3, intercept=TRUE)
+predict(newdata=r_051603741, object=r_42497954)
+inner fold: 2.0
+as.formula(obj='observation~.')
+plsr(formula=r_27543027, x=TRUE, data=r_79824986, method='oscorespls', validation='LOO')
+dim(x=r_75424756)
+coef(object=r_83134179, ncomp=1, intercept=TRUE)
+predict(newdata=r_055462537, object=r_7988748)
+inner fold: 3.0
+as.formula(obj='observation~.')
+plsr(formula=r_35100819, x=TRUE, data=r_87653616, method='oscorespls', validation='LOO')
+dim(x=r_98120779)
+coef(object=r_93510946, ncomp=1, intercept=TRUE)
+predict(newdata=r_03036982, object=r_9819496)
+inner fold: 4.0
+as.formula(obj='observation~.')
+plsr(formula=r_58913570, x=TRUE, data=r_14933042, method='oscorespls', validation='LOO')
+dim(x=r_63837683)
+coef(object=r_28586626, ncomp=3, intercept=TRUE)
+predict(newdata=r_55834661, object=r_22750087)
+inner fold: 5.0
+as.formula(obj='observation~.')
+plsr(formula=r_65133602, x=TRUE, data=r_53164897, method='oscorespls', validation='LOO')
+dim(x=r_39466482)
+coef(object=r_85282367, ncomp=1, intercept=TRUE)
+predict(newdata=r_24669080, object=r_31638052)
+as.formula(obj='observation~.')
+plsr(formula=r_61289783, x=TRUE, data=r_30020121, method='oscorespls', validation='LOO')
+dim(x=r_13856957)
+coef(object=r_93535912, ncomp=3, intercept=TRUE)
+list: length: 49, values: [0.938706635701 1.35694853593 1.37958304756 1.38931296201 1.40193655998
+ 1.41141343837 1.41385822162 1.44722228526 1.49020049257 1.49827592320
+ 1.51195187409 1.52644064798 1.53492879457 1.57736625637 1.579897233
+ 1.59087607336 1.59945852294 1.59989789087 1.60254491868 1.60322988722
+ 1.60444807835 1.61542082215 1.65296302682 1.66900377372 1.67170307028
+ 1.67181233936 1.68237097517 1.68885752913 1.70330457803 1.73114785597
+ 1.74265706118 1.75152591516 1.75888073956 1.76265569237 1.78246819564
+ 1.80961084611 1.82639111083 1.83620424742 1.86802292376 1.88368094680
+ 1.90946504612 1.95275075170 1.97282579302 2.04707273284 2.12103362597
+ 2.28479200513 2.34696315470 2.36586139828 2.47847501811]
+q: 0.894736842105
+position: 43.0
+predict(newdata=r_10472671, object=r_40907318)
+outer fold: 4
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.8
+position: 50.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.6
+position: 38.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.4
+position: 25.0
+list: length: 63, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='observation~.')
+plsr(formula=r_48047632, x=TRUE, data=r_021300623, method='oscorespls', validation='LOO')
+dim(x=r_28412261)
+coef(object=r_24019257, ncomp=1, intercept=TRUE)
+predict(newdata=r_8147404, object=r_25647414)
+inner fold: 2.0
+as.formula(obj='observation~.')
+plsr(formula=r_16056826, x=TRUE, data=r_0053157163, method='oscorespls', validation='LOO')
+dim(x=r_62411668)
+coef(object=r_32510855, ncomp=1, intercept=TRUE)
+predict(newdata=r_21456093, object=r_13342537)
+inner fold: 3.0
+as.formula(obj='observation~.')
+plsr(formula=r_76010792, x=TRUE, data=r_30466177, method='oscorespls', validation='LOO')
+dim(x=r_47027770)
+coef(object=r_60125950, ncomp=1, intercept=TRUE)
+predict(newdata=r_077853581, object=r_25636966)
+inner fold: 4.0
+as.formula(obj='observation~.')
+plsr(formula=r_91204604, x=TRUE, data=r_50425485, method='oscorespls', validation='LOO')
+dim(x=r_15587969)
+coef(object=r_024950678, ncomp=1, intercept=TRUE)
+predict(newdata=r_18933328, object=r_66950619)
+inner fold: 5.0
+as.formula(obj='observation~.')
+plsr(formula=r_23326609, x=TRUE, data=r_77714019, method='oscorespls', validation='LOO')
+dim(x=r_012851718)
+coef(object=r_22314380, ncomp=1, intercept=TRUE)
+predict(newdata=r_97013573, object=r_88735393)
+as.formula(obj='observation~.')
+plsr(formula=r_062472949, x=TRUE, data=r_33236373, method='oscorespls', validation='LOO')
+dim(x=r_52151426)
+coef(object=r_4859305, ncomp=1, intercept=TRUE)
+list: length: 55, values: [1.24206614721 1.26867154602 1.33433851740 1.34440217722 1.34825903291
+ 1.34846008873 1.35213985164 1.35270807834 1.35740744071 1.37054054993
+ 1.37203790412 1.37719677651 1.38021448727 1.38191326249 1.38397934752
+ 1.38569355123 1.38572467041 1.38585223728 1.39682905279 1.40360573204
+ 1.41427533358 1.42098307974 1.43486272441 1.44108058317 1.45158434128
+ 1.45836533591 1.46223033299 1.46857598379 1.48497749553 1.48520883127
+ 1.48551374297 1.48695247638 1.48969713727 1.49879084643 1.49989271133
+ 1.50477813452 1.50534633982 1.51500779326 1.51506258988 1.52374742637
+ 1.59422359958 1.61428592777 1.64625181005 1.69179432852 1.72053317386
+ 1.73710635227 1.87330294224 1.92886009594 1.95273716772 1.97398395238
+ 2.06003000220 2.12727353586 2.16802895826 2.32316288384 2.49364051574]
+q: 0.952380952381
+position: 52.0
+predict(newdata=r_41492889, object=r_97241618)
+outer fold: 5
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.8
+position: 51.0
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.6
+position: 38.0
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.4
+position: 26.0
+list: length: 64, values: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+ 50 51 52 53 54 55 56 57 58 59 60 61 62 63]
+q: 0.2
+position: 13.0
+inner fold: 1.0
+as.formula(obj='observation~.')
+plsr(formula=r_029621761, x=TRUE, data=r_22887386, method='oscorespls', validation='LOO')
+dim(x=r_62385006)
+coef(object=r_62915190, ncomp=1, intercept=TRUE)
+predict(newdata=r_79649609, object=r_16464207)
+inner fold: 2.0
+as.formula(obj='observation~.')
+plsr(formula=r_62141099, x=TRUE, data=r_50199939, method='oscorespls', validation='LOO')
+dim(x=r_19946598)
+coef(object=r_99697304, ncomp=3, intercept=TRUE)
+predict(newdata=r_11008653, object=r_60702924)
+inner fold: 3.0
+as.formula(obj='observation~.')
+plsr(formula=r_75675497, x=TRUE, data=r_089559256, method='oscorespls', validation='LOO')
+dim(x=r_56273077)
+coef(object=r_35405436, ncomp=3, intercept=TRUE)
+predict(newdata=r_10062501, object=r_20656056)
+inner fold: 4.0
+as.formula(obj='observation~.')
+plsr(formula=r_45518915, x=TRUE, data=r_20979484, method='oscorespls', validation='LOO')
+dim(x=r_28568635)
+coef(object=r_40131115, ncomp=3, intercept=TRUE)
+predict(newdata=r_77513403, object=r_96980780)
+inner fold: 5.0
+as.formula(obj='observation~.')
+plsr(formula=r_17742111, x=TRUE, data=r_22092575, method='oscorespls', validation='LOO')
+dim(x=r_78175258)
+coef(object=r_31506213, ncomp=1, intercept=TRUE)
+predict(newdata=r_69582479, object=r_96855888)
+as.formula(obj='observation~.')
+plsr(formula=r_7358817, x=TRUE, data=r_49925055, method='oscorespls', validation='LOO')
+dim(x=r_6789937)
+coef(object=r_78037242, ncomp=2, intercept=TRUE)
+list: length: 51, values: [0.47898750762 1.25917413209 1.25963995633 1.30880198848 1.31355516157
+ 1.3278151698 1.33569897865 1.34265881443 1.34777703722 1.35318855802
+ 1.35454842017 1.35585715579 1.36113538107 1.37435622368 1.41162641119
+ 1.43449566625 1.45679870727 1.46540511554 1.47077867772 1.48846238497
+ 1.52189038546 1.53023737329 1.55562596635 1.59628585727 1.59725038067
+ 1.61752959389 1.62110057671 1.63282051252 1.63680478722 1.64572755960
+ 1.66178466204 1.66225728742 1.67455070340 1.67673955993 1.69746896249
+ 1.70133866229 1.70902454009 1.75084140661 1.75380528358 1.76183811720
+ 1.77871046783 1.81539977225 1.82293982173 1.84019164845 1.87332342006
+ 1.88258235769 1.92239974463 2.04377018965 2.43339833538 2.53820757559
+ 2.72583529844]
+q: 0.90243902439
+position: 46.0
+predict(newdata=r_956944, object=r_65655107)
+as.formula(obj='observation~.')
+plsr(formula=r_71925886, x=TRUE, data=r_48585402, method='oscorespls', validation='LOO')
+dim(x=r_66654237)
+coef(object=r_58197616, ncomp=3, intercept=TRUE)
+list: length: 64, values: [0.643644005392 1.26745445048 1.30011236135 1.30334468286 1.30634080380
+ 1.32173795381 1.32603264990 1.33211480141 1.33715778730 1.34076661922
+ 1.34922009453 1.35900368821 1.37329287641 1.40576966507 1.40699294461
+ 1.41206963897 1.42867855319 1.44603621714 1.46287745448 1.46485444524
+ 1.46580802295 1.47780840509 1.48325406212 1.48968165328 1.53593685926
+ 1.54148340567 1.54580243981 1.56869674831 1.57112542065 1.57370495333
+ 1.57889936094 1.58357537919 1.58519661736 1.59147812974 1.59622127721
+ 1.60653666663 1.61518332926 1.61586461382 1.62452525376 1.63990608020
+ 1.64068895371 1.65339463444 1.67422035633 1.67474568302 1.68557779134
+ 1.69014228495 1.69628033200 1.7224006225 1.73652031755 1.77697645795
+ 1.80617001851 1.80965769636 1.81427096411 1.87176058395 1.87578363058
+ 1.88436232443 1.92785444397 2.00298841594 2.01269012186 2.26146566326
+ 2.38394886335 2.46036660128 2.52664152688 2.57280164447]
+q: 0.9
+position: 57.0

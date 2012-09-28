@@ -6,8 +6,10 @@ function(formula, data, K=NULL, eta=seq(0.1,0.9,0.05), kappa=0.5, select="pls2",
     
     #Drop any rows with NA values
     na.rows = (which(is.na(data))-1) %% dim(data)[1] + 1
-    if (length(na.rows)>0)
+    if (length(na.rows)>0) {
+        print(paste("rows with nas: ", paste(na.rows, collapse=','), sep=''))
         data = data[-na.rows,]
+    }
     
     p = ncol(data)
     n = nrow(data)
@@ -31,8 +33,13 @@ function(formula, data, K=NULL, eta=seq(0.1,0.9,0.05), kappa=0.5, select="pls2",
     normx=vector()
     for (k in 1:p) {
         meanx = c(meanx, mean(x[,k]))
-        normx = c(normx, sqrt(sum((x[,k]-meanx[k])**2)))
-        x[,k] = (x[,k]-meanx[k])/normx[k]
+        norm = sqrt(sum((x[,k]-meanx[k])**2))
+        if (norm > 0) {
+            normx = c(normx, norm)
+            x[,k] = (x[,k]-meanx[k])/norm
+        } else {
+            normx = c(normx, Inf)
+        }
     }
     
     if (is.null(K)) {
@@ -60,7 +67,7 @@ function(formula, data, K=NULL, eta=seq(0.1,0.9,0.05), kappa=0.5, select="pls2",
         coef = matrix(0, length(result[['predictors']]), 1)
         for (v in names(m$coef[-1])) {
             i = which(result[['predictors']]==v)
-            coef[i,1] = as.matrix(m$coef[[v]])
+            coef[i,1] = m$coef[[v]]
         }
         result[['Intercept']] = m$coef[["(Intercept)"]]
         result[['fitted']] = m$fitted
@@ -72,7 +79,7 @@ function(formula, data, K=NULL, eta=seq(0.1,0.9,0.05), kappa=0.5, select="pls2",
         result[['fitted']] = result[['Intercept']] + x.orig %*% coef
     }    
     
-    result[['coef']] = coef    
+    result[['coef']] = Matrix(coef)    
     result[['actual']] = y
     result[['residuals']] = result[['actual']] - result[['fitted']]    
     
