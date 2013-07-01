@@ -5,9 +5,11 @@ import sys
 clr.AddReference("VBTools")
 import VBTools
 import utils
-import numpy as np
+#import numpy as np
 import datetime
 import copy
+import random
+import array
 
 class ValidationCounts(object):
     def __init__(self):
@@ -15,8 +17,8 @@ class ValidationCounts(object):
         self.tneg = 0
         self.fpos = 0
         self.fneg = 0
-        self.predictions = np.array([])
-        self.truth = np.array([])
+        self.predictions = list()
+        self.truth = list()
     
     
 beaches = dict()
@@ -110,47 +112,45 @@ prefix = ".".join(prefix)
 
 def AreaUnderROC(raw):
     threshold = raw['threshold']
-    
+    numfolds = len(raw['train'])
     tp = []
     tn = []
     fp = []
     fn = []
     sp = []
     
-    for fold in range(len(raw['train'])):
+    for fold in range(numfolds):
         tpos = []
         tneg = []
         fpos = []
         fneg = []
         spec = []
+        lenfold = len(raw['train'][fold])
         
-        training_exc = np.array(raw['train'][fold] > threshold, dtype=bool)
-        training_nonexc = np.array(raw['train'][fold] <= threshold, dtype=bool)
-        thresholds = raw['fitted'][fold][training_nonexc]
-        order = np.argsort(thresholds)
+        training_exc = [raw['train'][fold][i] > threshold for i in range(lenfold)] #np.array(raw['train'][fold] > threshold, dtype=bool)
+        training_nonexc = [raw['train'][fold][i] <= threshold for i in range(lenfold)] #np.array(raw['train'][fold] <= threshold, dtype=bool)
+        thresholds = [raw['fitted'][fold][i] for i in range(lenfold) if training_nonexc[i] == True]
+        order = sorted(range(len(thresholds)), key=thresholds.__getitem__) #np.argsort(thresholds)
         
         for i in range(len(order)):
             k = order[i]
-            test_exc = len(raw['validate'][fold] > thresholds[k])
-            train_exc = len(raw['train'][fold] > thresholds[k])
-            test_flag = len(raw['predicted'][fold] > thresholds[k])
-            train_flag = len(raw['fitted'][fold] > thresholds[k])
             
-            spec.append(np.where(thresholds <= thresholds[k])[0].shape[0]/len(thresholds))
-            tpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] > threshold)[0].shape[0])
-            tneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] <= threshold)[0].shape[0])
-            fpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] <= threshold)[0].shape[0])
-            fneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] > threshold)[0].shape[0])
+            spec.append(len([i for i in range(lenfold) if thresholds[i] <= thresholds[k]]) / float(len(thresholds)))
+            tpos.append(len([i for i in range(lenfold) if raw['validate'][fold][i] > threshold and raw['predicted'][fold][i] > thresholds[k]]))
+            tneg.append(len([i for i in range(lenfold) if raw['validate'][fold][i] <= threshold and raw['predicted'][fold][i] <= thresholds[k]]))
+            fpos.append(len([i for i in range(lenfold) if raw['validate'][fold][i] <= threshold and raw['predicted'][fold][i] > thresholds[k]]))
+            fneg.append(len([i for i in range(lenfold) if raw['validate'][fold][i] > threshold and raw['predicted'][fold][i] <= thresholds[k]]))
         
         tp.append(tpos)
         tn.append(tneg)
         fp.append(fpos)
         fn.append(fneg)
-        sp.append(np.array(spec, dtype=float))
+        sp.append(spec)
     
     specs = []
     [specs.extend(s) for s in sp]
-    specs = np.sort(np.unique(specs))
+    specs = list(set(specs)) #np.sort(np.unique(specs))
+    specs.sort()
     
     tpos = []
     tneg = []
@@ -168,8 +168,8 @@ def AreaUnderROC(raw):
         spec.append(s)
         
         for f in range(folds):
-            indx = list(np.where(sp[f] >= s)[0])
-            indx = indx[np.argmin(sp[f][indx])]
+            indx = [i for i in range(len(sp[f])) if sp[f][i] >= s]
+            indx = sorted(indx, key=sp[f].__getitem__)[0]
             
             tpos[-1] += tp[f][indx]
             tneg[-1] += tn[f][indx]
@@ -266,9 +266,9 @@ def OutputROC(raw):
     
 
 #What SpecificityChart wants: dict(specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
-    
+random.seed(seed)
 print(locs)
-    
+
 for beach in locs:
     first = dict(zip(tasks, [True for k in tasks]))
 
@@ -281,14 +281,14 @@ for beach in locs:
     #else: [headers, data] = utils.DotnetToArray(data)
     
     [headers, data] = utils.ReadCSV(datafile)
-    raw_table = [list(row) for row in data]
+    data = [array.array('d', row) for row in data]
     if 'remove' in beaches[beach]:
         for item in beaches[beach]['remove']:
             item = item.lower()
-            [row.pop(headers.index(item)) for row in raw_table]
+            [row.pop(headers.index(item)) for row in data]
             headers.remove(item)
         
-    data = np.array(raw_table, dtype=float)
+    #data = np.array(raw_table, dtype=float)
     #else: [headers, data] = utils.DotnetToArray(data)
     
     #Apply the specified transforms to the raw data.
@@ -304,7 +304,9 @@ for beach in locs:
     
     for b in range(B):
         #Partition the data into cross-validation folds.
-        folds = utils.Partition(data, cv_folds, seed) + 1
+        folds = utils.Partition(data, cv_folds) 
+        #print folds
+        #folds = folds + 1
         validation = dict(zip(methods.keys(), [ValidationCounts() for method in methods]))
         
         ROC = dict(zip(methods.keys(), [{'train':[], 'fitted':[], 'validate':[], 'predicted':[], 'threshold':beaches[beach]['threshold']} for method in methods]))
@@ -312,12 +314,12 @@ for beach in locs:
         for f in range(cv_folds+1)[1:]:
             print "outer fold: " + str(f)
             #Break this fold into test and training sets.
-            training_set = data[np.where(folds!=f),:].squeeze()
+            training_set = [data[i] for i in range(len(data)) if folds[i]!=f]
             inner_cv = utils.Partition(training_set, cv_folds)
             
             #Prepare the test set for use in prediction.
-            test_set = data[np.where(folds==f),:].squeeze()
-            test_dict = dict(zip(headers, np.transpose(test_set)))
+            test_set = [data[i] for i in range(len(data)) if folds[i]==f]
+            test_dict = dict(zip(headers, [array.array('d', [row[i] for row in test_set]) for i in range(len(test_set[0]))]))
             
             #Run the modeling routines.
             for method in tasks:
@@ -351,25 +353,25 @@ for beach in locs:
                 #    indx = [i for i in range(len(thresholding['fneg'])) if thresholding['specificity'][i] > 0.8]
                 indx = [int(i) for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i]]
                 if not indx: specificity = 0.9
-                else: specificity = np.min(np.array(thresholding['specificity'])[indx])
+                else: specificity = min([thresholding['specificity'][i] for i in indx])
                 
                 #Predict exceedances on the test set and add them to the results structure.
                 model.Threshold(specificity)
-                predictions = np.array(model.Predict(test_dict)).squeeze()
-                truth = np.array(test_dict[beaches[beach]['target']]).squeeze()
+                predictions = model.Predict(test_dict)
+                truth = test_dict[beaches[beach]['target']]
                 
                 #These will be used to calculate the area under the ROC curve:
-                order = np.argsort(truth)
+                order = sorted(range(len(truth)), key=truth.__getitem__)
                 ROC[method]['validate'].append(truth)
                 ROC[method]['predicted'].append(predictions)
-                ROC[method]['train'].append(np.array(model.actual).squeeze())
-                ROC[method]['fitted'].append(np.array(model.fitted).squeeze())
+                ROC[method]['train'].append(model.actual)
+                ROC[method]['fitted'].append(model.fitted)
                 
                 #Calculate the predictive perfomance for the model
-                tpos = sum((predictions>model.threshold) & (truth>beaches[beach]['threshold']))
-                tneg = sum((predictions<=model.threshold) & (truth<=beaches[beach]['threshold']))
-                fpos = sum((predictions>model.threshold) & (truth<=beaches[beach]['threshold']))
-                fneg = sum((predictions<=model.threshold) & (truth>beaches[beach]['threshold']))
+                tpos = len([i for i in range(len(predictions)) if predictions[i] > model.threshold and truth[i] > beaches[beach]['threshold']])  #sum((predictions>model.threshold) & (truth>beaches[beach]['threshold']))
+                tneg = len([i for i in range(len(predictions)) if predictions[i] <= model.threshold and truth[i] <= beaches[beach]['threshold']])  #sum((predictions<=model.threshold) & (truth<=beaches[beach]['threshold']))
+                fpos = len([i for i in range(len(predictions)) if predictions[i] > model.threshold and truth[i] <= beaches[beach]['threshold']])  #sum((predictions>model.threshold) & (truth<=beaches[beach]['threshold']))
+                fneg = len([i for i in range(len(predictions)) if predictions[i] <= model.threshold and truth[i] > beaches[beach]['threshold']])  #sum((predictions<=model.threshold) & (truth>beaches[beach]['threshold']))
                 
                 #Add predictive performance stats to the aggregate.
                 validation[method].tpos = validation[method].tpos + tpos
@@ -403,8 +405,7 @@ for beach in locs:
         for m in tasks:
             #Store the performance information.
             #First, create a model for variable selection:
-            data_set = data.squeeze()
-            data_dict = dict(zip(headers, np.transpose(data_set)))
+            data_dict = dict(zip(headers, [array.array('d', [row[i] for row in data]) for i in range(len(data[0]))]))
             model = Interface.Control.methods[m.lower()].Model(data=data_dict, target=beaches[beach]['target'], regulatory_threshold=beaches[beach]['threshold'], **methods[m])
             
             #Open a file to which we will append the output.

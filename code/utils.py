@@ -1,8 +1,8 @@
 import random
-import numpy as np
+#import numpy as np
 import datetime
 import random
-from numpy import where, nonzero
+#from numpy import where, nonzero
 
 from dateutil import parser, relativedelta
 from datetime import datetime
@@ -10,6 +10,8 @@ import re
 
 import RDotNetWrapper as rdn
 from System import Array
+import array
+import math
 
 
 def MakeConverters(headers):
@@ -24,11 +26,32 @@ def MakeConverters(headers):
 def Converter(value):
     '''If value cannot be immediately converted to a float, then return a NaN.'''
     try: return float(value or 'nan')
-    except ValueError: return np.nan
+    except ValueError: return float('nan')
 
 
-def DotnetToArray(data, remove=[]):
-    '''Copy the contents of a .NET DataView into a numpy array with a list of headers'''
+def std(values):
+    mean = sum(values) / len(values)
+    SS = sum([(x - mean)**2 for x in values])
+    return (1.0/(len(values)-1)) * SS
+
+    
+def median(values):
+    values.sort()
+    if len(values)==0:
+        median = float('nan')
+    elif len(values)%2 == 0:
+        #have to take avg of middle two
+        i = len(values)/2
+        median = (values[i] + values[i-1])/2
+    else:
+        #find the middle (remembering that lists start at 0)
+        i = (len(values)-1)/2
+        median = values[i]
+    return median
+
+
+def DotNetToArray(data):
+    '''Copy the contents of a .NET DataView into an array with a list of headers'''
     
     #First import the libraries that are needed just for this step:
     import System
@@ -45,20 +68,11 @@ def DotnetToArray(data, remove=[]):
     
     #Find which rows of the DataView contain NaNs:
     nan_rows = [ sum( [isinstance(item, System.DBNull) for item in row] ) for row in data_view ]
-    flags = np.ones(len(data_view), dtype=bool)
-    flags[ np.nonzero(nan_rows) ] = False
+    flags = [not bool(nan_rows[i]) for i in range(len(nan_rows))]
     
     #Now copy the NaN-free rows of the DataView into an array:
-    raw_table = [ list(row) for row in data_view ]
-    
-    #Remove any columns that have been marked for removal:
-    if remove and hasattr(remove, '__iter__'):
-        for item in remove:
-            [row.pop(headers.index(item)) for row in raw_table]
-            headers.remove(item)
-        
-    data_array = np.array(raw_table)[flags]
-    data_array = np.array(data_array, dtype=float)
+    raw_table = [list(data_view[i]) for i in range(len(data_view)) if flags[i]]
+    data_array = [array.array('d', row) for row in raw_table]
 
     return [headers, data_array]
     
@@ -67,8 +81,8 @@ def SanitizeVariableName(var):
     #First remove any leading characters that are not letters, then any other characters that are not alphanumeric.
     var = re.sub("^[^a-zA-Z]+", "", var)
     return re.sub("[^a-zA-Z0-9]+", "", var).lower()
-        
-        
+
+
 def DictionaryToR(data_dictionary, name=''):
     '''Moves a python dictionary into an R data frame'''
     
@@ -82,7 +96,7 @@ def DictionaryToR(data_dictionary, name=''):
     
     #each column of the dictionary should be a numpy array
     for col in data_dictionary:
-        if data_dictionary[col].dtype in [int, float]:
+        if data_dictionary[col].typecode in ['f', 'd']:
             df[col] = r.CreateNumericVector( Array[float](data_dictionary[col]) ).AsVector()
         else:
             df[col] = r.CreateCharacterVector( Array[str](data_dictionary[col]) ).AsVector()
@@ -118,10 +132,10 @@ def Draw(count, max):
 def Quantile(list, q):
     '''Find the value at the specified quantile of the list.'''
     if q>1 or q<0:
-        return np.nan
+        return float('nan')
     else:
-        list = np.sort(list)
-        position = np.ceil(q * (len(list)-1) )
+        list.sort()
+        position = int(math.ceil(q * (len(list)-1)))
         
         print "list: length: " + str(len(list)) + ", values: " + str(list)
         print "q: " + str(q)
@@ -136,19 +150,19 @@ def NonStandardDeviation(list, pivot):
     for item in list:
         var = var + (item-pivot)**2
         
-    return np.sqrt( var/len(list) )
+    return math.sqrt(var/len(list))
 
-    
-def ImportFile(file_name):
+
+"""def ImportFile(file_name):
     '''Import a ULP-type data file'''
-
     #open the data source file and read the headers
     infile = file_name
     f = open(infile, 'r')
-    headers = f.readline().rstrip('\n').split(',')
+    h = f.readline().rstrip('\n').split(',')
     
-    #strip the blank headers and the 'Date' header
-    headers = filter(lambda x: x!='', h)
+	#strip the blank headers and the 'Date' header
+	indx = [i for i in range(len(h)) if h[i]!='']
+    headers = [h[i] for i in indx]
     headers = flatten(['year', 'julian', headers[1:]])
     
     #define a couple of objects we'll use later on.
@@ -169,9 +183,7 @@ def ImportFile(file_name):
             if not values[0]: pass
             else:
                 #get only those columns with a valid header
-                v = np.array(values)
-                v = v[indx]
-                values = list(v)
+                values = [values[i] for i in indx]
                 
                 #convert the date into our expected form
                 date_obj = ObjectifyDate(values[0])
@@ -179,24 +191,19 @@ def ImportFile(file_name):
                 
                 #flatten the data into a numpy array (from a list of lists)
                 data_row = flatten([date_obj.year, julian, values[1:]])
-                data_row = np.array(data_row)
+                data_row = array.array('d', data_row)
                 
                 #add this row of data to the big list.
                 data.append(data_row)
 
     #Remove blank rows:
     data = filter(lambda x: '' not in x, data)
-    
-    #make the big list into a big array
-    data = np.array(data)
-    data = data.astype(float)
-    
+	
     return [headers, data]
 
 
 def Factorize(data, target='year', headers='', levels='', return_levels=False):
     '''Turn target into a factor whose coefficients will sum-to-zero'''
-
     #if the data is not originally a dictionary, turn it into one.
     if type(data) is dict:
         passed_dict = True
@@ -242,10 +249,51 @@ def Factorize(data, target='year', headers='', levels='', return_levels=False):
     #Otherwise, return a dictionary.
     else:
         if not return_levels: return data
-        else: return [data, levels]
+        else: return [data, levels]"""
 
 
-def ReadCSV(file, NA_flag=-99999):
+def ReadCSV(file_name, NA_flag=-99999):
+    #open the data source file and read the headers
+    infile = file_name
+    f = open(infile, 'r')
+    h = f.readline().rstrip('\n').split(',')
+    
+	#strip the blank headers and the 'Date' header
+    indx = [i for i in range(len(h)) if h[i]!='']
+    headers = [h[i].lower() for i in indx]
+    
+    #define a couple of objects we'll use later on.
+    data = list()
+    finished = False
+    
+    #loop until the end of the file:
+    while not finished:
+        line = f.readline()
+        
+        #continue unless we're at the end of the file
+        if not line:
+            finished = True
+        else:
+            values = line.rstrip('\n').split(',')
+            
+            #only process data that has some value in the first field
+            if not values[0]: pass
+            else:
+                #get only those columns with a valid header
+                values = [float(values[i]) for i in indx]
+                data_row = array.array('d', values)
+                
+                #add this row of data to the big list.
+                data.append(data_row)
+
+    #Remove nans and rows with NA_flags:
+    data = filter(lambda x: float('nan') not in x, data)
+    data = filter(lambda x: NA_flag not in x, data)
+    
+    return [headers, data]
+
+
+"""def ReadCSV(file, NA_flag=-99999):
     '''Read a csv data file and return a list that \nconsists of the column headers and the data'''
     infile = file
 
@@ -262,7 +310,7 @@ def ReadCSV(file, NA_flag=-99999):
     data_in = filter(lambda x: NA_flag not in x, data_in)
     data_in = np.array(data_in)
 
-    return [headers, data_in]
+    return [headers, data_in]"""
 
     
 def WriteCSV(array, columns, location):
@@ -283,27 +331,31 @@ def WriteCSV(array, columns, location):
     out_file.close()
 
 
-def Partition(data, folds, seed=''):
+def Partition(data, folds):
     '''Partition the data set into random, equal-sized folds for cross-validation'''
     #If we've called for leave-one-out CV (folds will be like 'n' or 'LOO' or 'leave-one-out')
-    if str(folds).lower()[0]=='l' or str(folds).lower()[0]=='n' or folds>data.shape[0]:
-        fold = range(data.shape[0])
+    if str(folds).lower()[0]=='l' or str(folds).lower()[0]=='n' or folds>len(data):
+        fold = range(len(data))
     
     #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
-    else:       
+    else:
         #Initialization
-        if seed: np.random.seed(seed)
-        n = data.shape[0]
-        index = np.arange(n, dtype=float)
-        fold = np.floor(index * folds / n)
+        indices = range(len(data))
+        fold = [folds for i in range(len(data))]
+        quantiles = [float(x) / folds for x in range(folds)]
+        
+        #Proceed through the quantiles in reverse order, labelling the ith fold at each step. Ignore the zeroth quantile.
+        for i in range(folds)[::-1][:-1]:
+            q = Quantile(indices, quantiles[i])+1
+            fold[:q] = [i for j in range(q)]
             
         #Now permute the fold assignments
-        fold = np.random.permutation(fold)
+        random.shuffle(fold)
         
     return fold
 
 
-def Split(data, headers, year):
+"""def Split(data, headers, year):
     '''Partition the supplied data set into training and validation sets''' 
     
     #model_data is the set of observations that we'll use to train the model.
@@ -315,7 +367,7 @@ def Split(data, headers, year):
     model_dict = dict(zip(headers, np.transpose(model_data)))
     validation_dict = dict(zip(headers, np.transpose(validation_data)))
 
-    return [model_data, validation_data]
+    return [model_data, validation_data]"""
 
 
 def ObjectifyTime(time_string):
@@ -370,7 +422,7 @@ def MatchDictionaries(dict1, dict2):
     return dict_matched
     
 
-def MatchData(struct1, struct2):
+"""def MatchData(struct1, struct2):
     '''Create a new data structure from the matching headers of two separate data structures'''
     
     #unpack the parameters
@@ -393,7 +445,7 @@ def MatchData(struct1, struct2):
     
     #turn the combined data into an array and return it with the headers
     matched_values = np.transpose( np.array(matched_values) )
-    return [matched_headers, matched_values]
+    return [matched_headers, matched_values]"""
     
     
 def flatten(x):

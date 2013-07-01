@@ -30,8 +30,8 @@ sys.path[1] = root + '\\bin'
 print sys.path
 clr.AddReference("mtrand.dll")
 clr.AddReference("System.Data")
-clr.AddReference("DotNetExtensions")
-import numpy as np
+clr.AddReference("RDotNetExtensions")
+
 import System
 import pickle
 
@@ -71,9 +71,10 @@ class BeachInterface(object):
 
     def GetPossibleSpecificities(self, model):   
         '''Find out what values specificity could take if we count out one non-exceedance at a time.'''
-        thresholds = np.sort(model.array_fitted[np.where(model.array_actual < model.regulatory_threshold)[0]])
-        specificities = [x/float(thresholds.shape[0]) for x in range(thresholds.shape[0])]
-        return [list(thresholds), list(specificities)]
+        regulatory_threshold = model.regulatory_threshold
+        thresholds = sorted([model.fitted[i] for i in range(len(model.fitted)) if model.actual[i] <= regulatory_threshold])
+        specificities = [x/float(len(thresholds)) for x in range(len(thresholds))]
+        return [[float(x) for x in thresholds], list(specificities)]
         
         
     def Serialize(self, model):
@@ -111,8 +112,8 @@ class BeachInterface(object):
     
     def Predict(self, model, data):
         '''Use the model to predict the value that its output will take over the observations in the data.'''
-        [headers, data] = utils.DotnetToArray(data)
-        data_dict = dict( zip(headers, np.transpose(data)) )
+        [headers, data] = utils.DotNetToArray(data)
+        data_dict = dict( zip(headers, [array.array('d', [row[i] for row in data]) for i in range(len(data[0]))]) )
         predictions = model.Predict(data_dict)
         return predictions
         

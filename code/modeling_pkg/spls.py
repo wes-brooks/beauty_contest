@@ -28,7 +28,7 @@ class Model(object):
         
         #Get the data into R 
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
-        self.data_dictionary = copy.deepcopy(self.data_dictionary)
+        self.data_dictionary = copy.copy(self.data_dictionary)
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a PLS model in R.
@@ -65,7 +65,7 @@ class Model(object):
         #Get the data into R
         data = args['data']
         self.data_frame = utils.DictionaryToR(data)
-        self.data_dictionary = copy.deepcopy(data)
+        self.data_dictionary = copy.copy(data)
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a PLS model in R.

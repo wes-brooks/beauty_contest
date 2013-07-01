@@ -3,58 +3,58 @@ methods = {'pls':pls, 'boosting':gbm, 'gbm-unweighted':gbm, 'gbmcv-unweighted':g
 
 import utils
 import sys
-import numpy as np
 import copy
+import array
 
 boosting_iterations = 2000
 
 
 def Validate(data, target, method, folds='', **args):
-    '''Creates a model and tests its performance with cross-validation.'''
-    
+    '''Creates a model and tests its performance with cross-validation.'''    
     #Get the modeling module
     module = methods[method.lower()]
     
-    #convert the data from a .NET DataTable or DataView into a numpy array
-    if 'headers' not in args: [headers, data] = utils.DotnetToArray(data)
+    #convert the data from a .NET DataTable or DataView into an array
+    if 'headers' not in args: [headers, data] = utils.DotNetToArray(data)
     else: headers = args['headers']
     target = str(target)
     regulatory = args['regulatory_threshold']
     
     #Randomly assign the data to cross-validation folds unless that has already been done.
     if folds=='': folds = 5
-    if type(folds) is np.ndarray:
+    try:
         fold = copy.copy(folds)
-        folds = np.arange(max(folds)) + 1
-    else:
+        folds = [k+1 for k in range(max(folds))]
+    except TypeError:
         fold = utils.Partition(data, folds)
-        folds = np.arange(folds) + 1
+        folds = [k+1 for k in range(folds)]
     
     #Set up the dictionary of all data.
-    data_dict = dict( zip(headers, np.transpose(data)) )
+    data_dict = dict(zip(headers, [array.array('d', [row[i] for row in data]) for i in range(len(data[0]))])) #= dict( zip(headers, np.transpose(data)) )
     
     #Make a model for each fold and validate it.
     results = list()
     for f in folds:
         print "inner fold: " + str(f)
-        model_data = data[fold!=f,:]
-        validation_data = data[fold==f,:]
+		
+        model_data = [data[i] for i in range(len(data)) if fold[i] != f]
+        validation_data = [data[i] for i in range(len(data)) if fold[i] == f]
         
-        model_dict = dict(zip(headers, np.transpose(model_data)))
-        validation_dict = dict(zip(headers, np.transpose(validation_data)))
-
+        model_dict = dict(zip(headers, [array.array('d', [row[i] for row in model_data]) for i in range(len(model_data[0]))]))
+        validation_dict = dict(zip(headers, [array.array('d', [row[i] for row in validation_data]) for i in range(len(validation_data[0]))]))
+        
         model = module.Model(data=model_dict, target=target, **args)  
 
-        predictions = np.array(model.Predict(validation_dict)).squeeze()
+        predictions = model.Predict(validation_dict)
         validation_actual = validation_dict[target]
-        exceedance = np.array(validation_actual > regulatory, dtype=bool)
+        exceedance = [validation_actual[i] > regulatory for i in range(len(validation_actual))]
         
-        fitted = np.array(model.fitted)
-        actual = np.array(model.actual)
-        candidates = fitted[np.where(actual <= regulatory)]
+        fitted = model.fitted
+        actual = model.actual
+        candidates = [fitted[i] for i in range(len(fitted)) if actual[i] <= regulatory]
         if len(candidates) == 0: candidates = fitted
-        num_candidates = float(candidates.shape[0])
-        num_exceedances = float(np.where(actual > regulatory)[0].shape[0])
+        num_candidates = len(candidates)
+        num_exceedances = len([i for i in range(len(actual)) if actual[i] > regulatory])
         
         specificity = list()
         sensitivity = list()
@@ -63,20 +63,20 @@ def Validate(data, target, method, folds='', **args):
         tneg = list()
         fpos = list()
         fneg = list()
-        total = model_data.shape[0]
-        non_exceedances = float(sum(exceedance == False))
-        exceedances = float(sum(exceedance == True))
+        total = len(model_data)
+        non_exceedances = float(len([i for i in range(len(exceedance)) if exceedance[i] == False]))
+        exceedances = float(len([i for i in range(len(exceedance)) if exceedance[i] == True]))
         
         for candidate in candidates:
             #for prediction in predictions:
             #tp = np.where(validation_actual[predictions > prediction] > regulatory)[0].shape[0]
-            tp = np.where(validation_actual[predictions > candidate] > regulatory)[0].shape[0]
+            tp = len([i for i in range(len(predictions)) if predictions[i] > candidate and validation_actual[i] > regulatory]) #np.where(validation_actual[predictions > candidate] > regulatory)[0].shape[0]
             #fp = np.where(validation_actual[predictions > prediction] <= regulatory)[0].shape[0]
-            fp = np.where(validation_actual[predictions > candidate] <= regulatory)[0].shape[0]
+            fp = len([i for i in range(len(predictions)) if predictions[i] > candidate and validation_actual[i] <= regulatory]) # np.where(validation_actual[predictions > candidate] <= regulatory)[0].shape[0]
             #tn = np.where(validation_actual[predictions <= prediction] <= regulatory)[0].shape[0]
-            tn = np.where(validation_actual[predictions <= candidate] <= regulatory)[0].shape[0]
+            tn = len([i for i in range(len(predictions)) if predictions[i] <= candidate and validation_actual[i] <= regulatory]) #np.where(validation_actual[predictions <= candidate] <= regulatory)[0].shape[0]
             #fn = np.where(validation_actual[predictions <= prediction] > regulatory)[0].shape[0]
-            fn = np.where(validation_actual[predictions <= candidate] > regulatory)[0].shape[0]
+            fn = len([i for i in range(len(predictions)) if predictions[i] <= candidate and validation_actual[i] > regulatory]) #np.where(validation_actual[predictions <= candidate] > regulatory)[0].shape[0]
         
             tpos.append(tp)
             fpos.append(fp)
@@ -84,12 +84,12 @@ def Validate(data, target, method, folds='', **args):
             fneg.append(fn)
             
             try: candidate_threshold = candidate #np.max(candidates[np.where(candidates <= prediction)])
-            except: candidate_threshold = np.min(candidates)
+            except: candidate_threshold = min(candidates)
             
-            try: specificity.append(np.where(fitted[actual <= regulatory] <= candidate_threshold)[0].shape[0] / num_candidates)
+            try: specificity.append(tn / num_candidates)
             except ZeroDivisionError: specificity.append(1)
             
-            try: sensitivity.append(np.where(fitted[actual > regulatory] > candidate_threshold)[0].shape[0] / num_exceedances)
+            try: sensitivity.append(tp / num_exceedances)
             except ZeroDivisionError: sensitivity.append(1)
             
             #the first candidate threshold that would be below this threshold, or the smallest candidate if none are below.
@@ -97,13 +97,13 @@ def Validate(data, target, method, folds='', **args):
             try: threshold.append(candidate)
             except: threshold.append(min(fitted))
         
-        specificity = np.array(specificity)
-        sensitivity = np.array(sensitivity)
+        #specificity = np.array(specificity)
+        #sensitivity = np.array(sensitivity)
         
-        tpos = np.array(tpos)
-        tneg = np.array(tneg)
-        fpos = np.array(fpos)
-        fneg = np.array(fneg)
+        #tpos = np.array(tpos)
+        #tneg = np.array(tneg)
+        #fpos = np.array(fpos)
+        #fneg = np.array(fneg)
         
         result = dict(threshold=threshold, sensitivity=sensitivity, specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
         results.append(result)
@@ -117,7 +117,8 @@ def SpecificityChart(results):
     '''Produces a list of lists that Virtual Beach turns into a chart of performance in prediction as we sweep the specificity parameter.'''
     specificities = list()    
     [specificities.extend(fold['specificity']) for fold in results]
-    specificities = np.unique( np.sort(specificities) )
+    specificities = list(set(specificities))
+    specificities.sort()
     
     spec = []
     sens = []
@@ -134,9 +135,9 @@ def SpecificityChart(results):
         spec.append(specificity)
         
         for fold in results:
-            indx = list(np.where(fold['specificity'] >= specificity)[0])
+            indx = [i for i in range(len(fold['specificity'])) if fold['specificity'][i] >= specificity]
             if indx:
-                indx = indx[ np.argmin(fold['specificity'][indx]) ]
+                indx = sorted(range(len(indx)), key=indx.__getitem__)[0] #argmin of indx
             
                 tpos[-1] += fold['tpos'][indx]
                 fpos[-1] += fold['fpos'][indx]
@@ -175,11 +176,11 @@ def Summarize(model, validation_dict, **args):
     elif 'year' in args: year = float( args['year'] )
     else: year = np.nan
     
-    tp = float( sum(raw[:,0]) )  #True positives
-    tn = float( sum(raw[:,1]) )  #True negatives
-    fp = float( sum(raw[:,2]) )  #False positives
-    fn = float( sum(raw[:,3]) )  #False negatives
-    total = tp+tn+fp+fn
+    tp = float(sum([row[0] for row in raw]))  #True positives
+    tn = float(sum([row[1] for row in raw]))  #True negatives
+    fp = float(sum([row[2] for row in raw]))  #False positives
+    fn = float(sum([row[3] for row in raw]))  #False negatives
+    total = tp + tn + fp + fn
     
     return [spec_lim, tp, tn, fp, fn, total]
     

@@ -17,7 +17,7 @@ import RDotNet
 import RDotNetExtensions
 
 from System import Array
-import numpy as np
+import array
 
 #Fire up the interface to R
 os.environ["R_HOME"] = dlls + '\\R-2.15.1'
@@ -44,20 +44,23 @@ class Wrap():
                 if params[item] is True: params[item] = "TRUE"
                 else: params[item] = "FALSE"    
             
-            elif isinstance(params[item], (float, int, np.number)): #convert numeric types to strings
+            elif isinstance(params[item], (float, int)): #, np.number)): #convert numeric types to strings
                 params[item] = str(params[item])
 
             elif isinstance(params[item], RDotNet.SymbolicExpression):
                 #make sure we have a name by which we can refer to R objects
-                robj_name = "r_" + str(random.random())[2:-4]
+                robj_name = "r_" + str(random.random())[2:]
                 r.SetSymbol(robj_name, params[item])
                 params[item] = robj_name
                 
-            elif isinstance(params[item], (np.ndarray, list)):
-                temp = np.array( params[item] )
+            elif isinstance(params[item], (array.array, list)):
+                try:
+                    temp = array.array('d', params[item])
+                except OverflowError:
+                    temp = params[item]
                 
                 #move the array into R
-                if temp.dtype in [int, float]:
+                if temp.typecode in ['d', 'f']:
                     temp = r.CreateNumericVector( Array[float](temp) ).AsVector()
                 else:
                     temp = r.CreateCharacterVector( Array[str](temp) ).AsVector()
@@ -71,8 +74,6 @@ class Wrap():
             command = command + item + "=" + params[item] + ", "
             
         command = command[:-2] + ")"
-        
-        print command
         result = self.r.EagerEvaluate(command)
         
         return result
