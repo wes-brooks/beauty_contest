@@ -4,10 +4,10 @@ from datetime import datetime
 
 import sys
 import os
-dlls = os.getcwd().split('\\')[:-1]
+dlls = os.getcwd().split(os.sep)[:-1]
 dlls.append("bin")
-dlls = '\\'.join(dlls)
-sys.path.append('\\'.join(dlls))
+dlls = os.sep.join(dlls)
+sys.path.append(os.sep.join(dlls))
 
 import clr
 clr.AddReference("R.NET")
@@ -20,8 +20,8 @@ from System import Array
 import array
 
 #Fire up the interface to R
-os.environ["R_HOME"] = dlls + '\\R-2.15.1'
-RDotNet.REngine.SetDllDirectory(dlls + '\\R-2.15.1\\bin\\i386')
+os.environ["R_HOME"] = dlls + os.sep + 'R-2.15.1'
+RDotNet.REngine.SetDllDirectory(dlls + os.sep + os.sep.join(['R-2.15.1','bin','i386']))
 r = RDotNet.REngine.CreateInstance("RDotNet", output=RDotNet.Internals.OutputMode.Quiet)
 
 #This class wraps the R.NET functionality and makes calling r functions simpler.

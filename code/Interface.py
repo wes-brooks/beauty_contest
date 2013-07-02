@@ -4,14 +4,23 @@ Created on May 27, 2011
 '''
 #Import the PLS modeling classes
 import sys
-import clr 
+import clr
+
+#Set the separators 
+_names = sys.builtin_module_names
+if 'nt' in _names:
+    sep = '\\'
+    pathsep = ';'
+else:
+    sep = '/'
+    pathsep = ':'
 
 #Set the paths to IronPython based on the current working directory
-sys.path.insert(0, '..\\bin\\IronPython 2.7\\Lib\\site-packages' )
-sys.path.insert(0, '..\\bin\\IronPython 2.7\\DLLs' )
-sys.path.insert(0, '..\\bin\\IronPython 2.7\\Lib' )
-sys.path.insert(0, '..\\bin\\IronPython 2.7' )
-sys.path.insert(0, '..\\bin' )
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7', 'Lib', 'site-packages']))
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7', 'DLLs']))
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7', 'Lib']))
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7']))
+sys.path.insert(0, sep.join(['..', 'bin']))
 
 #We must link to the IronPython libraries before we can load the os module.
 clr.AddReference("IronPython")
@@ -21,12 +30,12 @@ import copy
 
 #For some reason, numpy is unable to find the mtrand library on its own.
 cwd = os.getcwd()
-root = "\\".join(cwd.split("\\")[:-1])
-sys.path[4] = root + '\\bin\\IronPython 2.7\\Lib\\site-packages'
-sys.path[3] = root + '\\bin\\IronPython 2.7\\DLLs'
-sys.path[2] = root + '\\bin\\IronPython 2.7\\Lib'
-sys.path[1] = root + '\\bin\\IronPython 2.7'
-sys.path[1] = root + '\\bin'
+root = sep.join(cwd.split(sep)[:-1])
+sys.path[4] = root + sep + sep.join(['bin', 'IronPython 2.7', 'Lib', 'site-packages'])
+sys.path[3] = root + sep + sep.join(['bin', 'IronPython 2.7', 'DLLs'])
+sys.path[2] = root + sep + sep.join(['bin', 'IronPython 2.7', 'Lib'])
+sys.path[1] = root + sep + sep.join(['bin', 'IronPython 2.7'])
+sys.path[0] = root + sep + sep.join(['bin'])
 print sys.path
 clr.AddReference("mtrand.dll")
 clr.AddReference("System.Data")
@@ -36,7 +45,7 @@ import System
 import pickle
 
 #Set the R_HOME environment variable
-os.environ["R_HOME"] = cwd + '\\bin\\R-2.15.1'
+os.environ["R_HOME"] = cwd + sep + sep.join(['bin', 'R-2.15.1'])
 
 import utils
 import BeachController as Control

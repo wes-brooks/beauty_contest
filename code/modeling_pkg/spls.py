@@ -1,10 +1,11 @@
-import numpy as np
+#import numpy as np
 import random
 import copy
 import re
 from random import choice
 import utils
 import RDotNetWrapper as rdn
+import array
 
 #Import the pls library into R, and connect python to R.
 rdn.r.EagerEvaluate("library(spls.wrap)") 
@@ -125,27 +126,27 @@ class Model(object):
         prediction_params = {'obj': self.model, 'newx': data_frame }
         
         prediction = r.Call(function='predict', **prediction_params).AsVector()
-        prediction = np.array(prediction, dtype=float).squeeze()
+        prediction = array.array('d', prediction)
 
         return prediction
         
         
     def PredictExceedances(self, data_dictionary, **kwargs):
         prediction = self.PredictValues(data_dictionary)
-        return np.array(prediction > self.threshold, dtype=int)
+        return array.array('l', [p > self.threshold for p in prediction])
         
         
     def PredictExceedanceProbability(self, data_dictionary, **kwargs):
-        prediction = self.PredictValues(data_dictionary).squeeze()
+        prediction = self.PredictValues(data_dictionary)
         se = self.Extract('RMSEP')
-        nonexceedance_probability = r.Call(function='pnorm', q=np.array((self.threshold-prediction)/se, dtype=float)).AsVector()
+        nonexceedance_probability = r.Call(function='pnorm', q=array.array('d', [(self.threshold-p)/se for p in prediction])).AsVector()
         exceedance_probability = [float(1-item) for item in nonexceedance_probability]
         return exceedance_probability
 
         
     def Predict(self, data_dictionary, **kwargs):
         prediction = self.PredictValues(data_dictionary)
-        return [float(item) for item in prediction.squeeze()]
+        return [float(item) for item in prediction]
         
 
     def Threshold(self, specificity=0.92):
@@ -159,9 +160,9 @@ class Model(object):
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
         try:
-            non_exceedances = self.array_fitted[np.where(self.array_actual <= self.regulatory_threshold)[0]]
+            non_exceedances = [self.array_fitted[i] for i in range(len(self.actual)) if self.actual[i] <= self.regulatory_threshold]
             self.threshold = utils.Quantile(non_exceedances, specificity)
-            self.specificity = float(sum(non_exceedances <= self.threshold))/non_exceedances.shape[0]
+            self.specificity = float(sum([non_exceedances[i] for i in range(len(non_exceedances)) if non_exceedances[i] <= self.threshold])) / len(non_exceedances)
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
         except ZeroDivisionError:
@@ -170,7 +171,7 @@ class Model(object):
 
 
     def GetActual(self):
-        self.array_actual = np.array(self.model['actual'].AsVector()).squeeze()
+        self.array_actual = array.array('d', self.model['actual'].AsVector())
         
         #Recover the actual counts by adding the residuals to the fitted counts.
         #residuals = np.array(self.model['residuals'].AsVector())
@@ -184,7 +185,7 @@ class Model(object):
         fitted = np.array(self.model['fitted'].AsVector())
         
         self.array_fitted = fitted
-        self.array_residual = self.array_actual - self.array_fitted
+        self.array_residual = array.array('d', [self.array_actual[i] - self.array_fitted[i] for i in range(len(fitted))])
         
         self.fitted = list(self.array_fitted)
         self.residual = list(self.array_residual)
@@ -196,17 +197,16 @@ class Model(object):
         self.names.remove(self.target)
 
         #Now get the model coefficients from R.
-        coefficients = np.array(list(self.Extract('coef').AsVector()))
-        coefficients = coefficients.flatten()
+        coefficients = array.array('d', self.Extract('coef').AsVector())
         
         #Get the standard deviations (from the data_dictionary) and package the influence in a dictionary.
         raw_influence = list()
         
         for i in range(len(self.names)):
-            standard_deviation = np.std( self.data_dictionary[self.names[i]] )
-            raw_influence.append( float(abs(standard_deviation * coefficients[i+1])) )
+            standard_deviation = utils.std(self.data_dictionary[self.names[i]])
+            raw_influence.append(float(abs(standard_deviation * coefficients[i+1])))
  
-        self.influence = dict( zip([float(x/sum(raw_influence)) for x in raw_influence], self.names) )
+        self.influence = dict(zip([float(x/sum(raw_influence)) for x in raw_influence], self.names))
         return self.influence
             
             

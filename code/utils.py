@@ -1,11 +1,11 @@
 import random
 #import numpy as np
-import datetime
+#import datetime
 import random
 #from numpy import where, nonzero
 
-from dateutil import parser, relativedelta
-from datetime import datetime
+#from dateutil import parser, relativedelta
+#from datetime import datetime
 import re
 
 import RDotNetWrapper as rdn
@@ -355,6 +355,7 @@ def Partition(data, folds):
     return fold
 
 
+#These functions use the datetime package, which is not cross-platform compatible 
 """def Split(data, headers, year):
     '''Partition the supplied data set into training and validation sets''' 
     
@@ -367,7 +368,7 @@ def Partition(data, folds):
     model_dict = dict(zip(headers, np.transpose(model_data)))
     validation_dict = dict(zip(headers, np.transpose(validation_data)))
 
-    return [model_data, validation_data]"""
+    return [model_data, validation_data]
 
 
 def ObjectifyTime(time_string):
@@ -406,7 +407,7 @@ def Julian(date):
     '''Get the number of days since the start of this year'''
     year_start = datetime.date(month=1, day=1, year=date.year)
     julian = (date.date() - year_start).days + 1
-    return julian
+    return julian"""
 
  
 def MatchDictionaries(dict1, dict2):
