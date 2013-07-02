@@ -51,14 +51,14 @@ methods = dict()
 ##methods['adalasso-weighted-preconditioned'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':True}
 #methods['galogistic-unweighted'] = {'weights':'none', 'generations':100, 'mutate':0.05}
 #methods['adalasso-unweighted'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False}
-#methods['adalasso-unweighted-select'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
-#methods['adalasso-weighted-select'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+methods['adalasso-unweighted-select'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+methods['adalasso-weighted-select'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
 ##methods['adalasso-unweighted-preconditioned'] = {'weights':'none', 'adapt':False, 'overshrink':True, 'precondition':True}
 #methods["galm"] = {'generations':100, 'mutate':0.05}
 #methods["adapt"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':False}
 #methods["adapt-select"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
 #methods["spls"] = {'selectvars':False}
-methods["spls-select"] = {'selectvars':True}
+#methods["spls-select"] = {'selectvars':True}
 ##methods["precondition"] = {'adapt':False, 'overshrink':True, 'precondition':True}
 
 
@@ -126,6 +126,7 @@ def AreaUnderROC(raw):
         fneg = []
         spec = []
         lenfold = len(raw['train'][fold])
+        lenpred = len(raw['validate'][fold])
         
         training_exc = [raw['train'][fold][i] > threshold for i in range(lenfold)] #np.array(raw['train'][fold] > threshold, dtype=bool)
         training_nonexc = [raw['train'][fold][i] <= threshold for i in range(lenfold)] #np.array(raw['train'][fold] <= threshold, dtype=bool)
@@ -135,11 +136,11 @@ def AreaUnderROC(raw):
         for i in range(len(order)):
             k = order[i]
             
-            spec.append(len([i for i in range(lenfold) if thresholds[i] <= thresholds[k]]) / float(len(thresholds)))
-            tpos.append(len([i for i in range(lenfold) if raw['validate'][fold][i] > threshold and raw['predicted'][fold][i] > thresholds[k]]))
-            tneg.append(len([i for i in range(lenfold) if raw['validate'][fold][i] <= threshold and raw['predicted'][fold][i] <= thresholds[k]]))
-            fpos.append(len([i for i in range(lenfold) if raw['validate'][fold][i] <= threshold and raw['predicted'][fold][i] > thresholds[k]]))
-            fneg.append(len([i for i in range(lenfold) if raw['validate'][fold][i] > threshold and raw['predicted'][fold][i] <= thresholds[k]]))
+            spec.append(len([i for i in range(len(thresholds)) if thresholds[i] <= thresholds[k]]) / float(len(thresholds)))
+            tpos.append(len([i for i in range(lenpred) if raw['validate'][fold][i] > threshold and raw['predicted'][fold][i] > thresholds[k]]))
+            tneg.append(len([i for i in range(lenpred) if raw['validate'][fold][i] <= threshold and raw['predicted'][fold][i] <= thresholds[k]]))
+            fpos.append(len([i for i in range(lenpred) if raw['validate'][fold][i] <= threshold and raw['predicted'][fold][i] > thresholds[k]]))
+            fneg.append(len([i for i in range(lenpred) if raw['validate'][fold][i] > threshold and raw['predicted'][fold][i] <= thresholds[k]]))
         
         tp.append(tpos)
         tn.append(tneg)

@@ -182,7 +182,7 @@ class Model(object):
         
         
     def GetFitted(self, **params):            
-        fitted = np.array(self.model['fitted'].AsVector())
+        fitted = array.array('d', self.model['fitted'].AsVector())
         
         self.array_fitted = fitted
         self.array_residual = array.array('d', [self.array_actual[i] - self.array_fitted[i] for i in range(len(fitted))])

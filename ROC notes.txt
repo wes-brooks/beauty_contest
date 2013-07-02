@@ -1,0 +1,8 @@
+Notes on ROC curve calculation:
+We need to make sure that the area under the ROC is accurate, so I'm working out the area by hand and comparing it to the computed value. These notes discuss that process:
+
+Critical considerations:
+ - Do we make a step on the ROC curve immediately before or after a candidate model? That is, does the observation that defines the threshold lie above or below the threshold? This purely a matter of convention.
+ -- It appears that the sensitivity change occurs at the greater specificity. This implies that the 
+ 
+ - what happens when there is more than one step at the same threshold?
