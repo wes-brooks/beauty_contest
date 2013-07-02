@@ -6,7 +6,7 @@ import RDotNetWrapper as rdn
 
 
 #Import the gbm library to R and import the R engine
-rdn.r.EagerEvaluate("library(mgcv)")
+rdn.r.Evaluate("library(mgcv)")
 r = rdn.Wrap()
 
 

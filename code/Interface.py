@@ -36,21 +36,19 @@ sys.path[3] = root + sep + sep.join(['bin', 'IronPython 2.7', 'DLLs'])
 sys.path[2] = root + sep + sep.join(['bin', 'IronPython 2.7', 'Lib'])
 sys.path[1] = root + sep + sep.join(['bin', 'IronPython 2.7'])
 sys.path[0] = root + sep + sep.join(['bin'])
-print sys.path
+#print sys.path
 clr.AddReference("mtrand.dll")
 clr.AddReference("System.Data")
-clr.AddReference("RDotNetExtensions")
+#clr.AddReference("RDotNetExtensions-1.5.0")
 
 import System
 import pickle
 
 #Set the R_HOME environment variable
-os.environ["R_HOME"] = cwd + sep + sep.join(['bin', 'R-2.15.1'])
+#os.environ["R_HOME"] = cwd + sep + sep.join(['bin', 'R-2.15.1'])
 
 import utils
 import BeachController as Control
-
-
 
 class BeachInterface(object):
 

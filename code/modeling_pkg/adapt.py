@@ -7,7 +7,7 @@ import utils
 import RDotNetWrapper as rdn
 
 #Import the pls library into R, and connect python to R.
-rdn.r.EagerEvaluate("library(adalars)") 
+rdn.r.Evaluate("library(adalars)") 
 r = rdn.Wrap()
 
 

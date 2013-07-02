@@ -8,7 +8,7 @@ import RDotNetWrapper as rdn
 import array
 
 #Import the pls library into R, and connect python to R.
-rdn.r.EagerEvaluate("library(spls.wrap)") 
+rdn.r.Evaluate("library(spls.wrap)") 
 r = rdn.Wrap()
 
 

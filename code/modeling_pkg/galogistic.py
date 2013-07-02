@@ -4,7 +4,7 @@ import utils
 import RDotNetWrapper as rdn
 
 #Import the pls library into R, and connect python to R.
-rdn.r.EagerEvaluate("library(galogistic)")
+rdn.r.Evaluate("library(galogistic)")
 r = rdn.Wrap()
 
 

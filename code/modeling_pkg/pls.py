@@ -10,7 +10,7 @@ import string
 import os
 
 #Import the pls library into R, and connect python to R.
-rdn.r.EagerEvaluate("library(pls)") 
+rdn.r.Evaluate("library(pls)") 
 r = rdn.Wrap()
 
 

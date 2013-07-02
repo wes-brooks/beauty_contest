@@ -109,7 +109,7 @@ def DictionaryToR(data_dictionary, name=''):
         
     #create the data frame in R
     command = command[:-1] + ")"
-    data_frame = r.EagerEvaluate(command).AsDataFrame()
+    data_frame = r.Evaluate(command).AsDataFrame()
 
     #if a name was supplied, then assign it to the R data.frame object:
     if name: r.SetSymbol(name, data_frame)

@@ -6,7 +6,7 @@ import array
 import math
 
 #Import the pls library into R, and connect python to R.
-rdn.r.EagerEvaluate("library(adalasso)")
+rdn.r.Evaluate("library(adalasso)")
 r = rdn.Wrap()
 
 

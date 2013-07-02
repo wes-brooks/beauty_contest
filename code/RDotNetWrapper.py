@@ -10,19 +10,22 @@ dlls = os.sep.join(dlls)
 sys.path.append(os.sep.join(dlls))
 
 import clr
-clr.AddReference("R.NET")
-clr.AddReference("RDotNetExtensions")
+clr.AddReference("RDotNet")
+clr.AddReference("RDotNet.NativeLibrary")
+clr.AddReference("RDotNetExtensions-1.5.0")
 
+#Trick to import package with invalid characters in name:
+RDotNet_NativeLibrary = __import__('RDotNet.NativeLibrary')
 import RDotNet
-import RDotNetExtensions
 
 from System import Array
 import array
 
 #Fire up the interface to R
 os.environ["R_HOME"] = dlls + os.sep + 'R-2.15.1'
-RDotNet.REngine.SetDllDirectory(dlls + os.sep + os.sep.join(['R-2.15.1','bin','i386']))
-r = RDotNet.REngine.CreateInstance("RDotNet", output=RDotNet.Internals.OutputMode.Quiet)
+os.environ["PATH"] += os.pathsep + os.sep.join([dlls,'R-2.15.1','bin','i386'])
+r = RDotNet.REngine.CreateInstance("RDotNet")
+r.Initialize()
 
 #This class wraps the R.NET functionality and makes calling r functions simpler.
 class Wrap():
@@ -75,6 +78,6 @@ class Wrap():
             
         command = command[:-2] + ")"
         print command
-        result = self.r.EagerEvaluate(command)
+        result = self.r.Evaluate(command)
         
         return result

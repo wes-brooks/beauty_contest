@@ -9,7 +9,7 @@ import array
 import math
 
 #Import the gbm library to R and import the R engine
-rdn.r.EagerEvaluate("library(gbm)")
+rdn.r.Evaluate("library(gbm)")
 r = rdn.Wrap()
 
 
