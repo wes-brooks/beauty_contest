@@ -1,10 +1,13 @@
-import numpy as np
+#import numpy as np
 import random
 import copy
 import re
 from random import choice
 import utils
 import RDotNetWrapper as rdn
+
+import array
+import math
 
 #Import the pls library into R, and connect python to R.
 rdn.r.Evaluate("library(galm)") 
@@ -32,7 +35,7 @@ class Model(object):
         
         #Get the data into R 
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
-        self.data_dictionary = copy.deepcopy(self.data_dictionary)
+        self.data_dictionary = copy.copy(self.data_dictionary)
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a PLS model in R.
@@ -85,7 +88,7 @@ class Model(object):
         #Get the data into R
         data = args['data']
         self.data_frame = utils.DictionaryToR(data)
-        self.data_dictionary = copy.deepcopy(data)
+        self.data_dictionary = copy.copy(data)
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a PLS model in R.
@@ -149,27 +152,29 @@ class Model(object):
         prediction_params = {'obj': self.model, 'newx': data_frame }
         
         prediction = r.Call(function='predict', **prediction_params).AsVector()
-        prediction = np.array(prediction, dtype=float).squeeze()
+        prediction = [float(p) for p in prediction]
 
         return prediction
         
         
     def PredictExceedances(self, data_dictionary, **kwargs):
         prediction = self.PredictValues(data_dictionary)
-        return np.array(prediction > self.threshold, dtype=int)
+        return [int(p>self.threshold) for p in prediction]
         
         
     def PredictExceedanceProbability(self, data_dictionary, **kwargs):
-        prediction = self.PredictValues(data_dictionary).squeeze()
+        prediction = self.PredictValues(data_dictionary)
         se = self.Extract('RMSEP')
-        nonexceedance_probability = r.Call(function='pnorm', q=np.array((self.threshold-prediction)/se, dtype=float)).AsVector()
+        adjusted = array.array('d', [(self.threshold-p)/se for p in prediction])
+        
+        nonexceedance_probability = r.Call(function='pnorm', q=adjusted).AsVector()
         exceedance_probability = [float(1-item) for item in nonexceedance_probability]
         return exceedance_probability
 
         
     def Predict(self, data_dictionary, **kwargs):
         prediction = self.PredictValues(data_dictionary)
-        return [float(item) for item in prediction.squeeze()]
+        return [float(item) for item in prediction]
         
 
     def Threshold(self, specificity=0.92):
@@ -183,9 +188,9 @@ class Model(object):
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
         try:
-            non_exceedances = self.array_fitted[np.where(self.array_actual <= self.regulatory_threshold)[0]]
+            non_exceedances = [self.fitted[k] for k in range(len(self.actual)) if self.actual[k] <= self.regulatory_threshold]
             self.threshold = utils.Quantile(non_exceedances, specificity)
-            self.specificity = float(sum(non_exceedances <= self.threshold))/non_exceedances.shape[0]
+            self.specificity = float(len([x for x in non_exceedances if x <= self.threshold])) / len(non_exceedances)
 
         #This error should only happen if somehow there are no non-exceedances in the training data.
         except ZeroDivisionError:
@@ -194,24 +199,15 @@ class Model(object):
 
 
     def GetActual(self):
-        self.array_actual = np.array(self.model['actual'].AsVector()).squeeze()
-        
-        #Recover the actual counts by adding the residuals to the fitted counts.
-        #residuals = np.array(self.model['residuals'].AsVector())
-        #residuals = residual_values.transpose()
-        
-        #self.array_actual = np.array(fitted + residuals).squeeze()
-        self.actual = list(self.array_actual)
+        actual = self.model['actual'].AsVector()
+        self.actual = [float(a) for a in actual]
         
         
     def GetFitted(self, **params):            
-        fitted = np.array(self.model['fitted'].AsVector())
-        
-        self.array_fitted = fitted
-        self.array_residual = self.array_actual - self.array_fitted
-        
-        self.fitted = list(self.array_fitted)
-        self.residual = list(self.array_residual)
+        fitted = self.model['fitted'].AsVector()
+        actual = self.model['actual'].AsVector()
+        self.fitted = [float(f) for f in fitted]
+        self.residual = [float(actual[k]) - self.fitted[k] for k in range(len(self.fitted))]
         
         
     def GetInfluence(self):        
@@ -220,14 +216,13 @@ class Model(object):
         self.names.remove(self.target)
 
         #Now get the model coefficients from R.
-        coefficients = np.array(self.Extract('coef'))
-        coefficients = coefficients.flatten()
+        coefficients = self.Extract('coef').AsVector()
         
         #Get the standard deviations (from the data_dictionary) and package the influence in a dictionary.
         raw_influence = list()
         
         for i in range( len(self.names) ):
-            standard_deviation = np.std( self.data_dictionary[self.names[i]] )
+            standard_deviation = utils.std( self.data_dictionary[self.names[i]] )
             raw_influence.append( float(abs(standard_deviation * coefficients[i+1])) )
  
         self.influence = dict( zip([float(x/sum(raw_influence)) for x in raw_influence], self.names) )

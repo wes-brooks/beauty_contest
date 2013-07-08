@@ -9,4 +9,4 @@ Maintainer: Wesley Brooks <wrbrooks@usgs.gov>
 Description: Builds a logistic regression using the genetic algorithm for variable selection
 License: GPL-3
 Depends: R
-Built: R 2.15.1; ; 2012-08-06 18:50:11 UTC; windows
+Built: R 2.15.1; ; 2013-07-08 22:01:05 UTC; windows

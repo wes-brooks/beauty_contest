@@ -5,6 +5,8 @@ import utils
 import sys
 import copy
 import array
+import RDotNetWrapper as rdn
+r = rdn.Wrap()
 
 boosting_iterations = 2000
 
@@ -49,8 +51,15 @@ def Validate(data, target, method, folds='', **args):
         validation_actual = validation_dict[target]
         exceedance = [validation_actual[i] > regulatory for i in range(len(validation_actual))]
         
+		#Extract the necessary data, then clear R's object list to make room in memory
         fitted = model.fitted
         actual = model.actual
+        objlist = list(r.Call('ls()').AsVector())
+        print objlist
+        print "in BeachController"      
+        for obj in objlist: r.Remove(obj)
+        r.GarbageCollection()
+		
         candidates = [fitted[i] for i in range(len(fitted)) if actual[i] <= regulatory]
         if len(candidates) == 0: candidates = fitted
         num_candidates = len(candidates)

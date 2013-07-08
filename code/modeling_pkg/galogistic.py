@@ -1,7 +1,9 @@
-import numpy as np
+#import numpy as np
 import copy
 import utils
 import RDotNetWrapper as rdn
+import array
+import math
 
 #Import the pls library into R, and connect python to R.
 rdn.r.Evaluate("library(galogistic)")
@@ -31,7 +33,7 @@ class Model(object):
         #Get the data into R 
         self.nobs = len(self.data_dictionary[self.target])
         self.data_frame = utils.DictionaryToR(self.data_dictionary)
-        self.data_dictionary = copy.deepcopy(self.data_dictionary)
+        self.data_dictionary = copy.copy(self.data_dictionary)
         self.predictors = len(self.data_dictionary.keys()) - 1
         
         #Generate a logistic regression model in R.
@@ -74,7 +76,7 @@ class Model(object):
         self.target = target = args['target']
         self.nobs = len(data[self.target])
         self.data_frame = utils.DictionaryToR(data)
-        self.data_dictionary = copy.deepcopy(data)
+        self.data_dictionary = copy.copy(data)
         self.predictors = len(self.data_dictionary.keys()) - 1
                 
         if 'population' in args: self.population=args['population']
@@ -134,17 +136,18 @@ class Model(object):
         
     def AssignWeights(self, method=0):
         #Weight the observations in the training set based on their distance from the threshold.
-        deviation = (self.data_dictionary[self.target]-self.regulatory_threshold)/np.std(self.data_dictionary[self.target])
+        obs = self.data_dictionary[self.target]
+        deviation = [(obs[i]-self.regulatory_threshold) / utils.std(obs) for i in range(len(obs))]
         
         #Integer weighting: weight is the observation's rounded-up whole number of standard deviations from the threshold.
         if method == 1: 
-            weights = np.ones( len(deviation) )
-            breaks = range( int( np.floor(min(deviation)) ), int( np.ceil(max(deviation)) ) )
+            weights = [1 for k in range(len(deviation))]
+            breaks = range(int(math.floor(min(deviation))), int(math.ceil(max(deviation))))
 
             for i in breaks:
                 #find all observations that meet the upper and lower criteria, separately
-                first_slice = np.where(deviation > i)[0]
-                second_slice = np.where(deviation < i+1)[0]
+                first_slice = [k for k in range(len(deviation)) if deviation[k] > i]
+                second_slice = [k for k in range(len(deviation)) if deviation < i+1]
                 
                 #now find all the observations that meet both criteria simultaneously
                 rows = filter( lambda x: x in first_slice, second_slice )
@@ -163,14 +166,14 @@ class Model(object):
             weights = abs(deviation)
             
         #No weights: all weights are one.
-        else: weights = np.ones( len(deviation) )
+        else: weights = [1.0 for k in range(len(deviation))]
             
         return weights
     
     
     def AssignLabels(self, raw):
         #Label observations as above or below the threshold.
-        raw = np.array(raw >= self.regulatory_threshold, dtype=int)
+        raw = array.array('d', [int(raw[k] > self.regulatory_threshold) for k in range(len(raw))])
         return raw
     
 
@@ -195,34 +198,25 @@ class Model(object):
         prediction = r.Call(function="predict.galogistic", **prediction_params).AsVector()
 
         #Translate the R output to a type that can be navigated in Python
-        prob = np.array(prediction).squeeze()
-        return prob
+        #prob = array('d', prediction)
+        return [float(p) for p in prediction]
         
         
     def PredictExceedances(self, data_dictionary):        
         prediction = self.Predict(data_dictionary)
-        return np.array(prediction >= self.threshold, dtype=int)
+        return [prediction[k] > self.threshold for k in range(len(prediction))]
 
 
-    def Threshold(self, specificity=0.92):
-        self.specificity = specificity
-    
-        if not hasattr(self, 'actual'):
-            self.GetActual()
+    def Threshold(self, specificity=0.9):
+        #Find the optimal decision threshold
+        labels = self.data_dictionary[self.target]
+        actual = self.actual
+        fitted = self.fitted
         
-        if not hasattr(self, 'fitted'):
-            self.GetFitted()
-
-        #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
-        try:
-            non_exceedances = self.array_fitted[np.where(self.array_actual <= self.regulatory_threshold)[0]]
-            self.threshold = utils.Quantile(non_exceedances, specificity)
-            self.specificity = float(sum(non_exceedances <= self.threshold))/non_exceedances.shape[0]
-
-        #This error should only happen if somehow there are no non-exceedances in the training data.
-        except ZeroDivisionError:
-            self.threshold = self.regulatory_threshold        
-            self.specificity = 1
+        indx = [k for k in range(len(labels)) if labels[k] == 0]
+        self.threshold = utils.Quantile([fitted[k] for k in indx], specificity)
+        try: self.specificity = float(len([i for i in indx if fitted[i] <= self.threshold])) / len(indx)
+        except ZeroDivisionError: self.specificity = 1
 
 
     def Validate(self, data_dictionary):
@@ -230,7 +224,6 @@ class Model(object):
         actual = data_dictionary[self.target]
 
         p = predictions
-
         raw = list()
     
         for k in range(len(predictions)):
@@ -240,30 +233,20 @@ class Model(object):
             f_neg = int(predictions[k] <= self.threshold and actual[k] > self.regulatory_threshold)
             raw.append([t_pos, t_neg, f_pos, f_neg])
         
-        raw = np.array(raw)
-        
         return raw
 
 
     def GetActual(self):
-        self.array_actual = np.array(self.model['actual'].AsVector()).squeeze()
-        
-        #Recover the actual counts by adding the residuals to the fitted counts.
-        #residuals = np.array(self.model['residuals'].AsVector())
-        #residuals = residual_values.transpose()
-        
-        #self.array_actual = np.array(fitted + residuals).squeeze()
-        self.actual = list(self.array_actual)
+        #Get the fitted values and residuals from the model.
+        actual = array.array('d', self.Extract('actual').AsVector())        
+        self.actual = [float(a) for a in actual]
         
         
-    def GetFitted(self, **params):            
-        fitted = np.array(self.model['fitted'].AsVector())
-        
-        self.array_fitted = fitted
-        self.array_residual = self.array_actual - self.array_fitted
-        
-        self.fitted = list(self.array_fitted)
-        self.residual = list(self.array_residual)
+    def GetFitted(self, **params):
+        #Get the fitted counts from the model so we can compare them to the actual counts.
+        fitted = array.array('d', self.Extract('fitted').AsVector())
+        self.fitted = list(fitted)
+        self.residual = [self.actual[k] - self.fitted[k] for k in range(len(fitted))]
             
             
     def Count(self):

@@ -11,6 +11,9 @@ import copy
 import random
 import array
 
+import RDotNetWrapper as rdn
+r = rdn.Wrap()
+
 class ValidationCounts(object):
     def __init__(self):
         self.tpos = 0
@@ -40,7 +43,7 @@ beaches['pointlakeshore'] = {'file':'../data/PointLakeshore.csv', 'target':'loge
 methods = dict()
 ##methods["lasso"] = {'left':0, 'right':3.383743576, 'adapt':True, 'overshrink':True, 'precondition':False}
 #methods["PLS"] = {}
-#methods["gbm-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
+methods["gbm-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
 #methods["gbmcv-weighted"] = {'depth':5, 'weights':'discrete', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
 #methods["gbm-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':0}
 #methods["gbmcv-unweighted"] = {'depth':5, 'weights':'none', 'minobsinnode':5, 'iterations':20000, 'shrinkage':0.0001, 'gbm.folds':5}
@@ -52,9 +55,9 @@ methods = dict()
 #methods['galogistic-unweighted'] = {'weights':'none', 'generations':100, 'mutate':0.05}
 #methods['adalasso-unweighted'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False}
 #methods['adalasso-unweighted-select'] = {'weights':'none', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
-methods['adalasso-weighted-select'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
+#methods['adalasso-weighted-select'] = {'weights':'discrete', 'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
 ##methods['adalasso-unweighted-preconditioned'] = {'weights':'none', 'adapt':False, 'overshrink':True, 'precondition':True}
-#methods["galm"] = {'generations':100, 'mutate':0.05}
+#methods["galm"] = {'generations':5, 'mutate':0.05}
 #methods["adapt"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':False}
 #methods["adapt-select"] = {'adapt':True, 'overshrink':True, 'precondition':False, 'selectvars':True}
 #methods["spls"] = {'selectvars':False}
@@ -400,8 +403,13 @@ for beach in locs:
                 out.write("# actual:\n")
                 print >> out, model.actual
                 
-                #Close the output file and move on.
+                #Clean up and move on.
                 out.close()
+                objlist = list(r.Call('ls()').AsVector())
+                print "in main loop of beauty.py"
+                print objlist
+                for obj in objlist: r.Remove(obj)
+                r.GarbageCollection()
             
         for m in tasks:
             #Store the performance information.
@@ -420,9 +428,13 @@ for beach in locs:
             #out.write("# coefs: " + ", ".join([str(c) for c in model.coefs]) + "\n")
             out.write("# decision threshold: " + str(model.threshold) + "\n")
             
-            #Close the output file and move on.
+            #Clean up and move on.
             out.close()
-            
+            objlist = list(r.Call('ls()').AsVector())
+            print "in final loop of beauty.py"
+            print objlist          
+            for obj in objlist: r.Remove(obj)
+            r.GarbageCollection()
             #OutputROC(ROC[method])
             
             

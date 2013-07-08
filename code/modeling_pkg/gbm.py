@@ -82,6 +82,9 @@ class Model(object):
         self.specificity = model_struct['specificity']
         self.threshold = model_struct['threshold']
         self.regulatory_threshold = model_struct['regulatory_threshold']
+        self.vars = [str(v) for v in self.data_dictionary.keys()]
+        self.vars.remove(self.target)
+        
 
     def Create(self, **args):
         '''Create a new gbm model object'''
@@ -119,7 +122,7 @@ class Model(object):
         except KeyError: self.fraction = 0.5   # if there is no 'fraction' key, then use the default 0.5
         
         #shrinkage: learning rate parameter
-        try: self.folds = args['folds']
+        try: self.folds = args['gbm.folds']
         except KeyError: self.folds = 5   # if there is no 'folds' key, then use the default 5-fold CV
 
         #Store some object data
@@ -183,6 +186,8 @@ class Model(object):
         
         self.GetFitted()
         self.Threshold(self.specificity)
+        self.vars = [str(v) for v in self.data_dictionary.keys()]
+        self.vars.remove(self.target)
 
 
     def AssignWeights(self, method=0):

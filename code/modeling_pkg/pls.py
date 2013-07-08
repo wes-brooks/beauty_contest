@@ -81,6 +81,8 @@ class Model(object):
         self.specificity = model_struct['specificity']
         self.threshold = model_struct['threshold']
         self.regulatory_threshold = model_struct['regulatory_threshold']
+        self.vars = [str(v) for v in self.data_dictionary.keys()]
+        self.vars.remove(self.target)
     
     
     def Create(self, **args):
@@ -94,7 +96,7 @@ class Model(object):
         
         #Get the data into R
         self.target = args['target']
-        data  = self.data_dictionary = copy.copy(args['data'])
+        data = self.data_dictionary = copy.copy(args['data'])
         self.data_frame = utils.DictionaryToR(data)
         self.num_predictors = len(self.data_dictionary.keys()) - 1
         
@@ -125,6 +127,8 @@ class Model(object):
         
         #Establish a decision threshold
         self.Threshold(specificity)
+        self.vars = [str(v) for v in data.keys()]
+        self.vars.remove(self.target)
 
 
     def Extract(self, model_part, **args):

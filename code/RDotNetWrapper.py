@@ -33,34 +33,37 @@ class Wrap():
         self.r = r
         random.seed( datetime.now().microsecond ) #we'll use random numbers to name objects in r
         
-    def Call(self, function, **params):
-        #This function translates function calls into a form that R.NET can understand
-        
+    def Call(self, function, *args, **kwargs):
+        #This function translates function calls into a form that R.NET can understand        
         #start the command string with the function name:
         command = str(function) + "("
         
-        for item in params:
-            if isinstance(params[item], str): #put quotes around strings
-				params[item] = "'" +  params[item] + "'"
+        for item in args:
+            if isinstance(item, str): #put quotes around strings
+                command = command + "'" + item + "', "
+        
+        for item in kwargs:
+            if isinstance(kwargs[item], str): #put quotes around strings
+				kwargs[item] = "'" +  kwargs[item] + "'"
             
-            elif isinstance(params[item], bool): #convert boolean types to T or F
-                if params[item] is True: params[item] = "TRUE"
-                else: params[item] = "FALSE"    
+            elif isinstance(kwargs[item], bool): #convert boolean types to T or F
+                if kwargs[item] is True: kwargs[item] = "TRUE"
+                else: kwargs[item] = "FALSE"    
             
-            elif isinstance(params[item], (float, int)): #, np.number)): #convert numeric types to strings
-                params[item] = str(params[item])
+            elif isinstance(kwargs[item], (float, int)): #, np.number)): #convert numeric types to strings
+                kwargs[item] = str(kwargs[item])
 
-            elif isinstance(params[item], RDotNet.SymbolicExpression):
+            elif isinstance(kwargs[item], RDotNet.SymbolicExpression):
                 #make sure we have a name by which we can refer to R objects
                 robj_name = "r_" + str(random.random())[2:]
-                r.SetSymbol(robj_name, params[item])
-                params[item] = robj_name
+                r.SetSymbol(robj_name, kwargs[item])
+                kwargs[item] = robj_name
                 
-            elif isinstance(params[item], (array.array, list)):
+            elif isinstance(kwargs[item], (array.array, list)):
                 try:
-                    temp = array.array('d', params[item])
+                    temp = array.array('d', kwargs[item])
                 except OverflowError:
-                    temp = params[item]
+                    temp = kwargs[item]
                 
                 #move the array into R
                 if temp.typecode in ['d', 'f']:
@@ -71,13 +74,23 @@ class Wrap():
                 #make sure we have a name by which we can refer to R objects
                 robj_name = "r_" + str(random.random())[2:-4]
                 r.SetSymbol(robj_name, temp)
-                params[item] = robj_name
+                kwargs[item] = robj_name
                 
             #Now piece together the R function call:
-            command = command + item + "=" + params[item] + ", "
+            command = command + item + "=" + kwargs[item] + ", "
             
         command = command[:-2] + ")"
-        print command
+        #print command
         result = self.r.Evaluate(command)
         
         return result
+    
+    def Remove(self, obj):
+        if isinstance(obj, str): #put quotes around strings
+            command = "rm(" + "'" + obj + "')"
+        
+        print command
+        self.r.Evaluate(command)
+
+    def GarbageCollection(self):
+        self.r.Evaluate("gc()")    
