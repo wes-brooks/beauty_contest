@@ -7,7 +7,7 @@ import os
 dlls = os.getcwd().split(os.sep)[:-1]
 dlls.append("bin")
 dlls = os.sep.join(dlls)
-sys.path.append(os.sep.join(dlls))
+sys.path.append(dlls)
 
 import clr
 clr.AddReference("RDotNet")
