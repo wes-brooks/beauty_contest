@@ -9,21 +9,25 @@ dlls.append("bin")
 dlls = os.sep.join(dlls)
 sys.path.append(dlls)
 
+#Add the path to RDotNet
+sys.path.insert(0, os.sep.join([dlls, 'RDotNet.Windows']))
+
 import clr
 clr.AddReference("RDotNet")
+clr.AddReference("RDotNetExtensions-1.5.5")
 clr.AddReference("RDotNet.NativeLibrary")
-clr.AddReference("RDotNetExtensions-1.5.0")
 
 #Trick to import package with invalid characters in name:
-RDotNet_NativeLibrary = __import__('RDotNet.NativeLibrary')
+import RDotNetExtensions
 import RDotNet
+RDotNet_NativeLibrary = __import__('RDotNet.NativeLibrary')
 
 from System import Array
 import array
 
 #Fire up the interface to R
-os.environ["R_HOME"] = dlls + os.sep + 'R-2.15.1'
-os.environ["PATH"] += os.pathsep + os.sep.join([dlls,'R-2.15.1','bin','i386'])
+os.environ["R_HOME"] = dlls + os.sep + 'R-3.0.1'
+os.environ["PATH"] += os.pathsep + os.sep.join([dlls,'R-3.0.1','bin','i386'])
 r = RDotNet.REngine.CreateInstance("RDotNet")
 r.Initialize()
 

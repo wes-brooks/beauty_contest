@@ -1,2 +1,9 @@
 *.pyc
 output/691*
+*.pdb
+*.suo
+*.csproj.FileListAbsolute.txt
+*.Cache
+*.cache
+*.resources
+*/TempPE

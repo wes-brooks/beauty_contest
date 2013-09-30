@@ -16,10 +16,10 @@ else:
     pathsep = ':'
 
 #Set the paths to IronPython based on the current working directory
-sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7', 'Lib', 'site-packages']))
-sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7', 'DLLs']))
-sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7', 'Lib']))
-sys.path.insert(0, sep.join(['..', 'bin', 'IronPython 2.7']))
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython-2.7.4', 'Lib', 'site-packages']))
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython-2.7.4', 'DLLs']))
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython-2.7.4', 'Lib']))
+sys.path.insert(0, sep.join(['..', 'bin', 'IronPython-2.7.4']))
 sys.path.insert(0, sep.join(['..', 'bin']))
 
 #We must link to the IronPython libraries before we can load the os module.
@@ -31,15 +31,16 @@ import copy
 #For some reason, numpy is unable to find the mtrand library on its own.
 cwd = os.getcwd()
 root = sep.join(cwd.split(sep)[:-1])
-sys.path[4] = root + sep + sep.join(['bin', 'IronPython 2.7', 'Lib', 'site-packages'])
-sys.path[3] = root + sep + sep.join(['bin', 'IronPython 2.7', 'DLLs'])
-sys.path[2] = root + sep + sep.join(['bin', 'IronPython 2.7', 'Lib'])
-sys.path[1] = root + sep + sep.join(['bin', 'IronPython 2.7'])
+sys.path[4] = root + sep + sep.join(['bin', 'IronPython-2.7.4', 'Lib', 'site-packages'])
+sys.path[3] = root + sep + sep.join(['bin', 'IronPython-2.7.4', 'DLLs'])
+sys.path[2] = root + sep + sep.join(['bin', 'IronPython-2.7.4', 'Lib'])
+sys.path[1] = root + sep + sep.join(['bin', 'IronPython-2.7.4'])
 sys.path[0] = root + sep + sep.join(['bin'])
+
 #print sys.path
-clr.AddReference("mtrand.dll")
+#clr.AddReference("mtrand.dll")
 clr.AddReference("System.Data")
-#clr.AddReference("RDotNetExtensions-1.5.0")
+clr.AddReference("RDotNetExtensions-1.5.5")
 
 import System
 import pickle
