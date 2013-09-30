@@ -65,6 +65,11 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\editbin.exe" $(TargetPath) /STACK:0xA00000
+
+"C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\editbin.exe" $(TargetDir)\RCommon.dll /STACK:0xA00000</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

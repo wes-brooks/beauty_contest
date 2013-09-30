@@ -38,13 +38,13 @@ namespace RCommon
             engine.Initialize();
 
             // Test difference of mean and get the P-value.
-            CharacterVector testResult = engine.Evaluate("Cstack_info()").AsCharacter();
+            /*CharacterVector testResult = engine.Evaluate("Cstack_info()").AsCharacter();
             Console.WriteLine(testResult[0].ToString());
 
-            using (StreamWriter w = File.AppendText("c:\\log.txt"))
+            using (StreamWriter w = File.AppendText("c:\\Users\\wrbrooks\\log.txt"))
             {
                 w.WriteLine(testResult[0].ToString());
-            }
+            }*/
         }
     }
 }
