@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RCommon", "RCommon\RCommon.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GBM", "GBM\GBM.csproj", "{D0FBD197-C8FD-473C-8FDC-3301A38669FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLS", "PLS\PLS.csproj", "{8E7CD57D-52B2-474E-977E-5C5B67F151C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{D0FBD197-C8FD-473C-8FDC-3301A38669FD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D0FBD197-C8FD-473C-8FDC-3301A38669FD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D0FBD197-C8FD-473C-8FDC-3301A38669FD}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8E7CD57D-52B2-474E-977E-5C5B67F151C0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
