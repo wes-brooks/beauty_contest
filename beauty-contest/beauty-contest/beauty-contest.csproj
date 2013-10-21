@@ -53,11 +53,16 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Summarize.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GBM\GBM.csproj">
       <Project>{D0FBD197-C8FD-473C-8FDC-3301A38669FD}</Project>
       <Name>GBM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PLS\PLS.csproj">
+      <Project>{8E7CD57D-52B2-474E-977E-5C5B67F151C0}</Project>
+      <Name>PLS</Name>
     </ProjectReference>
     <ProjectReference Include="..\RCommon\RCommon.csproj">
       <Project>{3AC2FF9F-F2E5-44D5-B883-F2195E7206F7}</Project>

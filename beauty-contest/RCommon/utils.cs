@@ -96,6 +96,76 @@ namespace RCommon
 	{
 		public static Random rng = new Random ((int)System.DateTime.Now.Ticks);
 
+        public static DataTable ReadCSV(String filename, Char delimiter = ',', Boolean firstRowHeaders = true)
+        {
+            StreamReader sr = null;
+            DataTable data = null;
+
+            try
+            {
+                if ((filename == null) || (filename == ""))
+                    throw new Exception("File has not been specified.");
+                if (!File.Exists(filename))
+                    throw new Exception("Could not find file: " + filename);
+
+                data = new DataTable();
+                sr = new StreamReader(filename);
+
+                // Read the header and extract the field names.
+                string line = "";
+
+                if (firstRowHeaders)
+                {
+                    line = sr.ReadLine();
+                    string[] columnNames = line.Split(delimiter);
+
+                    for (int i = 0; i < columnNames.Length; i++)
+                    {
+                        data.Columns.Add(columnNames[i].Trim());
+                        data.Columns[i].DataType = typeof(Double);
+                    }
+                }
+
+                data.Columns[0].DataType = typeof(String);
+                DataRow dr = null;
+                line = sr.ReadLine();
+                while (line != null && line.Length > 0)
+                {
+                    string[] cells = line.Split(delimiter);
+                    dr = data.NewRow();
+                    for (int i = 0; i < cells.Length; i++)
+                    {
+                        dr[i] = Convert.ToDouble(cells[i]);
+                    }
+                    data.Rows.Add(dr);
+                    line = sr.ReadLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                if (sr != null)
+                    sr.Close();
+            }
+
+            return data;
+        }
+
+
+        public static DataTable ProcessData(DataTable Data, String[] Drop=null, String[] Transform=null)
+        {
+            for (int i = 0; i < Drop.Count(); i++)
+            {
+                Data.Columns.Remove(Drop[i]);
+            }
+
+            return Data;
+        }
+
+
 		public static string RandomString(int size)
 		{
 			StringBuilder builder = new StringBuilder();
@@ -221,7 +291,7 @@ namespace RCommon
 
 			//Now copy the NaN-free rows of the DataView into an array:
             List<DataRow> raw_table = (from i in Enumerable.Range(0, dataview.Count) where flags[i] select dataview[i].Row).ToList<DataRow>();
-			List<double[]> data_array = (from i in Enumerable.Range(0, dataview.Table.Columns.Count) select (from row in raw_table select row.ItemArray.OfType<double>().ToArray()[i]).ToArray()).ToList();
+			List<double[]> data_array = (from i in Enumerable.Range(0, dataview.Table.Columns.Count - 1) select (from row in raw_table select row.ItemArray.OfType<double>().ToArray()[i]).ToArray()).ToList();
 
 			return(new HeadersAndData(headers, data_array));
 		}

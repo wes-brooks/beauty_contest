@@ -20,24 +20,10 @@ namespace RCommon
 
         static RInterface()
         {
-            // Set the folder in which R.dll locates.
-            // See Documentation for automatic search of installation path.
-            var envPath = Environment.GetEnvironmentVariable("PATH");
-            var rBinPath = AppDomain.CurrentDomain.BaseDirectory + @"\R-3.0.1\bin\i386";
-            rBinPath = @"..\..\..\..\bin\R-3.0.1\bin\i386";
-            Environment.SetEnvironmentVariable("PATH", envPath + Path.PathSeparator + rBinPath);
-            //Environment.SetEnvironmentVariable("R_HOME", AppDomain.CurrentDomain.BaseDirectory + @"\R-3.0.1");
-            Environment.SetEnvironmentVariable("R_HOME",  @"..\..\..\..\bin\R-3.0.1");
-
-            // For Linux or Mac OS, R_HOME environment variable may be needed.
-            //Environment.SetEnvironmentVariable("R_HOME", "/usr/lib/R")
-
             engine = REngine.CreateInstance("RDotNet");
-            // From v1.5, REngine requires explicit initialization.
-            // You can set some parameters.
             engine.Initialize();
 
-            // Test difference of mean and get the P-value.
+            // Write the size of the R stack allocation to test whether we've successfuly bumped it up to 10MB
             /*CharacterVector testResult = engine.Evaluate("Cstack_info()").AsCharacter();
             Console.WriteLine(testResult[0].ToString());
 

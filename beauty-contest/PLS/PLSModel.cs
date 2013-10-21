@@ -218,7 +218,7 @@ namespace PLS
 		public void CrossValidation(int cv_method=0)
 		{
 			//Select ncomp by the requested CV method
-			DataFrame validation = this.model["validation"].AsDataFrame();
+			GenericVector validation = this.model["validation"].AsList();
 
 			//method 0: select the fewest components with PRESS within 1 stdev of the least PRESS (by the bootstrap)
 			if (cv_method == 0) //Use the bootstrap to find the standard deviation of the MSEP
@@ -264,8 +264,8 @@ namespace PLS
 			if (cv_method==1)
 			{
 				//PRESS stands for predicted error sum of squares
-				double PRESS0 = Convert.ToDouble(validation["PRESS0"][0]);
-				double[] PRESS = validation["PRESS"].OfType<double>().ToArray();
+				double PRESS0 = Convert.ToDouble(validation["PRESS0"].AsVector()[0]);
+				double[] PRESS = validation["PRESS"].AsNumeric().OfType<double>().ToArray();
 
 				//the range is the difference between the greatest and least PRESS values
 				double PRESS_range = Math.Abs(PRESS0 - PRESS.Min());

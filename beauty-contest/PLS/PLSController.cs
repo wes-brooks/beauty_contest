@@ -13,7 +13,7 @@ namespace PLS
 {
     public class PLSController : RControllerInterface
     {
-        public void Validate(DataTable Data, string Target, double Threshold, double Specificity, int Folds, ModelProgressDelegate ProgressCallback, ModelCancelledDelegate CancellationCallback, ModelValidationCompleteDelegate CompletionCallback)
+        public void Validate(DataTable Data, string Target, double Threshold, double Specificity, int Folds, ModelValidationCompleteDelegate CompletionCallback)
         {
             //Creates a PLS model and tests its performance with cross-validation.
             HeadersAndData hd = utils.DotNetToArray(Data);
@@ -47,8 +47,6 @@ namespace PLS
 
                 PLSModel m = new PLSModel();
                 m.Create(data: model_dict, target: Target, regulatory: regulatory, specificity: Specificity);
-
-                ProgressCallback(Message: "Model " + f.ToString() + " of " + Folds.ToString() + " built.", Progress: (f - 0.5) / Folds);
 
                 List<double> predictions = m.Predict(validation_dict);
                 double[] validation_actual = validation_dict[Target];
@@ -108,8 +106,6 @@ namespace PLS
                     try { thresholds.Add((from x in fitted where x <= prediction select x).ToArray().Max()); }
                     catch { thresholds.Add(fitted.Max()); }
                 }
-
-                ProgressCallback(Message: "Model " + f.ToString() + " of " + Folds + " validated.", Progress: Convert.ToDouble(f) / Folds);
 
                 Dictionary<string, List<double>> result = new Dictionary<string, List<double>>{
                     {"threshold", thresholds},
