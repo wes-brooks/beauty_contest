@@ -1,0 +1,9 @@
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/bin/Debug/PLS.dll.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/bin/Debug/PLS.dll
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/obj/Debug/PLS.dll
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/obj/Debug/PLS.dll.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/bin/Debug/RDotNet.dll
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/bin/Debug/RDotNet.NativeLibrary.dll
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/bin/Debug/RCommon.dll
+/Users/wesley/git/beauty_contest/beauty-contest/PLS/bin/Debug/RCommon.dll.mdb

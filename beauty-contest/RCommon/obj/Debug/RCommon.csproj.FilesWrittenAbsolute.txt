@@ -1,0 +1,7 @@
+/Users/wesley/git/beauty_contest/beauty-contest/RCommon/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/wesley/git/beauty_contest/beauty-contest/RCommon/bin/Debug/RCommon.dll.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/RCommon/bin/Debug/RCommon.dll
+/Users/wesley/git/beauty_contest/beauty-contest/RCommon/obj/Debug/RCommon.dll
+/Users/wesley/git/beauty_contest/beauty-contest/RCommon/obj/Debug/RCommon.dll.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/RCommon/bin/Debug/RDotNet.dll
+/Users/wesley/git/beauty_contest/beauty-contest/RCommon/bin/Debug/RDotNet.NativeLibrary.dll

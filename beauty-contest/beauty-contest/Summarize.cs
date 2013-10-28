@@ -18,9 +18,103 @@ namespace beauty_contest
         public static void Summarize(ValidationAndModel Result)
         {
             List<List<double>> Sorted = SpecificityChart(Result);
-
-
         }
+
+
+		public static double AreaUnderROC(ValidationAndModel Result)
+		{
+			Double threshold = raw["threshold"];
+			Int32 numfolds = raw["train"].Count();
+			List<double> tp = new List<double>();
+			List<double> tn = new List<double>();
+			List<double> fp = new List<double>();
+			List<double> fn = new List<double>();
+			List<double> sp = new List<double>();
+
+			for (int fold=0; fold<numfolds; fold++)
+			{
+				List<double> tpos = new List<double>();
+				List<double> tneg = new List<double>();
+				List<double> fpos = new List<double>();
+				List<double> fneg = new List<double>();
+				List<double> spec = new List<double>();
+				lenfold = raw["train"][fold].Count();
+				lenpred = raw["validate"][fold].Count();
+
+				training_exc = [raw["train"][fold][i] > threshold for i in range(lenfold)];
+				training_nonexc = [raw["train"][fold][i] <= threshold for i in range(lenfold)];
+				thresholds = [raw["fitted"][fold][i] for i in range(lenfold) if training_nonexc[i] == True];
+				order = sorted(range(len(thresholds)), key=thresholds.__getitem__);
+
+				for (int i=0; i<order.Count(); i++)
+				{
+					k = order[i];
+
+					spec.append(len([i for i in range(len(thresholds)) if thresholds[i] <= thresholds[k]]) / float(len(thresholds)));
+					tpos.append(len([i for i in range(lenpred) if raw["validate"][fold][i] > threshold and raw["predicted"][fold][i] > thresholds[k]]));
+					tneg.append(len([i for i in range(lenpred) if raw["validate"][fold][i] <= threshold and raw["predicted"][fold][i] <= thresholds[k]]));
+					fpos.append(len([i for i in range(lenpred) if raw["validate"][fold][i] <= threshold and raw["predicted"][fold][i] > thresholds[k]]));
+					fneg.append(len([i for i in range(lenpred) if raw["validate"][fold][i] > threshold and raw["predicted"][fold][i] <= thresholds[k]]));
+				}
+				tp.append(tpos);
+				tn.append(tneg);
+				fp.append(fpos);
+				fn.append(fneg);
+				sp.append(spec);
+			}
+
+			List<double> specs = new List<double>();
+			[specs.extend(s) for s in sp];
+			specs = list(set(specs));
+			specs.sort();
+
+			List<double> tpos = new List<double>();
+			List<double> tneg = new List<double>();
+			List<double> fpos = new List<double>();
+			List<double> fneg = new List<double>();
+			List<double> spec = new List<double>();
+
+			int folds = tp.Count();
+
+			for (int j=0; j<specs.Count(); j++)
+			{
+				Double s = specs[j];
+				tpos.append(0);
+				tneg.append(0);
+				fpos.append(0);
+				fneg.append(0);
+				spec.append(s);
+
+				for (int f=0; f<folds.Count(); f++)
+				{
+					indx = [i for i in range(len(sp[f])) if sp[f][i] >= s];
+					indx = sorted(indx, key=sp[f].__getitem__)[0];
+
+					tpos[-1] += tp[f][indx];
+					tneg[-1] += tn[f][indx];
+					fpos[-1] += fp[f][indx];
+					fneg[-1] += fn[f][indx];
+				}
+			}
+
+			//Begin by assuming that we call every observation an exceedance
+			area = 0;
+			spec_last = 0;
+			sens_last = 1;
+
+			for (int k=0; k<specs.Count(); k++)
+			{
+				sens = tpos[k] / (tpos[k] + fneg[k]);
+				sp = tneg[k] / (tneg[k] + fpos[k]);
+				area += (sp - spec_last) * sens;
+				
+				sens_last = copy.copy(sens);
+				spec_last = copy.copy(sp);
+			}
+
+			return area;
+		}
+
 
 
         public static List<List<double>> SpecificityChart(ValidationAndModel Result)
