@@ -1,0 +1,13 @@
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/obj/x86/Debug/.NETFramework,Version=v4.0,Profile=Client.AssemblyAttribute.cs
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/beauty-contest.exe.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/beauty-contest.exe
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/obj/x86/Debug/beauty-contest.exe
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/obj/x86/Debug/beauty-contest.exe.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/RDotNet.dll
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/RDotNet.NativeLibrary.dll
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/GBM.dll
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/GBM.dll.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/PLS.dll
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/PLS.dll.mdb
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/RCommon.dll
+/Users/wesley/git/beauty_contest/beauty-contest/beauty-contest/bin/Debug/RCommon.dll.mdb

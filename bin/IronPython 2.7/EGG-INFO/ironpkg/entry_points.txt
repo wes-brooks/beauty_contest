@@ -1,3 +1,0 @@
-[console_scripts]
-ironegg = egginst.main:main
-ironpkg = enstaller.main:main

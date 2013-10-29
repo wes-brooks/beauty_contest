@@ -1,5 +1,0 @@
-predict.spls.wrap       Make predictions from an spls.wrap model
-spls.wrap               Build an spls model with shrinkage and
-                        selection by the LASSO.
-spls.wrap-package       Wraps the spls package for variable selection
-                        and model-building.
