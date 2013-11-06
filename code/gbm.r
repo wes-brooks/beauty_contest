@@ -9,7 +9,7 @@ Model = list(
 		args <- list(...)
 	
         #Check to see if a threshold has been specified in the function's arguments
-        if ('threshold' in names(args)) {self[['regulatory_threshold']] = args[['threshold']]
+        if ('threshold' %in% names(args)) {self[['regulatory_threshold']] = args[['threshold']]
         } else { self[['regulatory_threshold']] = 2.3711}   # if there is no 'threshold' key, then use the default (2.3711)
         self[['threshold']] = 0   #decision threshold
 

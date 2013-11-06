@@ -1,3 +1,6 @@
+library(devtools)
+source_url("https://raw.github.com/wesesque/beauty_contest/master/code/gbm.r")
+
 beaches = list()
 ##beaches[['edgewater']] = list('file'='../data/edgewater.xls', 'target'='LogEC', 'transforms'=list(), 'remove'=c('id', 'year', 'month'), 'threshold'=2.3711)
 ##beaches[['redarrow']] = list('file'='../data/RedArrow2010-11_for_workshop.xls', 'target'='EColiValue', 'transforms'=list('EColiValue'=log10), 'remove'=c('pdate'), 'threshold'=2.3711)
