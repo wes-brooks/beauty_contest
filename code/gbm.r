@@ -269,17 +269,18 @@ GBM$Model = list(
 		}
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.
-        self[['threshold']] = tryCatch ({
+        self = tryCatch ({
             non_exceedances = self[['fitted']][which(self[['actual']] < self[['regulatory_threshold']])]
-            self[['threshold']] = quantile(non_exceedances, specificity)
-            self[['specificity']] = sum(sapply(non_exceedances, function(x) {x < self[['threshold']]})) / length(non_exceedances)
+            self[['threshold']] = as.numeric(quantile(non_exceedances, specificity))
+            self[['specificity']] = sum(sapply(non_exceedances, function(x) {x < threshold})) / length(non_exceedances)
 		},
 		
         #This error should only happen if somehow there are no non-exceedances in the training data.
-        error = {
+        error = function (e) {
 			self[['threshold']] = self[['regulatory_threshold']]
+		},
+		finally = {
+		    return(self)
 		})
-
-        return(self)
 	}
 )

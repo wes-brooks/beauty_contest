@@ -136,7 +136,7 @@ Partition = function(data, folds) {
     } else { #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
         #Initialization
         indices = 1:nrow(data)
-        qq = quantile(1:folds, indices/nrow(data), type=1)    
+        qq = as.numeric(quantile(1:folds, indices/nrow(data), type=1))
 		
         #Now permute the fold assignments
         fold = sample(qq)
@@ -181,8 +181,8 @@ Validate = function(data, target, method, folds='', ...) {
 
         candidates = fitted[actual <= regulatory]
         if (length(candidates) == 0) {candidates = min(fitted)}
-        num_candidates = length(candidates)
-        num_exceedances = length(which(actual > regulatory))
+        num_nonexceedances = sum(validation_actual <= regulatory)
+        num_exceedances = sum(validation_actual > regulatory)
         
         specificity = vector()
         sensitivity = vector()
@@ -209,8 +209,8 @@ Validate = function(data, target, method, folds='', ...) {
 
             candidate_threshold = candidate
             
-            if (num_candidates==0) {specificity = c(specificity, 1)
-            } else {specificity = c(specificity, tn / num_candidates)}
+            if (num_nonexceedances==0) {specificity = c(specificity, 1)
+            } else {specificity = c(specificity, tn / num_nonexceedances)}
             
 			if (num_exceedances==0) {sensitivity = c(sensitivity, 1)
             } else {sensitivity = c(sensitivity, tp / num_exceedances)}
@@ -220,10 +220,10 @@ Validate = function(data, target, method, folds='', ...) {
             threshold = c(threshold, candidate)
 		}
         
-        result = list(threshold=threshold, sensitivity=sensitivity, specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
+        result = list(fitted=fitted, train=actual, predicted=predicted, validate=validation_actual, threshold=threshold, sensitivity=sensitivity, specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
         results[[length(results) + 1L]] = result
 	}
-
+	
     model = module$Model
     args[['data']] = data
     args[['target']] = target
@@ -240,8 +240,8 @@ Validate = function(data, target, method, folds='', ...) {
 if (length(commandArgs()) > 1) {
     seeds = read.table("../seeds.txt")
     
-    cluster = int(commandArgs()[2])
-    process = int(commandArgs()[3])
+    cluster = as.numeric(commandArgs(TRUE)[1])
+    process = as.numeric(commandArgs(TRUE)[2]) + 1
     sites = names(beaches)
     
     s = length(sites)
@@ -249,18 +249,21 @@ if (length(commandArgs()) > 1) {
     d = c(process %/% s, process %% s)
     mm = c(d[1] %/% m, d[1] %% m)
     
-    print(paste("s: ", s, sep=""))
-    print(paste("m: ", m, sep=""))
-    print(paste("d: ", d, sep=""))
-    print(paste("mm: ", mm, sep=""))
+    meth = mm[2] + 1
+    site = d[2] + 1
     
-    locs = sites[d[2]]  
-    tasks = names(methods)[mm[2]]
-    seed = (1000 * seeds[s*mm[1]+d[2]]) %/% 1
+    cat(paste("s: ", s, '\n', sep=""))
+    cat(paste("m: ", m, '\n', sep=""))
+    cat(paste("d: ", site, '\n', sep=""))
+    cat(paste("mm: ", meth, '\n', sep=""))
     
-    print(paste("locs: ", locs, sep=""))
-    print(paste("tasks: ", tasks, sep=""))
-    print(paste("seed: ", seed, sep=""))
+    locs = sites[site]
+    tasks = names(methods)[meth]
+    seed = (1000 * seeds[s*mm[1]+site,]) %/% 1
+    
+    cat(paste("locs: ", locs, '\n', sep=""))
+    cat(paste("tasks: ", tasks, '\n', sep=""))
+    cat(paste("seed: ", seed, '\n', sep=""))
     
 } else {
     cluster = "na"
@@ -271,8 +274,7 @@ if (length(commandArgs()) > 1) {
 }
 
     
-cv_folds = 5
-B = 1
+cv_folds = 'loo'
 result = "placeholder"
 output = "../output/"
 
@@ -305,7 +307,7 @@ AreaUnderROC = function(raw) {
         
         for (i in 1:length(rank)) {
             k = rank[i]
-            
+
             spec = c(spec, sum(sapply(1:length(thresholds), function(j) {thresholds[j] <= thresholds[k]})) / length(thresholds))
             tpos = c(tpos, sum(sapply(1:lenpred, function(j) {raw[['validate']][[fold]][j] > threshold && raw[['predicted']][[fold]][j] > thresholds[k]})))
             tneg = c(tneg, sum(sapply(1:lenpred, function(j) {raw[['validate']][[fold]][j] <= threshold && raw[['predicted']][[fold]][j] <= thresholds[k]})))
@@ -338,10 +340,8 @@ AreaUnderROC = function(raw) {
         spec = c(spec, s)
         
         for (f in 1:nfolds) {
-            indx = which(sp[[f]] >= s)   #[i for i in range(len(sp[f])) if sp[f][i] >= s]
-print(indx)
-            indx = indx[which.min(sp[[f]][indx])] #sort(indx, key=sp[f].__getitem__)[0]
-print(indx)
+            indx = which(sp[[f]] >= s)
+            indx = indx[which.min(sp[[f]][indx])]
             
             tpos[length(tpos)] = tail(tpos, 1) + tp[[f]][indx]
             tneg[length(tneg)] = tail(tneg, 1) + tn[[f]][indx]
@@ -354,12 +354,6 @@ print(indx)
     area = 0
     spec_last = 0
     sens_last = 1
-print(specs)
-print(tp)
-print(tn)
-print(fp)
-print(fn)
-
     
     for (k in 1:length(specs)) {
         sens = tpos[k] / (tpos[k] + fneg[k])
@@ -372,80 +366,6 @@ print(fn)
     return(area)
 }
 
-    
-#def OutputROC(raw):
-#    threshold = raw['threshold']
-#    
-#    tp = []
-#    tn = []
-#    fp = []
-#    fn = []
-#    sp = []
-#    
-#    for fold in range(len(raw['train'])):
-#        tpos = []
-#        tneg = []
-#        fpos = []
-#        fneg = []
-#        spec = []
-#        
-#        training_exc = np.array(raw['train'][fold] > threshold, dtype=bool)
-#        training_nonexc = np.array(raw['train'][fold] <= threshold, dtype=bool)
-#        thresholds = raw['fitted'][fold][training_nonexc]
-#        order = np.argsort(thresholds)
-#        
-#        for i in range(len(order)):
-#            k = order[i]
-#            test_exc = len(raw['validate'][fold] > thresholds[k])
-#            train_exc = len(raw['train'][fold] > thresholds[k])
-#            test_flag = len(raw['predicted'][fold] > thresholds[k])
-#            train_flag = len(raw['fitted'][fold] > thresholds[k])
-#            
-#            spec.append(float(i+1)/len(thresholds))
-#            tpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] > threshold)[0].shape[0])
-#            tneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] <= threshold)[0].shape[0])
-#            fpos.append(np.where(raw['validate'][fold][raw['predicted'][fold] > thresholds[k]] <= threshold)[0].shape[0])
-#            fneg.append(np.where(raw['validate'][fold][raw['predicted'][fold] <= thresholds[k]] > threshold)[0].shape[0])
-#        
-#        tp.append(tpos)
-#        tn.append(tneg)
-#        fp.append(fpos)
-#        fn.append(fneg)
-#        sp.append(np.array(spec, dtype=float))
-#    
-#    specs = []
-#    [specs.extend(s) for s in sp]
-#    specs = np.sort(np.unique(specs))
-#    
-#    tpos = []
-#    tneg = []
-#    fpos = []
-#    fneg = []
-#    spec = []
-#    
-#    folds = len(tp)
-#    
-#    for s in specs:
-#        tpos.append(0)
-#        tneg.append(0)
-#        fpos.append(0)
-#        fneg.append(0)
-#        spec.append(s)
-#        
-#        for f in range(folds):
-#            indx = list(np.where(sp[f] >= s)[0])
-#            indx = indx[np.argmin(sp[f][indx])]
-#            
-#            tpos[-1] += tp[f][indx]
-#            tneg[-1] += tn[f][indx]
-#            fpos[-1] += fp[f][indx]
-#            fneg[-1] += fn[f][indx]
-#            
-#    result = np.array([spec, tpos, tneg, fpos, fneg], dtype=float)
-#    outfile = "../output/ROC.csv"
-#    np.savetxt(outfile, result.T, delimiter=",")
-    
-    
 
 #What SpecificityChart wants: dict(specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
 set.seed(seed)
@@ -467,139 +387,150 @@ for (beach in locs) {
         data[,t] = beaches[[beach]][['transforms']][[t]](data[,t])
 	}
     
-    for (b in 1:B) {
-        #Partition the data into cross-validation folds.
-        folds = Partition(data, cv_folds)
-        validation = Map(ValidationCounts, names(methods))
+    #Partition the data into cross-validation folds.
+    folds = Partition(data, cv_folds)
+    validation = Map(ValidationCounts, names(methods))
+    
+    ROC = Map(function(x)
+                {list('train'=list(), 'fitted'=list(), 'validate'=list(), 'predicted'=list(), 'threshold'=beaches[[beach]][['threshold']])},
+                names(methods)
+            )
+    
+    f=1
+    #for (f in 1:max(folds)) {
+    #    print(paste("outer fold: ", f, sep=""))
+    #    
+    #    #Break this fold into test and training sets.
+    #    rr = which(folds != f)
+    #    training_set = data[rr,]
+    #    inner_cv = Partition(training_set, cv_folds)
+    #    
+    #    #Prepare the test set for use in prediction.
+    #    rr = which(folds == f)
+    #    test_set = data[rr,]
         
-        ROC = Map(function(x)
-					{list('train'=list(), 'fitted'=list(), 'validate'=list(), 'predicted'=list(), 'threshold'=beaches[[beach]][['threshold']])},
-					names(methods)
-				)
-        
-        for (f in 1:cv_folds) {
-            print(paste("outer fold: ", f, sep=""))
-			
-            #Break this fold into test and training sets.
-			rr = which(folds != f)
-            training_set = data[rr,]
-            inner_cv = Partition(training_set, cv_folds)
-            
-            #Prepare the test set for use in prediction.
-			rr = which(folds == f)
-            test_set = data[rr,]
-            
-            #Run the modeling routines.
-            for (method in tasks) {
-                if (first[[method]]) {
-                    sink(paste(output, paste(prefix, beach, method, "out", sep="."), sep=''))            
-                    if (!is.null(seed)) {cat(paste("# Seed = ", seed, "\n", sep=''))}
-                    cat(paste("# Site = ", beach, "\n", sep=''))
-                    cat(paste("# Method = ", method, "\n", sep=''))
-                    sink()
-                    first[[method]] = FALSE
-				}
-            
-                #Run this modeling method against the beach data.
-                valpar = c(params[[method]],
-                    list(data=training_set,
-                        target=beaches[[beach]][['target']],
-                        method=method,
-                        folds=inner_cv,
-                        regulatory_threshold=beaches[[beach]][['threshold']]
-                    )
-                )
-                result = do.call(Validate, valpar)
-                model = result[[2]]
-                results = result[[1]]
-                thresholding = SpecificityChart(results)
-                
-                #Set the threshold for predicting the reserved test set
-                #indx = [i for i in range(len(thresholding['fneg'])) if thresholding['fneg'][i] >= thresholding['fpos'][i] and thresholding['specificity'][i] > 0.8]
-                #if not indx:
-                #    indx = [i for i in range(len(thresholding['fneg'])) if thresholding['specificity'][i] > 0.8]
-                indx = which(sapply(1:length(thresholding[['fneg']]), function(i) {thresholding[['fneg']][i] >= thresholding[['fpos']][i]}))
-                if (length(indx)==0) {specificity = 0.9}
-                else {specificity = min(thresholding[['specificity']][indx])}
-                
-                #Predict exceedances on the test set and add them to the results structure.
-                model <- model[['Threshold']](model, specificity)
-                predictions = model[['Predict']](self=model, data=test_set)
-                truth = model[['actual']] #test_dict[,beaches[[beach]][['target']]]
-                
-                #These will be used to calculate the area under the ROC curve:
-                rank = order(truth)
-                ROC[[method]][['validate']][[length(ROC[[method]][['validate']]) + 1L]] = truth
-                ROC[[method]][['predicted']][[length(ROC[[method]][['predicted']]) + 1L]] = predictions
-                ROC[[method]][['train']][[length(ROC[[method]][['train']]) + 1L]] = model[['actual']]
-                ROC[[method]][['fitted']][[length(ROC[[method]][['fitted']]) + 1L]] = model[['fitted']]
-                
-                #Calculate the predictive perfomance for the model
-                tpos = sum(sapply(1:length(predictions), function(i) {predictions[i] > model[['threshold']] && truth[i] > beaches[[beach]][['threshold']]}))
-                tneg = sum(sapply(1:length(predictions), function(i) {predictions[i] <= model[['threshold']] && truth[i] <= beaches[[beach]][['threshold']]}))
-                fpos = sum(sapply(1:length(predictions), function(i) {predictions[i] > model[['threshold']] && truth[i] <= beaches[[beach]][['threshold']]}))
-                fneg = sum(sapply(1:length(predictions), function(i) {predictions[i] <= model[['threshold']] && truth[i] > beaches[[beach]][['threshold']]}))
-                
-                #Add predictive performance stats to the aggregate.
-                validation[[method]][['tpos']] = validation[[method]][['tpos']] + tpos
-                validation[[method]][['tneg']] = validation[[method]][['tneg']] + tneg
-                validation[[method]][['fpos']] = validation[[method]][['fpos']] + fpos
-                validation[[method]][['fneg']] = validation[[method]][['fneg']] + fneg
-            
-                #Store the performance information.
-                #Open a file to which we will append the output.
-				sink(paste(output, paste(prefix, beach, method, "out", sep='.')))
-                cat(paste("# fold = ", f, "\n", sep=""))
-                cat(paste("# threshold = ", model[['threshold']], "\n", sep=""))
-                cat(paste("# requested specificity = ", specificity, "\n", sep=""))
-                cat(paste("# actual training-set specificity = ", model[['specificity']], "\n", sep=""))
-                cat(paste("# tpos = ", tpos, "\n", sep=""))
-                cat(paste("# tneg = ", tneg, "\n", sep=""))
-                cat(paste("# fpos = ", fpos, "\n", sep=""))
-                cat(paste("# fneg = ", fneg, "\n", sep=""))                
-                cat("# raw predictions:\n")
-                cat(predictions)
-                cat("\n# truth:\n")
-                cat(truth)
-                cat("\n# fitted:\n")
-                cat(model[['fitted']])
-                cat("\n# actual:\n")
-                cat(model[['actual']])
-                cat("\n")
+        #Run the modeling routines.
+        for (method in tasks) {
+            if (first[[method]]) {
+                sink(paste(output, paste(prefix, beach, method, "out", sep="."), sep=''))            
+                if (!is.null(seed)) {cat(paste("# Seed = ", seed, "\n", sep=''))}
+                cat(paste("# Site = ", beach, "\n", sep=''))
+                cat(paste("# Method = ", method, "\n", sep=''))
                 sink()
-			}
-        }
-            
-        for (m in tasks) {
-            #Store the performance information.
-            #First, create a model for variable selection:
-            
-            model = methods[[tolower(m)]]$Model
-            modparam = c(params[[m]],
-                list(self=model,
-                    data=data,
+                first[[method]] = FALSE
+            }
+        
+            #Run this modeling method against the beach data.
+            valpar = c(params[[method]],
+                list(data=data, #data=training_set,
                     target=beaches[[beach]][['target']],
+                    method=method,
+                    #folds=inner_cv,
+                    folds=folds,
                     regulatory_threshold=beaches[[beach]][['threshold']]
                 )
             )
-            model = do.call(model[['Create']], modparam)
+            result = do.call(Validate, valpar)
+            model = result[[2]]
+            results = result[[1]]
+            thresholding = SpecificityChart(results)
             
+            #Set the threshold for predicting the reserved test set
+            indx = which(sapply(1:length(thresholding[['tpos']]), function(i) {thresholding[['tpos']][i] >= thresholding[['fpos']][i]}))
+            if (length(indx)==0) {specificity = 0.9}
+            else {specificity = min(thresholding[['specificity']][indx])}
+            
+            #Predict exceedances on the test set and add them to the results structure.
+            model <- model[['Threshold']](model, specificity)
+            #predictions = model[['Predict']](self=model, data=test_set)
+            truth = test_set[,beaches[[beach]][['target']]]
+            
+            #These will be used to calculate the area under the ROC curve:
+            rank = order(truth)
+            ROC[[method]][['validate']][[length(ROC[[method]][['validate']]) + 1L]] = truth
+            ROC[[method]][['predicted']][[length(ROC[[method]][['predicted']]) + 1L]] = predictions
+            ROC[[method]][['train']][[length(ROC[[method]][['train']]) + 1L]] = model[['actual']]
+            ROC[[method]][['fitted']][[length(ROC[[method]][['fitted']]) + 1L]] = model[['fitted']]
+            
+            #Calculate the predictive perfomance for the model
+            tpos = sum(sapply(1:length(predictions), function(i) {predictions[i] > model[['threshold']] && truth[i] > beaches[[beach]][['threshold']]}))
+            tneg = sum(sapply(1:length(predictions), function(i) {predictions[i] <= model[['threshold']] && truth[i] <= beaches[[beach]][['threshold']]}))
+            fpos = sum(sapply(1:length(predictions), function(i) {predictions[i] > model[['threshold']] && truth[i] <= beaches[[beach]][['threshold']]}))
+            fneg = sum(sapply(1:length(predictions), function(i) {predictions[i] <= model[['threshold']] && truth[i] > beaches[[beach]][['threshold']]}))
+            
+            #Add predictive performance stats to the aggregate.
+            validation[[method]][['tpos']] = validation[[method]][['tpos']] + tpos
+            validation[[method]][['tneg']] = validation[[method]][['tneg']] + tneg
+            validation[[method]][['fpos']] = validation[[method]][['fpos']] + fpos
+            validation[[method]][['fneg']] = validation[[method]][['fneg']] + fneg
+        
+            #Store the performance information.
             #Open a file to which we will append the output.
-            #sink(paste(output, paste(prefix, beach, m, "out", sep='.'), sep=""))    
-            sink()        
-            cat(paste("# Area under ROC curve = ", AreaUnderROC(ROC[[m]]), "\n", sep=''))
-            cat(paste("# aggregate.tpos = ", validation[[m]][['tpos']], "\n", sep=""))
-            cat(paste("# aggregate.tneg = ", validation[[m]][['tneg']], "\n", sep=""))
-            cat(paste("# aggregate.fpos = ", validation[[m]][['fpos']], "\n", sep=""))
-            cat(paste("# aggregate.fneg = ", validation[[m]][['fneg']], "\n", sep=""))
-            cat(paste("# variables: ", paste(model[['vars']], collapse=', '), "\n", sep=""))
-            cat(paste("# decision threshold: ", model[['threshold']], "\n", sep=""))
-            
-            #Clean up and move on.
-			#OutputROC(ROC[method])
-            sink()            
-		}
-	}
+            sink(paste(output, paste(prefix, beach, method, "out", sep='.'), sep=''), append=(f!=1))
+            cat(paste("# fold = ", f, "\n", sep=""))
+            cat(paste("# threshold = ", model[['threshold']], "\n", sep=""))
+            cat(paste("# requested specificity = ", specificity, "\n", sep=""))
+            cat(paste("# actual training-set specificity = ", model[['specificity']], "\n", sep=""))
+            cat(paste("# tpos = ", tpos, "\n", sep=""))
+            cat(paste("# tneg = ", tneg, "\n", sep=""))
+            cat(paste("# fpos = ", fpos, "\n", sep=""))
+            cat(paste("# fneg = ", fneg, "\n", sep=""))                
+            cat("# raw predictions:\n")
+            cat(predictions)
+            cat("\n# truth:\n")
+            cat(truth)
+            cat("\n# fitted:\n")
+            cat(model[['fitted']])
+            cat("\n# actual:\n")
+            cat(model[['actual']])
+            cat("\n")
+            sink()
+        #}
+    }
+      
+    for (m in tasks) {
+        #Store the performance information.
+        #First, create a model for variable selection:
+        
+        #Run this modeling method against the beach data.
+        valpar = c(params[[m]],
+            list(data=data,
+                target=beaches[[beach]][['target']],
+                method=method,
+                folds=folds,
+                regulatory_threshold=beaches[[beach]][['threshold']]
+            )
+        )
+        result = do.call(Validate, valpar)
+        model = result[[2]]
+        results = result[[1]]
+        thresholding = SpecificityChart(results)
+        
+        #Set the threshold for predicting the reserved test set
+        indx = which(sapply(1:length(thresholding[['tpos']]), function(i) {thresholding[['tpos']][i] >= thresholding[['fpos']][i]}))
+        if (length(indx)==0) {specificity = 0.9}
+        else {specificity = min(thresholding[['specificity']][indx])}
+        
+        #Predict exceedances on the test set and add them to the results structure.
+        model <- model[['Threshold']](model, specificity)            
+        
+        #Open a file to which we will append the output.
+        sink(paste(output, paste(prefix, beach, m, "out", sep='.'), sep=""), append=TRUE)        
+        cat(paste("# Area under ROC curve = ", AreaUnderROC(ROC[[m]]), "\n", sep=''))
+        cat(paste("# aggregate.tpos = ", validation[[m]][['tpos']], "\n", sep=""))
+        cat(paste("# aggregate.tneg = ", validation[[m]][['tneg']], "\n", sep=""))
+        cat(paste("# aggregate.fpos = ", validation[[m]][['fpos']], "\n", sep=""))
+        cat(paste("# aggregate.fneg = ", validation[[m]][['fneg']], "\n", sep=""))
+        cat(paste("# variables: ", paste(model[['vars']], collapse=', '), "\n", sep=""))
+        cat(paste("# thresholding specificity: ", model[['specificity']], "\n", sep=""))
+        cat(paste("# decision threshold: ", model[['threshold']], "\n", sep=""))
+        
+        #Clean up and move on.
+        #OutputROC(ROC[method])
+        sink()            
+    }
 }
-            
+         
+         
+warnings()   
         
