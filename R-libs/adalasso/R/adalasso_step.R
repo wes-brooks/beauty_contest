@@ -61,22 +61,26 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
         result[['lambda']] = lambda = cv.model$lambda.min
     }
     
-    nonzero = as.vector(predict(model, type='nonzero', s=lambda))
+    nonzero = predict(model, type='nonzero', s=lambda)
     if (verbose) {print(nonzero)}
     
     #Handle the case that the lasso selects no variables
     if (is.null(nonzero[[1]])) {
         indx = min(which(result[['cv']][['nzero']]>0), na.rm=TRUE)
         result[['lambda']] = lambda = result[['cv']]$lambda[indx]
-        nonzero = as.vector(predict(model, type='nonzero', s=lambda))    
+        nonzero = predict(model, type='nonzero', s=lambda)
     }
     if (verbose) {print(paste("lambda: ", lambda, ", nonzero: ", paste(nonzero, collapse=","), sep=''))}
+	nonzero = as.vector(t(nonzero))
     
     coefs = coef(model, s=lambda)
-    result[['coef']] = as.list(coefs)[nonzero+1]
-    names(result[['coef']]) = rownames(coefs)[nonzero+1]
+	coefnames = rownames(coefs)
+	coefs = as.vector(coefs)
+
+    result[['coef']] = as.list(coefs[nonzero+1])
+    names(result[['coef']]) = coefnames[nonzero+1]
     result[['intercept']] = intercept = coefs[1]  
-    result[['vars']] = names(result[['coef']])
+    result[['vars']] = coefnames
     
     return(result)
 }

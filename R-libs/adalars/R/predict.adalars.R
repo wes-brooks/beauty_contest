@@ -1,5 +1,4 @@
-predict.adalars <- 
-function(obj, newx, ...) {
+predict.adalars <-  function(obj, newx, ...) {
     pred.data = as.matrix(newx)    
     predictors = obj[['predictors']]
     colnames(pred.data) = colnames(newx)

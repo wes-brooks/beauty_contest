@@ -1,0 +1,11 @@
+# Seed = 0
+# Site = hika
+# Method = galm
+# Area under ROC curve = 0.683428571428571
+# aggregate.tpos = 22
+# aggregate.tneg = 104
+# aggregate.fpos = 21
+# aggregate.fneg = 20
+# variables: beach_WaveHeightManual, log.beach_TurbidityBeach
+# thresholding specificity: 0.830645161290323
+# decision threshold: 2.15881723698832

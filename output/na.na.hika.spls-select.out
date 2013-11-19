@@ -1,0 +1,11 @@
+# Seed = 0
+# Site = hika
+# Method = spls-select
+# Area under ROC curve = 0.669714285714285
+# aggregate.tpos = 21
+# aggregate.tneg = 99
+# aggregate.fpos = 26
+# aggregate.fneg = 21
+# variables: beach_WaveHeightManual, log.beach_TurbidityBeach
+# thresholding specificity: 0.76
+# decision threshold: 2.08677702327021

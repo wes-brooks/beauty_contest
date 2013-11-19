@@ -1,5 +1,4 @@
-adalars <-
-function(formula, data, adapt=TRUE, overshrink=TRUE, precondition=FALSE, selectvars=FALSE) {
+adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, precondition=FALSE, selectvars=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalars"

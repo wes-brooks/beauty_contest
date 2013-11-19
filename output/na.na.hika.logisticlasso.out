@@ -1,0 +1,11 @@
+# Seed = 0
+# Site = hika
+# Method = logisticlasso
+# Area under ROC curve = 0.340380952380952
+# aggregate.tpos = 21
+# aggregate.tneg = 29
+# aggregate.fpos = 96
+# aggregate.fneg = 21
+# variables: (Intercept), beach_WaterTemp, beach_AirTemp, beach_PeopleInWater, beach_PeopleOnBeach, beach_WaveHeightManual, log.beach_TurbidityBeach
+# thresholding specificity: 0.283582089552239
+# decision threshold: 0.71263971233638

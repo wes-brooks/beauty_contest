@@ -1,4 +1,4 @@
-library(pls)
+require(pls)
 
 #Define the GBM environment
 PLS <- new.env()
@@ -11,12 +11,14 @@ PLS$Model = list(
 		args <- list(...)
 
         #Check to see if a threshold has been specified in the function's arguments
-        if ('threshold' %in% names(args)) {self[['regulatory_threshold']] = args[['threshold']]
+        if ('threshold' %in% names(args)) {
+			self[['regulatory_threshold']] = args[['threshold']]
         } else { self[['regulatory_threshold']] = 2.3711}   # if there is no 'threshold' key, then use the default (2.3711)
         self[['threshold']] = 0   #decision threshold
 
         #specificity: If provided, used to set the decision threshold
-        if ('specificity' %in% names(args)) { self[['specificity']] = args[['specificity']]
+        if ('specificity' %in% names(args)) {
+			self[['specificity']] = args[['specificity']]
         } else { self[['specificity']] = 0.9 }  # if there is no 'specificity' key, then use the default 0.9  
 
         #Store some object data
@@ -143,7 +145,7 @@ PLS$Model = list(
 
 
     Predict = function(self, data, ...) {
-        prediction_params = list(object=self[['model']], newdata=data, n.trees=self[['trees']], ncomp=self[['ncomp']])
+        prediction_params = list(object=self[['model']], newdata=data, ncomp=self[['ncomp']])
         prediction = drop(do.call(predict, prediction_params))
     
         return(prediction)
@@ -190,7 +192,7 @@ PLS$Model = list(
 		
     GetInfluence = function(self) {
         #Get the covariate names
-        self[['names']] = self.data_dictionary.keys()
+        self[['names']] = colnames(self[['data']])
         names = self[['names']] = self[['names']][self[['names']] != self[['target']]]
 
         #Now get the model coefficients from R.
@@ -215,7 +217,7 @@ PLS$Model = list(
         self[['specificity']] = specificity
         
         if (!('fitted' %in% names(self))) {
-            self[['GetFitted']](self)
+            self = self[['GetFitted']](self)
 		}
 
         #Decision threshold is the [specificity] quantile of the fitted values for non-exceedances in the training set.

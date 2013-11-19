@@ -1,4 +1,4 @@
-library(gbm)
+require(gbm)
 
 #Define the GBM environment
 GBM <- new.env()
@@ -75,9 +75,6 @@ GBM$Model = list(
             #If there is no 'weights' key, set all weights to one.
             self[['weights']] = self[['AssignWeights']](self=self, method=0) 
 		}
-    
-        #Label the exceedances in the training set.
-        #self.data_dictionary[target] = self.Discretize(self.data_dictionary[target])
 
         #Generate a gbm model in R.
         self[['formula']] = as.formula(obj=paste(self[['target']], '~.', sep=''))

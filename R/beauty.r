@@ -1,6 +1,11 @@
-library(devtools)
+require(devtools)
 source('gbm.r')
 source('pls.r')
+source('galm.r')
+source('galogistic.r')
+source('adapt.r')
+source('adalasso.r')
+source('spls.r')
 
 beaches = list()
 ##beaches[['edgewater']] = list('file'='../data/edgewater.xls', 'target'='LogEC', 'transforms'=list(), 'remove'=c('id', 'year', 'month'), 'threshold'=2.3711)
@@ -27,26 +32,31 @@ params[["PLS"]] = list()
 #params[["gbmcv-unweighted"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=5)
 ##params[["gam"]] = list('k'=50, 'julian'='jday')
 ##params[['logistic']] = list('weights'='discrete', 'stepdirection'='both')
-#params[['galogistic-weighted']] = list('weights'='discrete', 'generations'=100, 'mutate'=0.05)
-#params[['adalasso-weighted']] = list('weights'='discrete', 'adapt'=True, 'overshrink'=True, 'precondition'=False)
+params[['galogistic-weighted']] = list('weights'='continuous', 'generations'=100, 'mutate'=0.05)
+params[['adalasso-weighted']] = list('weights'='continuous', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE)
 ##params[['adalasso-weighted-preconditioned']] = list('weights'='discrete', 'adapt'=True, 'overshrink'=True, 'precondition'=True)
 #params[['galogistic-unweighted']] = list('weights'='none', 'generations'=100, 'mutate'=0.05)
 #params[['adalasso-unweighted']] = list('weights'='none', 'adapt'=True, 'overshrink'=True, 'precondition'=False)
 #params[['adalasso-unweighted-select']] = list('weights'='none', 'adapt'=True, 'overshrink'=True, 'precondition'=False, 'selectvars'=True)
 #params[['adalasso-weighted-select']] = list('weights'='discrete', 'adapt'=True, 'overshrink'=True, 'precondition'=False, 'selectvars'=True)
 ##params[['adalasso-unweighted-preconditioned']] = list('weights'='none', 'adapt'=False, 'overshrink'=True, 'precondition'=True)
-#params[["galm"]] = list('generations'=5, 'mutate'=0.05)
-#params[["adapt"]] = list('adapt'=True, 'overshrink'=True, 'precondition'=False, 'selectvars'=False)
+params[["galm"]] = list('generations'=5, 'mutate'=0.05)
+params[["adapt"]] = list('adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=FALSE)
 #params[["adapt-select"]] = list('adapt'=True, 'overshrink'=True, 'precondition'=False, 'selectvars'=True)
 #params[["spls"]] = list('selectvars'=False)
-#params[["spls-select"]] = list('selectvars'=True)
+params[["spls-select"]] = list('selectvars'=TRUE)
 ##params[["precondition"]] = list('adapt'=False, 'overshrink'=True, 'precondition'=True)
 
 
 params[["gbm"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=1000, 'shrinkage'=0.01, 'gbm.folds'=0)
 methods = list(
 	#'gbm' = GBM,
-	'pls' = PLS
+	#'pls' = PLS,
+	#'galm' = GALM,
+	#adapt = AL,
+	'spls-select' = SPLS,
+	'adalasso-weighted' = LAL,
+	'galogistic-weighted' = GALogistic
 )
 
 #methods = list('pls'=pls,
