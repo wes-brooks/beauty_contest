@@ -16,7 +16,7 @@ GBM$Model = list(
         } else { self[['regulatory_threshold']] = 2.3711}   # if there is no 'threshold' key, then use the default (2.3711)
         self[['threshold']] = 0   #decision threshold
 
-        if ('threshold' %in% names(args)) {self[['iterations']] = args[['iterations']]
+        if ('iterations' %in% names(args)) {self[['iterations']] = args[['iterations']]
         } else { self[['iterations']] = 10000}   # if there is no 'iterations' key, then use the default (2000)
 
         #Cost: two values - the first is the cost of a false positive, the second is the cost of a false negative.

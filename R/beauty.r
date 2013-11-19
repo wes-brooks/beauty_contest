@@ -1,5 +1,6 @@
 library(devtools)
 source('gbm.r')
+source('pls.r')
 
 beaches = list()
 ##beaches[['edgewater']] = list('file'='../data/edgewater.xls', 'target'='LogEC', 'transforms'=list(), 'remove'=c('id', 'year', 'month'), 'threshold'=2.3711)
@@ -19,8 +20,8 @@ beaches[['hika']] = list('file'='../data/HK2013.MaxRowsTurb.csv', 'target'='log_
 
 params = list()
 ##params[["lasso"]] = list('left'=0, 'right'=3.383743576, 'adapt'=True, 'overshrink'=True, 'precondition'=False)
-#params[["PLS"]] = list()
-params[["gbm-weighted"]] = list('depth'=5, 'weights'='discrete', 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=0)
+params[["PLS"]] = list()
+#params[["gbm-weighted"]] = list('depth'=5, 'weights'='discrete', 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=0)
 #params[["gbmcv-weighted"]] = list('depth'=5, 'weights'='discrete', 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=5)
 #params[["gbm-unweighted"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=0)
 #params[["gbmcv-unweighted"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=5)
@@ -43,7 +44,10 @@ params[["gbm-weighted"]] = list('depth'=5, 'weights'='discrete', 'minobsinnode'=
 
 
 params[["gbm"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=1000, 'shrinkage'=0.01, 'gbm.folds'=0)
-methods = list('gbm'=GBM)
+methods = list(
+	#'gbm' = GBM,
+	'pls' = PLS
+)
 
 #methods = list('pls'=pls,
 #	'boosting'=gbm,
@@ -161,7 +165,7 @@ Validate = function(data, target, method, folds='', ...) {
 	ff = sort(unique(folds))
     
     #Make a model for each fold and validate it.
-    results = list()
+    results = as.data.frame(matrix(NA, nrow=0, ncol=3))
     for (f in ff) {
         print(paste("inner fold: ", f, sep=''))
 		
@@ -169,60 +173,41 @@ Validate = function(data, target, method, folds='', ...) {
         validation_data = data[folds==f,]
 
         model <- module$Model
-        model <- model[['Create']](self=model, data=model_data, target=target, ...)
+        model <- model[['Create']](self=model, data=model_data, target=target, args)
 
         predictions = model[['Predict']](self=model, data=validation_data)
         validation_actual = validation_data[,target]
-        exceedance = sapply(1:nrow(validation_data), function(i) {validation_actual[i] > regulatory})
         
-		#Extract the necessary data, then clear R's object list to make room in memory
         fitted = model[['fitted']]
-        actual = model[['actual']]        
-
-        candidates = fitted[actual <= regulatory]
-        if (length(candidates) == 0) {candidates = min(fitted)}
-        num_nonexceedances = sum(validation_actual <= regulatory)
-        num_exceedances = sum(validation_actual > regulatory)
+        actual = model[['actual']]
         
-        specificity = vector()
-        sensitivity = vector()
-        threshold = vector()
-        tpos = vector()
-        tneg = vector()
-        fpos = vector()
-        fneg = vector()
-        total = nrow(model_data)
-        non_exceedances = length(which(!exceedance))
-        exceedances =  length(which(exceedance))
-        
-        for (candidate in candidates) {
-            #for prediction in predictions:
-            tp = sum(sapply(1:length(predictions), function(i) {predictions[i] > candidate && validation_actual[i] > regulatory}))
-            fp = sum(sapply(1:length(predictions), function(i) {predictions[i] > candidate && validation_actual[i] <= regulatory}))
-            tn = sum(sapply(1:length(predictions), function(i) {predictions[i] <= candidate && validation_actual[i] <= regulatory}))
-            fn = sum(sapply(1:length(predictions), function(i) {predictions[i] <= candidate && validation_actual[i] > regulatory}))
-        
-            tpos = c(tpos, tp)
-            fpos = c(fpos, fp)
-            tneg = c(tneg, tn)
-            fneg = c(fneg, fn)
-
-            candidate_threshold = candidate
-            
-            if (num_nonexceedances==0) {specificity = c(specificity, 1)
-            } else {specificity = c(specificity, tn / num_nonexceedances)}
-            
-			if (num_exceedances==0) {sensitivity = c(sensitivity, 1)
-            } else {sensitivity = c(sensitivity, tp / num_exceedances)}
-            
-            #the first candidate threshold that would be below this threshold, or the smallest candidate if none are below.
-            #try: threshold.append(max(fitted[fitted < prediction]))
-            threshold = c(threshold, candidate)
+		#Sensitivity and specificity are over the training data:
+		nonexceedances = fitted[actual <= regulatory]
+		exceedances = fitted[actual > regulatory]
+		
+        if (length(nonexceedances) == 0) {		
+			threshold = rep(1, length(predictions))
+		} else {		
+			cc = ecdf(nonexceedances)
+			threshold = cc(predictions)
 		}
         
-        result = list(fitted=fitted, train=actual, predicted=predicted, validate=validation_actual, threshold=threshold, sensitivity=sensitivity, specificity=specificity, tpos=tpos, tneg=tneg, fpos=fpos, fneg=fneg)
-        results[[length(results) + 1L]] = result
+        result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(f, length(threshold)))
+        results = rbind(results, result)
 	}
+	
+	tpos = tneg = fpos = fneg = rep(NA, nrow(results))
+	
+	for (k in 1:nrow(results)) {
+		t = results$threshold[k]
+		tpos[k] = length(which(results$threshold > t & results$actual > regulatory))
+		tneg[k] = length(which(results$threshold <= t & results$actual <= regulatory))
+		fpos[k] = length(which(results$threshold > t & results$actual <= regulatory))
+		fneg[k] = length(which(results$threshold <= t & results$actual > regulatory))
+	}
+	
+	results = cbind(results, tpos, tneg, fpos, fneg)
+	results = results[order(results$threshold),]
 	
     model = module$Model
     args[['data']] = data
@@ -274,7 +259,8 @@ if (length(commandArgs()) > 1) {
 }
 
     
-cv_folds = 'loo'
+#cv_folds = 'loo'
+cv_folds = 5
 result = "placeholder"
 output = "../output/"
 
@@ -305,9 +291,7 @@ AreaUnderROC = function(raw) {
         thresholds = raw[['fitted']][[fold]][which(training_nonexc)]
         rank = order(thresholds)
         
-        for (i in 1:length(rank)) {
-            k = rank[i]
-
+        for (k in rank) {
             spec = c(spec, sum(sapply(1:length(thresholds), function(j) {thresholds[j] <= thresholds[k]})) / length(thresholds))
             tpos = c(tpos, sum(sapply(1:lenpred, function(j) {raw[['validate']][[fold]][j] > threshold && raw[['predicted']][[fold]][j] > thresholds[k]})))
             tneg = c(tneg, sum(sapply(1:lenpred, function(j) {raw[['validate']][[fold]][j] <= threshold && raw[['predicted']][[fold]][j] <= thresholds[k]})))
