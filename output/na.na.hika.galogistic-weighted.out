@@ -1,11 +1,11 @@
 # Seed = 0
 # Site = hika
 # Method = galogistic-weighted
-# Area under ROC curve = 0.0666666666666667
+# Area under ROC curve = 0.0927619047619048
 # aggregate.tpos = 0
 # aggregate.tneg = 125
 # aggregate.fpos = 0
 # aggregate.fneg = 42
-# variables: beach_PeopleOnBeach, log.beach_TurbidityBeach
+# variables: beach_WaveHeightManual, log.beach_TurbidityBeach
 # thresholding specificity: 1
-# decision threshold: 0.92282877216883
+# decision threshold: 0.648136992168033
