@@ -51,30 +51,6 @@ GBM$Model = list(
         self[['data']] = data = args[['data']]
         self[['target']] = target = args[['target']]
         self[['actual']] = data[,target]
-               
-        #Check to see if a weighting method has been specified in the function's arguments
-        if ('weights' %in% names(args)) {
-            #integer (discrete) weighting
-            if (substring(tolower(args['weights']),1,1) %in% c('d', 'i')) { 
-                self[['weights']] = self[['AssignWeights']](self=self, method=1)
-                
-            #float (continuous) weighting
-            } else if (substring(tolower(args[['weights']]),1,1) %in% c('f')) {
-                self[['weights']] = self[['AssignWeights']](self=self, method=2)
-                
-            #cost-based weighting
-            } else if (substring(tolower(args[['weights']]),1,1) %in% c('c')) { 
-                self[['weights']] = self[['AssignWeights']](self=self, method=3)
-
-            #cost-based weighting, and down-weight the observations near the threshold
-            } else if (substring(tolower(args[['weights']]),1,1) %in% c('b')) { 
-                self[['weights']] = self[['AssignWeights']](self=self, method=4)
-
-            } else {self[['weights']] = self[['AssignWeights']](self=self, method=0) }
-		} else {
-            #If there is no 'weights' key, set all weights to one.
-            self[['weights']] = self[['AssignWeights']](self=self, method=0) 
-		}
 
         #Generate a gbm model in R.
         self[['formula']] = as.formula(obj=paste(self[['target']], '~.', sep=''))
@@ -113,71 +89,6 @@ GBM$Model = list(
 	},
 
 	
-    AssignWeights = function(self, method=0) {
-        #Weight the observations in the training set based on their distance from the threshold.
-        std = sd(self[['actual']])
-        deviation = sapply(self[['actual']], function(x) {(x-self[['regulatory_threshold']])/std})
-        
-        #Integer weighting: weight is the observation's rounded-up whole number of standard deviations from the threshold.
-        if (method == 1) {
-            weights = rep(1, length(deviation))
-            breaks = floor(min(deviation)):ceiling(max(deviation))
-			
-            for (i in breaks) {
-                #Find all the observations that meet both criteria simultaneously
-                rows = which(deviation >= i & deviation < i+1)
-                
-                #Decide how many times to replicate each slice of data
-                if (i<=0) {
-                    replicates = 0
-                } else {
-                    replicates = 2*i
-				}
-                    
-                weights[rows] = replicates + 1
-			}
-                
-        #Continuous weighting: weight is the observation's distance (in standard deviations) from the threshold.      
-        } else if (method == 2) {
-            weights = abs(deviation)
-
-        #put more weight on exceedances
-        } else if (method == 3) {
-            #initialize all weights to one.
-            weights = rep(1, length(deviation))
-
-            #apply weight to the exceedances
-            rows = which(deviation > 0)
-            weights[rows] = self[['cost']][2]
-
-            #apply weight to the non-exceedances
-            rows = which(deviation <= 0)
-            weights[rows] = self[['cost']][1]
-
-        #put more weight on exceedances AND downweight near the threshold
-        } else if (method == 4) {
-            #initialize all weights to one.
-            weights = rep(1, length(deviation))
-
-            #apply weight to the exceedances
-            rows = which(deviation > 0)
-            weights[rows] = self[['cost']][2]
-
-            #apply weight to the non-exceedances
-            rows = which(deviation <= 0)
-            weights[rows] = self[['cost']][1]
-
-            #downweight near the threshold
-            rows = which(abs(deviation[i]) <= 0.25)
-            weights[rows] = weights[rows]/4
-			
-        #No weights: all weights are one.
-        } else {weights = rep(1, length(deviation))}
-            
-        return(weights)
-    },
-	
-
     Discretize = function(self, raw) {
         #Label observations as above or below the threshold.
         discretized = sapply(1:length(raw), function(x) {if (x >= self[['regulatory_threshold']]) {1} else {0}})

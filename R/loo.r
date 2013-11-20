@@ -1,6 +1,3 @@
-cv_folds = 5
-source('ROC.r')
-
 for (beach in locs) {
     first = Map(function(x) {return(TRUE)}, tasks)
 
@@ -75,6 +72,7 @@ for (beach in locs) {
         cat(paste("# decision threshold: ", model[['threshold']], "\n", sep=""))
         
         #Clean up and move on.
+        warnings()
         sink()
 	}
 }
