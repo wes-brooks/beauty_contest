@@ -1,3 +1,12 @@
+#Set ourselves up to import the packages:
+r = getOption("repos")
+r["CRAN"] = "http://cran.wustl.edu"
+options(repos = r)
+rm(r)
+dir.create("rlibs")
+Sys.setenv(R_LIBS="rlibs")
+install.packages("devtools")
+
 require(devtools)
 source('gbm.r')
 source('pls.r')

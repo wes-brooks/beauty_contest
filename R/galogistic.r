@@ -1,5 +1,5 @@
 require(devtools)
-install("../R-libs/galogistic")
+install("R-libs/galogistic")
 require(galogistic)
 
 GALogistic = new.env()

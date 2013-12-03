@@ -1,5 +1,5 @@
 require(devtools)
-install("../R-libs/adalars")
+install("R-libs/adalars")
 require(adalars)
 
 AL = new.env()

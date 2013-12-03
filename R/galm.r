@@ -1,5 +1,5 @@
 require(devtools)
-install("../R-libs/galm")
+install("R-libs/galm")
 require(galm)
 
 GALM = new.env()
