@@ -1,3 +1,0 @@
-JOB 6 process.cmd dir 6
-SCRIPT POST 6 /Users/wesley/git/beauty_contest/chtc/postjob.pl
-RETRY 6 10
