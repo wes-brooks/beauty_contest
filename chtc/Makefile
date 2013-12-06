@@ -5,6 +5,7 @@ submit: beautyoutput/mydag.dag
 	./submit.sh
 
 jobdirs:
+	rm -rf beautyoutput
 	cp -r ../R-libs beautydata/shared
 	./make-job-dirs.sh 12 test
 	./make-dag.sh
