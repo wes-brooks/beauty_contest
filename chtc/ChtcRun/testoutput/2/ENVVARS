@@ -1,0 +1,12 @@
+chtcruntop = /home/wbrooks2/beauty/ChtcRun
+cmdtorun = script.r
+file = 2
+jobfolder = /home/wbrooks2/beauty/ChtcRun/testdata/2/
+jobsubdag = /home/wbrooks2/beauty/ChtcRun/testoutput/2/2_dag
+jobtemplateloc = /home/wbrooks2/beauty/ChtcRun
+passtochtcwrapper = 
+runfolder = /home/wbrooks2/beauty/ChtcRun/testoutput/2/
+sharedfolder = /home/wbrooks2/beauty/ChtcRun/testdata/shared/
+submitfileloc = /home/wbrooks2/beauty/ChtcRun/testoutput/2
+type = R
+version = sl5-R-2.15.3

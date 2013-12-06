@@ -1,0 +1,107 @@
+As we try to run jobs in more and more locations, the returns
+from the jobs do not always indicate that things actually did
+what we expect. So this script places all your jobs in a Directed
+Acyclic Graph(DAG) which lets us check each job after it runs
+with a postscript(postjob.pl). If the script is happy, the job is done. If
+the script is not, then the job gets restarted for you.
+
+Setting up to move files to the execute node is very simple
+in this environment and will be explained below.
+
+This DAG is submitted to condor with condor_submit_dag. Condor's
+DAGMan is well documented in our online documentation at:
+
+http:/research.cs.wisc.edu/condor/manual/V7.8
+
+The folder chosen with --outputdir=dagrun, in this case "dagrun"
+will be where the DAG is created and run. Every job
+will run in a subdirectory there with a name matching the folder name that had the 
+input in it.
+
+This script can generate either R, Matlab or custom binary DAGS to be submitted using 
+Condor_submit_dag. 
+
+The run script we are using, chtcjobwrapper, has 
+basic parts of that system are elaborated here. More detailed
+explainations can be found here for Matlab and R tools and greater 
+details on the use of the wrapper: For Matlab, you will have to
+use chtc_mcc to compile your executable and place it in "shared".
+For R, if you use non-standar libraries, you will have to use
+chtc_buildRlibs to prepare a special file called "RLIBS.tar.gz
+which goes in the "shared" folder also.
+
+http://chtc.cs.wisc.edu/MATLABandR.shtml
+
+
+Contents:
+
+
+
+
+How to lay out the job data for using this
+
+Have a directory like the sample "data1" where your
+R script(s), Compiled Matlab program or any other program
+are in a special folder called "shared". Place any common data for all jobs
+in that same folder. Every other folder will hold 
+input files needed per job. These folders can have any name you
+want. The script will run one job per input folder.
+You tell the script of this location with --data=data1.
+
+Where do jobs run?
+
+Tell it where to build the DAG and thus where your
+job results will come back to with --dagdir=dagrun. Each
+input folder will have a matching run location there.
+The script "mkdag.pl" will make a DAG called "mydag.dag"
+in folder "dagrun" which can not already exist.
+
+How to start the jobs
+
+1. cd to the requested folder "dagrun"
+2. run condor_submit_dag mydag.dag
+3. watch your jobs with condor_q -dag or watch
+   dagrun by watching it's output file with
+   tail -f mydag.dag.dagman.out
+4. Your results will be in "dagrun" in a subfolder
+   matching each input folder from "data1".
+
+What is being run?
+
+Let it know what to run. --cmdtorun=xxxx. For R it would be
+the entry file Start.R where for Matlab it would be the compiled
+program. For any other program it would be the executable name.
+
+Tell it what results look like.
+
+The DAG runs a script after each job to see if it
+needs to be rerun. This is important so jobs which failed 
+can be run again somewhere else. Use --pattern=xyz to have anyfile 
+which partially matches the string xyz trigger success for that
+job. 
+
+
+Complete current usage can be seen by entering:
+
+./mkdag --help
+
+NOTE to users of job prescripts and postscripts:
+
+Place these in the "shared folder" and they will get
+moved to the execute node. Make sure the script is
+executable. (chmod 755 scriptname).
+
+NOTE to those with Matlab jobs:
+
+Remember that all command line arguments to a compiled Matlab
+program become strings. As such, if you are bringing in a number or
+a double use the following conversion functions before
+you use the variable!
+
+stepsize = str2num(stepsize);
+and
+se_diameter = str2double(se_diameter);
+
+
+
+

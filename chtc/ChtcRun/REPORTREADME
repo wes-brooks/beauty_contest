@@ -1,0 +1,29 @@
+We have added a report writer which will give you an instantaneous report
+on the DAG as it runs.
+
+mydag-status --outputdir=xxxxxxxxxx
+
+When it runs it rewrites the file "report"
+
+On our submit nodes you can also generate a plot of the progress:
+
+Here is a sample on output directory dir1 which places REPORT.png in directory dir1
+To view profile, take to a systm you can point a web browser at it.
+
+./mydag-status --outputdir=dir1 --kind=profile
+profile Date:<Fri Jan 25 13:27:53 CST 2013>
+..
+*************************************************
+Datafile <REPORT.data> Imagefile <REPORT.png> Datafileall <REPORT.all> Imagefileall <REPORT_all.png>
+*************************************************
+PLOTCMD: /home/bt/ChtcRun/make-graphs --input REPORT.data --output REPORT.png
+*************************************************
+Datafile has 4 fields
+
+
+Required files for it to run:
+
+make-graphs  
+mkdag 
+PROFILE 
+RESULTVALUES

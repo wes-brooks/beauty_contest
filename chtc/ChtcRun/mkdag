@@ -1,0 +1,644 @@
+#! /usr/bin/env perl
+use Getopt::Long;
+use Cwd;
+use Time::Local;
+use strict;
+use warnings;
+
+my $softwareversion = "0.5"; # versioning started at 0.5
+my %projects = ( );
+
+my(%VALID_TYPES) = map {ucfirst(lc($_))=>1} qw(R Matlab Other);
+
+my ($prescript, @prearg, $maxidle, @add, $help, $dagdir, $data, $cmdtorun, $osg, $noosg, @pattern, $type, $version, @progargs,$memory, $resultdir, $dumplog, $output, $splitlogs, @postargs, $postscript,$matlabversion,$splice,$limit,$clean,$softversion);
+
+if( ! GetOptions(
+        'help' => \$help,
+		'add=s' => \@add,
+		'cmdtorun=s' => \$cmdtorun,
+		'data=s' => \$data,
+		'outputdir|dagdir=s' => \$dagdir,
+		'noosg' => \$noosg,
+		'osg' => \$osg,
+		'maxidle=i' => \$maxidle,
+		'limit=i' => \$limit,
+		'clean' => \$clean,
+		'softversion' => \$softversion,
+		'memory=s' => \$memory,
+		'pattern=s' => \@pattern,
+		'parg=s' => \@progargs,
+		'prescript=s' => \$prescript,
+		'prearg=s' => \@prearg,
+		'resultdir=s' => \$resultdir,
+		'type=s' => \$type,
+		'version=s' => \$version,
+		'output=s' => \$output,
+		'splitlogs' => \$splitlogs,
+		'splice' => \$splice,
+		'dumplog=s' => \$dumplog,
+		'postscript=s' => \$postscript,
+		'postarg=s' => \@postargs,)) {
+	die "\n"; # GetOptions already reported and error.
+}
+
+if(defined $softversion) {
+	print "ChtcRun version is <$softwareversion>\n";
+	print "Bye.\n";
+	exit(0);
+}
+
+if(@ARGV) {
+	help();
+	my $s = '';
+	$s = 's' if @ARGV != 1;
+	die "Unknown argument$s found on command line: @ARGV\n";
+}
+
+if(defined $help) {
+	help();
+	exit(0);
+}
+
+if(!(defined $data)) {
+	help();
+	die "Have no idea what to use for job data. need --data=xxxx\n";
+}
+
+if(!(defined $dagdir)) {
+	help();
+	print "Need directory to create!\n";
+	die "Must use --outputdir=xxxxxxxxx\n";
+}
+
+if(!(defined $cmdtorun)) {
+	die "Have no idea what job to run. need --cmdtorun=xxxx\n";
+}
+
+if(!(@pattern)) {
+	help();
+	die "--pattern required\n";
+} else {
+	print "Note: When you do this in conjunction with --resultdir,\n
+	       all files will go into resultdir in folders labeled \n
+           after the input folder for the job. Any file matching\n
+           the pattern will be collected as results for you.\n
+           If you need multiple patterns use multiple use of\n
+           --patern=\n
+           
+           --pattern=sun --patter=moon --pattern=nut\n"
+}
+
+if(!(defined $type)) {
+	help();
+	die "--type required - Matlab, R or Other accepted\n";
+} else {
+	if($type eq "Matlab") {
+		if(defined $version){
+			$matlabversion = $version;
+		} else {
+			$matlabversion = "r2011b";
+		}
+	}
+}
+
+$type = ucfirst(lc($type)); # canonize capitalization
+my %spliceneeds = ();
+my $dumpstop = 0;
+
+if(!(exists $VALID_TYPES{$type})) {
+	help();
+	die "Unknown --type of $type\n";
+}
+
+
+if(defined $matlabversion) {
+	$spliceneeds{matlabversion} = $matlabversion;
+}
+
+if(defined $version) {
+	$spliceneeds{version} = $version;
+}
+
+if(defined $clean) {
+	$spliceneeds{clean} = $clean;
+}
+
+
+if(($type eq "r")&& (!(defined $version))) {
+	help();
+	exit(0);
+}
+
+my $cwd = getcwd();
+my $loopcount = 0;
+my $pargcount = @progargs;
+my $programargs = "";
+if($pargcount > 0) {
+	foreach my $arg (@progargs) {
+		$programargs = $programargs . "$arg ";
+	}
+	print "Program args requested: ($programargs)\n";
+	$spliceneeds{programargs} = $programargs;
+}
+
+# some things we will see up front that just get passed through to
+# our wrapper system,
+my $passtochtcwrapper = "";
+my $preargcount = @prearg;
+
+print "There are <$preargcount> preescript args\n";
+
+if(defined $prescript) {
+	$passtochtcwrapper = $passtochtcwrapper . " --prescript=$prescript ";
+	$spliceneeds{prescript} = $prescript;
+	foreach my $arg (@prearg) {
+		$passtochtcwrapper = $passtochtcwrapper . "--prearg=$arg ";
+	}
+}
+if(defined $output) {
+	$passtochtcwrapper = $passtochtcwrapper . " --output=$output ";
+}
+if(defined $splitlogs) {
+	$passtochtcwrapper = $passtochtcwrapper . " --splitlogs ";
+}
+if(defined $dumplog) {
+	$passtochtcwrapper = $passtochtcwrapper . " --dumplog=$dumplog ";
+}
+if(defined $postscript) {
+	$passtochtcwrapper = $passtochtcwrapper . " --postscript=$postscript ";
+	$spliceneeds{postscript} = $postscript;
+	foreach my $arg (@postargs) {
+		$passtochtcwrapper = $passtochtcwrapper . " --postarg=$arg ";
+	}
+}
+
+my $inputpath = "";
+my $buildloc = "";
+my $dagfile = "mydag.dag";
+my $dagpath = "";
+my $dagconfig = "";
+my $sharedexists = 0;
+my $jobtemplateloc = "";
+my $submitfileloc = "";
+my $jobsubdag = "";
+my $jobfolder = "";
+my $addcount = @add;
+
+$inputpath = "$cwd/$data";
+$buildloc = "$cwd/$dagdir";
+$dagpath = "$buildloc/$dagfile";
+$dagconfig = "$buildloc/dagman_config";
+$jobtemplateloc = "$cwd";
+$spliceneeds{jobtemplateloc} = $jobtemplateloc;
+$spliceneeds{passtochtcwrapper} = $passtochtcwrapper;
+$spliceneeds{cmdtorun} = $cmdtorun;
+
+
+if($type eq "Other") {
+	my $ispython = 0;
+	$ispython = IsPython("$inputpath/shared");
+	if($ispython == 0) {
+		$spliceneeds{ispython} = 1;
+		#leave us a clue to enable these for sl6 also
+	}
+}
+
+
+print "Path to input folders is \"$inputpath\"\n";
+print "Path to output folders is \"$buildloc\"\n";
+#print "Currently here <$cwd>\n";
+
+if(!(-d "$dagdir")) {
+
+	my $dir = ".";
+	my @inputs = split /,/, $data;
+	my $inputcount = @inputs;
+	my $ret = 0;
+
+	$ret = system("mkdir $buildloc");
+	if($ret != 0) {
+		die "Can not make output folder<$buildloc>\n";
+	}
+
+	my $uniqeindex = -1;
+	# allow for faster submits for big runs AND a maximum of idle jobs
+	open(DF,">$dagpath") or die "Can not create DAG<$dagpath>: $!\n";
+	open(FIG,">$dagconfig") or die "Can not create DAG config file<$dagconfig>: $!\n";
+	print DF "CONFIG dagman_config\n";
+	if(defined $maxidle) {
+		print "Thank you for limiting your idle jobs in the queue!\n";
+		print "We suggest no more then 5000 idle jobs per user\n";
+		if($maxidle > 500) {
+			print FIG "DAGMAN_MAX_SUBMITS_PER_INTERVAL = 100\n";
+			# default is 10
+		}
+		print FIG "DAGMAN_MAX_JOBS_IDLE = $maxidle\n";
+	} else {
+		print FIG "DAGMAN_MAX_JOBS_IDLE = 1000\n";
+	}
+	close(FIG);
+
+	foreach my $inloc (@inputs) {
+		if(!(-d "$inloc")) {
+			help();
+			die "Can not find data location<$inloc>\n";
+		}
+
+		$inputpath = "$cwd/$inloc";
+		chdir("$inputpath") or die "Unable to make directory \"$inputpath\"";
+
+
+		opendir DH, $dir || die "Failed to pen dir $dir: $!\n";
+		my(@files) = sort { cmp_filenames($a,$b) } readdir DH;
+		closedir(DH);
+		foreach my $file (@files)
+		{
+			$programargs = "";
+			next if $file =~ /^\.\.?$/;
+			next if $file =~ /^shared$/;
+			if(-f "$file") {
+				next;
+			}
+
+			# Save information allowing the submit files to be done
+			# in a different routine. Save info in a hash
+			$spliceneeds{file} = $file;
+			print ".";
+			my $pargindex = 0;
+			my $line = "";
+			$jobfolder = "$cwd/$dagdir/$file";
+			while($pargindex < $pargcount) {
+				print "looping: pargindex:$pargindex pargcount:$pargcount \n";
+				print "Arg is $progargs[$pargindex]\n";
+				if($progargs[$pargindex] eq "unique") {
+					$progargs[$pargindex] = $file;
+					$uniqeindex = $pargindex;
+					print "parg $pargindex being assigned $file\n";
+					print "arg now is $progargs[$pargindex]\n";
+				} elsif($uniqeindex == $pargindex) {
+					$progargs[$pargindex] = $file;
+					print "parg $pargindex being assigned $file\n";
+				}
+				$pargindex += 1;
+			}
+			if($pargcount > 0) {
+				foreach my $arg (@progargs) {
+					$programargs = $programargs . "$arg ";
+				}
+				print "Program args requested: ($programargs)\n";
+				$spliceneeds{programargs} = $programargs;
+			}
+			$ret = system("mkdir $jobfolder");
+			if($ret != 0) {
+				die "Can not make job folder<$jobfolder>\n";
+			}
+			$submitfileloc = "$cwd/$dagdir/$file";
+			$jobsubdag = "$cwd/$dagdir/$file/$file\_dag";
+			$spliceneeds{submitfileloc} = $submitfileloc;
+			$spliceneeds{jobsubdag} = $jobsubdag;
+			$spliceneeds{runfolder} = "$cwd/$dagdir/$file/";
+			$spliceneeds{chtcruntop} = "$cwd";
+			my $sharedfolder = "$inputpath/shared/";
+			my $jobfolder = "$inputpath/$file/";
+			if(-d $sharedfolder) {
+				$spliceneeds{sharedfolder} = $sharedfolder;
+			} else {
+				die "No shared folder\n";
+			}
+			if(defined $memory) {
+				$spliceneeds{memory} = $memory;
+			}
+			if(defined $osg) {
+				$spliceneeds{osg} = 1;
+			}
+			if(defined $resultdir) {
+				$spliceneeds{resultdir} = $resultdir;
+			}
+			$spliceneeds{jobfolder} = $jobfolder;
+			$spliceneeds{type} = $type;
+			
+			# add uniquue input name as an arg.
+
+			# add node to dag
+			print DF "SPLICE $file $file/$file\_dag\n";
+			if(defined $splice) {
+				showspliceneeds(\%spliceneeds);
+			}
+			saveenvvars(\%spliceneeds);
+			mksplice(\%spliceneeds);
+			# we want mksplice to write dag and needed
+			# submit files.
+
+			close(SD);
+
+			#if($file =~ /^.*num_subprocess.*$/) {}
+			$loopcount += 1;
+			if(defined $limit) {
+				if($limit == $loopcount) {
+					last;
+				}
+			}
+		}
+		chdir($cwd);
+		print "\n";
+	}
+	if($sharedexists) { print "Using shared directory for all jobs\n"; }
+	close(DF);
+} else {
+	die "DAG working directory \"$dagdir\" already exists. Choose a different destination.\n";
+}
+
+my $postjobtemplate = "postjob.template";
+my $postjob = "postjob.pl";
+my $line = "";
+
+chdir("$cwd");
+open(PJT,"<$postjobtemplate") or die "Failed to open <$postjobtemplate>:$!\n";
+open(PJ,">$postjob") or die "Failed to open <$postjob>:$!\n";
+while(<PJT>) {
+	chomp();
+	$line = $_;
+	if($line =~ /^(.*?)ZZZZZZ(.*?)$/) {
+		print PJ "$1 ";
+		foreach my $pat (@pattern) {
+			print PJ "*$pat* ";
+		}
+		print PJ "$2\n";
+	} else {
+		print PJ "$line\n";
+	}
+
+}
+if(defined $resultdir) {
+	# a dd text to copy files there after making folder for that job
+	# make correct folder
+	# copy result of above glob to job result folder
+	# if args are passed to postjob.pl, files get saved in result location
+}
+
+close(PJT);
+close(PJ);
+chmod 0755, $postjob;
+
+print <<END;
+All done!
+
+You should now be able to submit your jobs with the following commands:
+
+  cd $dagdir
+  condor_submit_dag mydag.dag
+
+END
+print "All done!\n";
+exit(0);
+
+# 'help' => \$help,
+# 'cmdtorun=s' => \$cmdtorun,
+# 'data=s' => \$data,
+# 'outputdir|dagdir=s' => \$dagdir,
+# 'noosg' => \$noosg,
+# 'osg' => \$osg,
+# 'maxidle=i' => \$maxidle,
+# 'memory=s' => \$memory,
+# 'pattern=s' => \$pattern,
+# 'parg=s' => \@progargs,
+# 'prescript=s' => \$prescript,
+# 'prearg=s' => \@prearg,
+# 'type=s' => \$type,
+# 'version=s' => \$version,
+
+sub help 
+{
+
+		print "Usage:
+
+./mkdag --data=Rin --outputdir=dir1 --cmdtorun=soartest.R --pattern=meanx --type=R --version=R-2.10.1
+./mkdag --data=Matlabin --outputdir=dir1 --cmdtorun=smalljob --pattern=plus5 --type=Matlab 
+./mkdag --data=Binin --outputdir=dir1 --cmdtorun=sleep --pattern=sleepoutput --type=Other --parg=20 --noosg 
+./mkdag --data=Pythonin --outputdir=dir2 --cmdtorun=numpyscipytests.py --pattern=DONE --type=Other --version=Python-2.7.3
+./mkdag --data=MatlabandRin --prescript=rsetup.pl --prearg=R-2.14.1 --outputdir=dir2 --cmdtorun=smallexample --pattern=simu --type=Matlab
+
+Options:
+                [-h/--help]          This documentation
+                [--data=s]           Input directory
+                [--outputdir=s]      Output directory
+                [--resultdir=s]      Results are collected into this directory
+                [--cmdtorun=s]       Name of job to run placed in 'shared'
+                [--memory=s]         --memory=3000  means I need at least 3 gigs of 
+                                     ram per job
+                [--type=s]           Matlab, R or Other
+                [--parg=s]           Each use adds an argument to each call of your job
+                                     --parg=unique --parg=one --parg=two passes 
+                                     inputfoldername one two to your jobs
+                                     one two to your job.
+                [--prescript=s]      Pass a prescript to be run just before your 
+                                     program like we do in the MatlabandRin. There a
+                                     script is used to set up in a execute node already
+                                     setup for matlab.
+                [--prearg=s]         Each use adds an argument to each call of your prescript
+                [--postscript=s]     Pass a postscript to run at very end.
+                [--postarg=s]        Each use adds one arg to the postscript.
+                [--pattern=s]        Partial pattern matching a result file
+                                     example --pattern=Result (matches MyResultFile)
+                                     example --pattern=.mat (matches ResultFile.mat)
+                [--maxidle=i]        Limit idle jobs in queue and up how fast jobs
+                                     are submited by factor or 10. For large runs
+                                     we'd like no more then a total of 5000 idle jobs per
+                                     user.
+                [--version=s]        ONLY needed for R (sl5-R-2.10.1,sl5-R-2.13.1 or sl5-R-2.14.0)
+                [--osg]              Only needed to route type Other to use OSG
+                [--noosg]            Run only in CHTC
+                [--splitlogs]        Have chtcwrapper.out and chtcwrapper.err
+                [--splice]           Display information passing to mksplice function
+                [--output=s]         Collect output from program into new name.
+                [--dumplog=s]        Request remove with stdout or stderr.
+                [--limit=i]          Create Dag with only i jobs
+                [--clean]            If job works, strip down run location
+                [--softversion]      What software version of mkdag am I?
+         \n";
+
+}
+
+# Compares filenames for sorting purposes
+sub cmp_filenames 
+{
+	my($a, $b) = @_;
+	return $a cmp $b;
+}
+# Makes a subdag in each job folder
+# sample contents of sparse hash of resources needs
+# =======================================
+# chtcruntop = /home/bt/ChtcRun
+# cmdtorun = smalljob
+# cwd = /home/bt/ChtcRun
+# file = 0
+# jobfolder = /home/bt/ChtcRun/Matlabin/0/
+# jobsubdag = /home/bt/ChtcRun/dir1/0/0_dag
+# submitfileloc = /home/bt/ChtcRun/dir1/0
+# jobtemplateloc = /home/bt/ChtcRun
+# passtochtcrwapper = 
+# resultdir = res1
+# runfolder = /home/bt/ChtcRun/dir1/0/
+# sharedfolder = /home/bt/ChtcRun/Matlabin/shared/
+# type = Matlab
+# =======================================
+
+sub mksplice
+{
+	my $needshashref = shift;
+
+	# Create dag file for splice
+
+	my $folder = ${$needshashref}{file};
+	my $type = ${$needshashref}{type};
+	my $osg = ${$needshashref}{osg};
+	my $cmdtorun = ${$needshashref}{cmdtorun};
+	my $version = ${$needshashref}{version};
+	my $matlabversion = ${$needshashref}{matlabversion};
+	my $line = "";
+	my $transfers = "";
+
+	open(SD, ">${$needshashref}{jobsubdag}") or die "Can not create dag file for dir ${needshashref}{file}: $!\n";
+	print SD "JOB $folder process.cmd dir $folder\n";
+	if(exists ${$needshashref}{resultdir}) {
+		if(exists ${$needshashref}{clean}) {
+			print SD "SCRIPT POST $folder ${$needshashref}{chtcruntop}/postjob.pl ${$needshashref}{chtcruntop}/${$needshashref}{resultdir} $folder clean\n";
+		} else {
+			print SD "SCRIPT POST $folder ${$needshashref}{chtcruntop}/postjob.pl ${$needshashref}{chtcruntop}/${$needshashref}{resultdir} $folder\n";
+		}
+	} else {
+		print SD "SCRIPT POST $folder ${$needshashref}{chtcruntop}/postjob.pl\n";
+	}
+	print SD "RETRY $folder 10\n";
+	close(SD);
+
+	# create submitfile in node folder
+
+	open(SF,">${$needshashref}{submitfileloc}/process.cmd") or die "Can not create submit file<${$needshashref}{submitfileloc}/process.cmd>:$!\n";
+	open(TEMPL,"<${$needshashref}{jobtemplateloc}/process.template") or die "Can not read submit template<${$needshashref}{jobtemplateloc}/process.template>:$!\n";
+	while(<TEMPL>) {
+		chomp();
+		$line = $_;
+		if($line =~ /^\s*transfer_input_files\s*=\s*yyyy(.*)$/) {
+			if($addcount == 0) {
+				$transfers = "${$needshashref}{jobfolder},${$needshashref}{sharedfolder}$1";
+				print SF "transfer_input_files = $transfers\n";
+			} else {
+			}
+		} elsif($line =~ /^\s*arguments\s*=\s*(.*)$/) {
+		} elsif($line =~ /^\s*executable\s*=\s*.*\s*$/){
+			print SF "executable = ${$needshashref}{chtcruntop}/chtcjobwrapper\n";
+		#} elsif($line =~ /^\s*requirements\s*=\s*(.*)$/) {
+			#if(defined $memory) {
+				#print SF "requirements = $1 && (Memory > $memory)\n";
+			#} else {
+				#print SF "$line\n";
+			#}
+		} elsif($line =~ /^\s*request_memory\s*=\s*(.*)$/) {
+			if(defined $memory) {
+				print SF "request_memory =  $memory\n";
+			} else {
+				print SF "$line\n";
+			}
+		} elsif($line =~ /^VERSION$/) {
+			if($type eq "Matlab") {
+				print SF "+Matlab=\"$matlabversion\"\n";
+			} elsif($type eq "R") {
+				print SF "+R=\"$version\"\n";
+			} else {
+				#line goes away
+			}
+		} elsif($line =~ /^ARGS$/) {
+			my $finalargs = "arguments = ";
+			my $mainargs = "--cmdtorun=$cmdtorun --unique=$folder -- ";
+			# passtochtcwrapper
+			if(exists ${$needshashref}{passtochtcwrapper}) {
+				# add to beginning
+				$finalargs = $finalargs . "${$needshashref}{passtochtcwrapper} ";
+			}
+			if(exists ${$needshashref}{programargs}) {
+				# add to end where program sees it
+				$mainargs = $mainargs . "${$needshashref}{programargs}";
+			}
+			if($type eq "Matlab") {
+				$finalargs = $finalargs . "--type=Matlab --version=$matlabversion ";
+				$finalargs = $finalargs . $mainargs;
+				print SF "$finalargs\n";
+				print SF "+WantRHEL6Job = TRUE\n";
+			} elsif($type eq "R") {
+				$finalargs = $finalargs . "--type=R --version=$version ";
+				$finalargs = $finalargs . $mainargs;
+				print SF "$finalargs\n";
+				print SF "+WantRHEL6Job = TRUE\n";
+			} else {
+				if(defined $version) {
+					$finalargs = $finalargs . "--type=Other --version=$version ";
+				} else {
+					$finalargs = $finalargs . "--type=Other ";
+				}
+				$finalargs = $finalargs . $mainargs;
+				print SF "$finalargs\n";
+				if(exists ${$needshashref}{ispython}) {
+					print SF "+WantRHEL6Job = TRUE\n";
+				}
+			}
+
+			if(defined $osg) {
+				print SF "+WantGlidein = True\n";
+			} else {
+				# nothing defined so it runs CHTC dedicated slots
+			}
+		} else {
+			print SF "$line\n";
+		}
+	}
+	close(SF);
+	close(TEMPL);
+}
+
+sub showspliceneeds
+{
+	my $needshashref = shift;
+	if($dumpstop > 0) {
+		return(0);
+	}
+	$dumpstop += 1;
+	print "=======================================\n";
+	foreach my $key (sort keys %{$needshashref}) {
+		print "$key = ";
+		print "${$needshashref}{$key}\n";
+	}
+	print "=======================================\n";
+}
+
+sub saveenvvars
+{
+    my $needshashref = shift;
+    #print "Opening <${$needshashref}{jobfolder}/ENVVARS>\n";
+    open(SN,">${$needshashref}{runfolder}/ENVVARS") or die "Could not save ENVVARS<${$needshashref}{jobfolder}/ENVVARS>:$!\n";
+    foreach my $key (sort keys %{$needshashref}) {
+        print SN "$key = ";
+        print SN "${$needshashref}{$key}\n";
+    }
+    close(SN);
+}
+
+sub IsPython
+{
+	my $shared = shift;
+	my $line = "";
+	if( -f "$shared/URLS") {
+		open(UR,"<$shared/URLS") or die "Could not open URLS:$!\n";
+		while(<UR>) {
+			chomp();
+			$line = $_;
+			if($line =~ /^\s*python.*$/) {
+				return(0);
+			}
+		}
+	} else {
+		#without URLS file it could not download the runtime
+		return(1);
+	}
+	return(1);
+}

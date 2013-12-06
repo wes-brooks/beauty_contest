@@ -1,0 +1,11 @@
+Package: adalars
+Type: Package
+Title: The adaptive LASSO for linear regression
+Version: 0.1
+Date: 2012-08-01
+Author: Wesley Brooks
+Maintainer: Wesley Brooks <wrbrooks@usgs.gov>
+Description: Use the adaptive lasso for shrinkage and variable selection in a linear model.
+Depends: lars
+License: GPL-3
+LazyLoad: yes
