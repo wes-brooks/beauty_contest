@@ -1,0 +1,280 @@
+#!/usr/bin/env perl
+
+##**************************************************************
+##
+## Copyright (C) 1990-2007, Condor Team, Computer Sciences Department,
+## University of Wisconsin-Madison, WI.
+## 
+## Licensed under the Apache License, Version 2.0 (the "License"); you
+## may not use this file except in compliance with the License.  You may
+## obtain a copy of the License at
+## 
+##    http://www.apache.org/licenses/LICENSE-2.0
+## 
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+##
+##**************************************************************
+
+
+
+
+###########################################################################
+#
+#  This script builds R libraries using vanilla jobs to Condor.
+#
+#  usage: see help function
+#
+#  condor_run by Bill Taylor <bt@cs.wisc.edu> 1/11/12
+#
+###########################################################################
+
+use Getopt::Long;
+use Cwd;
+use File::Basename;
+use strict;
+use warnings;
+
+
+
+my ($help, $rlibs, $rversion);
+my ($cluster, $sig, @command, $arg, $universe, @appends, ,$stdout, $submit_errors,$shlib);
+GetOptions (
+        'help'      	=> \$help,
+        'rlibs=s'     	=> \$rlibs, # only check squid location
+		'rversion=s' 	=> \$rversion,
+		'shlib'			=> \$shlib,
+		'stdout' 	    => \$stdout,
+        );
+
+if($help) {
+    help();
+    exit(0);
+}
+
+my $chtcutils = $ENV{CHTCUTILS};
+#print "CHTCUTILS are $chtcutils\n";
+if(exists $ENV{CHTCUTILS}) {
+} else {
+	&abort("CHTCUTILS not defined in this environment\n"); 
+}
+
+my $utilstemplate = $chtcutils . "/chtc_buildRlibs/BuildRLibs.cmd";
+my $utilswrapper = $chtcutils . "/chtc_buildRlibs/BuildRLibsRemote.pl";
+
+#print "Template = <$utilstemplate> Wrapper = <$utilswrapper>\n";
+
+# grab current working directory for initial dir in system using automounter
+my $pwd = `pwd`;
+chomp $pwd;
+
+# set up environment for running something in the current directory in case
+# they want to run something in the current working directory and they
+# don't specify a "./" infront of it.
+$ENV{'PATH'} .= ":.";
+
+# setup cleanup subroutine and error handlers
+sub cleanfiles {
+	sleep(10);
+	print "STANDARD OUT\n";
+	print "*************************************************\n";
+	if(defined $stdout) {
+		system("cat .condor_out*.$$");
+	} else {
+		print "Repressed. Rerun with --stdout to see\n";
+	}
+	print "*************************************************\n";
+	print "STANDARD ERROR\n";
+	print "*************************************************\n";
+	# sometimes we try too soon
+	system("cat .condor_error*.$$");
+    unlink ".condor_submit*.$$", ".condor_log*.$$";
+    unlink ".condor_out*.$$", ".condor_error*.$$";
+    unlink "AuditLog", "COMPILEDONE";
+}
+
+sub abort {
+    `condor_rm $cluster 2>&1 > /dev/null` if defined($cluster);
+    &cleanfiles;
+    die @_;
+}
+
+sub handler {
+	#local($sig) = @_;
+    $sig = @_;
+    &abort("Killed by SIG$sig.\n");
+}
+
+$SIG{'HUP'} = 'handler';
+$SIG{'INT'} = 'handler';
+$SIG{'QUIT'} = 'handler';
+$SIG{'TERM'} = 'handler';
+
+# use the user's shell in the script we submit to Condor
+my $shell = $ENV{'SHELL'};
+$shell = "/bin/sh" if (!defined($shell));
+
+# get any requirements from the user's environment
+my $requirements = $ENV{'CONDOR_REQUIREMENTS'};
+my $arch = $ENV{'CONDOR_ARCH'};
+if (defined($arch)) {
+    $requirements .= " && " if (defined($requirements));
+    $requirements .= "Arch == \"" . $arch . "\"";
+}
+my $opsys = $ENV{'CONDOR_OPSYS'};
+if (defined($opsys)) {
+    $requirements .= " && " if (defined($requirements));
+    $requirements .= "OpSys == \"" . $opsys . "\"";
+}
+
+my $line = "";
+open(TEMP,"<$utilstemplate") ||
+	&abort("Can'topen template:$!\n");
+# create a job description file to submit the shell script to Condor
+open(JDF, ">.condor_submit.$$") ||
+    &abort("Can't create temporary (JDF) file in current directory.\n");
+$rversion =~ s/sl6/sl5/;
+while(<TEMP>) {
+	chomp();
+	$line = $_;
+	#print JDF "universe = $universe\n";
+	#print JDF "getenv = True\n";
+	#print JDF "requirements = ", $requirements, "\n" if (defined($requirements));
+	#foreach my $append (@appends) {
+    #print JDF $append . "\n";
+	#}
+	#print JDF "queue\n";
+	if($line =~ /^\s*log\s*=\s*.*$/) {
+		print JDF "log = .condor_log.$$\n";
+	} elsif($line =~ /^\s*output\s*=\s*.*$/) {
+		print JDF "output = .condor_out\$(process).$$\n";
+	} elsif($line =~ /^\s*error\s*=\s*.*$/) {
+		print JDF "error = .condor_error\$(process).$$\n";
+	} elsif($line =~ /^\s*executable\s*=\s*.*$/) {
+		print JDF "executable = $utilswrapper\n";
+	} elsif($line =~ /^\s*transfer_input_files\s*=\s*.*$/) {
+		print JDF "transfer_input_files = $rlibs\n";
+	} elsif($line =~ /^\s*arguments\s*=\s*.*$/) {
+		if(defined $shlib) {
+			print JDF "arguments = --rversion=$rversion --rlibraries=$rlibs --shlib\n";
+		} else {
+			print JDF "arguments = --rversion=$rversion --rlibraries=$rlibs\n";
+		}
+	} elsif($line =~ /^\s*queue\s*=\s*.*$/) {
+		print JDF "initialdir = $pwd\n";
+		print JDF "notification = NEVER\n";
+		print JDF "queue\n";
+	} else {
+		print JDF "$line\n";
+	}
+}
+$rversion =~ s/sl5/sl6/;
+print JDF "requirements = (IsMatlabBuildSlot =?= true) && (OpSysAndVer =?= \"SL6\")\n";
+
+if(defined $shlib) {
+	print JDF "arguments = --rversion=$rversion --rlibraries=$rlibs --shlib\n";
+} else {
+	print JDF "arguments = --rversion=$rversion --rlibraries=$rlibs\n";
+}
+print JDF "Queue";
+close(JDF) ||
+    &abort("Failed to write temporary (JDF) file in current directory.\n");
+
+
+# submit the job; $cluster contains cluster number if successful
+open(SUBMIT, "condor_submit .condor_submit.$$ 2>&1 |") ||
+    &abort("Failed to run condor_submit.  Please check your path.\n");
+while(<SUBMIT>) {
+    if (/^2 job\(s\) submitted to cluster (\d+)./) {
+	($cluster) = $1;
+    } elsif (/WARNING.*Invalid log file/ ||
+	     /WARNING.*is not writable by condor/) {
+	print STDERR $_;
+	&abort("Failed to submit Condor job.\n");
+    } else {
+	$submit_errors .= $_;
+    }
+}
+
+if (!close(SUBMIT) || !defined($cluster)) {
+    print STDERR $submit_errors;
+    &abort("Failed to submit Condor job.\n");
+}
+
+# watch the Condor log to see when the job completes
+my $done = 0;
+my $status = 0;
+while (!$done) {
+	my $count = 0;
+    sleep 5;
+    open(LOG, "<.condor_log.$$") ||
+    &abort("Failed to open Condor log file.\n");
+    while (<LOG>) {
+		if (/termination \(return value (\d+)\)/) {
+	    	$status = $1;
+			$count++;
+			if($count == 2) {
+	    		$done = 1;
+			}
+		} elsif (/termination \(signal (\d+)\)/) {
+	    	print STDERR "Condor job killed by signal ", $1 , ".\n";
+	    	$done = 1;
+        } elsif ( /^009/ && /Job was aborted by the user/ ) {
+	    	print STDERR "The job was aborted by the user";
+	    	$done = 1;
+		}
+    }
+    close(LOG) || &abort("Failed to close Condor log file.\n");
+}
+undef $cluster;			# indicate that job is no longer in queue
+
+# display stdout to the terminal
+#open(OUTPUT, "<.condor_out.$$") || &abort("Failed to open job output file.\n");
+#while (<OUTPUT>) {
+    #print STDOUT;
+#}
+#close(OUTPUT) || &abort("Failed to open job output file.\n");
+
+# display stderr to the terminal
+#open(ERROR, "<.condor_error.$$") || &abort("Failed to open job error file.\n");
+#while (<ERROR>) {
+    #print STDERR;
+#}
+#close(ERROR) || &abort("Failed to open job output file.\n");
+
+&cleanfiles;			# cleanup temporary files
+
+exit $status;			# exit with job's exit status
+
+sub help
+{
+	print "Usage: chtc_buildRlibs 1.0 1/19/12
+        chtc_buildRlibs --help
+        chtc_buildRlibs --rversion=X --rlibs=1,2,3,4
+        chtc_buildRlibs --rversion=X --rlibs=centry.c,extra1.c,extra1.c --shlib
+
+
+        This script builds R libraries with a specified R version suitable for
+        running in CHTC and OSG. The libraries ordering is built left to right.
+        A required library must come first!
+
+        The result is the return of the files sl5-RLIBS.tar.gz and sl6-RLIBS.tar.gz suitable
+        for running in CHTC and OSG.
+
+        chtc_buildRlibs --rversion=sl5-R-2.10.1 --rlibs=qtl_1.16-6.tar.gz,qtlnet_0.9.4.tar.gz
+
+        The last example above is for compiling C or Fortran using R such that
+        it can be called from R. In this case the first file in the comma separated
+        list is the source file for the entry point. Any other extra source files should
+        follow the entry point.
+
+		The above example would return sl5-centry.so and sl6-centry.so suitable 
+		for running in CHTC and OSG.
+
+        In both cases, the chtcjobwrapper will look to which operating system the job
+        land on and use the correct version of the R/(C or Fortran) product to use.
+        \n";
+}

@@ -1,0 +1,13 @@
+CONFIG dagman_config
+SPLICE 1 1/1_dag
+SPLICE 10 10/10_dag
+SPLICE 11 11/11_dag
+SPLICE 12 12/12_dag
+SPLICE 2 2/2_dag
+SPLICE 3 3/3_dag
+SPLICE 4 4/4_dag
+SPLICE 5 5/5_dag
+SPLICE 6 6/6_dag
+SPLICE 7 7/7_dag
+SPLICE 8 8/8_dag
+SPLICE 9 9/9_dag

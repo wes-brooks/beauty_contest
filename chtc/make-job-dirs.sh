@@ -1,6 +1,7 @@
 #! /bin/sh
-for i in {1..10}
+
+for ((i=1; i<=$1; i++))
 do
-  mkdir -p ChtcRun/beautydata/$i
-  echo "$i" > ChtcRun/beautydata/$i/jobid.txt
+  mkdir -p beautydata/$i
+  echo "$2\n$i" > beautydata/$i/jobid.txt
 done

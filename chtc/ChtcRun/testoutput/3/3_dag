@@ -1,3 +1,0 @@
-JOB 3 process.cmd dir 3
-SCRIPT POST 3 /home/wbrooks2/beauty/ChtcRun/postjob.pl
-RETRY 3 10

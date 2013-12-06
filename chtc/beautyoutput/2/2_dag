@@ -1,0 +1,3 @@
+JOB 2 process.cmd dir 2
+SCRIPT POST 2 /Users/wesley/git/beauty_contest/chtc/postjob.pl
+RETRY 2 10

@@ -1,0 +1,12 @@
+chtcruntop = /Users/wesley/git/beauty_contest/chtc
+cmdtorun = script.r
+file = 3
+jobfolder = /Users/wesley/git/beauty_contest/chtc/beautydata/3/
+jobsubdag = /Users/wesley/git/beauty_contest/chtc/beautyoutput/3/3_dag
+jobtemplateloc = /Users/wesley/git/beauty_contest/chtc
+passtochtcwrapper = 
+runfolder = /Users/wesley/git/beauty_contest/chtc/beautyoutput/3/
+sharedfolder = /Users/wesley/git/beauty_contest/chtc/beautydata/shared/
+submitfileloc = /Users/wesley/git/beauty_contest/chtc/beautyoutput/3
+type = R
+version = sl5-R-2.15.3

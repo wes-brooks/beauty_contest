@@ -1,0 +1,11 @@
+CHTCUTILS:=chtc-utils
+export CHTCUTILS
+
+r-libs:
+	./chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=../R-libs/pls_2.4-3.tar.gz,../R-libs/gbm-2.1.tar.gz
+
+jobdirs:
+	cp -r ../R-libs beautydata/shared
+	./make-job-dirs.sh 12 test
+	./make-dag.sh
+	

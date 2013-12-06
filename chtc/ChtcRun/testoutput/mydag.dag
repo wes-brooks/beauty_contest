@@ -1,4 +1,0 @@
-CONFIG dagman_config
-SPLICE 1 1/1_dag
-SPLICE 2 2/2_dag
-SPLICE 3 3/3_dag
