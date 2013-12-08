@@ -24,7 +24,7 @@ source('R/settings.r')
 source('R/utils.r')
 
 #Load the process ID from the jobid.txt file
-seeds = read.table("../seeds.txt")
+seeds = read.table("seeds.txt")
 
 args = scan('jobid.txt', 'character')
 cluster = args[1]
