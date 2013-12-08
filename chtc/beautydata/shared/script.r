@@ -38,3 +38,7 @@ cat("installed, loaded spls.wrap\n")
 
 cat("done\n")
 sink()
+
+sink("output-2.txt")
+cat("here too\n")
+sink()
