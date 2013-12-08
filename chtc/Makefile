@@ -11,12 +11,12 @@ jobdirs:
 	cp -rf ../R beautydata/shared
 	cp -rf ../seeds.txt beautydata/shared
 	./make-job-dirs.sh 12 test
-	./mkdag
-	  --cmdtorun=R/beauty.r
-	  --data=beautydata
-	  --dagdir=beautyoutput
-	  --pattern=annual.out
-	  --type=R
+	./mkdag \
+	  --cmdtorun=R/beauty.r \
+	  --data=beautydata \
+	  --dagdir=beautyoutput \
+	  --pattern=annual.out \
+	  --type=R \
 	  --version=sl5-R-2.15.3
 
 #r-libs:
