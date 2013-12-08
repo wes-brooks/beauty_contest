@@ -19,7 +19,7 @@ jobdirs:
 	  --cmdtorun=beauty.r \
 	  --data=beautydata \
 	  --dagdir=beautyoutput \
-	  --pattern=annual.out \
+	  --pattern=result.txt \
 	  --type=R \
 	  --version=sl5-R-2.15.3
 

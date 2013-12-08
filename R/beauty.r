@@ -57,6 +57,8 @@ output = ""
 #Set the timestamp we'll use to identify the output files.
 prefix = paste(cluster, process, sep=".")
 
+sink("result.txt")
 cat(paste(prefix, "\n", sep=''))
+sink()
 
 #source("loo.r")
