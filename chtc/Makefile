@@ -9,6 +9,7 @@ jobdirs:
 	rm -rf beautyoutput
 	rm -rf beautydata
 	mkdir beautydata
+	mkdir beautydata/shared
 	cp -rf ../R-libs beautydata/shared/R-libs
 	cp -rf ../data/MaxRowsTurb beautydata/shared/data
 	cp -rf ../R/* beautydata/shared/
