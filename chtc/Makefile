@@ -5,12 +5,15 @@ submit: #beautyoutput/mydag.dag
 	./submit.sh
 
 jobdirs:
+	find 'beautydata' -wholename 'beautydata/shared' -prune -o -not -name 'beautydata' | xargs rm -rf 
 	rm -rf beautyoutput
-	cp -rf ../R-libs beautydata/shared
+	rm -rf beautydata
+	mkdir beautydata
+	cp -rf ../R-libs beautydata/shared/R-libs
 	cp -rf ../data/MaxRowsTurb beautydata/shared/data
 	cp -rf ../R/* beautydata/shared/
 	cp -rf ../seeds.txt beautydata/shared
-	./make-job-dirs.sh 12 test
+	./make-job-dirs.sh 1 test
 	./mkdag \
 	  --cmdtorun=beauty.r \
 	  --data=beautydata \
