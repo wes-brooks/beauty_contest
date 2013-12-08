@@ -56,7 +56,7 @@ cat(paste('got seeds', "\n", sep=''))
 sink()
 
 args = scan('jobid.txt', 'character')
-args = strsplit(args, '\\n', fixed=TRUE)
+args = strsplit(args, '\\n', fixed=TRUE)[[1]]
 
 sink("result.txt", append=TRUE)
 cat(paste('jobid:', args[2], "\n", sep=''))
