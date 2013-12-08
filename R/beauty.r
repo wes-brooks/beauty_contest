@@ -93,4 +93,4 @@ sink("result.txt", append=TRUE)
 cat(paste(prefix, "\n", sep=''))
 sink()
 
-#source("loo.r")
+source("loo.r")
