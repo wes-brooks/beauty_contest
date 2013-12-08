@@ -94,3 +94,4 @@ cat(paste(prefix, "\n", sep=''))
 sink()
 
 source("loo.r")
+source('annual.r')
