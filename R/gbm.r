@@ -1,4 +1,8 @@
+cat("installing gbm:\n")
+install.packages("gbm")
 require(gbm)
+
+cat("installed gbm\n")
 
 #Define the GBM environment
 GBM <- new.env()

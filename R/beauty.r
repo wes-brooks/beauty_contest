@@ -52,4 +52,6 @@ output = ""
 #Set the timestamp we'll use to identify the output files.
 prefix = paste(cluster, process, sep=".")
 
+cat(paste(prefix, "\n", sep=''))
+
 source("annual.r")
