@@ -1,7 +1,7 @@
 CHTCUTILS:=chtc-utils
 export CHTCUTILS
 
-submit: beautyoutput/mydag.dag
+submit: #beautyoutput/mydag.dag
 	./submit.sh
 
 jobdirs:
