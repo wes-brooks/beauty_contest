@@ -8,6 +8,8 @@ jobdirs:
 	rm -rf beautyoutput
 	cp -r ../R-libs beautydata/shared
 	./make-job-dirs.sh 12 test
+	cp -rf ../data/MaxRowsTurb beautydata/shared/data
+	cp -rf ../R beautydata/shared
 	./make-dag.sh
 
 #r-libs:
