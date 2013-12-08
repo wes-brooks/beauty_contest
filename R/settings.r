@@ -37,8 +37,8 @@ params[["galm"]] = list('generations'=5, 'mutate'=0.05)
 params[["gbm"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=1000, 'shrinkage'=0.01, 'gbm.folds'=0)
 methods = list(
 	#'gbm' = GBM
-	#'pls' = PLS
-	'galm' = GALM
+	'pls' = PLS
+	#'galm' = GALM
 	#adapt = AL
 	#'spls-select' = SPLS
 	#'adalasso-weighted' = LAL

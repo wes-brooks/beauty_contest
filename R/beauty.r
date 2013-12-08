@@ -6,6 +6,11 @@ rm(r)
 dir.create("rlibs")
 Sys.setenv(R_LIBS="rlibs")
 install.packages("devtools")
+install.packages("gbm")
+install.packages("pls")
+install.packages("lars")
+install.packages("glmnet")
+install.packages("spls")
 require(devtools)
 
 #These are the modeling modules:
@@ -54,4 +59,4 @@ prefix = paste(cluster, process, sep=".")
 
 cat(paste(prefix, "\n", sep=''))
 
-source("annual.r")
+source("loo.r")
