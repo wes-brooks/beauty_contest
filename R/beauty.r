@@ -1,3 +1,7 @@
+sink("result.txt")
+cat(paste('entry', "\n", sep=''))
+sink()
+
 #Set ourselves up to import the packages:
 r = getOption("repos")
 r["CRAN"] = "http://cran.wustl.edu"
@@ -13,6 +17,10 @@ install.packages("glmnet")
 install.packages("spls")
 require(devtools)
 
+sink("result.txt", append=TRUE)
+cat(paste('installations complete', "\n", sep=''))
+sink()
+
 #These are the modeling modules:
 source('gbm.r')
 source('pls.r')
@@ -22,16 +30,38 @@ source('adapt.r')
 source('adalasso.r')
 source('spls.r')
 
+sink("result.txt", append=TRUE)
+cat(paste('going to settings', "\n", sep=''))
+sink()
+
 #Import location and modeling settings:
 source('settings.r')
+
+sink("result.txt", append=TRUE)
+cat(paste('going to utils', "\n", sep=''))
+sink()
 
 #Import some necessary functions:
 source('utils.r')
 
+sink("result.txt", append=TRUE)
+cat(paste('going to seeds', "\n", sep=''))
+sink()
+
 #Load the process ID from the jobid.txt file
 seeds = read.table("seeds.txt")
 
+sink("result.txt", append=TRUE)
+cat(paste('got seeds', "\n", sep=''))
+sink()
+
 args = scan('jobid.txt', 'character')
+args = strsplit(args, '\\n', fixed=TRUE)
+
+sink("result.txt", append=TRUE)
+cat(paste('jobid:', args[2], "\n", sep=''))
+sink()
+
 cluster = args[1]
 process = as.numeric(args[2])
 sites = names(beaches)
@@ -48,7 +78,9 @@ locs = sites[site]
 tasks = names(methods)[meth]
 seed = (1000 * seeds[s*mm[1]+site,]) %/% 1
     
-    
+sink("result.txt", append=TRUE)
+cat(paste('here', sep=''))
+sink()
     
 cv_folds = 5
 result = "placeholder"
@@ -57,7 +89,7 @@ output = ""
 #Set the timestamp we'll use to identify the output files.
 prefix = paste(cluster, process, sep=".")
 
-sink("result.txt")
+sink("result.txt", append=TRUE)
 cat(paste(prefix, "\n", sep=''))
 sink()
 
