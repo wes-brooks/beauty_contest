@@ -6,10 +6,10 @@ submit: #beautyoutput/mydag.dag
 
 jobdirs:
 	rm -rf beautyoutput
-	cp -r ../R-libs beautydata/shared
-	./make-job-dirs.sh 12 test
+	cp -rf ../R-libs beautydata/shared
 	cp -rf ../data/MaxRowsTurb beautydata/shared/data
 	cp -rf ../R beautydata/shared
+	./make-job-dirs.sh 12 test
 	./make-dag.sh
 
 #r-libs:
