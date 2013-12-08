@@ -9,19 +9,19 @@ install.packages("devtools")
 require(devtools)
 
 #These are the modeling modules:
-source('R/gbm.r')
-source('R/pls.r')
-source('R/galm.r')
-source('R/galogistic.r')
-source('R/adapt.r')
-source('R/adalasso.r')
-source('R/spls.r')
+source('gbm.r')
+source('pls.r')
+source('galm.r')
+source('galogistic.r')
+source('adapt.r')
+source('adalasso.r')
+source('spls.r')
 
 #Import location and modeling settings:
-source('R/settings.r')
+source('settings.r')
 
 #Import some necessary functions:
-source('R/utils.r')
+source('utils.r')
 
 #Load the process ID from the jobid.txt file
 seeds = read.table("seeds.txt")
@@ -52,4 +52,4 @@ output = ""
 #Set the timestamp we'll use to identify the output files.
 prefix = paste(cluster, process, sep=".")
 
-source("R/annual.r")
+source("annual.r")

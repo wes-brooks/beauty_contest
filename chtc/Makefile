@@ -8,11 +8,11 @@ jobdirs:
 	rm -rf beautyoutput
 	cp -rf ../R-libs beautydata/shared
 	cp -rf ../data/MaxRowsTurb beautydata/shared/data
-	cp -rf ../R beautydata/shared
+	cp -rf ../R/* beautydata/shared/
 	cp -rf ../seeds.txt beautydata/shared
 	./make-job-dirs.sh 12 test
 	./mkdag \
-	  --cmdtorun=R/beauty.r \
+	  --cmdtorun=beauty.r \
 	  --data=beautydata \
 	  --dagdir=beautyoutput \
 	  --pattern=annual.out \
