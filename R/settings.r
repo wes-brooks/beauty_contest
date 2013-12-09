@@ -16,8 +16,8 @@ beaches[['hika']] = list('file'='data/HK2013.MaxRowsTurb.csv', 'target'='log_bea
 
 params = list()
 ##params[["lasso"]] = list('left'=0, 'right'=3.383743576, 'adapt'=True, 'overshrink'=True, 'precondition'=False)
-params[["PLS"]] = list()
-params[["gbm"]] = list('depth'=5, 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=0)
+params[["PLS"]] = list('env'=PLS)
+params[["gbm"]] = list('env'=GBM, 'depth'=5, 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=0)
 #params[["gbmcv"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=20000, 'shrinkage'=0.0001, 'gbm.folds'=5)
 ##params[['logistic']] = list('weights'='discrete', 'stepdirection'='both')
 
@@ -27,20 +27,12 @@ params[["gbm"]] = list('depth'=5, 'minobsinnode'=5, 'iterations'=20000, 'shrinka
 #params[['adalasso-unweighted-select']] = list('weights'='none', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=TRUE)
 #params[['adalasso-weighted']] = list('weights'='continuous', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE)
 #params[['adalasso-weighted-select']] = list('weights'='continuous', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=TRUE)
-params[["galm"]] = list('generations'=5, 'mutate'=0.05)
+params[["galm"]] = list('env'=GALM, 'generations'=5, 'mutate'=0.05)
 #params[["adapt"]] = list('adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=FALSE)
 #params[["adapt-select"]] = list('adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=False, 'selectvars'=TRUE)
 #params[["spls"]] = list('selectvars'=False)
 #params[["spls-select"]] = list('selectvars'=TRUE)
 
 
-params[["gbm"]] = list('depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=1000, 'shrinkage'=0.01, 'gbm.folds'=0)
-methods = list(
-	#'gbm' = GBM
-	'pls' = PLS
-	#'galm' = GALM
-	#adapt = AL
-	#'spls-select' = SPLS
-	#'adalasso-weighted' = LAL
-	#'galogistic-weighted' = GALogistic
-)
+params[["gbm"]] = list('env'=GBM, 'depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=1000, 'shrinkage'=0.01, 'gbm.folds'=0)
+methods = na
