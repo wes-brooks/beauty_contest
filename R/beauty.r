@@ -95,4 +95,7 @@ cat(paste(prefix, "\n", sep=''))
 sink()
 
 source("loo.r")
+sink("result.txt", append=TRUE)
+cat("LOO complete - now going to annual.\n")
+sink()
 source('annual.r')
