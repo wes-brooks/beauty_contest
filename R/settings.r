@@ -30,7 +30,7 @@ params[['adalasso-weighted-select']] = list('env'=LAL, 'weights'='continuous', '
 params[["galm"]] = list('env'=GALM, 'generations'=5, 'mutate'=0.05)
 
 params[["adapt"]] = list('env'=AL, 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=FALSE)
-params[["adapt-select"]] = list('env'=AL, 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=False, 'selectvars'=TRUE)
+params[["adapt-select"]] = list('env'=AL, 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=TRUE)
 
-params[["spls"]] = list('env'=SPLS, 'selectvars'=False)
+params[["spls"]] = list('env'=SPLS, 'selectvars'=FALSE)
 params[["spls-select"]] = list('env'=SPLS, 'selectvars'=TRUE)
