@@ -22,7 +22,7 @@ params[['adalasso-unweighted-select']] = list('env'=LAL, 'weights'='none', 'adap
 params[['adalasso-weighted']] = list('env'=LAL, 'weights'='continuous', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE)
 params[['adalasso-weighted-select']] = list('env'=LAL, 'weights'='continuous', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=TRUE)
 
-params[["galm"]] = list('env'=GALM, 'generations'=5, 'mutate'=0.05)
+params[["galm"]] = list('env'=GALM, 'generations'=100, 'mutate'=0.05)
 
 params[["adapt"]] = list('env'=AL, 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=FALSE)
 params[["adapt-select"]] = list('env'=AL, 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=TRUE)
