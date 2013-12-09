@@ -70,6 +70,7 @@ for (beach in locs) {
         cat(paste("# variables: ", paste(model[['vars']], collapse=', '), "\n", sep=""))
         cat(paste("# thresholding specificity: ", model[['specificity']], "\n", sep=""))
         cat(paste("# decision threshold: ", model[['threshold']], "\n", sep=""))
+		cat(paste("# full results: \n", results, "\n", sep=""))
         
         #Clean up and move on.
         warnings()

@@ -67,7 +67,7 @@ censlars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE,
     }
     
     result[['fitted']] = predict.lars(model, newx=xs, type='fit', s=lambda.index, mode='step')$fit
-    result[['residuals']] = y-result[['fitted']]
+    result[['residual']] = y-result[['fitted']]
     result[['vars']] = names(which(abs(model$beta[lambda.index,])>0))
     coefs = predict.lars(model, type='coefficients', s=lambda.index, mode='step')
     result[['coefs']] = coefs$coefficients[which(coefs$coefficients>0)]

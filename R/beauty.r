@@ -63,11 +63,11 @@ cat(paste('jobid:', args[2], "\n", sep=''))
 sink()
 
 cluster = args[1]
-process = as.numeric(args[2])
+process = as.numeric(args[2]) - 1
 sites = names(beaches)
 
 s = length(sites)
-m = length(names(methods))
+m = length(names(params))
 d = c(process %/% s, process %% s)
 mm = c(d[1] %/% m, d[1] %% m)
 
@@ -79,7 +79,8 @@ tasks = names(methods)[meth]
 seed = (1000 * seeds[s*mm[1]+site,]) %/% 1
     
 sink("result.txt", append=TRUE)
-cat(paste('here', sep=''))
+cat(paste('location: ', paste(locs, collapse=","), "\n", sep=''))
+cat(paste('method: ', paste(tasks, collapse=","), "\n", sep=''))
 sink()
     
 cv_folds = 5

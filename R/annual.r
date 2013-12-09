@@ -70,8 +70,11 @@ for (beach in locs) {
 
             model <- model[['Threshold']](model, specificity)
             t = model[['threshold']]
-print("threshold:")
-print(t)
+			
+			sink(paste(output, paste(prefix, beach, method, "annual", "out", sep="."), sep=''))            
+			cat(paste("# threshold = ", t, "\n", sep=''))
+			sink()
+
             predictions = model[['Predict']](self=model, data=valdata)
             validation_actual = valdata[,target]        
        
@@ -113,8 +116,12 @@ print(t)
 
     rocframe = cbind(rocframe, tpos, tneg, fpos, fneg)
     rocframe = rocframe[order(rocframe$threshold),]
-print(rocframe)
-print(predperf)
+
+	sink(paste(output, paste(prefix, beach, method, "annual", "out", sep="."), sep=''))            
+	cat(paste("# rocframe = \n", rocframe, "\n", sep=''))
+	cat(paste("# predperf = \n", predperf, "\n", sep=''))
+	sink()
+	
     #Open a file to which we will append the output.
     sink(paste(output, paste(prefix, beach, method, "annual", "out", sep='.'), sep=""), append=TRUE)        
     cat(paste("# Area under ROC curve = ", ROC(rocframe), "\n", sep=''))

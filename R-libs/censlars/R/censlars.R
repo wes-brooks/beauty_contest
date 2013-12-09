@@ -47,7 +47,11 @@ function(formula, data, left=-Inf, right=Inf, max.iter=10, tol=1e-25, adapt=TRUE
         lambda.former = tail(result[['lambda']], 1)
         iter = iter+1
     }
-    
+
+	result[['fitted']] = result[['lars']][['model']][['fitted']]
+	result[['residual']] = result[['lars']][['model']][['residual']]
+	result[['actual']] = result[['fitted']] + result[['residual']]
+	
     result[['iter']] = iter-1
     return(result)
 }

@@ -14,7 +14,7 @@ jobdirs:
 	cp -rf ../data/MaxRowsTurb beautydata/shared/data
 	cp -rf ../R/* beautydata/shared/
 	cp -rf ../seeds.txt beautydata/shared
-	./make-job-dirs.sh 1 test
+	./make-job-dirs.sh 112 dryrun
 	./mkdag \
 	  --cmdtorun=beauty.r \
 	  --data=beautydata \
