@@ -30,7 +30,7 @@ Validate = function(data, target, method, folds='', ...) {
 
     #Creates a model and tests its performance with cross-validation.
     #Get the modeling module
-    module = methods[[tolower(method)]]
+    module = params[[tolower(method)]][['env']]
     
     #convert the data from a .NET DataTable or DataView into an array
     regulatory = args[['regulatory_threshold']]
