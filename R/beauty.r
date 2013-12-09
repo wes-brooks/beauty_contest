@@ -75,7 +75,7 @@ meth = mm[2] + 1
 site = d[2] + 1
 
 locs = sites[site]
-tasks = names(methods)[meth]
+tasks = names(params)[meth]
 seed = (1000 * seeds[s*mm[1]+site,]) %/% 1
     
 sink("result.txt", append=TRUE)
