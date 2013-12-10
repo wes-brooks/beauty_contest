@@ -117,10 +117,7 @@ for (beach in locs) {
     rocframe = cbind(rocframe, tpos, tneg, fpos, fneg)
     rocframe = rocframe[order(rocframe$threshold),]
 
-	sink(paste(output, paste(prefix, beach, method, "annual", "out", sep="."), sep=''))            
-	cat(paste("# rocframe = \n", rocframe, "\n", sep=''))
-	cat(paste("# predperf = \n", predperf, "\n", sep=''))
-	sink()
+
 	
     #Open a file to which we will append the output.
     sink(paste(output, paste(prefix, beach, method, "annual", "out", sep='.'), sep=""), append=TRUE)        
@@ -129,6 +126,11 @@ for (beach in locs) {
     cat(paste("# aggregate.tneg = ", sum(predperf[['tneg']]), "\n", sep=""))
     cat(paste("# aggregate.fpos = ", sum(predperf[['fpos']]), "\n", sep=""))
     cat(paste("# aggregate.fneg = ", sum(predperf[['fneg']]), "\n", sep=""))
+
+	cat("# rocframe: \n")
+	print(rocframe)
+	cat("# predperf: \n")
+	print(predperf)
 
     #Clean up and move on.
     warnings()

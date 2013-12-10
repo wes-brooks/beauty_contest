@@ -41,15 +41,27 @@ Validate = function(data, target, method, folds='', ...) {
     #Make a model for each fold and validate it.
     results = as.data.frame(matrix(NA, nrow=0, ncol=3))
     for (f in ff) {
+sink("result.txt", append=TRUE)
         print(paste("inner fold: ", f, sep=''))
+sink()
                 
         model_data = data[folds!=f,]
         validation_data = data[folds==f,]
-
+sink("result.txt", append=TRUE)
+cat("getting modeling library\n")
+sink()
         model <- module$Model
+sink("result.txt", append=TRUE)
+cat("got modeling library, making model\n")
+sink()
         model <- model[['Create']](self=model, data=model_data, target=target, args)
-
+sink("result.txt", append=TRUE)
+cat("made model, getting predictions\n")
+sink()
         predictions = model[['Predict']](self=model, data=validation_data)
+sink("result.txt", append=TRUE)
+cat("got predictions\n")
+sink()
         validation_actual = validation_data[,target]
         
         fitted = model[['fitted']]
@@ -68,8 +80,13 @@ Validate = function(data, target, method, folds='', ...) {
         
         result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(f, length(threshold)))
         results = rbind(results, result)
+sink("result.txt", append=TRUE)
+cat("this iteration is complete\n")
+sink()
     }
-        
+sink("result.txt", append=TRUE)
+cat("all iterations complete\n")
+sink()        
     tpos = tneg = fpos = fneg = rep(NA, nrow(results))
     
     for (k in 1:nrow(results)) {
@@ -82,13 +99,18 @@ Validate = function(data, target, method, folds='', ...) {
     
     results = cbind(results, tpos, tneg, fpos, fneg)
     results = results[order(results$threshold),]
-        
+
     model = module$Model
     args[['data']] = data
     args[['target']] = target
     args[['self']] = model
+sink("result.txt", append=TRUE)
+cat("creating final model\n")
+sink()
     model <- do.call(model[['Create']], args)
-
+sink("result.txt", append=TRUE)
+cat("returning\n")
+sink()
     return(list(results, model))
 }
 
