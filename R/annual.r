@@ -24,8 +24,11 @@ for (beach in locs) {
 	predperf = matrix(NA, nrow=0, ncol=4)
 	
 	for (f in 1:nfolds) {
+print(dim(data))
         traindata = data[folds!=f,]
+print(dim(traindata))
         valdata = data[folds==f,]
+print(dim(valdata))
         
         innerfolds = Partition(traindata, folds=cv_folds)
     

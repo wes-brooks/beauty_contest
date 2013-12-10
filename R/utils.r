@@ -6,11 +6,13 @@ Partition = function(data, folds) {
             #Leave-one-out:
             fold = 1:nrow(data)
         } else if (tolower(substring(folds, 1, 1)) =='y' && !is.null(data)) {
+print("years!")
             #divide by years
             dates = as.character(as.POSIXlt(data[,1], format="%m/%d/%y %H:%M"))
             dates = strsplit(dates, split="-")
             years = sapply(dates, function(d) {d[1]})
             fold = unclass(as.factor(years))
+print(fold)
         }
     } else { #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
         #Initialization
@@ -19,8 +21,8 @@ Partition = function(data, folds) {
                 
         #Now permute the fold assignments
         fold = sample(qq)
-        }
-        
+    }
+print(fold)
     return(fold)
 }
 
