@@ -1,2 +1,2 @@
-cd beautyoutput
+cd beautyoutput2
 condor_submit_dag mydag.dag
