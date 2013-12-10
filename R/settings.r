@@ -9,7 +9,7 @@ beaches[['thompson']] = list('file'='data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv',
 
 
 params = list()
-params[["PLS"]] = list('env'=PLS)
+params[["pls"]] = list('env'=PLS)
 
 params[["gbm"]] = list('env'=GBM, 'depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=10000, 'shrinkage'=0.0005, 'gbm.folds'=0)
 params[["gbmcv"]] = list('env'=GBM, 'depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=10000, 'shrinkage'=0.0005, 'gbm.folds'=5)
