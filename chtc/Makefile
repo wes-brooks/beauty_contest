@@ -5,20 +5,20 @@ submit: #beautyoutput/mydag.dag
 	./submit.sh
 
 jobdirs:
-	find 'beautydata2' -wholename 'beautydata2/shared' -prune -o -not -name 'beautydata2' | xargs rm -rf 
-	rm -rf beautyoutput2
-	rm -rf beautydata2
-	mkdir beautydata2
-	mkdir beautydata2/shared
-	cp -rf ../R-libs beautydata2/shared/R-libs
-	cp -rf ../data beautydata2/shared/data
-	cp -rf ../R/* beautydata2/shared/
-	cp -rf ../seeds.txt beautydata2/shared
-	./make-job-dirs.sh 98 dryrun
+	find 'beautydata' -wholename 'beautydata/shared' -prune -o -not -name 'beautydata' | xargs rm -rf 
+	rm -rf beautyoutput
+	rm -rf beautydata
+	mkdir beautydata
+	mkdir beautydata/shared
+	cp -rf ../R-libs beautydata/shared/R-libs
+	cp -rf ../data beautydata/shared/data
+	cp -rf ../R/* beautydata/shared/
+	cp -rf ../seeds.txt beautydata/shared
+	./make-job-dirs.sh 98 beautyrun
 	./mkdag \
 	  --cmdtorun=beauty.r \
-	  --data=beautydata2 \
-	  --dagdir=beautyoutput2 \
+	  --data=beautydata \
+	  --dagdir=beautyoutput \
 	  --pattern=result.txt \
 	  --type=R \
 	  --version=sl5-R-2.15.3
