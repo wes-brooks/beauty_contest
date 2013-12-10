@@ -31,7 +31,7 @@ PLS$Model = list(
 		} else {
 			validation = 'none'
 		}
-		
+print("going to modeling")		
 		#Generate a pls model in R.
         self[['formula']] = as.formula(obj=paste(self[['target']], '~.', sep=''))
         pls_params = list(
@@ -41,7 +41,7 @@ PLS$Model = list(
 			x = TRUE
         )
         self[['model']] = do.call(plsr, pls_params)
-
+print("made model")
         #Get the number of columns from the validation step
         #(Might be fewer than the number of predictor variables if n<p)
         if (ncol(data) > 2) {
@@ -49,7 +49,7 @@ PLS$Model = list(
 		} else {
 			self[['ncomp_max']] = 1
 		}
-		
+print("now to get actual")		
 		#Use cross-validation to find the best number of components in the model.
         self <- self[['GetActual']](self)	
         if (ncol(data) > 2) {
@@ -58,12 +58,12 @@ PLS$Model = list(
 			self[['ncomp']] = 1
 		}
         self <- self[['GetFitted']](self)
-        
+print("going to thresholding")        
         #Establish a decision threshold
         self <- self[['Threshold']](self, self[['specificity']])
         self[['vars']] = colnames(self[['data']])
         self[['vars']] = self[['vars']][self[['vars']] != self[['target']]]
-
+print("returning from model create")
         return(self)
 	},
 
