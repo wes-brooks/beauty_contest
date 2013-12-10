@@ -9,10 +9,10 @@ jobdirs:
 	rm -rf beautyoutput
 	rm -rf beautydata
 	mkdir beautydata
+	mkdir beautydata/shared
 	rm -f *.tar.gz
 	cp -rf ../R-src/* ./
 	chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=bitops_1.0-6.tar.gz,RCurl_1.95-4.1.tar.gz,stringr_0.6.2.tar.gz,digest_0.6.4.tar.gz,memoise_0.1.tar.gz,whisker_0.3-2.tar.gz,evaluate_0.5.1.tar.gz,httr_0.2.tar.gz,devtools_1.4.1.tar.gz
-	mkdir beautydata/shared
 	cp sl5-RLIBS.tar.gz beautydata/shared/sl5-RLIBS.tar.gz
 	cp sl6-RLIBS.tar.gz beautydata/shared/sl6-RLIBS.tar.gz
 	cp -rf ../R-libs beautydata/shared/R-libs
