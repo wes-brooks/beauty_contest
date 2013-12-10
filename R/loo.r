@@ -1,11 +1,10 @@
 for (beach in locs) {
-print(beach)
     first = Map(function(x) {return(TRUE)}, tasks)
 
     #Read the beach's data.
     datafile = beaches[[beach]][["file"]]
-print(paste("datafile: ", datafile, sep=""))
     data = read.csv(datafile)
+	
     if ('remove' %in% names(beaches[[beach]])) {
         data = data[,!(names(data) %in% beaches[[beach]][['remove']])]
 	}
