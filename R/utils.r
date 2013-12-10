@@ -8,7 +8,8 @@ Partition = function(data, folds) {
         } else if (tolower(substring(folds, 1, 1)) =='y' && !is.null(data)) {
 print("years!")
             #divide by years
-            years = strptime(data[,1], format="%Y-%m-%d %H:%M:%s")$year
+            #years = strptime(data[,1], format="%Y-%m-%d %H:%M:%s")$year
+			years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
             fold = as.vector(unclass(as.factor(years)))
 print(fold)
         }
