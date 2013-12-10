@@ -11,7 +11,7 @@ jobdirs:
 	mkdir beautydata2
 	mkdir beautydata2/shared
 	cp -rf ../R-libs beautydata2/shared/R-libs
-	cp -rf ../data/MaxRowsTurb beautydata2/shared/data
+	cp -rf ../data beautydata2/shared/data
 	cp -rf ../R/* beautydata2/shared/
 	cp -rf ../seeds.txt beautydata2/shared
 	./make-job-dirs.sh 98 dryrun
