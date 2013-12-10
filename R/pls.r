@@ -7,25 +7,26 @@ PLS$Model = list(
     #represents a pls model generated in R'''
 	
     Create = function(self, ...) {
+print("entered Create")
         #Create a new pls model object
 		args <- list(...)
-
+print("got args")
         #Check to see if a threshold has been specified in the function's arguments
         if ('threshold' %in% names(args)) {
 			self[['regulatory_threshold']] = args[['threshold']]
         } else { self[['regulatory_threshold']] = 2.3711}   # if there is no 'threshold' key, then use the default (2.3711)
         self[['threshold']] = 0   #decision threshold
-
+print("A")
         #specificity: If provided, used to set the decision threshold
         if ('specificity' %in% names(args)) {
 			self[['specificity']] = args[['specificity']]
         } else { self[['specificity']] = 0.9 }  # if there is no 'specificity' key, then use the default 0.9  
-
+print("B")
         #Store some object data
         self[['data']] = data = args[['data']]
         self[['target']] = target = args[['target']]
         self[['actual']] = data[,target]
-        
+print("C")        
 		if (ncol(data) > 2) {
 			validation = 'LOO'
 		} else {
