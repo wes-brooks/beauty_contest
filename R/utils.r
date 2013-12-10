@@ -8,10 +8,10 @@ Partition = function(data, folds) {
         } else if (tolower(substring(folds, 1, 1)) =='y' && !is.null(data)) {
 print("years!")
             #divide by years
-            dates = as.character(as.POSIXlt(data[,1], format="%m/%d/%y %H:%M"))
+            dates = as.character(data[,1])
             dates = strsplit(dates, split="-")
             years = sapply(dates, function(d) {d[1]})
-            fold = unclass(as.factor(years))
+            fold = as.vector(unclass(as.factor(years)))
 print(fold)
         }
     } else { #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
@@ -58,6 +58,7 @@ cat("got modeling library, making model\n")
 cat(paste("target: ", target, "\n", sep=''))
 cat("args:\n")
 print(args)
+cat(paste("variables: ", paste(names(model_data), collapse=","), "\n", sep=""))
 cat(paste("data dimensions: ", paste(dim(model_data), collapse=","), "\n", sep=""))
 sink()
         model <- model[['Create']](self=model, data=model_data, target=target, args)
