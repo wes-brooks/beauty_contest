@@ -2,6 +2,6 @@
 
 for ((i=1; i<=$1; i++))
 do
-  mkdir -p beautydata/$i
-  echo "$2\n$i" > beautydata/$i/jobid.txt
+  mkdir -p beautydata2/$i
+  echo "$2\n$i" > beautydata2/$i/jobid.txt
 done
