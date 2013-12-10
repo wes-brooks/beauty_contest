@@ -53,6 +53,7 @@ print(dim(valdata))
                     regulatory_threshold=beaches[[beach]][['threshold']]
                 )
             )
+print(valpar)
             result = do.call(Validate, valpar)
             model = result[[2]]
             results = result[[1]]
