@@ -3,7 +3,7 @@ beaches[['hika']] = list('file'='data/MaxRowsTurb/HK2013.2.MaxRowsTurb.csv', 'ta
 beaches[['kreher']] = list('file'='data/MaxRowsTurb/KR2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['maslowski']] = list('file'='data/MaxRowsTurb/MS2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['neshotah']] = list('file'='data/MaxRowsTurb/NS2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
-beaches[['point']] = list('file'='data/MaxRowsTurb/PointAll.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
+beaches[['point']] = list('file'='data/MaxRowsTurb/PointAll.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['redarrow']] = list('file'='data/MaxRowsTurb/RA2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue ', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['thompson']] = list('file'='data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 
