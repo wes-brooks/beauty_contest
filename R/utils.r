@@ -9,12 +9,6 @@ Partition = function(data, folds) {
             #divide by years
 			#years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
 			years = strptime(data[,1], format="%Y-%m-%d %H:%M:%s")$year
-sink("result.txt")
-print("data[,1]:")
-print(data[,1])
-print("years:")
-print(years)
-sink()
             fold = as.vector(unclass(as.factor(years)))
         }
     } else { #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
