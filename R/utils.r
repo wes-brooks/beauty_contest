@@ -7,7 +7,8 @@ Partition = function(data, folds) {
             fold = 1:nrow(data)
         } else if (tolower(substring(folds, 1, 1)) =='y' && !is.null(data)) {
             #divide by years
-			years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
+			#years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
+			years = strptime(data[,1], format="%Y-%m-%d %H:%M:%s")$year
 sink("result.txt")
 print("data[,1]:")
 print(data[,1])
