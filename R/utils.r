@@ -8,6 +8,12 @@ Partition = function(data, folds) {
         } else if (tolower(substring(folds, 1, 1)) =='y' && !is.null(data)) {
             #divide by years
 			years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
+sink("result.txt")
+print("data[,1]:")
+print(data[,1])
+print("years:")
+print(years)
+sink()
             fold = as.vector(unclass(as.factor(years)))
         }
     } else { #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV

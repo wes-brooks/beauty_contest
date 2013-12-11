@@ -93,7 +93,6 @@ cat(paste('location: ', paste(locs, collapse=","), "\n", sep=''))
 cat(paste('method: ', paste(tasks, collapse=","), "\n", sep=''))
 sink()
     
-cv_folds = 5
 result = "placeholder"
 output = ""
 
