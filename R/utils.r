@@ -7,8 +7,8 @@ Partition = function(data, folds) {
             fold = 1:nrow(data)
         } else if (tolower(substring(folds, 1, 1)) =='y' && !is.null(data)) {
             #divide by years
-			#years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
-			years = strptime(data[,1], format="%Y-%m-%d %H:%M:%s")$year
+			years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
+            if (is.na(years[1])) {years = strptime(data[,1], format="%Y-%m-%d %H:%M:%s")$year}
             fold = as.vector(unclass(as.factor(years)))
         }
     } else { #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
