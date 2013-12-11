@@ -1,4 +1,4 @@
-cv_folds = 5
+cv_folds = 'loo'
 for (beach in locs) {
     first = Map(function(x) {return(TRUE)}, tasks)
     regulatory = beaches[[beach]][['threshold']]
