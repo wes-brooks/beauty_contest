@@ -15,6 +15,7 @@ install.packages("pls")
 install.packages("lars")
 install.packages("glmnet")
 install.packages("spls")
+install.packages(devtools)
 require(devtools)
 
 sink("result.txt", append=TRUE)
