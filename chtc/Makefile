@@ -37,7 +37,7 @@ r-libs:
 	  pls_2.4-3.tar.gz,\
 	  spls_2.2-1.tar.gz,\
 	  gbm_2.1.tar.gz,\
-	  glmnet_1.9-5.tar.gz,
+	  glmnet_1.9-5.tar.gz,\
 	  adalars.tar.gz,\
 	  adalasso.tar.gz,\
 	  galm.tar.gz,\
