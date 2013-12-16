@@ -33,8 +33,7 @@ jobdirs:
 r-libs:
 	rm -f *.tar.gz
 	cp -rf ../R-src/* ./
-	chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=\
-	  adalars.tar.gz,\
+	chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=adalars.tar.gz,\
 	  adalasso.tar.gz,\
 	  galm.tar.gz,\
 	  galogistic.tar.gz,\
