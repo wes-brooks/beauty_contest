@@ -33,7 +33,12 @@ jobdirs:
 r-libs:
 	rm -f *.tar.gz
 	cp -rf ../R-src/* ./
-	chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=adalars.tar.gz,\
+	chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=lars_1.2.tar.gz,\
+	  pls_2.4-3.tar.gz,\
+	  spls_2.2-1.tar.gz,\
+	  gbm_2.1.tar.gz,\
+	  glmnet_1.9-5.tar.gz,
+	  adalars.tar.gz,\
 	  adalasso.tar.gz,\
 	  galm.tar.gz,\
 	  galogistic.tar.gz,\
