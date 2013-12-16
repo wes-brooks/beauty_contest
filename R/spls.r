@@ -1,5 +1,3 @@
-require(devtools)
-install("R-libs/spls.wrap")
 require(spls.wrap)
 
 SPLS = new.env()

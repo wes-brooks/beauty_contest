@@ -1,5 +1,3 @@
-require(devtools)
-install("R-libs/censlars")
 require(censlars)
 
 CENSLARS = new.env()

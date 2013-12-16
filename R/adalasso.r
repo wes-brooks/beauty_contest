@@ -1,5 +1,3 @@
-require(devtools)
-install("R-libs/adalasso")
 require(adalasso)
 
 LAL = new.env()

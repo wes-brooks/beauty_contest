@@ -30,8 +30,14 @@ jobdirs:
 	  --type=R \
 	  --version=sl5-R-2.15.3
 
-#r-libs:
-#	chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=../R-libs/pls_2.4-3.tar.gz,../R-libs/gbm_2.1.tar.gz
-#	cp -r sl5-RLIBS.tar.gz beautydata/shared/
-#	cp -r sl6-RLIBS.tar.gz beautydata/shared/
-	
+r-libs:
+	rm -f *.tar.gz
+	cp -rf ../R-src/* ./
+	chtc_buildRlibs --rversion=sl5-R-2.15.3 --rlibs=\
+	  adalars.tar.gz,\
+	  adalasso.tar.gz,\
+	  galm.tar.gz,\
+	  galogistic.tar.gz,\
+	  glimp.tar.gz,\
+	  spls.wrap.tar.gz
+
