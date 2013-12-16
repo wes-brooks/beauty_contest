@@ -38,5 +38,5 @@ r-libs:
 	  galm.tar.gz,\
 	  galogistic.tar.gz,\
 	  glimp.tar.gz,\
-	  spls.wrap.tar.gz
+	  spls-wrap.tar.gz
 
