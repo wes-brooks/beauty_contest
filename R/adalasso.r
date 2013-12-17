@@ -1,4 +1,5 @@
-require(adalasso)
+require(glmnet)
+require(adalasso, lib.loc="R-libs")
 
 LAL = new.env()
 
