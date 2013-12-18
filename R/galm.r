@@ -1,4 +1,4 @@
-require(galm, lib.loc="R-libs")
+require(galm)
 
 GALM = new.env()
 

@@ -16,6 +16,12 @@ install.packages("lars")
 install.packages("glmnet")
 install.packages("spls")
 
+install.packages("R-libs/adalasso", repos=NULL, type='source')
+install.packages("R-libs/adalars", repos=NULL, type='source')
+install.packages("R-libs/galm", repos=NULL, type='source')
+install.packages("R-libs/galogistic", repos=NULL, type='source')
+install.packages("R-libs/spls.wrap", repos=NULL, type='source')
+
 sink("result.txt", append=TRUE)
 cat(paste('installations complete', "\n", sep=''))
 sink()

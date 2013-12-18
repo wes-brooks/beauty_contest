@@ -1,4 +1,4 @@
-require(galogistic, lib.loc="R-libs")
+require(galogistic)
 
 GALogistic = new.env()
 

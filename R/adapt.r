@@ -1,5 +1,5 @@
 require(lars)
-require(adalars, lib.loc="R-libs")
+require(adalars)
 
 AL = new.env()
 

@@ -1,5 +1,5 @@
 require(spls)
-require(spls.wrap, lib.loc="R-libs")
+require(spls.wrap)
 
 SPLS = new.env()
 
