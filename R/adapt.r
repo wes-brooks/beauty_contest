@@ -70,7 +70,7 @@ AL$Model = list(
         #use R's coef function to extract the model coefficients
         if (model_part == 'coef') {
 			step = self[['model']][['lars']][['lambda.index']][1]
-			part = drop(coef(object=self[['model']][['lars']][['model']], mode='step', s=step))
+			part = as.vector((coef(object=self[['model']][['lars']][['model']], mode='step', s=step))
         
 		#use R's MSEP function to estimate the variance.
         } else if (model_part == 'MSEP') {
