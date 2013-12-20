@@ -201,7 +201,7 @@ LAL$Model = list(
 
     Predict = function(self, data) {
         params = list('obj'=self[['model']], 'newx'=data)
-        prediction = drop(do.call("predict.adalasso", params))
+        prediction = do.call("predict.adalasso", params)
 
         return(prediction)
 	},

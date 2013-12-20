@@ -33,11 +33,9 @@ Validate = function(data, target, method, folds='', ...) {
     #convert the data from a .NET DataTable or DataView into an array
     regulatory = args[['regulatory_threshold']]
     
-    #Randomly assign the data to cross-validation folds unless that has already been done.
-        ff = sort(unique(folds))
-    
     #Make a model for each fold and validate it.
     results = as.data.frame(matrix(NA, nrow=0, ncol=3))
+    ff = sort(unique(folds))
     for (f in ff) {                
         model_data = data[folds!=f,]
         validation_data = data[folds==f,]

@@ -1,6 +1,5 @@
-predict.adalasso <-
-function(obj, newx) {
-    pred.data = as.matrix(newx)    
+predict.adalasso <- function(obj, newx) {
+    pred.data = newx
     predictors = obj[['predictors']]
     colnames(pred.data) = colnames(newx)
     pred.data = pred.data[,predictors]
@@ -14,10 +13,10 @@ function(obj, newx) {
         }
         
         for (predictor in predictors) {
-            pred.data[,predictor] = (pred.data[,predictor] - obj[['lasso']][['meanx']][[predictor]]) * obj[['lasso']][['coef.scale']][[predictor]]
+            pred.data[[predictor]] = (pred.data[[predictor]] - obj[['lasso']][['meanx']][[predictor]]) * obj[['lasso']][['coef.scale']][[predictor]]
         }
         
-        predictions = predict(obj[['lasso']][['model']], newx=pred.data, type='response', s=obj[['lambda']])
+        predictions = predict(obj[['lasso']][['model']], newx=as.matrix(pred.data), type='response', s=obj[['lambda']])
     }
     
     return(predictions)
