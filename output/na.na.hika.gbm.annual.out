@@ -1,8 +1,0 @@
-# Seed = 0
-# Site = hika
-# Method = gbm
-# Area under ROC curve = 0.611238095238095
-# aggregate.tpos = 24
-# aggregate.tneg = 87
-# aggregate.fpos = 38
-# aggregate.fneg = 18
