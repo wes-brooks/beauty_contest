@@ -89,16 +89,41 @@ summarize = function(j, annual=FALSE, loo=!annual) {
 	summary
 }
 
-
-for (j in 1:5) {
-	loo[[j]] = summarize(j, annual=FALSE)
-	annual[[j]] = summarize(j, annual=TRUE)
+settings = matrix(NA, nrow=0, ncol=3)
+colnames(settings) = c('setting', 'method', 'site')
+for (j in 1:98) {
+	loo[[j]] = tryCatch(summarize(j, annual=FALSE), error=function(x) {return(NULL)})
+	annual[[j]] = tryCatch(summarize(j-1, annual=TRUE), error=function(x) {return(NULL)})
 	
 	#Add some elements that were missing from the annual report:
 	if (length(loo)==j & length(annual)==j) {
     	annual[[j]][['method']] = loo[[j]][['method']]
 	    annual[[j]][['site']] = loo[[j]][['site']]
+	    
+	    settings = rbind(settings, c(j, loo[[j]][['method']], loo[[j]][['site']]))
 	}
 }
 
+#Extract the site and method names from the results
+sites = unique(unlist(sapply(loo, function(x) return(x[['site']]))))
+methods = unique(unlist(sapply(loo, function(x) return(x[['method']]))))
+
+#Build a site/method grid:
+annual_grid = matrix(NA, nrow=length(sites), ncol=length(methods))
+loo_grid = matrix(NA, nrow=length(sites), ncol=length(methods))
+rownames(annual_grid) = sites
+colnames(annual_grid) = methods
+rownames(loo_grid) = sites
+colnames(loo_grid) = methods
+
+#Populate the site/method grid:
+for (k in 1:nrow(settings)) {
+    site = settings[k, 'site']
+    method = settings[k, 'method']
+    setting = as.numeric(settings[k, 'setting'])
+    
+    annual_grid[site, method] = annual[[setting]][['roc']]
+    loo_grid[site, method] = loo[[setting]][['roc']]
+}
+    
 
