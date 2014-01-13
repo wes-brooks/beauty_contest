@@ -34,7 +34,7 @@ valpar = c(params[[method]],
 		data=data,
 		target=settings[['target']],
 		method=method,
-		fold=fold
+		fold=process
 		folds=folds,
 		regulatory_threshold=settings[['threshold']]
 	)

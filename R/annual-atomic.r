@@ -25,7 +25,7 @@ for (t in settings[['transforms']]) {
 rocframe = matrix(NA, nrow=0, ncol=4)
 predperf = matrix(NA, nrow=0, ncol=4)
 
-f = fold
+f = process
 traindata = data[folds!=f,]
 valdata = data[folds==f,]
 
