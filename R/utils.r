@@ -86,6 +86,68 @@ Validate = function(data, target, method, folds='', ...) {
 }
 
 
+ValidateAtomic = function(data, target, method, fold, folds='', ...) {
+    args = list(...)
+
+    #Creates a model and tests its performance with cross-validation.
+    #Get the modeling module
+    module = params[[tolower(method)]][['env']]
+    
+    #convert the data from a .NET DataTable or DataView into an array
+    regulatory = args[['regulatory_threshold']]
+    
+    #Make a model for each fold and validate it.
+    #results = as.data.frame(matrix(NA, nrow=0, ncol=3))
+
+	model_data = data[folds!=fold,]
+	validation_data = data[folds==fold,]
+
+	model <- module$Model
+	model <- model[['Create']](self=model, data=model_data, target=target, args)
+
+	predictions = model[['Predict']](self=model, data=validation_data)
+	validation_actual = validation_data[,target]
+	
+	fitted = model[['fitted']]
+	actual = model[['actual']]
+	
+	#Sensitivity and specificity are over the training data:
+	nonexceedances = fitted[actual <= regulatory]
+	exceedances = fitted[actual > regulatory]
+			
+	if (length(nonexceedances) == 0) {                
+		threshold = rep(1, length(predictions))
+	} else {                
+		cc = ecdf(nonexceedances)
+		threshold = cc(predictions)
+	}
+	
+	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(f, length(threshold)))
+	#results = rbind(results, result)
+	#tpos = tneg = fpos = fneg = rep(NA, nrow(results))
+    
+    #for (k in 1:nrow(results)) {
+    #    t = results$threshold[k]
+    #    tpos[k] = length(which(results$threshold > t & results$actual > regulatory))
+    #    tneg[k] = length(which(results$threshold <= t & results$actual <= regulatory))
+    #    fpos[k] = length(which(results$threshold > t & results$actual <= regulatory))
+    #    fneg[k] = length(which(results$threshold <= t & results$actual > regulatory))
+    #}
+    
+    #results = cbind(results, tpos, tneg, fpos, fneg)
+    #results = results[order(results$threshold),]
+
+    model = module$Model
+    args[['data']] = data
+    args[['target']] = target
+    args[['self']] = model
+    model <- do.call(model[['Create']], args)
+
+    #return(list(results, model))
+	return(list(result, model))
+}
+
+
 ROC = function(results) {
 	r = results
 	
