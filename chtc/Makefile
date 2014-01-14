@@ -51,7 +51,7 @@ atomic:
 	  --cmdtorun=beauty-atomic.r \
 	  --data=beautydata-$(SITE)-$(METHOD) \
 	  --dagdir=beautyoutput-$(SITE)-$(METHOD) \
-	  --pattern=result.txt \
+	  --pattern=result \
 	  --type=R \
 	  --version=sl5-R-2.15.3
 	./submit-atomic.sh $(SITE) $(METHOD)

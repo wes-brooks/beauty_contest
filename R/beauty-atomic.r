@@ -83,3 +83,5 @@ if (type=='loo') {
 if (type=='annual') {
 	source('annual-atomic.r')
 }
+
+file.rename(from="result.txt", to=paste("result-", type, "-", process, ".txt", sep=""))

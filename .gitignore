@@ -8,3 +8,5 @@ output/691*
 *.resources
 */TempPE
 *.Rhistory
+
+sh/*
