@@ -32,16 +32,14 @@ ifeq ($(SITE), thompson)
 DATA := ../data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv
 endif
 
-
 njobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+
 
 submit-atomic:
 	./submit-atomic.sh $(SITE) $(METHOD)
 
 
 jobdirs-atomic:
-	@echo $(value DATA)
-	@echo '$(value njobs)'
 	find 'beautydata-$(SITE)-$(METHOD)' -wholename 'beautydata-$(SITE)-$(METHOD)/shared' \
 	  -prune -o -not -name 'beautydata-$(SITE)-$(METHOD)' | xargs rm -rf 
 	rm -rf beautyoutput-$(SITE)-$(METHOD)
