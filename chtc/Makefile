@@ -35,11 +35,7 @@ endif
 njobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 
 
-submit-atomic:
-	./submit-atomic.sh $(SITE) $(METHOD)
-
-
-jobdirs-atomic:
+atomic:
 	find 'beautydata-$(SITE)-$(METHOD)' -wholename 'beautydata-$(SITE)-$(METHOD)/shared' \
 	  -prune -o -not -name 'beautydata-$(SITE)-$(METHOD)' | xargs rm -rf 
 	rm -rf beautyoutput-$(SITE)-$(METHOD)
@@ -58,6 +54,7 @@ jobdirs-atomic:
 	  --pattern=result.txt \
 	  --type=R \
 	  --version=sl5-R-2.15.3
+	./submit-atomic.sh $(SITE) $(METHOD)
 
 
 submit:
