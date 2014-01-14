@@ -32,8 +32,12 @@ ifeq ($(SITE), thompson)
 DATA := ../data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv
 endif
 
-njobs := $((`wc -l < $(DATA)` - 1))
 
+@echo $(value DATA)
+
+njobs := ((`wc -l < $(value DATA)` - 1))
+
+@echo $(value njobs)
 
 submit-atomic:
 	./submit-atomic.sh $(SITE) $(METHOD)
