@@ -6,24 +6,30 @@ METHOD := NULL
 
 ifeq ($(SITE), hika)
 DATA := ../data/MaxRowsTurb/HK2013.2.MaxRowsTurb.csv
-else ifeq ($(SITE), kreher)
+endif
+
+ifeq ($(SITE), kreher)
 DATA := ../data/MaxRowsTurb/KR2013.2.MaxRowsTurb.csv
-else ifeq ($(SITE), maslowski)
+endif
+
+ifeq ($(SITE), maslowski)
 DATA := ../data/MaxRowsTurb/MS2013.2.MaxRowsTurb.csv
-else ifeq ($(SITE), neshotah)
+endif
+
+ifeq ($(SITE), neshotah)
 DATA := ../data/MaxRowsTurb/NS2013.2.MaxRowsTurb.csv
-else ifeq ($(SITE), point)
+endif
+
+ifeq ($(SITE), point)
 DATA := ../data/MaxRowsTurb/PointAll.csv
-else ifeq ($(SITE), redarrow)
+endif
+
+ifeq ($(SITE), redarrow)
 DATA := ../data/MaxRowsTurb/RA2013.2.MaxRowsTurb.csv
-else ifeq ($(SITE), thompson)
+endif
+
+ifeq ($(SITE), thompson)
 DATA := ../data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv
-endif
-endif
-endif
-endif
-endif
-endif
 endif
 
 njobs := $((`wc -l < $(DATA)` - 1))
