@@ -122,7 +122,7 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 		threshold = cc(predictions)
 	}
 	
-	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(f, length(threshold)))
+	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(fold, length(threshold)))
 	#results = rbind(results, result)
 	#tpos = tneg = fpos = fneg = rep(NA, nrow(results))
     
