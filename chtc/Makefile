@@ -33,18 +33,17 @@ DATA := ../data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv
 endif
 
 
-@echo $(value DATA)
-
-njobs := ((`wc -l < $(value DATA)` - 1))
-
-@echo $(value njobs)
+njobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 
 submit-atomic:
 	./submit-atomic.sh $(SITE) $(METHOD)
 
 
 jobdirs-atomic:
-	find 'beautydata-$(SITE)-$(METHOD)' -wholename 'beautydata-$(SITE)-$(METHOD)/shared' -prune -o -not -name 'beautydata-$(SITE)-$(METHOD)' | xargs rm -rf 
+	@echo $(value DATA)
+	@echo '$(value njobs)'
+	find 'beautydata-$(SITE)-$(METHOD)' -wholename 'beautydata-$(SITE)-$(METHOD)/shared' \
+	  -prune -o -not -name 'beautydata-$(SITE)-$(METHOD)' | xargs rm -rf 
 	rm -rf beautyoutput-$(SITE)-$(METHOD)
 	rm -rf beautydata-$(SITE)-$(METHOD)
 	mkdir beautydata-$(SITE)-$(METHOD)
@@ -53,7 +52,7 @@ jobdirs-atomic:
 	cp -rf ../data beautydata-$(SITE)-$(METHOD)/shared/data
 	cp -rf ../R/* beautydata-$(SITE)-$(METHOD)/shared/
 	cp -rf ../seeds.txt beautydata-$(SITE)-$(METHOD)/shared
-	./make-job-dirs-atomic.sh $(njobs) beautyrun $(SITE) $(METHOD)
+	./make-job-dirs-atomic.sh $(value njobs) beautyrun $(SITE) $(METHOD)
 	./mkdag \
 	  --cmdtorun=beauty-atomic.r \
 	  --data=beautydata-$(SITE)-$(METHOD) \
