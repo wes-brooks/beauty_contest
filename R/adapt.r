@@ -29,11 +29,7 @@ AL$Model = list(
 
         if ('overshrink' %in% names(args)) {
 			self[['overshrink']] = args[['overshrink']]
-        } else {self[['overshrink']] = FALSE}
-
-		if ('precondition' %in% names(args)) {
-			self[['precondition']] = args[['precondition']]
-        } else {self[['precondition']] = FALSE}  		
+        } else {self[['overshrink']] = FALSE} 		
         
         #Get the data into R
         self[['data']] = data = args[['data']]

@@ -1,4 +1,4 @@
-adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, precondition=FALSE, selectvars=FALSE) {
+adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, selectvars=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalars"
@@ -23,7 +23,7 @@ adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, precondition=FAL
         result[['adapt']] = NULL
     }
 
-    result[['lars']] = adalars_step(formula=formula, data=data, adaptive.object=result[['adapt']], overshrink=overshrink, adapt=adapt, precondition=precondition)
+    result[['lars']] = adalars_step(formula=formula, data=data, adaptive.object=result[['adapt']], overshrink=overshrink, adapt=adapt)
     result[['lambda']] = result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]]
     
     if (selectvars==TRUE) {

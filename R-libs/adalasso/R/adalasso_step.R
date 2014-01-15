@@ -39,11 +39,11 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
                 }
                 result[['coef.scale']][[predictor]] = adaptive.object[['adaweight']][[predictor]] / result[['normx']][[predictor]]
             }
-            xs[,predictor] = xs[,predictor] * result[['coef.scale']][[predictor]]
         } else {
             result[['meanx']][[predictor]] = 0
             result[['coef.scale']][[predictor]] = 1
         }
+		xs[,predictor] = xs[,predictor] * result[['coef.scale']][[predictor]]
     }
     
     if (family=='binomial') {

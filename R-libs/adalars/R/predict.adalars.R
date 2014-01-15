@@ -1,11 +1,11 @@
-predict.adalars <-  function(obj, newx, ...) {
+predict.adalars <-  function(obj, newx) {
     pred.data = newx
     predictors = obj[['predictors']]
     colnames(pred.data) = colnames(newx)
     pred.data = pred.data[,predictors]
     
-    if (obj[['selectvars']] == TRUE) {
-        predictions = predict(obj[['lm']], newx, ...)
+    if (obj[['selectvars']]==TRUE) {
+        predictions = predict(obj[['lm']], newx)
     } else {
         if (obj[['response']] %in% colnames(pred.data)) {
             response.col = which(colnames(pred.data) == obj[['response']])

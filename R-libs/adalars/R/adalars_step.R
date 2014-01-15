@@ -1,4 +1,4 @@
-adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, adapt=FALSE, precondition=FALSE) {
+adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, adapt=FALSE) {
     result = list()
     
     #Pull out the relevant data
@@ -16,21 +16,11 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
     n <- nrow(x)
     p.max = min(m-1, floor(n/2))
     
-    if (precondition) {
-        #From Karl Rohe:
-        s = svd(x)
-        result[['F']] = F = s$u  %*% diag(1/s$d)  %*%  t(s$u)
-        x = F%*%x
-        y = F%*%y
-    } else {
-        #If we're not preconditioning, then F is an nxn identity matrix
-        result[['F']] = diag(n)
-    }
-    
     #Set up the lists to hold the adaptive elements:
     result[['meanx']] = list()
     result[['coef.scale']] = list()
     xs = x
+	
     for (predictor in predictor.names) {        
         if (adapt==TRUE) {
             #First, center this column of the design matrix
