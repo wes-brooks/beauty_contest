@@ -1,6 +1,6 @@
 #Path to the results
 path = "C:\\Users\\wrbrooks\\git\\beauty_contest\\output"
-path = "~/git/beauty_contest/output"
+#path = "~/git/beauty_contest/output"
 setwd(path)
 
 filenames = dir()
