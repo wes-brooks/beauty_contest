@@ -51,7 +51,7 @@ valpar = c(params[[method]],
 		regulatory_threshold=settings[['threshold']]
 	)
 )
-result = do.call(ValidateAtomic, valpar)
+result = do.call(Validate, valpar)
 model = result[[2]]
 results = result[[1]]
 
@@ -94,7 +94,7 @@ if (length(nonexceedances) == 0) {
 }
 
 foldresult = as.data.frame(list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(f, length(threshold))))
-rocframe = rbind(rocframe, foldresult)
+#rocframe = rbind(rocframe, foldresult)
 
 predperf = rbind(predperf, as.data.frame(list(
 	tpos = length(which(predictions > t & validation_actual > regulatory)),
