@@ -13,12 +13,13 @@ adalasso_initial_step <- function(formula, data, family, weights, verbose=FALSE)
     for (predictor in predictor.names) {
         f = as.formula(paste(eval(response.name), "~", eval(predictor), sep=""))
         model = glm(formula=f, data=data, family=family, weights=weights)
+print(summary(model))
         coefs[[predictor]] = coef(model)[[predictor]]
         adaweight[[predictor]] = abs(1/coefs[[predictor]])
     }
     
     result[['coefs']] = coefs
-    result[['adaweight']] = adaweight    
+    result[['adaweight']] = adaweight
     
     return(result)
 }

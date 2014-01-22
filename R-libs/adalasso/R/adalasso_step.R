@@ -48,8 +48,8 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
     
     if (family=='binomial') {
         print("family is binomial")
-        result[['model']] = model = glmnet(x=xs, y=as.matrix(cbind(y, 1-y), nrow(x), 2), family=family, weights=weights, lambda=s)
-        result[['cv']] = cv.model = cv.glmnet(y=as.matrix(cbind(y, 1-y), nrow(x), 2), x=xs, nfolds=n, family=family, weights=weights, lambda=s)
+        result[['model']] = model = glmnet(x=xs, y=as.matrix(cbind(1-y, y), nrow(x), 2), family=family, weights=weights, lambda=s)
+        result[['cv']] = cv.model = cv.glmnet(y=as.matrix(cbind(1-y, y), nrow(x), 2), x=xs, nfolds=n, family=family, weights=weights, lambda=s)
     } else {
         result[['model']] = model = glmnet(x=xs, y=y, family=family, weights=weights, lambda=s)
         result[['cv']] = cv.model = cv.glmnet(y=y, x=xs, nfolds=n, family=family, weights=weights, lambda=s)
@@ -79,8 +79,8 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
 
     result[['coef']] = as.list(coefs[nonzero+1])
     names(result[['coef']]) = coefnames[nonzero+1]
-    result[['intercept']] = intercept = coefs[1]  
-    result[['vars']] = coefnames
+    result[['intercept']] = intercept = coefs[1]
+    result[['vars']] = coefnames[nonzero+1]
     
     return(result)
 }
