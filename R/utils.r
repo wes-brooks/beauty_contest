@@ -109,7 +109,8 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	validation_actual = validation_data[,target]
 	
 	fitted = model[['fitted']]
-	actual = model[['actual']]
+	actual = model_data[[target]]
+	#actual = model[['actual']]
 	
 	#Sensitivity and specificity are over the training data:
 	nonexceedances = fitted[actual <= regulatory]
@@ -123,28 +124,14 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	}
 	
 	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(fold, length(threshold)))
-	#results = rbind(results, result)
-	#tpos = tneg = fpos = fneg = rep(NA, nrow(results))
-    
-    #for (k in 1:nrow(results)) {
-    #    t = results$threshold[k]
-    #    tpos[k] = length(which(results$threshold > t & results$actual > regulatory))
-    #    tneg[k] = length(which(results$threshold <= t & results$actual <= regulatory))
-    #    fpos[k] = length(which(results$threshold > t & results$actual <= regulatory))
-    #    fneg[k] = length(which(results$threshold <= t & results$actual > regulatory))
-    #}
-    
-    #results = cbind(results, tpos, tneg, fpos, fneg)
-    #results = results[order(results$threshold),]
 
-    model = module$Model
+    mm = module$Model
     args[['data']] = data
     args[['target']] = target
-    args[['self']] = model
-    model <- do.call(model[['Create']], args)
+    args[['self']] = mm
+    mm <- do.call(mm[['Create']], args)
 
-    #return(list(results, model))
-	return(list(result, model))
+	return(list(result, mm))
 }
 
 

@@ -31,7 +31,7 @@ galogistic <-function(formula, data, population=200, generations=100, mutateRate
     
     result[['fitted']] = fitted(result[['model']])
     result[['residuals']] = residuals(result[['model']])
-    result[['actual']] = data[,response.col] #result[['fitted']] + result[['residuals']]    
+    result[['actual']] = data[,response.col]
     
     class(result) = "galogistic"
     

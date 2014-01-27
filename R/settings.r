@@ -14,8 +14,8 @@ params[["pls"]] = list('env'=PLS)
 params[["gbm"]] = list('env'=GBM, 'depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=10000, 'shrinkage'=0.0005, 'gbm.folds'=0)
 params[["gbmcv"]] = list('env'=GBM, 'depth'=5, 'weights'='none', 'minobsinnode'=5, 'iterations'=10000, 'shrinkage'=0.0005, 'gbm.folds'=5)
 
-params[['galogistic-unweighted']] = list('env'=GALogistic, 'weights'='none', 'generations'=100, 'mutate'=0.05)
-params[['galogistic-weighted']] = list('env'=GALogistic, 'weights'='continuous', 'generations'=100, 'mutate'=0.05)
+params[['galogistic-unweighted']] = list('env'=GALogistic, 'weights'='none', 'generations'=100, 'mutate'=0.05, ZOR=10)
+params[['galogistic-weighted']] = list('env'=GALogistic, 'weights'='continuous', 'generations'=100, 'mutate'=0.05, ZOR=10)
 
 params[['adalasso-unweighted']] = list('env'=LAL, 'weights'='none', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE)
 params[['adalasso-unweighted-select']] = list('env'=LAL, 'weights'='none', 'adapt'=TRUE, 'overshrink'=TRUE, 'precondition'=FALSE, 'selectvars'=TRUE)
