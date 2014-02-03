@@ -180,8 +180,8 @@ GALogistic$Model = list(
 	},
 
         
-    Predict = function(self, data, ...) {
-        params = c(list(obj=self[['model']], newx=data), list(...))
+    Predict = function(self, data) {
+        params = c(list(obj=self[['model']], newx=data), type='response')
         prediction = drop(do.call('predict.galogistic', params))
     
         return(prediction)

@@ -105,7 +105,7 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	model <- module$Model
 	model <- model[['Create']](self=model, data=model_data, target=target, args)
 
-	predictions = model[['Predict']](self=model, data=validation_data, type='response')
+	predictions = model[['Predict']](self=model, data=validation_data)
 	validation_actual = validation_data[,target]
 	
 	fitted = model[['fitted']]
