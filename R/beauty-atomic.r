@@ -84,4 +84,9 @@ if (type=='annual') {
 	source('annual-atomic.r')
 }
 
+if (type=='final') {
+	source('final-atomic.r')
+}
+
+
 file.rename(from="result.txt", to=paste("result-", type, "-", process, ".txt", sep=""))

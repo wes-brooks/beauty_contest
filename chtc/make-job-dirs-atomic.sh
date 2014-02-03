@@ -14,3 +14,7 @@ do
   mkdir -p beautydata-$3-$4/$k
   echo "annual\n$2\n$3\n$4\n$i" > beautydata-$3-$4/$k/params.txt
 done
+
+((k = $1 + 5))
+mkdir -p beautydata-$3-$4/$k
+echo "final\n$2\n$3\n$4\n$i" > beautydata-$3-$4/$k/params.txt

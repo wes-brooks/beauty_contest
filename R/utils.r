@@ -105,7 +105,7 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	model <- module$Model
 	model <- model[['Create']](self=model, data=model_data, target=target, args)
 
-	predictions = model[['Predict']](self=model, data=validation_data)
+	predictions = model[['Predict']](self=model, data=validation_data, type='response')
 	validation_actual = validation_data[,target]
 	
 	fitted = model[['fitted']]
@@ -115,7 +115,7 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	#Sensitivity and specificity are over the training data:
 	nonexceedances = fitted[actual <= regulatory]
 	exceedances = fitted[actual > regulatory]
-			
+
 	if (length(nonexceedances) == 0) {                
 		threshold = rep(1, length(predictions))
 	} else {                
@@ -125,13 +125,13 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	
 	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(fold, length(threshold)))
 
-    mm = module$Model
-    args[['data']] = data
-    args[['target']] = target
-    args[['self']] = mm
-    mm <- do.call(mm[['Create']], args)
+    #mm = module$Model
+    #args[['data']] = data
+    #args[['target']] = target
+    #args[['self']] = mm
+    #mm <- do.call(mm[['Create']], args)
 
-	return(list(result, mm))
+	return(result)
 }
 
 

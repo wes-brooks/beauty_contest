@@ -20,7 +20,7 @@ folds = Partition(data, cv_folds)
 
 #Run the modeling routine
 if (first) {
-	sink(paste(output, paste(prefix, beach, method, "out", sep="."), sep=''))            
+	sink(paste(output, paste(prefix, beach, method, "final", "out", sep="."), sep=''))            
 	if (!is.null(seed)) {cat(paste("# Seed = ", seed, "\n", sep=''))}
 	cat(paste("# Site = ", beach, "\n", sep=''))
 	cat(paste("# Method = ", method, "\n", sep=''))
@@ -29,21 +29,31 @@ if (first) {
 }
 
 #Run this modeling method against the beach data.
-valpar = c(params[[method]],
+params = c(
 	list(
+		self = model
 		data=data,
 		target=settings[['target']],
-		method=method,
 		fold=process,
 		folds=folds,
 		regulatory_threshold=settings[['threshold']]
-	)
+	),
+	params[[method]]	
 )
-result = do.call(ValidateAtomic, valpar)
 
-#Open a file to which we will append the output.
-sink(paste(output, paste(prefix, beach, method, "out", sep='.'), sep=""), append=TRUE)
-cat("# full results: \n")
+module = params[['env']]
+model <- module$Model
+model <- do.call(model[['Create']], params)
+
+fitted = model[['fitted']]
+actual = data[[target]]
+result = cbind(actual=actual, fitted=fitted)
+
+
+sink(paste(output, paste(prefix, beach, method, "out", sep='.'), sep=""), append=TRUE)  
+cat("# vars:\n")
+print(vars)
+cat("# actual, fitted:\n")
 print(result)
 
 #Clean up and move on.

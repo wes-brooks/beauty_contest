@@ -119,12 +119,7 @@ predperf = rbind(predperf, as.data.frame(list(
 
 
 #Open a file to which we will append the output.
-sink(paste(output, paste(prefix, beach, method, "annual", "out", sep='.'), sep=""), append=TRUE)        
-#cat(paste("# Area under ROC curve = ", ROC(rocframe), "\n", sep=''))
-#cat(paste("# aggregate.tpos = ", sum(predperf[['tpos']]), "\n", sep=""))
-#cat(paste("# aggregate.tneg = ", sum(predperf[['tneg']]), "\n", sep=""))
-#cat(paste("# aggregate.fpos = ", sum(predperf[['fpos']]), "\n", sep=""))
-#cat(paste("# aggregate.fneg = ", sum(predperf[['fneg']]), "\n", sep=""))
+sink(paste(output, paste(prefix, beach, method, "annual", "out", sep='.'), sep=""), append=TRUE)
 
 cat("# rocframe: \n")
 print(foldresult)
