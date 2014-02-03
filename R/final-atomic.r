@@ -31,7 +31,7 @@ if (first) {
 #Run this modeling method against the beach data.
 params = c(
 	list(
-		self = model
+		self = model,
 		data=data,
 		target=settings[['target']],
 		fold=process,
@@ -50,7 +50,7 @@ actual = data[[target]]
 result = cbind(actual=actual, fitted=fitted)
 
 
-sink(paste(output, paste(prefix, beach, method, "out", sep='.'), sep=""), append=TRUE)  
+sink(paste(output, paste(prefix, beach, method, "final", "out", sep='.'), sep=""), append=TRUE)  
 cat("# vars:\n")
 print(vars)
 cat("# actual, fitted:\n")

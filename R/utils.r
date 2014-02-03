@@ -90,14 +90,9 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
     args = list(...)
 
     #Creates a model and tests its performance with cross-validation.
-    #Get the modeling module
     module = params[[tolower(method)]][['env']]
     
-    #convert the data from a .NET DataTable or DataView into an array
     regulatory = args[['regulatory_threshold']]
-    
-    #Make a model for each fold and validate it.
-    #results = as.data.frame(matrix(NA, nrow=0, ncol=3))
 
 	model_data = data[folds!=fold,]
 	validation_data = data[folds==fold,]
@@ -124,13 +119,6 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	}
 	
 	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(fold, length(threshold)))
-
-    #mm = module$Model
-    #args[['data']] = data
-    #args[['target']] = target
-    #args[['self']] = mm
-    #mm <- do.call(mm[['Create']], args)
-
 	return(result)
 }
 
