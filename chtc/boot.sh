@@ -5,7 +5,7 @@ methods=( pls gbm gbmcv galogistic-unweighted galogistic-weighted adalasso-unwei
 
 for site in ${sites[@]}
 do
-  for method in $(methods[@])
+  for method in ${methods[@]}
   do
     make atomic SITE=site METHOD=method
   done
