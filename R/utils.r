@@ -118,7 +118,7 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 		threshold = cc(predictions)
 	}
 	
-	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(fold, length(threshold)))
+	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(fold, length(threshold)), vars=model[['vars']])
 	return(result)
 }
 

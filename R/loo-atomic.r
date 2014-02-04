@@ -43,8 +43,16 @@ result = do.call(ValidateAtomic, valpar)
 
 #Open a file to which we will append the output.
 sink(paste(output, paste(prefix, beach, method, "out", sep='.'), sep=""), append=TRUE)
-cat("# full results: \n")
-print(result)
+cat("# predicted: \n")
+cat(paste(result[['predicted']], "\n", sep=""))
+cat("# actual: \n")
+cat(paste(result[['actual']], "\n", sep=""))
+cat("# threshold: \n")
+cat(paste(result[['threshold']], "\n", sep=""))
+cat("# fold: \n")
+cat(paste(result[['fold']], "\n", sep=""))
+cat("# vars: \n")
+cat(paste(paste(result[['vars']], collapse=", "), "\n", sep=""))
 
 #Clean up and move on.
 warnings()

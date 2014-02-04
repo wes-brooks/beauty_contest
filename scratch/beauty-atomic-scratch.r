@@ -33,7 +33,7 @@ source('C:\\Users\\wrbrooks\\git\\beauty_contest\\R\\utils.r')
 type='loo'
 cluster = NA
 beach = 'kreher'
-method = 'galogistic-unweighted'
+method = 'galm'
 process = 1
 
 result = "placeholder"
