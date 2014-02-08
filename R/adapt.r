@@ -42,7 +42,6 @@ AL$Model = list(
 			'formula' = self[['formula']],
             'data' = self[['data']],
             'adapt' = self[['adapt']],
-			'precondition' = self[['precondition']],
             'overshrink' = self[['overshrink']],
             'selectvars' = self[['selectvars']]
 		)
