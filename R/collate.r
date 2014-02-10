@@ -86,4 +86,20 @@ for (site in sites) {
     site_results[[method]] = list(res=res, vars=vars, roc=ROC(res))
   }
   results[[site]] = site_results
+  
+  
+  sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
+  methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm'
+              , 'spls', 'spls-select')
+  
+  
+area = matrix(NA, length(methods), length(sites))
+rownames(area) = methods
+colnames(area) = sites
+
+for (site in sites) {
+  for (method in methods) {
+    cat(paste(method, site, results[[site]][[method]][['roc']], '\n', sep=" "))
+    area[method, site] = results[[site]][[method]][['roc']]
+  }
 }
