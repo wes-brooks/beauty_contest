@@ -1,8 +1,8 @@
 #! /bin/sh
 
-set i [lindex $argv 0]
-set site [lindex $argv 1]
-set method [lindex $argv 2]
+set i $1
+set site $2
+set method $3
 
 mkdir -p /home/wbrooks2/beauty_contest/output/$site
 mkdir -p /home/wbrooks2/beauty_contest/output/$site/$method
