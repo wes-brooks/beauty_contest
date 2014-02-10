@@ -14,7 +14,7 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
     
     m <- ncol(x)
     n <- nrow(x)
-    p.max = min(m-1, floor(n/2))
+    p.max = min(m-2, floor(n/2))
     
     #Set up the lists to hold the adaptive elements:
     result[['meanx']] = list()
@@ -49,9 +49,9 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
         xs[,predictor] = xs[,predictor] * result[['coef.scale']][[predictor]] 
     }
     
-    result[['model']] = model = lars(x=xs, y=y, type='lar', max.steps=p.max)
-    result[['cv']] = cv = cv.lars(y=y, x=xs, type='lar', index=1:p.max, K=n, plot.it=FALSE, mode='step')
-    
+    result[['model']] = model = lars(x=xs, y=y, type='lar', max.steps=p.max, normalize=FALSE)
+    result[['cv']] = cv = cv.lars(y=y, x=xs, type='lars', index=1:p.max, K=n, plot.it=FALSE, mode='step', normalize=FALSE)
+  
     if (overshrink) {
         err.min = min(cv$cv)
         err.tol = err.min + cv$cv.error[which.min(cv$cv)]
@@ -64,7 +64,8 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
     result[['predictors']] = predictor.names
     result[['fitted']] = predict.lars(model, newx=xs, type='fit', s=lambda.index, mode='step')$fit
     result[['residuals']] = y-result[['fitted']]
-    result[['vars']] = names(which(abs(model$beta[lambda.index,])>0))
+    result[['vars']] = names(which(abs(model$beta[lambda.index,])>0))   
+    
     coefs = predict.lars(model, type='coefficients', s=lambda.index, mode='step')
     result[['coefs']] = coefs$coefficients[which(coefs$coefficients>0)]
     result[['MSEP']] = cv$cv[lambda.index]

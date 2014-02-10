@@ -32,8 +32,8 @@ source('C:\\Users\\wrbrooks\\git\\beauty_contest\\R\\utils.r')
 
 type='loo'
 cluster = NA
-beach = 'kreher'
-method = 'galm'
+beach = 'point'
+method = 'adapt'
 process = 1
 
 result = "placeholder"
@@ -45,20 +45,4 @@ prefix = paste("C:\\Users\\wrbrooks\\scratch\\out", cluster, process, sep=".")
 setwd("C:\\Users\\wrbrooks\\git\\beauty_contest")
 source("C:\\Users\\wrbrooks\\git\\beauty_contest\\R\\loo-atomic.r")
 
-
-
-
-
-v = rnorm(100)
-w = rnorm(100)
-x = rnorm(100)
-y = rnorm(100)
-z = rnorm(100)
-
-eta = 5*x + 2*w
-p = exp(eta) / (1+exp(eta))
-b = rbinom(100, size=1, p=p)
-d = data.frame(v,w,x,y,z,b)
-
-galogistic(b~v+w+x+y+z, data=d, family='binomial', mutateRate=0.05, ZOR=10, generations=10)
 
