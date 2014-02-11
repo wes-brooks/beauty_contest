@@ -1,7 +1,7 @@
 require(stringr)
 
-root = "~/beauty"
-root = "C:\\Users\\wrbrooks\\misc\\results"
+root = "~/output"
+#root = "C:\\Users\\wrbrooks\\misc\\results"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
@@ -88,11 +88,7 @@ for (site in sites) {
   }
   results[[site]] = site_results
 }
-  
-sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
-methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adapt', 'adapt-select', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm'
-              , 'spls', 'spls-select')
-  
+
   
 area = matrix(NA, length(methods), length(sites))
 rownames(area) = methods
