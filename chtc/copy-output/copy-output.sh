@@ -1,8 +1,8 @@
 #! /bin/sh
 
-set i $1
-set site $2
-set method $3
+i=$1
+site=$2
+method=$3
 
 mkdir -p /home/wbrooks2/beauty_contest/output/$site
 mkdir -p /home/wbrooks2/beauty_contest/output/$site/$method
