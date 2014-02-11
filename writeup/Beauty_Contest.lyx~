@@ -187,30 +187,6 @@ Unweighted-select
 Genetic algorithm
 \end_layout
 
-\begin_layout Paragraph*
-gaussian
-\end_layout
-
-\begin_layout Subparagraph
-ga
-\end_layout
-
-\begin_layout Subparagraph
-ga-select
-\end_layout
-
-\begin_layout Paragraph
-logistic
-\end_layout
-
-\begin_layout Subparagraph
-ga-unweighted
-\end_layout
-
-\begin_layout Subparagraph
-ga-weighted
-\end_layout
-
 \begin_layout Standard
 Quick summary with key refs for each and a short discussion of why it was
  chosen
