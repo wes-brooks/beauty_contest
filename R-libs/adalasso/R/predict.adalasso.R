@@ -4,7 +4,7 @@ predict.adalasso <- function(obj, newx) {
     colnames(pred.data) = colnames(newx)
     pred.data = pred.data[,predictors]
     
-    if (obj[['selectvars']]==TRUE) {
+    if (obj[['selectonly']]) {
         predictions = predict(obj[['glm']], newx, type='response')
     } else {
         if (obj[['response']] %in% colnames(pred.data)) {

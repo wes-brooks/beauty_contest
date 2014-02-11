@@ -48,32 +48,32 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
     
     if (family=='binomial') {
         print("family is binomial")
-        result[['model']] = model = glmnet(x=xs, y=as.matrix(cbind(1-y, y), nrow(x), 2), family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
-        result[['cv']] = cv.model = cv.glmnet(y=as.matrix(cbind(1-y, y), nrow(x), 2), x=xs, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
+        result[['model']] = glmnet(x=xs, y=as.matrix(cbind(1-y, y), nrow(x), 2), family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
+        result[['cv']] = cv.glmnet(y=as.matrix(cbind(1-y, y), nrow(x), 2), x=xs, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
     } else {
-        result[['model']] = model = glmnet(x=xs, y=y, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
-        result[['cv']] = cv.model = cv.glmnet(y=y, x=xs, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
+        result[['model']] = glmnet(x=xs, y=y, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
+        result[['cv']] = cv.glmnet(y=y, x=xs, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
     }
     
     if (overshrink==TRUE) {
-        result[['lambda']] = lambda = cv.model$lambda.1se
+        result[['lambda']] = result[['cv']][['lambda.1se']]
     } else {
-        result[['lambda']] = lambda = cv.model$lambda.min
+        result[['lambda']] = result[['cv']][['lambda.min']]
     }
     
-    nonzero = predict(model, type='nonzero', s=lambda)
+    nonzero = predict(result[['model']], type='nonzero', s=result[['lambda']])
     if (verbose) {print(nonzero)}
     
     #Handle the case that the lasso selects no variables
     if (is.null(nonzero[[1]])) {
         indx = min(which(result[['cv']][['nzero']]>0), na.rm=TRUE)
-        result[['lambda']] = lambda = result[['cv']]$lambda[indx]
-        nonzero = predict(model, type='nonzero', s=lambda)
+        result[['lambda']] = result[['cv']][['lambda']][indx]
+        nonzero = predict(result[['model']], type='nonzero', s=result[['lambda']])
     }
-    if (verbose) {print(paste("lambda: ", lambda, ", nonzero: ", paste(nonzero, collapse=","), sep=''))}
+    if (verbose) {print(paste("lambda: ", result[['lambda']], ", nonzero: ", paste(nonzero, collapse=","), sep=''))}
 	nonzero = as.vector(t(nonzero))
     
-    coefs = coef(model, s=lambda)
+    coefs = coef(result[['model']], s=result[['lambda']])
 	coefnames = rownames(coefs)
 	coefs = as.vector(coefs)
 

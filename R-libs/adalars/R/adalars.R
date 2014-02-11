@@ -1,9 +1,9 @@
-adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, selectvars=FALSE) {
+adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, selectonly=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalars"
     result[['formula']] = as.formula(formula, env=data)
-    result[['selectvars']] = selectvars
+    result[['selectonly']] = selectonly
     
     #Drop any rows with NA values
     na.rows = (which(is.na(data))-1) %% dim(data)[1] + 1
@@ -26,7 +26,7 @@ adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, selectvars=FALSE
     result[['lars']] = adalars_step(formula=formula, data=data, adaptive.object=result[['adapt']], overshrink=overshrink, adapt=adapt)
     result[['lambda']] = result[['lars']][['model']][['lambda']][result[['lars']][['lambda.index']]]
     
-    if (selectvars==TRUE) {
+    if (selectonly) {
         variables = paste(result[['lars']][['vars']], collapse="+")
         f = as.formula(paste(result[['response']], "~", variables, sep=""))
         m = lm(formula=f, data=data)

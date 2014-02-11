@@ -1,3 +1,5 @@
+chomp <- function (x) gsub("^\\s+|\\s+$", "", x)
+
 Partition = function(data, folds) {
     #Partition the data set into random, equal-sized folds for cross-validation
     

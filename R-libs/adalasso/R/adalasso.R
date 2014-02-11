@@ -1,10 +1,10 @@
 adalasso <-
-function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, selectvars=FALSE) {
+function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, selectonly=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalasso"
     result[['formula']] = as.formula(formula, env=data)
-    result[['selectvars']] = selectvars
+    result[['selectonly']] = selectonly
     
     #Drop any rows with NA values
     data = data
@@ -34,7 +34,7 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, ove
     result[['lasso']] = adalasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, overshrink=overshrink)
     result[['lambda']] = result[['lasso']][['lambda']]
     
-    if (selectvars==TRUE) {
+    if (selectonly) {
         variables = paste(result[['lasso']][['vars']], collapse="+")
         f = as.formula(paste(result[['response']], "~", variables, sep=""))
         m = glm(formula=f, data=data, family=family, weights=weights)
