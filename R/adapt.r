@@ -127,7 +127,7 @@ AL$Model = list(
         self[['residual']] = self[['actual']] - self[['fitted']]
 		
 		self[['vars']] = self[['model']][['lars']][['vars']]
-		self[['coefs']] = self[['model']][['lars']][['coefs']]
+		self[['coef']] = self[['model']][['coef']]
      
 		return(self)
 	}

@@ -37,7 +37,7 @@ source('R/utils.r')
 type='loo'
 cluster = NA
 beach = 'redarrow'
-method = 'adapt'
+method = 'adalasso-unweighted'
 process = 1
 
 result = "placeholder"

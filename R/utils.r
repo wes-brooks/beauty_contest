@@ -90,24 +90,24 @@ Validate = function(data, target, method, folds='', ...) {
 
 ValidateAtomic = function(data, target, method, fold, folds='', ...) {
     args = list(...)
-
-    #Creates a model and tests its performance with cross-validation.
-    module = params[[tolower(method)]][['env']]
     
     regulatory = args[['regulatory_threshold']]
 
 	model_data = data[folds!=fold,]
 	validation_data = data[folds==fold,]
 
+    module = params[[tolower(method)]][['env']]
 	model <- module$Model
-	model <- model[['Create']](self=model, data=model_data, target=target, args)
+    args[['self']] = model
+    args[['data']] = model_data
+    args[['target']] = target
+	model <- do.call(model[['Create']], args)
 
 	predictions = model[['Predict']](self=model, data=validation_data)
 	validation_actual = validation_data[,target]
 	
 	fitted = model[['fitted']]
 	actual = model_data[[target]]
-	#actual = model[['actual']]
 	
 	#Sensitivity and specificity are over the training data:
 	nonexceedances = fitted[actual <= regulatory]

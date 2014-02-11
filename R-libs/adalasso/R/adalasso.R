@@ -21,9 +21,9 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, ove
     result[['response']] = response.name
     result[['predictors']] = predictor.names
     
-    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))#, env=as.environment(data))
+    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))
     if (adapt) {
-        result[['adapt']] = adalasso_initial_step(formula=f, data=data, family=family, weights=weights, verbose=verbose)
+        result[['adapt']] = adaptive_weights_glmnet(formula=f, data=data, family=family, weights=weights, verbose=verbose)
     } else {
         result[['adapt']] = NULL
     }

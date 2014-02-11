@@ -18,7 +18,7 @@ adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, selectonly=FALSE
             
     f = as.formula(paste(paste(result[['response']], "~", sep=''), paste(result[['predictors']], collapse='+'), sep=''), env=as.environment(data))
     if (adapt) {
-        result[['adapt']] = adalars_initial_step(formula=f, data=data)
+        result[['adapt']] = adaptive_weights_lars(formula=f, data=data)
     } else {
         result[['adapt']] = NULL
     }
@@ -31,10 +31,12 @@ adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, selectonly=FALSE
         f = as.formula(paste(result[['response']], "~", variables, sep=""))
         m = lm(formula=f, data=data)
         result[['lm']] = m
+        result[['coef']] = coef(m)
         result[['fitted']] = m$fitted
         result[['residuals']] = m$residuals
         result[['actual']] = m$fitted + m$residuals
     } else {    
+        result[['coef']] = resulat[['lars']][['coef']]
         result[['actual']] = data[,response.col]
         result[['fitted']] = predict.adalars(result, data)
         result[['residuals']] = result[['actual']] - result[['fitted']]
