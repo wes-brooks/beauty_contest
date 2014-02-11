@@ -16,41 +16,19 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
     n <- nrow(x)
     p.max = min(m-2, floor(n/2))
     
-    #Set up the lists to hold the adaptive elements:
-    result[['meanx']] = list()
-    result[['coef.scale']] = list()
-    xs = x
-	
-    for (predictor in predictor.names) {        
-        if (adapt==TRUE) {
-            #First, center this column of the design matrix
-            result[['meanx']][[predictor]] = mean(data[,predictor])
-            xs[,predictor] = xs[,predictor] - result[['meanx']][[predictor]]      
-            
-            #Now scale it for unit norm
-            result[['normx']][[predictor]] <- sqrt(sum(xs[,predictor]**2))
-
-            if (result[['normx']][[predictor]] == 0) {
-                result[['normx']][[predictor]] = Inf #This should allow the lambda-finding step to work.
-            }
-            
-            if (is.null(adaptive.object)) { 
-                result[['coef.scale']][[predictor]] = 1 / result[['normx']][[predictor]]
-            } else {      
-                if (is.na(adaptive.object[['adaweight']][[predictor]])) {                    
-                    adaptive.object[['adaweight']][[predictor]] = 0 
-                }
-                result[['coef.scale']][[predictor]] = adaptive.object[['adaweight']][[predictor]] / result[['normx']][[predictor]]
-            }
-        } else {
-            result[['meanx']][[predictor]] = 0
-            result[['coef.scale']][[predictor]] = 1
-        }
-        xs[,predictor] = xs[,predictor] * result[['coef.scale']][[predictor]] 
+    if (adapt==TRUE) {
+        result[['meanx']] = adaptive.object[['meanx']]
+        result[['scale']] = adaptive.object[['adaweight']]
+    } else {
+        result[['meanx']] = sapply(predictor.names, function(x) return(0))
+        result[['scale']] = sapply(predictor.names, function(x) return(1))
     }
+
+    x.centered = sweep(x, 2, result[['meanx']], '-')
+    x.scaled = sweep(x.centered, 2, result[['scale']], '*')
     
-    result[['model']] = model = lars(x=xs, y=y, type='lar', max.steps=p.max, normalize=FALSE)
-    result[['cv']] = cv = cv.lars(y=y, x=xs, type='lar', index=1:p.max, K=n, plot.it=FALSE, mode='step', normalize=FALSE)
+    result[['model']] = model = lars(x=x.scaled, y=y, type='lar', max.steps=p.max, normalize=FALSE)
+    result[['cv']] = cv = cv.lars(y=y, x=x.scaled, type='lar', index=1:p.max, K=n, plot.it=FALSE, mode='step', normalize=FALSE)
   
     if (overshrink) {
         err.min = min(cv$cv)
@@ -62,15 +40,15 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
     }
     
     result[['predictors']] = predictor.names
-    result[['fitted']] = predict.lars(model, newx=xs, type='fit', s=lambda.index, mode='step')$fit
+    result[['fitted']] = predict.lars(model, newx=x.scaled, type='fit', s=lambda.index, mode='step')$fit
     result[['residuals']] = y-result[['fitted']]
-    result[['vars']] = names(which(abs(model$beta[lambda.index,])>0))   
+    result[['vars']] = names(which(model$beta[lambda.index,] != 0))   
     
     coefs = predict.lars(model, type='coefficients', s=lambda.index, mode='step')
-    result[['coefs']] = coefs$coefficients[which(coefs$coefficients>0)]
+    result[['coef']] = coefs$coefficients[which(coefs$coefficients!=0)]
     result[['MSEP']] = cv$cv[lambda.index]
     result[['RMSEP']] = sqrt(result[['MSEP']])
-    result[['Intercept']] = predict(model, newx=matrix(0,1,dim(xs)[2]), type='fit', s=lambda.index, mode='step')$fit
+    result[['Intercept']] = predict(model, newx=matrix(0,1,m), type='fit', s=lambda.index, mode='step')$fit
     
     return(result)
 }

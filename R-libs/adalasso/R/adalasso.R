@@ -1,10 +1,10 @@
 adalasso <-
-function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, selectvars=FALSE) {
+function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, selectonly=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalasso"
     result[['formula']] = as.formula(formula, env=data)
-    result[['selectvars']] = selectvars
+    result[['selectonly']] = selectonly
     
     #Drop any rows with NA values
     data = data
@@ -21,9 +21,9 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, ove
     result[['response']] = response.name
     result[['predictors']] = predictor.names
     
-    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))#, env=as.environment(data))
+    f = as.formula(paste(paste(response.name, "~", sep=''), paste(predictor.names, collapse='+'), sep=''))
     if (adapt) {
-        result[['adapt']] = adalasso_initial_step(formula=f, data=data, family=family, weights=weights, verbose=verbose)
+        result[['adapt']] = adaptive_weights_glmnet(formula=f, data=data, family=family, weights=weights, verbose=verbose)
     } else {
         result[['adapt']] = NULL
     }
@@ -34,7 +34,7 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, ove
     result[['lasso']] = adalasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, overshrink=overshrink)
     result[['lambda']] = result[['lasso']][['lambda']]
     
-    if (selectvars==TRUE) {
+    if (selectonly) {
         variables = paste(result[['lasso']][['vars']], collapse="+")
         f = as.formula(paste(result[['response']], "~", variables, sep=""))
         m = glm(formula=f, data=data, family=family, weights=weights)

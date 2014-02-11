@@ -31,8 +31,12 @@ ROC = function(results) {
 
 
 results = list()
+var_results = list()
+
 for (site in sites) {
   site_results = list()
+  site_var_results = list()
+  
   for (method in methods) {
     path = paste(root, site, method, sep="/")
     filelist = list.files(path)
@@ -44,8 +48,10 @@ for (site in sites) {
     threshold = vector()
     fold = vector()
     vars = list()
+    k=0
     
     for (f in files) {
+      k = k+1
       raw = scan(paste(path, f, sep="/"), 'character', sep='\n')
       
       i = grep("^# predicted:", raw)
@@ -61,7 +67,7 @@ for (site in sites) {
       threshold = c(threshold, as.numeric(raw[i+1]))
       
       i = grep("^# vars:", raw)
-      vars = c(vars, strsplit(raw[i+1], split=", "))
+      vars[[k]] = strsplit(raw[i+1], split=", ")
     }
     
     res = data.frame(predicted=predicted, actual=actual, fold=fold, threshold=threshold)
@@ -84,9 +90,11 @@ for (site in sites) {
     }
     res = cbind(res, tpos, tneg, fpos, fneg)
     
-    site_results[[method]] = list(res=res, roc=ROC(res))#, vars=vars)
+    site_results[[method]] = list(res=res, roc=ROC(res))
+    site_var_results[[method]] = vars
   }
   results[[site]] = site_results
+  var_results[[site]] = site_var_results
 }
 
   
