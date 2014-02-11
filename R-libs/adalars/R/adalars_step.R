@@ -50,7 +50,7 @@ adalars_step <- function(formula, data, adaptive.object=NULL, overshrink=FALSE, 
     }
     
     result[['model']] = model = lars(x=xs, y=y, type='lar', max.steps=p.max, normalize=FALSE)
-    result[['cv']] = cv = cv.lars(y=y, x=xs, type='lars', index=1:p.max, K=n, plot.it=FALSE, mode='step', normalize=FALSE)
+    result[['cv']] = cv = cv.lars(y=y, x=xs, type='lar', index=1:p.max, K=n, plot.it=FALSE, mode='step', normalize=FALSE)
   
     if (overshrink) {
         err.min = min(cv$cv)
