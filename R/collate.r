@@ -105,6 +105,6 @@ colnames(area) = sites
 for (site in sites) {
   for (method in methods) {
     cat(paste(method, site, results[[site]][[method]][['roc']], '\n', sep=" "))
-    area[method, site] = results[[site]][[method]][['roc']]
+    area[method, site] = try(results[[site]][[method]][['roc']], TRUE)
   }
 }
