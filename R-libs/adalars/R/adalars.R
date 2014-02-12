@@ -36,7 +36,7 @@ adalars <- function(formula, data, adapt=TRUE, overshrink=TRUE, selectonly=FALSE
         result[['residuals']] = m$residuals
         result[['actual']] = m$fitted + m$residuals
     } else {    
-        result[['coef']] = resulat[['lars']][['coef']]
+        result[['coef']] = result[['lars']][['coef']]
         result[['actual']] = data[,response.col]
         result[['fitted']] = predict.adalars(result, data)
         result[['residuals']] = result[['actual']] - result[['fitted']]
