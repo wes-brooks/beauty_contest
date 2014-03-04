@@ -1,12 +1,9 @@
 require(stringr)
+require(ggplot2)
+require(brooks)
 
-<<<<<<< HEAD
-#root = "~/beauty"
-root = "C:\\Users\\wrbrooks\\scratch\\output"
-=======
-root = "~/output"
-#root = "C:\\Users\\wrbrooks\\misc\\results"
->>>>>>> 97a089a367c574e4dc0504b4793eeb2d7f3d0658
+root = "~/misc/output"
+#root = "C:\\Users\\wrbrooks\\scratch\\output"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
