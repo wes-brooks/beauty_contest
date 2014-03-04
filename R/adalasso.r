@@ -24,9 +24,9 @@ LAL$Model = list(
 			self[['adapt']] = args[['adapt']]
         } else {self[['adapt']] = FALSE}
         
-        if ('selectvars' %in% names(args)) {
-			self[['selectvars']] = args[['selectvars']]
-        } else {self[['selectvars']] = FALSE}
+        if ('selectonly' %in% names(args)) {
+			self[['selectonly']] = args[['selectonly']]
+        } else {self[['selectonly']] = FALSE}
 
         if ('overshrink' %in% names(args)) {
 			self[['overshrink']] = args[['overshrink']]
@@ -71,7 +71,7 @@ LAL$Model = list(
             'verbose' = self[['verbose']],
             'adapt' = self[['adapt']],
             'overshrink' = self[['overshrink']],
-            'selectvars' = self[['selectvars']]
+            'selectonly' = self[['selectonly']]
 		)
         self[['model']] = do.call('adalasso', params)
         

@@ -1,7 +1,12 @@
 require(stringr)
 
+<<<<<<< HEAD
 #root = "~/beauty"
 root = "C:\\Users\\wrbrooks\\scratch\\output"
+=======
+root = "~/output"
+#root = "C:\\Users\\wrbrooks\\misc\\results"
+>>>>>>> 97a089a367c574e4dc0504b4793eeb2d7f3d0658
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
@@ -31,8 +36,12 @@ ROC = function(results) {
 
 
 results = list()
+var_results = list()
+
 for (site in sites) {
   site_results = list()
+  site_var_results = list()
+  
   for (method in methods) {
     path = paste(root, site, method, sep="/")
     filelist = list.files(path)
@@ -44,8 +53,10 @@ for (site in sites) {
     threshold = vector()
     fold = vector()
     vars = list()
+    k=0
     
     for (f in files) {
+      k = k+1
       raw = scan(paste(path, f, sep="/"), 'character', sep='\n')
       
       i = grep("^# predicted:", raw)
@@ -61,7 +72,7 @@ for (site in sites) {
       threshold = c(threshold, as.numeric(raw[i+1]))
       
       i = grep("^# vars:", raw)
-      vars = c(vars, strsplit(raw[i+1], split=", "))
+      vars[[k]] = strsplit(raw[i+1], split=", ")
     }
     
     res = data.frame(predicted=predicted, actual=actual, fold=fold, threshold=threshold)
@@ -84,15 +95,13 @@ for (site in sites) {
     }
     res = cbind(res, tpos, tneg, fpos, fneg)
     
-    site_results[[method]] = list(res=res, roc=ROC(res))#, vars=vars)
+    site_results[[method]] = list(res=res, roc=ROC(res))
+    site_var_results[[method]] = vars
   }
   results[[site]] = site_results
+  var_results[[site]] = site_var_results
 }
-  
-sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
-methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adapt', 'adapt-select', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm'
-              , 'spls', 'spls-select')
-  
+
   
 area = matrix(NA, length(methods), length(sites))
 rownames(area) = methods
@@ -101,7 +110,7 @@ colnames(area) = sites
 for (site in sites) {
   for (method in methods) {
     cat(paste(method, site, results[[site]][[method]][['roc']], '\n', sep=" "))
-    area[method, site] = results[[site]][[method]][['roc']]
+    area[method, site] = try(results[[site]][[method]][['roc']], TRUE)
   }
 }
 

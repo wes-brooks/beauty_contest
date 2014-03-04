@@ -23,9 +23,9 @@ AL$Model = list(
 			self[['adapt']] = args[['adapt']]
         } else {self[['adapt']] = FALSE}
         
-        if ('selectvars' %in% names(args)) {
-			self[['selectvars']] = args[['selectvars']]
-        } else {self[['selectvars']] = FALSE}
+        if ('selectonly' %in% names(args)) {
+			self[['selectonly']] = args[['selectonly']]
+        } else {self[['selectonly']] = FALSE}
 
         if ('overshrink' %in% names(args)) {
 			self[['overshrink']] = args[['overshrink']]
@@ -43,7 +43,7 @@ AL$Model = list(
             'data' = self[['data']],
             'adapt' = self[['adapt']],
             'overshrink' = self[['overshrink']],
-            'selectvars' = self[['selectvars']]
+            'selectonly' = self[['selectonly']]
 		)
         self[['model']] = do.call('adalars', params)
 		
@@ -127,7 +127,7 @@ AL$Model = list(
         self[['residual']] = self[['actual']] - self[['fitted']]
 		
 		self[['vars']] = self[['model']][['lars']][['vars']]
-		self[['coefs']] = self[['model']][['lars']][['coefs']]
+		self[['coef']] = self[['model']][['coef']]
      
 		return(self)
 	}

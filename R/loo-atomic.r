@@ -7,11 +7,11 @@ datafile = settings[["file"]]
 data = read.csv(datafile)
 
 if ('remove' %in% names(settings)) {
-	data = data[,!(names(data) %in% settings[['remove']])]
+	data = data[,!(chomp(names(data)) %in% chomp(settings[['remove']]))]
 }
 
 #Apply the specified transforms to the raw data.
-for (t in settings[['transforms']]) {
+for (t in chomp(settings[['transforms']])) {
 	data[,t] = settings[['transforms']][[t]](data[,t])
 }
 
