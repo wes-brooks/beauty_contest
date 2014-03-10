@@ -20,7 +20,7 @@ galm <-function(formula, data, population=200, generations=100, mutateRate=0.02,
     
     #Maximum number of predictor variables:
     m = ncol(data) - 1
-    result[['ga']] = rbga.bin(size=m, zeroToOneRatio=zeroOneRatio, evalFunc=evalBIC, monitorFunc=monitor, mutationChance=mutateRate, popSize=population, iters=generations, verbose=verbose, data=data, output=result[['response']])
+    result[['ga']] = rbga.bin(size=m, zeroToOneRatio=zeroOneRatio, evalFunc=evalAICc, monitorFunc=monitor, mutationChance=mutateRate, popSize=population, iters=generations, verbose=verbose, data=data, output=result[['response']])
     
     indx = which.min(result[['ga']]$evaluations)
     indiv = as.logical(drop(result[["ga"]]$population[indx,]))

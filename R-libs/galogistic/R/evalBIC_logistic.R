@@ -12,7 +12,7 @@ function(chromosome=c(), data, output, family, weights) {
 			model = glm(f, data=selected, family, weights)
 			
 			#Evaluate the model on the basis of the BIC:
-			n = nrow(selected)
+			n = nrow(selected)            
 			AIC(model, k=log(n))
 		}, warning = function(w) {
 			Inf
