@@ -17,15 +17,15 @@ params[["gbmcv"]] = list('env'=GBM, 'depth'=5, 'weights'='none', 'minobsinnode'=
 params[['galogistic-unweighted']] = list('env'=GALogistic, 'weights'='none', 'generations'=100, 'mutate'=0.05, ZOR=10)
 params[['galogistic-weighted']] = list('env'=GALogistic, 'weights'='continuous', 'generations'=100, 'mutate'=0.05, ZOR=10)
 
-params[['adalasso-unweighted']] = list('env'=LAL, 'weights'='none', 'adapt'=TRUE, 'overshrink'=TRUE, 'selectonly'=FALSE)
-params[['adalasso-unweighted-select']] = list('env'=LAL, 'weights'='none', 'adapt'=TRUE, 'overshrink'=TRUE, 'selectonly'=TRUE)
-params[['adalasso-weighted']] = list('env'=LAL, 'weights'='continuous', 'adapt'=TRUE, 'overshrink'=TRUE, 'selectonly'=FALSE)
-params[['adalasso-weighted-select']] = list('env'=LAL, 'weights'='continuous', 'adapt'=TRUE, 'overshrink'=TRUE, 'selectonly'=TRUE)
+params[['adalasso-unweighted']] = list('env'=LAL, 'weights'='none', 'adapt'=TRUE, 'selection.method'='AICc', 'selectonly'=FALSE)
+params[['adalasso-unweighted-select']] = list('env'=LAL, 'weights'='none', 'adapt'=TRUE, 'selection.method'='AICc', 'selectonly'=TRUE)
+params[['adalasso-weighted']] = list('env'=LAL, 'weights'='continuous', 'adapt'=TRUE, 'selection.method'='AICc', 'selectonly'=FALSE)
+params[['adalasso-weighted-select']] = list('env'=LAL, 'weights'='continuous', 'adapt'=TRUE, 'selection.method'='AICc', 'selectonly'=TRUE)
 
 params[["galm"]] = list('env'=GALM, 'generations'=100, 'mutate'=0.05)
 
-params[["adapt"]] = list('env'=AL, 'adapt'=TRUE, 'overshrink'=TRUE, 'selectonly'=FALSE)
-params[["adapt-select"]] = list('env'=AL, 'adapt'=TRUE, 'overshrink'=TRUE, 'selectonly'=TRUE)
+params[["adapt"]] = list('env'=AL, 'adapt'=TRUE, 'selection.method'='AICc', 'selectonly'=FALSE)
+params[["adapt-select"]] = list('env'=AL, 'adapt'=TRUE, 'selection.method'='AICc', 'selectonly'=TRUE)
 
 params[["spls"]] = list('env'=SPLS, 'selectonly'=FALSE)
 params[["spls-select"]] = list('env'=SPLS, 'selectonly'=TRUE)

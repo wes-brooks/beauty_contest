@@ -20,7 +20,7 @@ galogistic <-function(formula, data, population=200, generations=100, mutateRate
     
     #Maximum number of predictor variables:
     m = ncol(data) - 1
-    result[['ga']] = rbga.bin.logistic(size=m, zeroToOneRatio=zeroOneRatio, evalFunc=evalBIC_logistic, monitorFunc=galogistic_monitor, mutationChance=mutateRate, popSize=population, iters=generations, verbose=verbose, data=data, output=result[['response']], family=family, weights=weights)
+    result[['ga']] = rbga.bin.logistic(size=m, zeroToOneRatio=zeroOneRatio, evalFunc=evalAICc_logistic, monitorFunc=galogistic_monitor, mutationChance=mutateRate, popSize=population, iters=generations, verbose=verbose, data=data, output=result[['response']], family=family, weights=weights)
     
     indx = which.min(result[['ga']]$evaluations)
     indiv = as.logical(drop(result[["ga"]]$population[indx,]))

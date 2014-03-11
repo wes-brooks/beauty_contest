@@ -1,5 +1,5 @@
 adalasso_step <-
-function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE) {
+function(formula, data, family, weights, adaptive.object, s, verbose, adapt, selection.method) {
     result = list()
     
     #Pull out the relevant data
@@ -24,28 +24,38 @@ function(formula, data, family, weights, adaptive.object=NULL, s=NULL, verbose=F
     x.centered = sweep(x, 2, result[['meanx']], '-')
     x.scaled = sweep(x.centered, 2, result[['scale']], '*')
     
+    #Binomial requires p, 1-p to both be specified:
     if (family=='binomial') {
-        print("family is binomial")
-        result[['model']] = glmnet(x=x.scaled, y=as.matrix(cbind(1-y, y), nrow(x), 2), family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
-        result[['cv']] = cv.glmnet(y=as.matrix(cbind(1-y, y), nrow(x), 2), x=x.scaled, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
+        result[['model']] = model = glmnet(x=x.scaled, y=as.matrix(cbind(1-y, y), nrow(x), 2), family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
     } else {
-        result[['model']] = glmnet(x=x.scaled, y=y, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
-        result[['cv']] = cv.glmnet(y=y, x=x.scaled, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
+        result[['model']] = model = glmnet(x=x.scaled, y=y, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)
     }
     
-    if (overshrink==TRUE) {
-        result[['lambda']] = result[['cv']][['lambda.1se']]
-    } else {
-        result[['lambda']] = result[['cv']][['lambda.min']]
+    if (!is.na(pmatch('cv', selection.method))) {
+        #Binomial requires p, 1-p to both be specified:
+        if (family=='binomial') {result[['cv']] = cv.glmnet(y=as.matrix(cbind(1-y, y), nrow(x), 2), x=x.scaled, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)}
+        else {result[['cv']] = cv.glmnet(y=y, x=x.scaled, nfolds=n, family=family, weights=weights, lambda=s, standardize=FALSE, intercept=TRUE)}
+        
+        if (selection.method == 'cv.overshrink') {
+            result[['lambda']] = result[['cv']][['lambda.1se']]
+        } else {
+            result[['lambda']] = result[['cv']][['lambda.min']]
+        }
+    } else if (selection.method == 'AICc') {
+        dev = deviance(model)
+        df = apply(predict(model, type='coefficients'), 2, function(x) sum(x != 0))
+        AICc = dev + 2*df + 2*df*(df+1)/(n-df-1)
+        result[['lambda.index']] = lambda.index = which.min(AICc)
+        result[['lambda']] = model[['lambda']][lambda.index]
     }
     
-    nonzero = predict(result[['model']], type='nonzero', s=result[['lambda']])
+    nonzero = predict(model, type='nonzero', s=result[['lambda']])
     if (verbose) {print(nonzero)}
     
     #Handle the case that the lasso selects no variables
     if (is.null(nonzero[[1]])) {
-        indx = min(which(result[['cv']][['nzero']]>0), na.rm=TRUE)
-        result[['lambda']] = result[['cv']][['lambda']][indx]
+        indx = which(!sapply(predict(model, type='nonzero'), is.null))[1]
+        result[['lambda']] = model[['lambda']][indx]
         nonzero = predict(result[['model']], type='nonzero', s=result[['lambda']])
     }
     if (verbose) {print(paste("lambda: ", result[['lambda']], ", nonzero: ", paste(nonzero, collapse=","), sep=''))}
