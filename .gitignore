@@ -9,5 +9,7 @@ output/691*
 */TempPE
 *.Rhistory
 
+rlibs
+rlibs/*
 sh/*
 .Rproj.user
