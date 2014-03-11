@@ -17,5 +17,4 @@ Packaged: 2013-04-24 05:12:53 UTC; hastie
 NeedsCompilation: yes
 Repository: CRAN
 Date/Publication: 2013-04-24 09:46:12
-Built: R 3.0.2; x86_64-apple-darwin10.8.0; 2014-01-09 19:11:26 UTC; unix
-Archs: lars.so.dSYM
+Built: R 3.0.3; x86_64-pc-linux-gnu; 2014-03-11 18:45:01 UTC; unix

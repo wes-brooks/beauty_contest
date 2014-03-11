@@ -4,9 +4,9 @@ source('R/utils.r')
 
 type='loo'
 cluster = NA
-beach = 'neshotah'
-method = 'gbmcv'
-process = 1
+beach = 'redarrow'
+method = 'adalasso-unweighted'
+process = 15
 
 result = "placeholder"
 output = ""

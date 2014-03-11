@@ -21,5 +21,4 @@ Packaged: 2013-05-10 18:01:11 UTC; harry
 NeedsCompilation: yes
 Repository: CRAN
 Date/Publication: 2013-05-10 20:13:19
-Built: R 3.0.2; x86_64-apple-darwin10.8.0; 2014-01-09 20:08:52 UTC; unix
-Archs: gbm.so.dSYM
+Built: R 3.0.3; x86_64-pc-linux-gnu; 2014-03-11 18:39:43 UTC; unix
