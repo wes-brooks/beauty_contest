@@ -57,4 +57,3 @@ function(object, newx) {
     pred.data = as.matrix(newx[,object[['lars']][['vars']]])
     return(predict.lars(object[['lars']][['model']], newx=pred.data, type='fit', s=object[['lars']][['lambda.index']], mode='step')$fit)
 }
-

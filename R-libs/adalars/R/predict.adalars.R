@@ -9,8 +9,7 @@ predict.adalars <-  function(obj, newx) {
     } else {
         pred.data = sweep(pred.data, 2, obj[['lars']][['meanx']], '-')
         pred.data = sweep(pred.data, 2, obj[['lars']][['scale']], '*')
-
-        predictions = predict(obj[['lars']][['model']], newx=pred.data, s=obj[['lambda']], mode='lambda', type='fit')[['fit']]
+        predictions = predict(obj[['lars']][['model']], newx=pred.data, s=obj[['lars']][['lambda.index']], mode='step', type='fit')[['fit']]
     }
     
     return(predictions)

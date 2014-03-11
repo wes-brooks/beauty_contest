@@ -1,4 +1,4 @@
-adaptive_weights_glmnet <- function(formula, data, family, weights, verbose=FALSE) {
+adaptive_weights_glmnet <- function(formula, data, family, weights, verbose) {
     #Create the object that will hold the output
     result <- list()
     

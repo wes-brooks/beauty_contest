@@ -1,5 +1,5 @@
 adalasso <-
-function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, overshrink=FALSE, selectonly=FALSE) {
+function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=TRUE, selection.method='AICc', selectonly=FALSE) {
     #Create the object that will hold the output
     result = list()
     class(result) = "adalasso"
@@ -31,7 +31,7 @@ function(formula, data, family, weights, s=NULL, verbose=FALSE, adapt=FALSE, ove
     #Get the adaptive lasso estimate
     y = as.matrix(data[,response.col])
     x = as.matrix(data[,-response.col])
-    result[['lasso']] = adalasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, overshrink=overshrink)
+    result[['lasso']] = adalasso_step(formula=f, data=data, family=family, weights=weights, s=s, verbose=verbose, adaptive.object=result[['adapt']], adapt=adapt, selection.method=selection.method)
     result[['lambda']] = result[['lasso']][['lambda']]
     
     if (selectonly) {

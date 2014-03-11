@@ -27,9 +27,9 @@ AL$Model = list(
 			self[['selectonly']] = args[['selectonly']]
         } else {self[['selectonly']] = FALSE}
 
-        if ('overshrink' %in% names(args)) {
-			self[['overshrink']] = args[['overshrink']]
-        } else {self[['overshrink']] = FALSE} 		
+        if ('selection.method' %in% names(args)) {
+			self[['selection.method']] = args[['selection.method']]
+        } else {self[['selection.method']] = 'AICc'} 		
         
         #Get the data into R
         self[['data']] = data = args[['data']]
@@ -42,7 +42,7 @@ AL$Model = list(
 			'formula' = self[['formula']],
             'data' = self[['data']],
             'adapt' = self[['adapt']],
-            'overshrink' = self[['overshrink']],
+            'selection.method' = self[['selection.method']],
             'selectonly' = self[['selectonly']]
 		)
         self[['model']] = do.call('adalars', params)

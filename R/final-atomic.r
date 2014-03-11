@@ -28,21 +28,21 @@ if (first) {
 	first = FALSE
 }
 
-#Run this modeling method against the beach data.
-params = c(
-	list(
-		self = model,
-		data=data,
-		target=settings[['target']],
-		fold=process,
-		folds=folds,
-		regulatory_threshold=settings[['threshold']]
-	),
-	params[[method]]	
-)
-
 module = params[['env']]
 model <- module$Model
+
+#Run this modeling method against the beach data.
+params = c(
+    list(
+        self = model,
+        data=data,
+        target=settings[['target']],
+        fold=process,
+        folds=folds,
+        regulatory_threshold=settings[['threshold']]
+    ),
+    params[[method]]	
+)
 model <- do.call(model[['Create']], params)
 
 fitted = model[['fitted']]

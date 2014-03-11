@@ -44,11 +44,11 @@ atomic:
 	mkdir beautydata-$(SITE)-$(METHOD)/shared
 	cp -rf ../R-libs beautydata-$(SITE)-$(METHOD)/shared/R-libs
 	cp -rf ../data beautydata-$(SITE)-$(METHOD)/shared/data
-	cp -rf ../R/* beautydata-$(SITE)-$(METHOD)/shared/
+	cp -rf ../R beautydata-$(SITE)-$(METHOD)/shared/R
 	cp -rf ../seeds.txt beautydata-$(SITE)-$(METHOD)/shared
 	./make-job-dirs-atomic.sh $(value njobs) beautyrun $(SITE) $(METHOD)
 	./mkdag \
-	  --cmdtorun=beauty-atomic.r \
+	  --cmdtorun=R/beauty-atomic.r \
 	  --data=beautydata-$(SITE)-$(METHOD) \
 	  --dagdir=beautyoutput-$(SITE)-$(METHOD) \
 	  --pattern=result \

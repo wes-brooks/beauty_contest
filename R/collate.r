@@ -1,7 +1,9 @@
 require(stringr)
+require(ggplot2)
+require(brooks)
 
-root = "~/output"
-#root = "C:\\Users\\wrbrooks\\misc\\results"
+root = "~/misc/output"
+#root = "C:\\Users\\wrbrooks\\scratch\\output"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
@@ -108,3 +110,24 @@ for (site in sites) {
     area[method, site] = try(results[[site]][[method]][['roc']], TRUE)
   }
 }
+
+
+
+#Make the plots
+logistic_methods = c('galogistic-unweighted', 'galogistic-weighted', 'adalasso-weighted-select', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-unweighted')
+plots = list()
+for (site in sites) {
+    site_plots = list()
+    for (method in methods) {
+        site_plots[[method]] = with(results[[site]][[method]][['res']], qplot(actual, predicted) + ggtitle(method))
+        site_plots[[method]] = site_plots[[method]] + geom_vline(xintercept=2.3711, linetype='longdash', colour='red')
+        #if (!(method %in% logistic_methods)) {site_plots[[method]] = site_plots[[method]] + geom_abline()}
+    }
+    plots[[site]] = site_plots
+    
+    pdf(paste("figures/", site, ".pdf", sep=""), width=16, height=20)
+    multiplot(plotlist=plots[[site]], cols=3)
+    dev.off()
+}
+
+
