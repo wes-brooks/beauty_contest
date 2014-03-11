@@ -14,7 +14,7 @@ evalAICc_logistic <-
     #Evaluate the model on the basis of the BIC:
     n = nrow(selected)
     summ = summary(model)
-    df = summ[['df.null']] - sum[['df.residual']]
+    df = summ[['df.null']] - summ[['df.residual']]
     
     AIC(model) + 2*df*(df+1)/(n-df-1)
 }, warning = function(w) {
