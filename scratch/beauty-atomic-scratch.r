@@ -5,7 +5,7 @@ source('R/utils.r')
 type='loo'
 cluster = NA
 beach = 'redarrow'
-method = 'adalasso-unweighted'
+method = 'galogistic-unweighted'
 process = 15
 
 result = "placeholder"
