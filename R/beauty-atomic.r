@@ -2,13 +2,13 @@ sink("result.txt")
 cat(paste('entry', "\n", sep=''))
 sink()
 
-source("import-packages.r")
+source("R/import-packages.r")
 
 #Import location and modeling settings:
-source('settings.r')
+source('R/settings.r')
 
 #Import some necessary functions:
-source('utils.r')
+source('R/utils.r')
 
 sink("result.txt", append=TRUE)
 cat(paste('going to seeds', "\n", sep=''))
@@ -48,15 +48,15 @@ sink()
 #Use the process number to determine whether we'll run loo or annual, and with which fold
 
 if (type=='loo') {
-	source("loo-atomic.r")
+	source("R/loo-atomic.r")
 }
 
 if (type=='annual') {
-	source('annual-atomic.r')
+	source('R/annual-atomic.r')
 }
 
 if (type=='final') {
-	source('final-atomic.r')
+	source('R/final-atomic.r')
 }
 
 
