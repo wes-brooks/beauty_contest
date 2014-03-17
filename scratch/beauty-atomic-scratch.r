@@ -4,8 +4,8 @@ source('R/utils.r')
 
 type='loo'
 cluster = NA
-beach = 'redarrow'
-method = 'galogistic-unweighted'
+beach = 'thompson'
+method = 'adapt'
 process = 15
 
 result = "placeholder"

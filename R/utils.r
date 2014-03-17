@@ -12,6 +12,11 @@ Partition = function(data, folds) {
 			years = strptime(data[,1], format="%m/%d/%Y %H:%M")$year
             if (is.na(years[1])) {years = strptime(data[,1], format="%Y-%m-%d %H:%M:%s")$year}
             fold = as.vector(unclass(as.factor(years)))
+        } else if (tolower(substring(folds, 1, 1)) =='d' && !is.null(data)) {
+            #divide by date
+            dates = as.character(strptime(data[,1], format="%m/%d/%Y"))
+            if (is.na(dates[1])) {dates = as.character(strptime(data[,1], format="%Y-%m-%d"))}
+            fold = as.vector(unclass(as.factor(dates)))
         }
     } else { #Otherwise, randomly permute the data, then use contiguously-permuted chunks for CV
         #Initialization
@@ -104,20 +109,20 @@ ValidateAtomic = function(data, target, method, fold, folds='', ...) {
 	model <- do.call(model[['Create']], args)
 
 	predictions = model[['Predict']](self=model, data=validation_data)
-	validation_actual = validation_data[,target]
+	validation_actual = as.vector(validation_data[,target])
 	
-	fitted = model[['fitted']]
-	actual = model_data[[target]]
+	fitted = as.vector(model[['fitted']])
+	actual = as.vector(model_data[[target]])
 	
 	#Sensitivity and specificity are over the training data:
 	nonexceedances = fitted[actual <= regulatory]
 	exceedances = fitted[actual > regulatory]
 
 	if (length(nonexceedances) == 0) {                
-		threshold = rep(1, length(predictions))
-	} else {                
+		threshold = as.vector(rep(1, length(predictions)))
+	} else {
 		cc = ecdf(nonexceedances)
-		threshold = cc(predictions)
+		threshold = as.vector(cc(predictions))
 	}
 	
 	result = list(predicted=predictions, actual=validation_actual, threshold=threshold, fold=rep(fold, length(threshold)), vars=model[['vars']])

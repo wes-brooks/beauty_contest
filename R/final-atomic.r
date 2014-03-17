@@ -28,31 +28,29 @@ if (first) {
 	first = FALSE
 }
 
-module = params[['env']]
+module = params[[tolower(method)]][['env']]
 model <- module$Model
 
 #Run this modeling method against the beach data.
-params = c(
+par = c(
     list(
-        self = model,
+        self=model,
         data=data,
         target=settings[['target']],
-        fold=process,
-        folds=folds,
         regulatory_threshold=settings[['threshold']]
     ),
     params[[method]]	
 )
-model <- do.call(model[['Create']], params)
+model <- do.call(model[['Create']], par)
 
 fitted = model[['fitted']]
-actual = data[[target]]
-result = cbind(actual=actual, fitted=fitted)
+actual = data[[settings[['target']]]]
+result = cbind(actual, fitted)
 
 
 sink(paste(output, paste(prefix, beach, method, "final", "out", sep='.'), sep=""), append=TRUE)  
 cat("# vars:\n")
-print(vars)
+print(model[['vars']])
 cat("# actual, fitted:\n")
 print(result)
 
