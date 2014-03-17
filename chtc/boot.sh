@@ -2,9 +2,9 @@
 
 sites=( hika maslowski kreher thompson point neshotah redarrow )
 methods=( pls gbm gbmcv galogistic-unweighted galogistic-weighted adalasso-unweighted adalasso-unweighted-select adalasso-weighted adalasso-weighted-select galm adapt adapt-select spls spls-select )
-methods=( select )
+methods=( adapt )
 
-mkdir -p "submit-files"
+mkdir -p "job-receipts"
 
 for site in ${sites[@]}
 do
