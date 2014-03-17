@@ -10,6 +10,6 @@ for site in ${sites[@]}
 do
   for method in ${methods[@]}
   do
-    make atomic SITE=$site METHOD=$method > submit-files/$site-$method-submit.txt
+    make atomic SITE=$site METHOD=$method > job-receipts/$site-$method-submit.txt
   done
 done
