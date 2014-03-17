@@ -9,36 +9,28 @@ nobs := 167
 endif
 
 ifeq ($(SITE), kreher)
-DATA := ../data/MaxRowsTurb/KR2013.2.MaxRowsTurb.csv
-nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+nobs := 132
 endif
 
 ifeq ($(SITE), maslowski)
-DATA := ../data/MaxRowsTurb/MS2013.2.MaxRowsTurb.csv
-nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+nobs := 134
 endif
 
 ifeq ($(SITE), neshotah)
-DATA := ../data/MaxRowsTurb/NS2013.2.MaxRowsTurb.csv
-nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+nobs := 163
 endif
 
 ifeq ($(SITE), point)
-DATA := ../data/MaxRowsTurb/PointAll.csv
-nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+nobs := 191
 endif
 
 ifeq ($(SITE), redarrow)
-DATA := ../data/MaxRowsTurb/RA2013.2.MaxRowsTurb.csv
-nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+nobs := 174
 endif
 
 ifeq ($(SITE), thompson)
-DATA := ../data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv
-nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+nobs := 143
 endif
-
-nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 
 
 atomic:
