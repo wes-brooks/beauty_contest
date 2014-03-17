@@ -6,6 +6,10 @@ settings = beaches[[beach]]
 datafile = settings[["file"]]
 data = read.csv(datafile)
 
+#Partition the data into cross-validation folds.
+folds = Partition(data, folds='dates')
+nfolds = length(unique(folds))
+
 if ('remove' %in% names(settings)) {
 	data = data[,!(chomp(names(data)) %in% chomp(settings[['remove']]))]
 }
@@ -14,9 +18,6 @@ if ('remove' %in% names(settings)) {
 for (t in chomp(settings[['transforms']])) {
 	data[,t] = settings[['transforms']][[t]](data[,t])
 }
-
-#Partition the data into cross-validation folds.
-folds = Partition(data, cv_folds)
 
 #Run the modeling routine
 if (first) {
@@ -51,6 +52,10 @@ cat("# threshold: \n")
 cat(paste(result[['threshold']], "\n", sep=""))
 cat("# fold: \n")
 cat(paste(result[['fold']], "\n", sep=""))
+
+cat("# results: \n")
+print(cbind(predicted=result[['predicted']], actual=result[['actual']], threshold=result[['threshold']], fold=result[['fold']]))
+
 cat("# vars: \n")
 cat(paste(paste(result[['vars']], collapse=", "), "\n", sep=""))
 

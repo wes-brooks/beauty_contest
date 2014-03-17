@@ -5,34 +5,40 @@ SITE := NULL
 METHOD := NULL
 
 ifeq ($(SITE), hika)
-DATA := ../data/MaxRowsTurb/HK2013.2.MaxRowsTurb.csv
+nobs := 167
 endif
 
 ifeq ($(SITE), kreher)
 DATA := ../data/MaxRowsTurb/KR2013.2.MaxRowsTurb.csv
+nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 endif
 
 ifeq ($(SITE), maslowski)
 DATA := ../data/MaxRowsTurb/MS2013.2.MaxRowsTurb.csv
+nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 endif
 
 ifeq ($(SITE), neshotah)
 DATA := ../data/MaxRowsTurb/NS2013.2.MaxRowsTurb.csv
+nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 endif
 
 ifeq ($(SITE), point)
 DATA := ../data/MaxRowsTurb/PointAll.csv
+nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 endif
 
 ifeq ($(SITE), redarrow)
 DATA := ../data/MaxRowsTurb/RA2013.2.MaxRowsTurb.csv
+nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 endif
 
 ifeq ($(SITE), thompson)
 DATA := ../data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv
+nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 endif
 
-njobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
+nobs := $(shell echo $$((`wc -l < $(value DATA)` - 1)))
 
 
 atomic:
@@ -46,7 +52,7 @@ atomic:
 	cp -rf ../data beautydata-$(SITE)-$(METHOD)/shared/data
 	cp -rf ../R beautydata-$(SITE)-$(METHOD)/shared/R
 	cp -rf ../seeds.txt beautydata-$(SITE)-$(METHOD)/shared
-	./make-job-dirs-atomic.sh $(value njobs) beautyrun $(SITE) $(METHOD)
+	./make-job-dirs-atomic.sh $(value nobs) beautyrun $(SITE) $(METHOD)
 	./mkdag \
 	  --cmdtorun=R/beauty-atomic.r \
 	  --data=beautydata-$(SITE)-$(METHOD) \
