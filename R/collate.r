@@ -2,7 +2,7 @@ require(stringr)
 require(ggplot2)
 require(brooks)
 
-root = "~/misc/output"
+root = "~/misc/b2/output"
 #root = "C:\\Users\\wrbrooks\\scratch\\output"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
@@ -50,49 +50,46 @@ for (site in sites) {
     threshold = vector()
     fold = vector()
     vars = list()
+    results.table = data.frame()
     k=0
     
     for (f in files) {
       k = k+1
       raw = scan(paste(path, f, sep="/"), 'character', sep='\n')
       
-      i = grep("^# predicted:", raw)
-      predicted = c(predicted, as.numeric(raw[i+1]))
+      i = grep("^# results:", raw)
       
-      i = grep("^# actual:", raw)
-      actual = c(actual, as.numeric(raw[i+1]))
+      j = grep("^# vars:", raw)
+      vars[[k]] = strsplit(raw[j+1], split=", ")
       
-      i = grep("^# fold:", raw)
-      fold = c(fold, as.numeric(raw[i+1]))
-      
-      i = grep("^# threshold:", raw)
-      threshold = c(threshold, as.numeric(raw[i+1]))
-      
-      i = grep("^# vars:", raw)
-      vars[[k]] = strsplit(raw[i+1], split=", ")
+      results.text = vector()
+      for (l in (i+1):(j-1)) {
+          results.text = c(results.text, raw[l])
+      }
+      results.table = rbind(results.table, read.table(textConnection(results.text), header=TRUE))
     }
+        
+    results.table = results.table[order(results.table[['threshold']]),]
+
+    n = nrow(results.table)
+    tpos = rep(NA, n)
+    tneg = rep(NA, n)
+    fpos = rep(NA, n)
+    fneg = rep(NA, n)
     
-    res = data.frame(predicted=predicted, actual=actual, fold=fold, threshold=threshold)
-    res = res[order(res[['threshold']]),]
-    
-    tpos = rep(NA, nrow(res))
-    tneg = rep(NA, nrow(res))
-    fpos = rep(NA, nrow(res))
-    fneg = rep(NA, nrow(res))
-    
-    for (t in unique(res[['threshold']])) {
-      indx = which(res[['threshold']]==t)
-      posindx = which(res[['threshold']]>=t)
-      negindx = which(res[['threshold']]<t)
+    for (t in unique(results.table[['threshold']])) {
+      indx = which(results.table[['threshold']]==t)
+      posindx = which(results.table[['threshold']]>=t)
+      negindx = which(results.table[['threshold']]<t)
       
-      tpos[indx] = sum(res$actual[posindx] > 2.3711)
-      tneg[indx] = sum(res$actual[negindx] <= 2.3711)
-      fpos[indx] = sum(res$actual[posindx] <= 2.3711)
-      fneg[indx] = sum(res$actual[negindx] > 2.3711)
+      tpos[indx] = sum(results.table$actual[posindx] > 2.3711)
+      tneg[indx] = sum(results.table$actual[negindx] <= 2.3711)
+      fpos[indx] = sum(results.table$actual[posindx] <= 2.3711)
+      fneg[indx] = sum(results.table$actual[negindx] > 2.3711)
     }
-    res = cbind(res, tpos, tneg, fpos, fneg)
+    results.table = cbind(results.table, tpos, tneg, fpos, fneg)
     
-    site_results[[method]] = list(res=res, roc=ROC(res))
+    site_results[[method]] = list(res=results.table, roc=ROC(results.table))
     site_var_results[[method]] = vars
   }
   results[[site]] = site_results
