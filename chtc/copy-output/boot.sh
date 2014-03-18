@@ -9,6 +9,6 @@ for site in ${sites[@]}
 do
   for method in ${methods[@]}
   do
-    ./get.sh $site $method > copy-records/$site-$method.txt
+    ./get.sh $site $method >copy-records/$site-$method.txt 2>&1
   done
 done
