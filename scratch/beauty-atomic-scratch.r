@@ -4,15 +4,15 @@ source('R/utils.r')
 
 type='loo'
 cluster = NA
-beach = 'thompson'
-method = 'adapt'
-process = 15
+beach = 'redarrow'
+method = 'pls'
+process = 93
 
 result = "placeholder"
 output = ""
 seed = 1
 
-prefix = paste("~/scratch/out", cluster, process, sep=".")
+prefix = paste("~/scratch/beautyrun", process, sep=".")
 
 source("R/loo-atomic.r")
 
