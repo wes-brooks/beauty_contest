@@ -4,9 +4,9 @@ source('R/utils.r')
 
 type='loo'
 cluster = NA
-beach = 'thompson'
-method = 'adapt'
-process = 49
+beach = 'point'
+method = 'spls'
+process = 189
 
 result = "placeholder"
 output = ""
