@@ -12,10 +12,8 @@ result = "placeholder"
 output = ""
 seed = 1
 
-prefix = paste("~/scratch/beautyrun", process, sep=".")
-
-for (i in 1:length(processes)) {
-  process = processes[i]
+for (process in processes) {
+  prefix = paste("~/scratch/beautyrun", process, sep=".")
   cat(paste("process: ", process, "\n", sep=""))
   source("R/loo-atomic.r")
 }
