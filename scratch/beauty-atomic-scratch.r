@@ -6,7 +6,7 @@ type='loo'
 cluster = NA
 beach = 'point'
 method = 'spls'
-processes = c(189
+process = 189
 
 result = "placeholder"
 output = ""
@@ -14,8 +14,6 @@ seed = 1
 
 prefix = paste("~/scratch/beautyrun", process, sep=".")
 
+source("R/loo-atomic.r")
 
-for (process in processes) {
-  source("R/loo-atomic.r")
-}
 
