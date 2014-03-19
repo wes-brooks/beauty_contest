@@ -3,13 +3,14 @@ require(ggplot2)
 require(brooks)
 
 root = "~/misc/b2/output"
+source("R/settings.r")
 #root = "C:\\Users\\wrbrooks\\scratch\\output"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
-#sites = c("thompson")
-#methods = c("gbmcv")
+sites = c("thompson")
+methods = c("adapt")
 
 
 ROC = function(results) {
@@ -50,17 +51,25 @@ for (site in sites) {
     threshold = vector()
     fold = vector()
     vars = list()
+    varstring = list()
     results.table = data.frame()
     k=0
     
     for (f in files) {
       k = k+1
-      raw = scan(paste(path, f, sep="/"), 'character', sep='\n')
+      ff = file(paste(path, f, sep="/"), open='r')
+      raw = scan(ff, 'character', sep='\n')
+      close(ff)
+      
+      #Garbage-collect the connection because the system sets a maximum that we'd otherwise exceed:
+      rm(ff)
+      gc()
       
       i = grep("^# results:", raw)
       
       j = grep("^# vars:", raw)
-      vars[[k]] = strsplit(raw[j+1], split=", ")
+      vars[[k]] = strsplit(raw[j+1], split=", ")[[1]]
+      varstring[[k]] = paste(sort(vars[[k]]), collapse=";")
       
       results.text = vector()
       for (l in (i+1):(j-1)) {
@@ -68,7 +77,9 @@ for (site in sites) {
       }
       results.table = rbind(results.table, read.table(textConnection(results.text), header=TRUE))
     }
-        
+
+    #Get the decision-accuracy of the modeling method.
+    #First, sort the results based on the decision threshold
     results.table = results.table[order(results.table[['threshold']]),]
 
     n = nrow(results.table)
@@ -77,6 +88,7 @@ for (site in sites) {
     fpos = rep(NA, n)
     fneg = rep(NA, n)
     
+    #For each possible decision compute the projected confusion matrix
     for (t in unique(results.table[['threshold']])) {
       indx = which(results.table[['threshold']]==t)
       posindx = which(results.table[['threshold']]>=t)
@@ -89,8 +101,27 @@ for (site in sites) {
     }
     results.table = cbind(results.table, tpos, tneg, fpos, fneg)
     
+    #Now produce the area under the ROC curve:
     site_results[[method]] = list(res=results.table, roc=ROC(results.table))
-    site_var_results[[method]] = vars
+    
+    #Compute the frequency of each variable:
+    predictors = colnames(read.csv(beaches[[site]][['file']], header=TRUE))
+    varfreq = vector()
+    for (v in predictors) {
+        appearances = sum(sapply(vars, function(x) v %in% x))
+        varfreq = c(varfreq, appearances/n)
+    }
+    site_var_results[[method]] = list(predictor.frequency=data.frame(variable=predictors, frequency=varfreq))
+    
+    #Compute the frequency of each unique variable combination:
+    varcombo = list()
+    for (v in unique(varstring)) {
+        varcombo[[length(varcombo)+1]] = list(variables=v, frequency=sum(varstring==v)/n)
+    }
+    #sort these results by their frequency:
+    ord = order(varcombo, function(x) x[['frequency']]), decreasing=TRUE)
+    varcombo = varcombo[ord]
+    site_var_results[[method]][['predictor.combination.frequency']] = varcombo
   }
   results[[site]] = site_results
   var_results[[site]] = site_var_results
