@@ -1,4 +1,4 @@
-source("R/import-packages.r")
+source("scratch/import-modules.r")
 source("R/settings.r")
 source('R/utils.r')
 
