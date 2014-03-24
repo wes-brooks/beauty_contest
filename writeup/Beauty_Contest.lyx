@@ -119,6 +119,74 @@ Will include a map and tables
 Listing of specific statistical techniques
 \end_layout
 
+\begin_layout Standard
+pls - this is just like the PLS method in Virtual Beach
+\end_layout
+
+\begin_layout Standard
+gbm - just like in Virtual Beach
+\end_layout
+
+\begin_layout Standard
+gbmcv - this one differs from gbm in that it chooses the number of trees
+ by cross-validation, instead of the so-called "out-of-bag" estimator used
+ by plain gbm.
+ A little better but a lot slower than gbm.
+\end_layout
+
+\begin_layout Standard
+- And these methods do variable selection in addition to model fitting:
+\end_layout
+
+\begin_layout Standard
+adapt - uses the adaptive lasso for selection and fitting
+\end_layout
+
+\begin_layout Standard
+adapt-select - adaptive lasso for selection, then take those variables and
+ fit a model using R's lm() function 
+\end_layout
+
+\begin_layout Standard
+adalasso-weighted - logistic regression via adaptive lasso with observations
+ weighted based on their distance from the threshold
+\end_layout
+
+\begin_layout Standard
+adalasso-weighted-select - like the above method but after selecting variables,
+ they're fit using R's glm() function.
+ 
+\end_layout
+
+\begin_layout Standard
+adalasso-unweighted - like adalasso-weighted but without the observation
+ weights adalasso-unweighted-select - like the above method but after selecting
+ variables, they're fit using R's glm() function.
+ 
+\end_layout
+
+\begin_layout Standard
+galm - genetic algorithm used for selecting variables in a linear regression
+ model 
+\end_layout
+
+\begin_layout Standard
+galogistic-weighted - genetic algorithm used for selecting variables in
+ a logistic regression model where observations are weighted based on their
+ distance from the threshold galogistic-unweighted - just as above but without
+ the observation weights.
+ 
+\end_layout
+
+\begin_layout Standard
+spls - the sparse pls routine from the spls package 
+\end_layout
+
+\begin_layout Standard
+spls-select - use sparse pls to select variables for linear regression,
+ then fit the model using the lm() function.
+\end_layout
+
 \begin_layout Subsubsection
 PLS
 \end_layout
@@ -159,8 +227,45 @@ Gaussian
 adapt
 \end_layout
 
+\begin_layout Standard
+Uses the adaptive lasso of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zou-2006"
+
+\end_inset
+
+ to select variables and estimate their coefficients.
+ The adaptive lasso tuning parameter 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is selected to minimize the bias-corrected AIC of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Hurvich-Simonoff-Tsai-1998"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subparagraph
 adapt-select
+\end_layout
+
+\begin_layout Standard
+Uses the adaptive lasso of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zou-2006"
+
+\end_inset
+
+ to select variables, with the corrected AIC for selection of the tuning
+ parameter.
+ The results of the variable selection are used in a multiple linear regression
+ model.
 \end_layout
 
 \begin_layout Paragraph
@@ -369,6 +474,17 @@ Acknowledgments
 
 \begin_layout Section
 References
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/home/wesley/git/beauty_contest/references/beautycontest"
+options "plainnat"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
