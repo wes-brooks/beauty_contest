@@ -199,6 +199,16 @@ GBM
 GBM
 \end_layout
 
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Friedman-2001"
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Paragraph
 GBM-CV
 \end_layout
@@ -209,6 +219,17 @@ SPLS
 
 \begin_layout Paragraph
 SPLS
+\end_layout
+
+\begin_layout Standard
+Sparse PLS (SPLS) is introduced in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Chun-Keles-2007"
+
+\end_inset
+
+ as a method for analyzing high-dimensional data.
 \end_layout
 
 \begin_layout Paragraph
@@ -292,16 +313,23 @@ Unweighted-select
 Genetic algorithm
 \end_layout
 
+\begin_layout Standard
+The genetic algorithm 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Fogel-1998"
+
+\end_inset
+
+ 
+\end_layout
+
 \begin_layout Paragraph*
 gaussian
 \end_layout
 
-\begin_layout Subparagraph
-ga
-\end_layout
-
-\begin_layout Subparagraph
-ga-select
+\begin_layout Standard
+placehold
 \end_layout
 
 \begin_layout Paragraph
