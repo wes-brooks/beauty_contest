@@ -217,10 +217,6 @@ GBM-CV
 SPLS
 \end_layout
 
-\begin_layout Paragraph
-SPLS
-\end_layout
-
 \begin_layout Standard
 Sparse PLS (SPLS) is introduced in 
 \begin_inset CommandInset citation
@@ -233,11 +229,67 @@ key "Chun-Keles-2007"
 \end_layout
 
 \begin_layout Paragraph
+SPLS
+\end_layout
+
+\begin_layout Paragraph
 SPLS-select
 \end_layout
 
 \begin_layout Subsubsection
 Adaptive Lasso
+\end_layout
+
+\begin_layout Standard
+The adaptive lasso 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zou-2006"
+
+\end_inset
+
+ is a regression method that simultaneously selects relevant predictors
+ and estimates their coefficients by adding an 
+\begin_inset Formula $\ell_{1}$
+\end_inset
+
+ penalty to the negative log-likelihood.
+ For linear regression, the adaptive lasso estiamtes 
+\begin_inset Formula $\bm{{\beta}}$
+\end_inset
+
+ to minimize the criterion 
+\begin_inset Formula $\sum_{i=1}^{n}(y_{i}-X_{i}\beta)^{2}+\lambda\sum_{j=1}^{p}\frac{{|\beta_{j}|}}{\tilde{{|\beta_{j}|^{\gamma}}}}$
+\end_inset
+
+, where 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is a tuning parameter and 
+\begin_inset Formula $\tilde{{\bm{{\beta}}}}$
+\end_inset
+
+ is the vector of the usual least squares coefficients.
+\end_layout
+
+\begin_layout Standard
+In this work, 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ is set to one and the adaptive lasso tuning parameter 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is selected to minimize the bias-corrected AIC of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Hurvich-Simonoff-Tsai-1998"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -257,18 +309,7 @@ key "Zou-2006"
 \end_inset
 
  to select variables and estimate their coefficients.
- The adaptive lasso tuning parameter 
-\begin_inset Formula $\lambda$
-\end_inset
-
- is selected to minimize the bias-corrected AIC of 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Hurvich-Simonoff-Tsai-1998"
-
-\end_inset
-
-.
+ 
 \end_layout
 
 \begin_layout Subparagraph
