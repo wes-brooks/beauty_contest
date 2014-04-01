@@ -1,7 +1,7 @@
 monitor <-
 function(obj, data, output) {
-    minEval = min(obj$evaluations)
-    filter = obj$evaluations == minEval
+    minEval = min(obj$evaluations, na.rm=TRUE)
+    filter = which(obj$evaluations == minEval)
     bestObjectCount = sum(rep(1, obj$popSize)[filter])
     
     # ok, deal with the situation that more than one object is best

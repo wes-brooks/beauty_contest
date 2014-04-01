@@ -74,6 +74,7 @@ rbga.bin = function(size=10, suggestions=NULL, popSize=200, iters=100, mutationC
                     cat(".")
                 }
             }
+            
             bestEvals[iter] = min(evalVals)
             meanEvals[iter] = mean(evalVals)
             if (verbose) 

@@ -19,5 +19,6 @@ evalAICc_logistic <- function(chromosome=c(), data, output, family, weights) {
             returnVal = AIC(model) + 2*df*(df+1)/(n-df-1)
         }
     }
+    if (is.na(returnVal)) { returnVal = Inf }
     return(returnVal)
 }
