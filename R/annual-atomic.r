@@ -1,4 +1,4 @@
-cv_folds = 'loo'
+cv_folds = 5
 first = TRUE
 
 settings = beaches[[beach]]
