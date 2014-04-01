@@ -321,6 +321,31 @@ key "Fogel-1998"
 
 \end_inset
 
+ is a variable-selection method that works by analogy to natural selection,
+ where so-called chromosomes - each a string of ones and zeros whose length
+ is equal to the number of variables in the dataset - represent regression
+ models.
+ A variable is included in the model if the corresponding element of the
+ chrmosome is one, but not otherwise.
+ Chromosomes are produced in successive generations, where the first generation
+ is produced randomly and subsequent generations are produced by combining
+ chromosomes from the current generation, with additional random drift.
+ The chance that a chromosome in the current generation will produce offspring
+ in the next generation is a determined by its fitness.
+ The fitness of each chromosome is calculated by the corrected Akaike Informatio
+n Criterion (AICc) 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Akaike-1973,Hurvich-Tsai-1989"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Our implementation used 100 generations and each generation contained 200
+ chromosomes.
  
 \end_layout
 
@@ -342,34 +367,6 @@ ga-unweighted
 
 \begin_layout Subparagraph
 ga-weighted
-\end_layout
-
-\begin_layout Standard
-Quick summary with key refs for each and a short discussion of why it was
- chosen
-\end_layout
-
-\begin_layout Standard
-Refer to previous paper for PLS
-\end_layout
-
-\begin_layout Standard
-Other techniques:
-\end_layout
-
-\begin_layout Standard
-PLS, GBM, SPLS, Adaptive Lasso for Logistic Regression and Linear Regression
- (variable selection/selection and fitting), 
-\end_layout
-
-\begin_layout Standard
-GBM and Adaptive lasso can include weighting based on distance from the
- threshold
-\end_layout
-
-\begin_layout Standard
-GA for both logistic and linear, with and without weights (maybe not with
- logistic regression)
 \end_layout
 
 \begin_layout Subsection
