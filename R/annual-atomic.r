@@ -145,3 +145,7 @@ job_output[[length(job_output)+1]] = predperf
 #Clean up and move on.
 job_output[[length(job_output)+1]] = warnings()
 sapply(job_output, print)
+
+sink(paste(beach, method, process, "out", sep="."))
+sapply(job_output, print)
+sink()
