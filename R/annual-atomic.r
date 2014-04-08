@@ -137,7 +137,7 @@ predperf = rbind(predperf, as.data.frame(list(
 #warnings()
 #sink()
 
-job_output[[length(job_output)+1]] = "# rocframe: \n")
+job_output[[length(job_output)+1]] = "# rocframe: \n"
 job_output[[length(job_output)+1]] = foldresult
 job_output[[length(job_output)+1]] = "# predperf: \n"
 job_output[[length(job_output)+1]] = predperf
