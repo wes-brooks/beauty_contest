@@ -9,8 +9,8 @@ root = "~/misc/b2/output"
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
-sites = c("hika")
-methods = c("galogistic-weighted")
+#sites = c("hika")
+#methods = c("galogistic-weighted")
 
 
 ROC = function(results) {
@@ -124,3 +124,18 @@ for (site in sites) {
     }
 }
 
+#Create a flat table of the area under the ROC curve:
+flatarea = list('site'=vector(), 'method'=vector(), 'area'=vector())
+for (r in 1:ncol(area)) {
+    flatarea[['site']] = c(flatarea[['site']], rep(colnames(area)[r], nrow(area)))
+    flatarea[['method']] = c(flatarea[['method']], rownames(area))
+    flatarea[['area']] = c(flatarea[['area']], as.numeric(area[,r]))
+}
+flatarea = as.data.frame(flatarea)
+
+
+#plot the area under the ROC curve:
+areaplot = ggplot(flatarea)
+ggplot(flatarea) + aes(x=site, y=area, fill=method) + geom_bar(stat='identity', position='dodge')
+
+ggplot(flatarea) + aes(x=method, y=area, fill=method) + geom_bar(stat='identity') + facet_wrap(~site)
