@@ -363,9 +363,8 @@ key "Fogel-1998"
 \end_inset
 
  is a variable-selection method that works by analogy to natural selection,
- where so-called chromosomes - each a string of ones and zeros whose length
- is equal to the number of variables in the dataset - represent regression
- models.
+ where so-called chromosomes represent regression models.
+ Each chrom.
  A variable is included in the model if the corresponding element of the
  chrmosome is one, but not otherwise.
  Chromosomes are produced in successive generations, where the first generation
