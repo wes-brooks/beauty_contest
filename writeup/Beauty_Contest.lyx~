@@ -89,6 +89,12 @@ Introduction
 Methods
 \end_layout
 
+\begin_layout Standard
+The availability of large data sets for building regression models to predict
+ the bacterial counts in beach water is both an opportunity and a challenge.
+ 
+\end_layout
+
 \begin_layout Subsection
 Data Sources
 \end_layout
@@ -191,8 +197,42 @@ spls-select - use sparse pls to select variables for linear regression,
 PLS
 \end_layout
 
+\begin_layout Standard
+Partial least squares (PLS) regression is a tool for building regression
+ models when there are many covariates available.
+ PLS works by decomposing the covariates into mutually orthogonal components,
+ with the components then used as the variables in a regression model.
+ This is similar to the singular value decomposition (SVD), but the way
+ PLS components are chosen ensures that they are aligned with the model
+ output.
+ On the other hand, SVD is sometimes criticised for decomposing the covariates
+ into components that are unrelated to the model's output.
+\end_layout
+
+\begin_layout Standard
+To use PLS, one must decide how many components to use in the model.
+ The code for this paper follows the method described in (Brooks-Fienen-Corsi-20
+12), using the PRESS statistic to select the number of components.
+\end_layout
+
 \begin_layout Subsubsection
 GBM
+\end_layout
+
+\begin_layout Standard
+The gradient boosting machine (GBM) of (Friedman-2001) has been called the
+ 
+\begin_inset Quotes eld
+\end_inset
+
+best off-the-shelf machine learning method
+\begin_inset Quotes erd
+\end_inset
+
+ (Friedman-Hastie-Tibshirani-2001).
+ A GBM model is a collection of many regression trees, and prediction is
+ done by averaging the outputs of the several trees.
+ 
 \end_layout
 
 \begin_layout Paragraph
@@ -217,10 +257,6 @@ GBM-CV
 SPLS
 \end_layout
 
-\begin_layout Paragraph
-SPLS
-\end_layout
-
 \begin_layout Standard
 Sparse PLS (SPLS) is introduced in 
 \begin_inset CommandInset citation
@@ -229,11 +265,28 @@ key "Chun-Keles-2007"
 
 \end_inset
 
- as a method for analyzing high-dimensional data.
+.
+ The SPLS method combines the orthogonal decompositions of PLS with lasso-type
+ variable selection.
+ 
+\end_layout
+
+\begin_layout Paragraph
+SPLS
+\end_layout
+
+\begin_layout Standard
+This modeling method used SPLS to select relevant variables and fit the
+ regression model.
 \end_layout
 
 \begin_layout Paragraph
 SPLS-select
+\end_layout
+
+\begin_layout Standard
+This modeling method used SPLS to select the relevant covariates and then
+ fit an ordinary least squares regression model using those covariates.
 \end_layout
 
 \begin_layout Subsubsection
@@ -270,7 +323,7 @@ key "Zou-2006"
 \begin_inset Formula $\tilde{{\bm{{\beta}}}}$
 \end_inset
 
- is the vector of the usual least squares coefficients.
+ is a consistent estimate of the regression coefficients.
 \end_layout
 
 \begin_layout Standard
@@ -334,6 +387,10 @@ key "Zou-2006"
 Logistic
 \end_layout
 
+\begin_layout Standard
+Logistic regression (McCullagh-Nelder-1989)
+\end_layout
+
 \begin_layout Subparagraph
 weighted
 \end_layout
@@ -363,9 +420,8 @@ key "Fogel-1998"
 \end_inset
 
  is a variable-selection method that works by analogy to natural selection,
- where so-called chromosomes - each a string of ones and zeros whose length
- is equal to the number of variables in the dataset - represent regression
- models.
+ where so-called chromosomes represent regression models.
+ Each chrom.
  A variable is included in the model if the corresponding element of the
  chrmosome is one, but not otherwise.
  Chromosomes are produced in successive generations, where the first generation
