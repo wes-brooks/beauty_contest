@@ -5,9 +5,9 @@ source('R/utils.r')
 #set some values we'll use later
 type = 'cv'
 cluster = NA
-beach = 'point'
+beach = 'neshotah'
 method = 'adapt'
-cv_folds = 5
+cv_folds = 'loo'
 first = TRUE
 seed = 1
 
@@ -51,3 +51,14 @@ valpar = c(params[[method]],
 )
 result = do.call(Validate, valpar)
 
+#Prepare the results to be used in a production model
+m = result[[2]]
+candidates = m[['fitted']][m[['actual']] < 2.3711]
+result[[1]] = cbind(result[[1]][1:3], as.vector(quantile(candidates, result[[1]][['threshold']])), result[[1]][4:8])
+names(result[[1]])[3] = "tuning"
+names(result[[1]])[4] = "threshold"
+
+#Adjust the coefficients and intercept (reverse the adaptive weights)
+indx = which(names(data) %in% m[['vars']])
+coefs = m[['coef']] * m[['model']][['lars']][['scale']][indx-1]
+intercept = m[['model']][['lars']][['Intercept']] - sum(coefs * m[['model']][['lars']][['meanx']][m[['vars']]])
