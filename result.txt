@@ -7067,3 +7067,12 @@ $vars
 [174] "beach_WindVector_perp"                                
 [175] "beach_WindVector_parl"                                
 
+Warning in install.packages :
+  running command '"C:/PROGRA~1/R/R-30~1.2/bin/i386/R" CMD INSTALL -l "C:\Users\wrbrooks\git\beauty_contest\rlibs" "R-libs/galm"' had status 1
+Warning in install.packages :
+  installation of package ‘R-libs/galm’ had non-zero exit status
+Warning in install.packages :
+  running command '"C:/PROGRA~1/R/R-30~1.2/bin/i386/R" CMD INSTALL -l "C:\Users\wrbrooks\git\beauty_contest\rlibs" "R-libs/galm"' had status 1
+Warning in install.packages :
+  installation of package ‘R-libs/galm’ had non-zero exit status
+[1] "C:/Users/wrbrooks/git/beauty_contest"
