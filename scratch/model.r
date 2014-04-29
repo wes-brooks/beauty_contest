@@ -5,7 +5,7 @@ source('R/utils.r')
 #set some values we'll use later
 type = 'cv'
 cluster = NA
-beach = 'neshotah'
+beach = 'maritime'
 method = 'adapt'
 cv_folds = 'loo'
 first = TRUE

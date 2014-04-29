@@ -6,6 +6,7 @@ beaches[['neshotah']] = list('file'='data/MaxRowsTurb/NS2013.2.MaxRowsTurb.csv',
 beaches[['point']] = list('file'='data/MaxRowsTurb/PointAll.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['redarrow']] = list('file'='data/MaxRowsTurb/RA2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['thompson']] = list('file'='data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
+beaches[['maritime']] = list('file'='data/MaxRowsTurb/Maritime.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('E_COLI_VALUE', 'SURVEY_DATETIME'), 'threshold'=2.3711, 'transforms'=list())
 
 
 params = list()
