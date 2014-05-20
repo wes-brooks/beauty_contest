@@ -2,15 +2,13 @@ require(stringr)
 require(ggplot2)
 require(brooks)
 
-root = "~/misc/b2/output"
-source("R/settings.r")
+root = "~/scratch/output"
+#source("R/settings.r")
 #root = "C:\\Users\\wrbrooks\\scratch\\output"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
-sites = c("thompson")
-methods = c("adapt")
 
 
 ROC = function(results) {
@@ -118,9 +116,12 @@ for (site in sites) {
     for (v in unique(varstring)) {
         varcombo[[length(varcombo)+1]] = list(variables=v, frequency=sum(varstring==v)/n)
     }
-    #sort these results by their frequency:
-    ord = order(varcombo, function(x) x[['frequency']]), decreasing=TRUE)
-    varcombo = varcombo[ord]
+    
+    if (length(varcombo)>1) {
+        #sort these results by their frequency:
+        ord = order(sapply(varcombo, function(x) x[['frequency']]), decreasing=TRUE)
+        varcombo = varcombo[ord]
+    }
     site_var_results[[method]][['predictor.combination.frequency']] = varcombo
   }
   results[[site]] = site_results
