@@ -4,13 +4,13 @@ source('R/utils.r')
 
 type='loo'
 cluster = NA
-beach = 'point'
-method = 'spls'
-processes = c(139, 149, 156, 174, 175, 177, 183, 185, 188)
+beach = 'thompson'
+method = 'adalasso-unweighted-select'
+processes = c(115)
 
 result = "placeholder"
 output = ""
-seed = 1
+seed = 10
 
 for (process in processes) {
   prefix = paste("~/scratch/beautyrun", process, sep=".")

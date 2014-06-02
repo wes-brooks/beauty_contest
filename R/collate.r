@@ -9,8 +9,8 @@ source("R/settings.r")
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
-sites = c("thompson")
-methods = c("adapt")
+#sites = c("hika")
+#methods = c("gbmcv")
 
 
 ROC = function(results) {
@@ -41,6 +41,7 @@ for (site in sites) {
   site_var_results = list()
   
   for (method in methods) {
+cat(paste("site: ", site, ", method: ", method, "\n", sep=""))
     path = paste(root, site, method, sep="/")
     filelist = list.files(path)
     indx = grep(paste("^beautyrun\\.\\d+\\.", site, "\\.", method, "\\.out", sep=""), filelist, perl=TRUE)
@@ -56,6 +57,7 @@ for (site in sites) {
     k=0
     
     for (f in files) {
+cat(paste("file: ", f, "\n", sep=""))
       k = k+1
       ff = file(paste(path, f, sep="/"), open='r')
       raw = scan(ff, 'character', sep='\n')
@@ -119,7 +121,7 @@ for (site in sites) {
         varcombo[[length(varcombo)+1]] = list(variables=v, frequency=sum(varstring==v)/n)
     }
     #sort these results by their frequency:
-    ord = order(varcombo, function(x) x[['frequency']]), decreasing=TRUE)
+    ord = order(sapply(varcombo, function(x) x[['frequency']]), decreasing=TRUE)
     varcombo = varcombo[ord]
     site_var_results[[method]][['predictor.combination.frequency']] = varcombo
   }
