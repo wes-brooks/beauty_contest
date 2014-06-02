@@ -6,6 +6,10 @@ beaches[['neshotah']] = list('file'='data/MaxRowsTurb/NS2013.2.MaxRowsTurb.csv',
 beaches[['point']] = list('file'='data/MaxRowsTurb/PointAll.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['redarrow']] = list('file'='data/MaxRowsTurb/RA2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
 beaches[['thompson']] = list('file'='data/MaxRowsTurb/TH2013.2.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('beach_EColiValue', 'surveyDatetime'), 'threshold'=2.3711, 'transforms'=list())
+beaches[['maritime']] = list('file'='data/MaxRowsTurb/Maritime.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('E_COLI_VALUE', 'SURVEY_DATETIME'), 'threshold'=2.3711, 'transforms'=list())
+beaches[['maritime2']] = list('file'='data/MaxRowsTurb/Maritime.MaxRowsTurb.csv', 'target'='log_beach_EColi', 'remove'=c('E_COLI_VALUE', 'SURVEY_DATETIME', 'beach_WindVector_perp', 'beach_WindVector_parl', "Wind_Mean_1_perp", "Wind_Mean_2_perp", "Wind_Mean_6_perp", "Wind_Mean_12_perp", "Wind_Mean_24_perp", "Wind_Mean_1_par", "Wind_Mean_2_par", "Wind_Mean_6_par", "Wind_Mean_12_par", "Wind_Mean_24_par"), 'threshold'=2.3711, 'transforms'=list())
+
+
 
 
 params = list()

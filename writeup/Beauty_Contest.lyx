@@ -1,5 +1,5 @@
-#LyX 2.0 created this file. For more info see http://www.lyx.org/
-\lyxformat 413
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
 \begin_document
 \begin_header
 \textclass article
@@ -21,13 +21,13 @@ figs-within-sections
 \font_roman default
 \font_sans default
 \font_typewriter default
+\font_math auto
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
-
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -38,15 +38,24 @@ figs-within-sections
 \use_hyperref false
 \papersize default
 \use_geometry true
-\use_amsmath 1
-\use_esint 1
-\use_mhchem 1
-\use_mathdots 1
-\cite_engine natbib_authoryear
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
 \suppress_date false
+\justification true
 \use_refstyle 1
 \index Index
 \shortcut idx
@@ -89,6 +98,12 @@ Introduction
 Methods
 \end_layout
 
+\begin_layout Standard
+The availability of large data sets for building regression models to predict
+ the bacterial counts in beach water is both an opportunity and a challenge.
+ 
+\end_layout
+
 \begin_layout Subsection
 Data Sources
 \end_layout
@@ -119,16 +134,157 @@ Will include a map and tables
 Listing of specific statistical techniques
 \end_layout
 
+\begin_layout Standard
+pls - this is just like the PLS method in Virtual Beach
+\end_layout
+
+\begin_layout Standard
+gbm - just like in Virtual Beach
+\end_layout
+
+\begin_layout Standard
+gbmcv - this one differs from gbm in that it chooses the number of trees
+ by cross-validation, instead of the so-called "out-of-bag" estimator used
+ by plain gbm.
+ A little better but a lot slower than gbm.
+\end_layout
+
+\begin_layout Standard
+- And these methods do variable selection in addition to model fitting:
+\end_layout
+
+\begin_layout Standard
+adapt - uses the adaptive lasso for selection and fitting
+\end_layout
+
+\begin_layout Standard
+adapt-select - adaptive lasso for selection, then take those variables and
+ fit a model using R's lm() function 
+\end_layout
+
+\begin_layout Standard
+adalasso-weighted - logistic regression via adaptive lasso with observations
+ weighted based on their distance from the threshold
+\end_layout
+
+\begin_layout Standard
+adalasso-weighted-select - like the above method but after selecting variables,
+ they're fit using R's glm() function.
+ 
+\end_layout
+
+\begin_layout Standard
+adalasso-unweighted - like adalasso-weighted but without the observation
+ weights adalasso-unweighted-select - like the above method but after selecting
+ variables, they're fit using R's glm() function.
+ 
+\end_layout
+
+\begin_layout Standard
+galm - genetic algorithm used for selecting variables in a linear regression
+ model 
+\end_layout
+
+\begin_layout Standard
+galogistic-weighted - genetic algorithm used for selecting variables in
+ a logistic regression model where observations are weighted based on their
+ distance from the threshold galogistic-unweighted - just as above but without
+ the observation weights.
+ 
+\end_layout
+
+\begin_layout Standard
+spls - the sparse pls routine from the spls package 
+\end_layout
+
+\begin_layout Standard
+spls-select - use sparse pls to select variables for linear regression,
+ then fit the model using the lm() function.
+\end_layout
+
 \begin_layout Subsubsection
 PLS
 \end_layout
 
+\begin_layout Standard
+Partial least squares (PLS) regression is a tool for building regression
+ models when there are many covariates available.
+ PLS works by decomposing the covariates into mutually orthogonal components,
+ with the components then used as the variables in a regression model.
+ This is similar to the singular value decomposition (SVD), but the way
+ PLS components are chosen ensures that they are aligned with the model
+ output.
+ On the other hand, SVD is sometimes criticised for decomposing the covariates
+ into components that are unrelated to the model's output.
+\end_layout
+
+\begin_layout Standard
+To use PLS, one must decide how many components to use in the model.
+ The code for this paper follows the method described in (Brooks-Fienen-Corsi-20
+12), using the PRESS statistic to select the number of components.
+\end_layout
+
 \begin_layout Subsubsection
 GBM
 \end_layout
 
+\begin_layout Standard
+The gradient boosting machine (GBM) of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Friedman-2001"
+
+\end_inset
+
+ has been called the 
+\begin_inset Quotes eld
+\end_inset
+
+best off-the-shelf machine learning method
+\begin_inset Quotes erd
+\end_inset
+
+ (Friedman-Hastie-Tibshirani-2001).
+ A GBM model is a collection of many regression trees, and prediction is
+ done by averaging the outputs of the several trees.
+ The parameters shared by all GBM models in this study are:
+\end_layout
+
+\begin_layout Standard
+Number of trees: 10000
+\end_layout
+
+\begin_layout Standard
+Shrinkage parameter: 0.0005
+\end_layout
+
+\begin_layout Standard
+Minimum observations per node: 5
+\end_layout
+
+\begin_layout Standard
+Depth of each tree: 5
+\end_layout
+
+\begin_layout Standard
+Bagging fraction: 0.5
+\end_layout
+
+\begin_layout Standard
+One key decision when fitting a GBM model is how many regression trees to
+ use.
+ Our strategy is to produce a model using more trees than we think are necessary
+, and then to prune back to the optimal number.
+ The optimal number of trees is the number than minimizes some error statistic.
+ GBM models are 
+\end_layout
+
 \begin_layout Paragraph
 GBM
+\end_layout
+
+\begin_layout Standard
+For these models, the 
 \end_layout
 
 \begin_layout Paragraph
@@ -139,16 +295,92 @@ GBM-CV
 SPLS
 \end_layout
 
+\begin_layout Standard
+Sparse PLS (SPLS) is introduced in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Chun-Keles-2007"
+
+\end_inset
+
+.
+ The SPLS method combines the orthogonal decompositions of PLS with lasso-type
+ variable selection.
+ 
+\end_layout
+
 \begin_layout Paragraph
 SPLS
+\end_layout
+
+\begin_layout Standard
+This modeling method used SPLS to select relevant variables and fit the
+ regression model.
 \end_layout
 
 \begin_layout Paragraph
 SPLS-select
 \end_layout
 
+\begin_layout Standard
+This modeling method used SPLS to select the relevant covariates and then
+ fit an ordinary least squares regression model using those covariates.
+\end_layout
+
 \begin_layout Subsubsection
 Adaptive Lasso
+\end_layout
+
+\begin_layout Standard
+The adaptive lasso 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zou-2006"
+
+\end_inset
+
+ is a regression method that simultaneously selects relevant predictors
+ and estimates their coefficients by adding an 
+\begin_inset Formula $\ell_{1}$
+\end_inset
+
+ penalty to the negative log-likelihood.
+ For linear regression, the adaptive lasso estiamtes 
+\begin_inset Formula $\bm{{\beta}}$
+\end_inset
+
+ to minimize the criterion 
+\begin_inset Formula $\sum_{i=1}^{n}(y_{i}-X_{i}\beta)^{2}+\lambda\sum_{j=1}^{p}\frac{{|\beta_{j}|}}{\tilde{{|\beta_{j}|^{\gamma}}}}$
+\end_inset
+
+, where 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is a tuning parameter and 
+\begin_inset Formula $\tilde{{\bm{{\beta}}}}$
+\end_inset
+
+ is a consistent estimate of the regression coefficients.
+\end_layout
+
+\begin_layout Standard
+In this work, 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ is set to one and the adaptive lasso tuning parameter 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is selected to minimize the bias-corrected AIC of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Hurvich-Simonoff-Tsai-1998"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -159,12 +391,46 @@ Gaussian
 adapt
 \end_layout
 
+\begin_layout Standard
+Uses the adaptive lasso of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zou-2006"
+
+\end_inset
+
+ to select variables and estimate their coefficients.
+ 
+\end_layout
+
 \begin_layout Subparagraph
 adapt-select
 \end_layout
 
+\begin_layout Standard
+Uses the adaptive lasso of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zou-2006"
+
+\end_inset
+
+ to select variables, with the corrected AIC for selection of the tuning
+ parameter.
+ The results of the variable selection are used in a multiple linear regression
+ model.
+\end_layout
+
 \begin_layout Paragraph
 Logistic
+\end_layout
+
+\begin_layout Standard
+Logistic regression (McCullagh-Nelder-1989) is a method for fitting a regression
+ model to binary data.
+ For our models, bacterial concentration was replaced by an indicator of
+ whether the observed concentration exceeded the regulatory standard.
+ 
 \end_layout
 
 \begin_layout Subparagraph
@@ -187,20 +453,56 @@ Unweighted-select
 Genetic algorithm
 \end_layout
 
+\begin_layout Standard
+The genetic algorithm 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Fogel-1998"
+
+\end_inset
+
+ is a variable-selection method that works by analogy to natural selection,
+ where so-called chromosomes represent regression models.
+ A variable is included in the model if the corresponding element of the
+ chrmosome is one, but not otherwise.
+ Chromosomes are produced in successive generations, where the first generation
+ is produced randomly and subsequent generations are produced by combining
+ chromosomes from the current generation, with additional random drift.
+ The chance that a chromosome in the current generation will produce offspring
+ in the next generation is a determined by its fitness.
+ The fitness of each chromosome is calculated by the corrected Akaike Informatio
+n Criterion (AICc) 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Akaike-1973,Hurvich-Tsai-1989"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Our implementation used 100 generations and each generation contained 200
+ chromosomes.
+ 
+\end_layout
+
 \begin_layout Paragraph*
-gaussian
+linear
 \end_layout
 
-\begin_layout Subparagraph
-ga
-\end_layout
-
-\begin_layout Subparagraph
-ga-select
+\begin_layout Standard
+The genetic algorithm for linear regression is 
 \end_layout
 
 \begin_layout Paragraph
 logistic
+\end_layout
+
+\begin_layout Standard
+Two options were considered for observation weights for building logistic
+ regression models via the genetica algorithm.
+ 
 \end_layout
 
 \begin_layout Subparagraph
@@ -209,34 +511,6 @@ ga-unweighted
 
 \begin_layout Subparagraph
 ga-weighted
-\end_layout
-
-\begin_layout Standard
-Quick summary with key refs for each and a short discussion of why it was
- chosen
-\end_layout
-
-\begin_layout Standard
-Refer to previous paper for PLS
-\end_layout
-
-\begin_layout Standard
-Other techniques:
-\end_layout
-
-\begin_layout Standard
-PLS, GBM, SPLS, Adaptive Lasso for Logistic Regression and Linear Regression
- (variable selection/selection and fitting), 
-\end_layout
-
-\begin_layout Standard
-GBM and Adaptive lasso can include weighting based on distance from the
- threshold
-\end_layout
-
-\begin_layout Standard
-GA for both logistic and linear, with and without weights (maybe not with
- logistic regression)
 \end_layout
 
 \begin_layout Subsection
@@ -260,32 +534,9 @@ Cross Validation
 \end_layout
 
 \begin_layout Standard
-Repeated 5-fold validation (similar to field conditions of having a few
- years)
-\end_layout
-
-\begin_layout Standard
-Compare to fitting to half seasons? 
-\emph on
-probably not but maybe because low cost
-\end_layout
-
-\begin_layout Standard
-More likely full seasons
-\end_layout
-
-\begin_layout Standard
-Possibly leave-one-out ===> perhaps instead of 5-fold because more efficient
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Seasons + leave one out.
+Modeling methods were assessed by their performance in cross-validation.
+ Two separate assesments were made: leave-one-out and leave-one-year-out
  
-\series default
-\emph on
-Reserve 5-fold as a possibility if we need it.
 \end_layout
 
 \begin_layout Subsection
@@ -363,12 +614,43 @@ Which type of model is generally the best?
 Under what conditions do some outperform others?
 \end_layout
 
+\begin_layout Standard
+Relative value of overall best model versus methods that help trim variables?
+ e.g.
+ how valuable is it to reduce number of predictors? Further, which variables
+ get cut? Expensive ones? Cheap ones?
+\end_layout
+
+\begin_layout Standard
+How important is computational expense? Only an issue for model fitting
+ --- not prediction, but worth quantifying.
+ E.g.
+ if GBM with cross validation takes hours, how much better? 
+\end_layout
+
+\begin_layout Standard
+Model tuning for GBM versus GBM-CV --> notes on how GBM is faster with similar
+ performance (e.g.
+ CV is overkill maybe)
+\end_layout
+
 \begin_layout Section
 Acknowledgments
 \end_layout
 
 \begin_layout Section
 References
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/home/wesley/git/beauty_contest/references/beautycontest"
+options "plainnat"
+
+\end_inset
+
+
 \end_layout
 
 \end_body

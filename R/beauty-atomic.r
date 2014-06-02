@@ -46,7 +46,6 @@ cat(paste("output prefix: ", prefix, "\n", sep=''))
 sink()
 
 #Use the process number to determine whether we'll run loo or annual, and with which fold
-
 if (type=='loo') {
 	source("R/loo-atomic.r")
 }

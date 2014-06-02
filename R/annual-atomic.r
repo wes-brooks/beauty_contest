@@ -1,4 +1,4 @@
-cv_folds = 'loo'
+cv_folds = 5
 first = TRUE
 
 settings = beaches[[beach]]
@@ -31,14 +31,20 @@ valdata = data[folds==f,]
 
 innerfolds = Partition(traindata, folds=cv_folds)
 
+job_output = list()
+
 #Run the modeling routine
 if (first) {
-	sink(paste(output, paste(prefix, beach, method, "annual", "out", sep="."), sep=''))            
-	if (!is.null(seed)) {cat(paste("# Seed = ", seed, "\n", sep=''))}
-	cat(paste("# Site = ", beach, "\n", sep=''))
-	cat(paste("# Method = ", method, "\n", sep=''))
-	sink()
-	first = FALSE
+	#sink(paste(output, paste(prefix, beach, method, "annual", "out", sep="."), sep=''))            
+    #if (!is.null(seed)) {cat(paste("# Seed = ", seed, "\n", sep=''))}
+	#cat(paste("# Site = ", beach, "\n", sep=''))
+	#cat(paste("# Method = ", method, "\n", sep=''))
+	#sink()
+
+    if (!is.null(seed)) {job_output[[length(job_output)+1]] = paste("# Seed = ", seed, "\n", sep='')}
+    job_output[[length(job_output)+1]] = paste("# Site = ", beach, "\n", sep='')
+    job_output[[length(job_output)+1]] = paste("# Method = ", method, "\n", sep='')
+    first = FALSE
 }
 
 #Run this modeling method against the beach data.
@@ -72,9 +78,10 @@ if (length(indx)==0) {
 model <- model[['Threshold']](model, specificity)
 t = model[['threshold']]
 
-sink(paste(output, paste(prefix, beach, method, "annual", "out", sep="."), sep=''))            
-cat(paste("# threshold = ", t, "\n", sep=''))
-sink()
+#sink(paste(output, paste(prefix, beach, method, "annual", "out", sep="."), sep=''))            
+#cat(paste("# threshold = ", t, "\n", sep=''))
+#sink()
+job_output[[length(job_output)+1]] = paste("# threshold = ", t, "\n", sep='')
 
 predictions = model[['Predict']](self=model, data=valdata)
 validation_actual = valdata[,target]        
@@ -119,13 +126,26 @@ predperf = rbind(predperf, as.data.frame(list(
 
 
 #Open a file to which we will append the output.
-sink(paste(output, paste(prefix, beach, method, "annual", "out", sep='.'), sep=""), append=TRUE)
+#sink(paste(output, paste(prefix, beach, method, "annual", "out", sep='.'), sep=""), append=TRUE)
 
-cat("# rocframe: \n")
-print(foldresult)
-cat("# predperf: \n")
-print(predperf)
+#cat("# rocframe: \n")
+#print(foldresult)
+#cat("# predperf: \n")
+#print(predperf)
 
 #Clean up and move on.
-warnings()
+#warnings()
+#sink()
+
+job_output[[length(job_output)+1]] = "# rocframe: \n"
+job_output[[length(job_output)+1]] = foldresult
+job_output[[length(job_output)+1]] = "# predperf: \n"
+job_output[[length(job_output)+1]] = predperf
+
+#Clean up and move on.
+job_output[[length(job_output)+1]] = warnings()
+sapply(job_output, print)
+
+sink(paste(beach, method, process, "out", sep="."))
+sapply(job_output, print)
 sink()

@@ -8,6 +8,10 @@ Sys.setenv(R_LIBS="rlibs")
 .libPaths(new="rlibs")
 
 sink("result.txt", append=TRUE)
+
+require(Matrix)
+require(lattice)
+
 #These are the modeling modules:
 source('R/gbm.r')
 source('R/pls.r')
