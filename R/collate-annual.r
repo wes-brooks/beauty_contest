@@ -2,7 +2,7 @@
 #require(ggplot2)
 #require(brooks)
 
-root = "~/misc/b2/output"
+root = "~/Dropbox/beauty/output"
 #source("R/settings.r")
 #root = "C:\\Users\\wrbrooks\\scratch\\output"
 
@@ -12,7 +12,7 @@ methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted
 #sites = c("hika")
 #methods = c("galogistic-weighted")
 
-c0lors = ['rgb(141,211,199)','rgb(255,255,179)','rgb(190,186,218)','rgb(251,128,114)','rgb(128,177,211)','rgb(253,180,98)','rgb(179,222,105)','rgb(252,205,229)','rgb(217,217,217)','rgb(188,128,189)','rgb(204,235,197)','rgb(255,237,111)', 'rgb(A6EC90']
+colors = ['rgb(141,211,199)','rgb(255,255,179)','rgb(190,186,218)','rgb(251,128,114)','rgb(128,177,211)','rgb(253,180,98)','rgb(179,222,105)','rgb(252,205,229)','rgb(217,217,217)','rgb(188,128,189)','rgb(204,235,197)','rgb(255,237,111)', 'rgb(A6EC90']
 
 ROC = function(results) {
     r = results
@@ -42,6 +42,7 @@ for (site in sites) {
     site_var_results = list()
     
     for (method in methods) {
+cat(paste("site: ", site, ", method: ", method, "\n", sep=""))
         path = paste(root, site, method, sep="/")
         filelist = list.files(path)
         indx = grep(paste("^beautyrun\\.\\d+\\.", site, "\\.", method, "\\.annual\\.out", sep=""), filelist, perl=TRUE)
@@ -58,6 +59,7 @@ for (site in sites) {
         k=0
         
         for (f in files) {
+cat(paste("file: ", f, "\n", sep=""))
             k = k+1
             ff = file(paste(path, f, sep="/"), open='r')
             raw = scan(ff, 'character', sep='\n')

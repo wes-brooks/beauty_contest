@@ -1,25 +1,30 @@
-source("scratch/import-modules.r")
+require(Matrix)
+require(lattice)
+
+Sys.setenv(R_LIBS="rlibs")
+.libPaths(new="rlibs")
+source("R/galogistic.r")
+source("R/gbm.r")
+
+#source("scratch/import-modules.r")
 source("R/settings.r")
 source('R/utils.r')
 
+
+
+
 type='annual'
 cluster = NA
-<<<<<<< HEAD
-beach = 'thompson'
-method = 'adalasso-unweighted-select'
-processes = c(115)
-=======
 beach = 'point'
-method = 'spls'
-processes = c(1)
->>>>>>> 37bb911db782a0f91fcebbec8964e9bc184a96f2
+method = 'gbm'
+processes = c(1,2,4)
 
 result = "placeholder"
 output = ""
 seed = 10
 
 for (process in processes) {
-  prefix = paste("~/scratch/beautyrun", process, sep=".")
+  prefix = paste("~/Dropbox/beauty/beautyrun", process, sep=".")
   cat(paste("process: ", process, "\n", sep=""))
   
   #Use the process number to determine whether we'll run loo or annual, and with which fold

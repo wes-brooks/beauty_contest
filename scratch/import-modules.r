@@ -1,8 +1,4 @@
 #Set ourselves up to import the packages:
-r = getOption("repos")
-r["CRAN"] = "http://cran.wustl.edu"
-options(repos = r)
-rm(r)
 dir.create("rlibs")
 Sys.setenv(R_LIBS="rlibs")
 .libPaths(new="rlibs")
