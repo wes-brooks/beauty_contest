@@ -2,15 +2,17 @@ require(stringr)
 require(ggplot2)
 require(brooks)
 
-root = "~/scratch/output"
-#source("R/settings.r")
+root = "C:\\Users/wrbrooks/Dropbox/beauty/output"
+#root = "~/scratch/output"
+setwd("C:\\Users/wrbrooks/git/beauty_contest")
+source("R/settings.r")
 #root = "C:\\Users\\wrbrooks\\scratch\\output"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
 #sites = c("hika")
-#methods = c("gbmcv")
+methods = c("gbm", "galm", "adapt")
 
 ROC = function(results) {
   r = results

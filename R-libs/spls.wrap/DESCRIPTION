@@ -6,5 +6,5 @@ Date: 2012-09-05
 Author: Wesley Brooks
 Maintainer: Wesley Brooks <wrbrooks@usgs.gov>
 Description: Wraps the spls package for variable selection and model-building.
-License: GPL-3
+License: MIT
 Depends: spls

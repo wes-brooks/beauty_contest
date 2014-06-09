@@ -4,7 +4,8 @@ require(lattice)
 Sys.setenv(R_LIBS="rlibs")
 .libPaths(new="rlibs")
 source("R/galogistic.r")
-source("R/gbm.r")
+#source("R/gbm.r")
+source("R/galm.r")
 
 #source("scratch/import-modules.r")
 source("R/settings.r")
@@ -16,7 +17,7 @@ source('R/utils.r')
 type='annual'
 cluster = NA
 beach = 'point'
-method = 'gbm'
+method = 'galm'
 processes = c(1,2,4)
 
 result = "placeholder"
@@ -25,6 +26,7 @@ seed = 10
 
 for (process in processes) {
   prefix = paste("~/Dropbox/beauty/beautyrun", process, sep=".")
+  prefix = paste("C:\\Users\\wrbrooks/Dropbox/beauty/beautyrun", process, sep=".")
   cat(paste("process: ", process, "\n", sep=""))
   
   #Use the process number to determine whether we'll run loo or annual, and with which fold

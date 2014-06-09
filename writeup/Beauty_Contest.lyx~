@@ -134,6 +134,26 @@ Will include a map and tables
 Listing of specific statistical techniques
 \end_layout
 
+\begin_layout Subsubsection*
+selection vs.
+ modeling
+\end_layout
+
+\begin_layout Standard
+Some methods are labeled 
+\begin_inset Quotes eld
+\end_inset
+
+select
+\begin_inset Quotes erd
+\end_inset
+
+, which means that they are used for variable selection only.
+ Once the variables are selected, the regression model is estimated using
+ ordinary least squares for the continuous regression methods, or ordinary
+ logistic regression for the binary regression methods.
+\end_layout
+
 \begin_layout Standard
 pls - this is just like the PLS method in Virtual Beach
 \end_layout
@@ -607,6 +627,13 @@ Discussion
 \end_layout
 
 \begin_layout Standard
+The GALM, GBM, and GBMCV models were generally superior to the others.
+ These models were nearly equal to each other in terms of predictive performance.
+ Of these, the GBMCV models take much longer to computer than the others,
+ so we will focus our discussion of the results on the GBM and GALM models.
+\end_layout
+
+\begin_layout Standard
 Which type of model is generally the best?
 \end_layout
 
@@ -632,10 +659,6 @@ How important is computational expense? Only an issue for model fitting
 Model tuning for GBM versus GBM-CV --> notes on how GBM is faster with similar
  performance (e.g.
  CV is overkill maybe)
-\end_layout
-
-\begin_layout Standard
-
 \end_layout
 
 \begin_layout Section

@@ -135,6 +135,42 @@ Listing of specific statistical techniques
 \end_layout
 
 \begin_layout Standard
+Continuous vs.
+ binary regression
+\end_layout
+
+\begin_layout Standard
+The goal of predicting exceednaces of the water quality standard was approached
+ in two ways: one was to predict the bacterial concentration and then compre
+ the prediction to a threshold.
+ The other was to predict the state of a binary indicator, which is coded
+ as zero when the concetration is below the standard and one when the concentrat
+ion exceeds the standard.
+ Techniques taking the former approach are continuous regression techniques,
+ those taking the latter approach are binary regression techniques.
+\end_layout
+
+\begin_layout Subsubsection*
+selection vs.
+ modeling
+\end_layout
+
+\begin_layout Standard
+Some methods are labeled 
+\begin_inset Quotes eld
+\end_inset
+
+select
+\begin_inset Quotes erd
+\end_inset
+
+, which means that they are used for variable selection only.
+ Once the variables are selected, the regression model is estimated using
+ ordinary least squares for the continuous regression methods, or ordinary
+ logistic regression for the binary regression methods.
+\end_layout
+
+\begin_layout Standard
 pls - this is just like the PLS method in Virtual Beach
 \end_layout
 
@@ -208,13 +244,13 @@ PLS
 
 \begin_layout Standard
 Partial least squares (PLS) regression is a tool for building regression
- models when there are many covariates available.
+ models with many covariates.
  PLS works by decomposing the covariates into mutually orthogonal components,
  with the components then used as the variables in a regression model.
- This is similar to the singular value decomposition (SVD), but the way
+ This is similar to the principal components regression (PCR), but the way
  PLS components are chosen ensures that they are aligned with the model
  output.
- On the other hand, SVD is sometimes criticised for decomposing the covariates
+ On the other hand, PCR is sometimes criticised for decomposing the covariates
  into components that are unrelated to the model's output.
 \end_layout
 
@@ -307,24 +343,8 @@ key "Chun-Keles-2007"
  The SPLS method combines the orthogonal decompositions of PLS with lasso-type
  variable selection.
  
-\end_layout
+\backslash
 
-\begin_layout Paragraph
-SPLS
-\end_layout
-
-\begin_layout Standard
-This modeling method used SPLS to select relevant variables and fit the
- regression model.
-\end_layout
-
-\begin_layout Paragraph
-SPLS-select
-\end_layout
-
-\begin_layout Standard
-This modeling method used SPLS to select the relevant covariates and then
- fit an ordinary least squares regression model using those covariates.
 \end_layout
 
 \begin_layout Subsubsection
@@ -604,6 +624,13 @@ Maybe anecdotal showing fit over data set
 
 \begin_layout Section
 Discussion
+\end_layout
+
+\begin_layout Standard
+The GALM, GBM, and GBMCV models were generally superior to the others.
+ These models were nearly equal to each other in terms of predictive performance.
+ Of these, the GBMCV models take much longer to computer than the others,
+ so we will focus our discussion of the results on the GBM and GALM models.
 \end_layout
 
 \begin_layout Standard
