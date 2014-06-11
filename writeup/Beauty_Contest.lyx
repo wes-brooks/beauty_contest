@@ -463,6 +463,14 @@ Maybe some form of confusion matrices -- perhaps a grid of them with or
 Results
 \end_layout
 
+\begin_layout Standard
+The area under the ROC (AUROC) curve assesses how accurately the predictions
+ of the left-out observations are sorted.
+ Since the focus of this study lies in identifying the modeling techniques
+ that are consistently the best performers, the methods were ranked at each
+ location by AUROC, and the mean ranks used to compare the methods.
+\end_layout
+
 \begin_layout Itemize
 Performance over prediction from cross validation
 \end_layout

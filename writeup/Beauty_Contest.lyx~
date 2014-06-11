@@ -479,9 +479,8 @@ Discussion
 In general, the AL, GALM, GBM, and GBMCV techniques produced comparable
  results that were superior to the other techniques in terms of predictive
  performance.
- Since the GBMCV models take much longer to computer than the others, so
- we will focus our discussion of the results on the GBM and adaptive lasso
- models.
+ Since the GBMCV models take much longer to computer than the others, we
+ will not include them in our more detailed analysis of the modeling results.
 \end_layout
 
 \begin_layout Standard

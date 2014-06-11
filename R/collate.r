@@ -12,7 +12,7 @@ sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redar
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
 #sites = c("hika")
-methods = c("gbm", "galm", "adapt")
+#methods = c("gbm", "galm", "adapt")
 
 ROC = function(results) {
   r = results
@@ -145,23 +145,34 @@ for (site in sites) {
   }
 }
 
+#Create a flat table of the area under the ROC curve:
+flatarea = list('site'=vector(), 'method'=vector(), 'area'=vector())
+for (r in 1:ncol(area)) {
+    flatarea[['site']] = c(flatarea[['site']], rep(colnames(area)[r], nrow(area)))
+    flatarea[['method']] = c(flatarea[['method']], rownames(area))
+    flatarea[['area']] = c(flatarea[['area']], as.numeric(area[,r]))
+}
+flatarea = as.data.frame(flatarea)
 
 
-#Make the plots
-logistic_methods = c('galogistic-unweighted', 'galogistic-weighted', 'adalasso-weighted-select', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-unweighted')
-plots = list()
-for (site in sites) {
-    site_plots = list()
-    for (method in methods) {
-        site_plots[[method]] = with(results[[site]][[method]][['res']], qplot(actual, predicted) + ggtitle(method))
-        site_plots[[method]] = site_plots[[method]] + geom_vline(xintercept=2.3711, linetype='longdash', colour='red')
-        #if (!(method %in% logistic_methods)) {site_plots[[method]] = site_plots[[method]] + geom_abline()}
-    }
-    plots[[site]] = site_plots
-    
-    pdf(paste("figures/", site, ".pdf", sep=""), width=16, height=20)
-    multiplot(plotlist=plots[[site]], cols=3)
-    dev.off()
+temp = as.matrix(rowMeans(apply(area, 2, rank)))
+temp = data.frame(method=rownames(temp), meanrank=temp)
+temp = temp[rev(order(temp$meanrank)), ]
+temp$method = factor(temp$method, levels=as.character(temp$method))
+rownames(temp) = NULL
+
+rocranks = temp
+
+addline_format <- function(x,...){
+    gsub('-', '\n', x, fixed=TRUE)
 }
 
 
+
+ggplot(rocranks) +
+    aes(x=method, y=meanrank) +
+    geom_bar(stat='identity') +
+    theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
+    xlab("method") + 
+    ylab("mean rank") + 
+    scale_x_discrete(labels=addline_format(temp$method))

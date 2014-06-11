@@ -35,8 +35,8 @@ ROC = function(results) {
 }
 
 
-results = list()
-var_results = list()
+results_annual = list()
+var_results_annual = list()
 
 for (site in sites) {
     site_results = list()
@@ -112,30 +112,30 @@ cat(paste("file: ", f, "\n", sep=""))
         #Now produce the area under the ROC curve:
         site_results[[method]] = list(res=results.table, roc=ROC(results.table), predperf=predperf.table)
     }
-    results[[site]] = site_results
-    var_results[[site]] = site_var_results
+    results_annual[[site]] = site_results
+    var_results_annual[[site]] = site_var_results
 }
 
 
-area = matrix(NA, length(methods), length(sites))
-rownames(area) = methods
-colnames(area) = sites
+area_annual = matrix(NA, length(methods), length(sites))
+rownames(area_annual) = methods
+colnames(area_annual) = sites
 
 for (site in sites) {
     for (method in methods) {
-        cat(paste(method, site, results[[site]][[method]][['roc']], '\n', sep=" "))
-        area[method, site] = try(results[[site]][[method]][['roc']], TRUE)
+        cat(paste(method, site, results_annual[[site]][[method]][['roc']], '\n', sep=" "))
+        area_annual[method, site] = try(results_annual[[site]][[method]][['roc']], TRUE)
     }
 }
 
 #Create a flat table of the area under the ROC curve:
-flatarea = list('site'=vector(), 'method'=vector(), 'area'=vector())
-for (r in 1:ncol(area)) {
-    flatarea[['site']] = c(flatarea[['site']], rep(colnames(area)[r], nrow(area)))
-    flatarea[['method']] = c(flatarea[['method']], rownames(area))
-    flatarea[['area']] = c(flatarea[['area']], as.numeric(area[,r]))
+flatarea_annual = list('site'=vector(), 'method'=vector(), 'area'=vector())
+for (r in 1:ncol(area_annual)) {
+    flatarea_annual[['site']] = c(flatarea_annual[['site']], rep(colnames(area_annual)[r], nrow(area_annual)))
+    flatarea_annual[['method']] = c(flatarea_annual[['method']], rownames(area_annual))
+    flatarea_annual[['area']] = c(flatarea_annual[['area']], as.numeric(area_annual[,r]))
 }
-flatarea = as.data.frame(flatarea)
+flatarea_annual = as.data.frame(flatarea_annual)
 
 
 #plot the area under the ROC curve:
@@ -143,3 +143,23 @@ areaplot = ggplot(flatarea)
 ggplot(flatarea) + aes(x=site, y=area, fill=method) + geom_bar(stat='identity', position='dodge')
 
 ggplot(flatarea) + aes(x=method, y=area, fill=method) + geom_bar(stat='identity') + facet_wrap(~site)
+
+temp = as.matrix(rowMeans(apply(area_annual, 2, rank)))
+temp = data.frame(method=rownames(temp), meanrank=temp)
+temp = temp[rev(order(temp$meanrank)), ]
+temp$method = factor(temp$method, levels=as.character(temp$method))
+rownames(temp) = NULL
+
+rocranks_annual = temp
+
+addline_format <- function(x,...){
+    gsub('-', '\n', x, fixed=TRUE)
+}
+
+ggplot(rocranks_annual) +
+    aes(x=method, y=meanrank) +
+    geom_bar(stat='identity') +
+    theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
+    xlab("method") + 
+    ylab("mean rank") + 
+    scale_x_discrete(labels=addline_format(temp$method))
