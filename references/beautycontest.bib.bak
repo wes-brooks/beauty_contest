@@ -5501,6 +5501,18 @@
   url = {https://internal.mdc.usgs.gov/glrwq/RefLinks/brooks_2005_detection_quantification_hepatitis_A_virus_seawater_real-time_RT-PCR.pdf}
 }
 
+@ARTICLE{Brooks-Fienen-Corsi-2013,
+  author = {Wesley R. Brooks and Michael N. Fienen and Steven R. Corsi},
+  title = {Partial least squares for efficient models of fecal indicator bacteria
+	on Great Lakes beaches},
+  journal = {Journal of Environmental Mana},
+  year = {2013},
+  volume = {114},
+  pages = {470-475},
+  owner = {wrbrooks},
+  timestamp = {2014.06.12}
+}
+
 @ARTICLE{Brosnan:1996ua,
   author = {Brosnan,T. M. and O'Shea,M. L.},
   title = {Sewage abatement and coliform bacteria trends in the lower Hudson-Raritan
@@ -49877,9 +49889,14 @@
   ty = {CONF}
 }
 
-@ARTICLE{,
+@ARTICLE{Wold-Sjostrum-Eriksson-2001,
   author = {Svante Wold and Michael Sjostrom and Lennart Eriksson},
   title = {PLS-regression: a basic tool of chemometrics},
+  journal = {Chemometrics and intelligent laboratory systems},
+  year = {2001},
+  volume = {58},
+  pages = {109-130},
+  file = {:C\:\\Users\\wrbrooks\\git\\beauty_contest\\references\\pdfs\\Wold-Sjostrum-Eriksson-2001.pdf:PDF},
   owner = {wrbrooks},
   timestamp = {2014.04.22}
 }

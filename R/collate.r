@@ -173,6 +173,6 @@ ggplot(rocranks) +
     aes(x=method, y=meanrank) +
     geom_bar(stat='identity') +
     theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
-    xlab("method") + 
+    xlab("modeling technique") + 
     ylab("mean rank") + 
-    scale_x_discrete(labels=addline_format(temp$method))
+    scale_x_discrete(labels=addline_format(rocranks$method))

@@ -158,6 +158,20 @@ ion exceeds the standard.
 \end_layout
 
 \begin_layout Subsubsection*
+Weighting of observations in binary regression
+\end_layout
+
+\begin_layout Standard
+A weighting scheme was implemented for some of the binary regression techniques.
+ In the weighting scheme, observations were given weights equal to the number
+ of standard deviations the observed concentration was from the regulatory
+ threshold of 235 CFU/100 mL.
+ Any technique that was implemented with this weighting scheme was separately
+ implemented without any weighting of the observations.
+ The techniques are then labeled weighted and unweighted, respectively.
+\end_layout
+
+\begin_layout Subsubsection*
 Modeling or selection only
 \end_layout
 
@@ -193,12 +207,14 @@ key "Friedman-2001"
 n trees.
  Prediction is done by averaging the outputs of the trees.
  Two GBM-based techniques are explored - we refer to them as GBM and GBMCV.
- The difference is that GBMCV selects the number of trees in a model using
- cross-validation (CV), while GBM uses the so-called out-of-bag (OOB) error
- estimate for the same purpose.
- The CV method is slower but should tend to give a more accurate estimate
- of the prediction error.
- The parameters shared by all GBM models in this study are:
+ The difference is in how the optimal number of trees is determined - GBMCV
+ selects the number of trees in a model using leave-one-out CV, while GBM
+ uses the so-called out-of-bag (OOB) error estimate.
+ The CV method is much slower (it has to construct as many random forests
+ as there are observations, while the OOB method only requires computing
+ a single random forest) but GBMCV should more accurately estimate the predictio
+n error.
+ All the GBM and GBMCV models share the following settings:
 \end_layout
 
 \begin_layout Standard
@@ -219,15 +235,6 @@ Depth of each tree: 5
 
 \begin_layout Standard
 Bagging fraction: 0.5
-\end_layout
-
-\begin_layout Standard
-One key decision when fitting a GBM model is how many regression trees to
- use.
- Our strategy is to produce a model using a very large number of trees,
- and then to prune back to the optimal number.
- The optimal number of trees is the number than minimizes our estimate of
- the prediction error.
 \end_layout
 
 \begin_layout Subsubsection
@@ -269,18 +276,53 @@ In this work,
 \begin_inset Formula $\gamma$
 \end_inset
 
- is set to one and the adaptive lasso tuning parameter 
+ is set to one, 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\tilde{{\bm{{\beta}}}}$
+\end_inset
+
+ are estimated individually by a univariate linear or logistic regression
+ (it is necessary to estimate the coefficients individually because there
+ are usually more covariates than observations)
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ and the adaptive lasso tuning parameter 
 \begin_inset Formula $\lambda$
 \end_inset
 
- is selected to minimize the AICc of 
+ is selected to minimize the AICc 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
 key "Hurvich-Simonoff-Tsai-1998"
 
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+Three of the modeling techniques were based on the adaptive lasso - one
+ fo
 \end_layout
 
 \begin_layout Subsubsection
@@ -298,12 +340,12 @@ key "Fogel-1998"
  is a variable-selection method that works by analogy to natural selection,
  where so-called chromosomes represent regression models.
  A variable is included in the model if the corresponding element of the
- chrmosome is one, but not otherwise.
+ chromosome is one, but not otherwise.
  Chromosomes are produced in successive generations, where the first generation
  is produced randomly and subsequent generations are produced by combining
  chromosomes from the current generation, with additional random drift.
  The chance that a chromosome in the current generation will produce offspring
- in the next generation is a determined by its fitness.
+ in the next generation is an increasing function of its fitness.
  The fitness of each chromosome is calculated by the corrected Akaike Informatio
 n Criterion (AICc) 
 \begin_inset CommandInset citation
@@ -316,9 +358,20 @@ key "Akaike-1973,Hurvich-Tsai-1989"
 \end_layout
 
 \begin_layout Standard
-Our implementation used 100 generations and each generation contained 200
- chromosomes.
- 
+The implementations in this study used 100 generations, with each generation
+ consisting of 200 chromosomes.
+ The genetic algorithm method GALM is the default for linear regression
+ modeling in Virtual Beach 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Cyterski-Brooks-Galvin-Wolfe-Carvin-Roddick-Fienen-Corsi-2013"
+
+\end_inset
+
+.
+ The study also investigates two genetic algorithm methods for logistic
+ regression: one weighted (GALogistic-weighted) and one unweighted (GALogistic-u
+nweighted).
 \end_layout
 
 \begin_layout Subsubsection
@@ -327,7 +380,14 @@ PLS
 
 \begin_layout Standard
 Partial least squares (PLS) regression is a tool for building regression
- models with many covariates.
+ models with many covariates 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Wold-Sjostrum-Eriksson-2001"
+
+\end_inset
+
+.
  PLS works by decomposing the covariates into mutually orthogonal components,
  with the components then used as the variables in a regression model.
  This is similar to principal components regression (PCR), but the way PLS
@@ -338,8 +398,14 @@ Partial least squares (PLS) regression is a tool for building regression
 
 \begin_layout Standard
 To use PLS, one must decide how many components to use in the model.
- The code for this paper follows the method described in (Brooks-Fienen-Corsi-20
-12), using the PRESS statistic to select the number of components.
+ The technique used in this study follows the method described in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Brooks-Fienen-Corsi-2013"
+
+\end_inset
+
+, using the PRESS statistic to select the number of components.
 \end_layout
 
 \begin_layout Subsubsection
@@ -359,9 +425,10 @@ key "Chun-Keles-2007"
  sparsity of lasso-type variable selection.
  To do so, SPLS uses two tuning parameters: one that controls the number
  of orthogonal components and one that controls the lasso-type penalty.
- In this work, the optimal tuning parameters are those that minimize an
- estimate of the prediction error that is based on cross-validation.
- The optimal tuning parameters are located via a two-dimensional grid search.
+ The optimal parameters are those that minimize the mean squared prediction
+ error (MSEP) over a two-dimensional grid search.
+ The MSEP is calculated by 10-fold cross-validation.
+ Two techniques utilizing SPLS were 
 \end_layout
 
 \begin_layout Subsection
@@ -392,20 +459,33 @@ Cross Validation
 \end_layout
 
 \begin_layout Standard
-Modeling methods were assessed by their performance in cross-validation.
- Two separate assesments were made: leave-one-out and leave-one-year-out.
+Assessment of the modeling techniques is based on their performance in predictin
+g exceedances of the regulatory standard.
+ Two types of cross validation was used to measure the performance in prediction
+: leave-one-out (LOO) and leave-one-year-out (LOYO).
+ In LOO CV, one observation is held out for validation while the rest of
+ the data (the model data) is used to train a model.
+ The model is used to predict the concentration of that held out observation,
+ and the process is repeated for each observation.
+ Each cycle of LOYO CV holds out one year's worth of data for validation
+ instead of a single observation.
+ It is intended to approximate the performance of the modeling technique
+ under a typical use case: a new model is estimated before the start of
+ each annual beach season and then used for predicting exceedances during
+ the season.
+ That year's data is then added to the dataset to estimate a model for the
+ next beach season.
+ The LOYO models in this study were estimated using all the available data,
+ even that from future years - so for instance the 2012 models were estimated
+ using the 2010-2011 and 2013 data
 \end_layout
 
 \begin_layout Standard
-Leave one year out cross-validaition was used to simulate how the model
- would have done in a setting where a new model was built each year and
- used for predicting exceedances during that year's beach season.
- Becaues only a few years of data were available, we did not limit ourselves
- to building models from what data was available prior to each year.
- For example, the model we used for predicting the exceedances during the
- 2012 beach season was trained on data from the 2009-2011 and 2013 beach
- seasons.
- 
+Some methods also used cross-validation internally to select tuning parameters.
+ In those cases the internal CV was done by partitioning the model data,
+ leaving out one partition at a time.
+ This process is separate from - and does not affect - the CV to assess
+ predictive performance.
 \end_layout
 
 \begin_layout Subsection
@@ -466,9 +546,52 @@ Results
 \begin_layout Standard
 The area under the ROC (AUROC) curve assesses how accurately the predictions
  of the left-out observations are sorted.
- Since the focus of this study lies in identifying the modeling techniques
- that are consistently the best performers, the methods were ranked at each
- location by AUROC, and the mean ranks used to compare the methods.
+ The methods are ranked at each site by AUROC and a mean rank (across sites)
+ is computed for each method.
+ The mean ranks are 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename C:/Users/wrbrooks/git/beauty_contest/figures/LOO-mean-ranks.eps
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename C:/Users/wrbrooks/git/beauty_contest/figures/LOYO-mean-ranks.eps
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Mean ranks of the modeling techniques across the seven sites.
+ At left, the ranks
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
@@ -484,10 +607,9 @@ Discussion
 \end_layout
 
 \begin_layout Standard
-In general, the AL, GALM, GBM, and GBMCV techniques produced comparable
- results that were superior to the other techniques in terms of predictive
- performance.
- Since the GBMCV models take much longer to computer than the others, we
+In general, the GBM, and GBMCV, and AL techniques produced comparable results
+ that were superior to the other techniques in terms of predictive performance.
+ Since the GBMCV models take much longer to compute than the others, we
  will not include them in our more detailed analysis of the modeling results.
 \end_layout
 
@@ -530,7 +652,7 @@ References
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "/home/wesley/git/beauty_contest/references/beautycontest"
+bibfiles "C:/Users/wrbrooks/git/beauty_contest/references/beautycontest"
 options "bibtotoc,plainnat"
 
 \end_inset
