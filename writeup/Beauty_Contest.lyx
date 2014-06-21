@@ -131,6 +131,114 @@ Will include a map and tables
 \end_layout
 
 \begin_layout Subsection
+Definitions
+\end_layout
+
+\begin_layout Standard
+At any site, denote the predictor variables by 
+\begin_inset Formula $X$
+\end_inset
+
+, which is an 
+\begin_inset Formula $n\times p$
+\end_inset
+
+ matrix where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of observations and 
+\begin_inset Formula $p$
+\end_inset
+
+ is the number of predictors.
+ The vector of 
+\begin_inset Formula $n$
+\end_inset
+
+ observations of bacterial concentration is denoted 
+\begin_inset Formula $y$
+\end_inset
+
+.
+ The mathematical model relating 
+\begin_inset Formula $y$
+\end_inset
+
+ to 
+\begin_inset Formula $X$
+\end_inset
+
+ is the function 
+\begin_inset Formula $\mu(X,$
+\end_inset
+
+y).
+\end_layout
+
+\begin_layout Subsection
+Goals
+\end_layout
+
+\begin_layout Standard
+With input from the US Environmental Protection Agency, the state of Wisconsin
+ has established regulatory standards for beach water quality, which states
+ that a warning is to be posted when the concentration of E.
+ coli exceeds 235 CFU / 100 mL.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Is that statement correct?
+\end_layout
+
+\end_inset
+
+ The goal of modeling the bacterial concentration is to predict in advance
+ when the concentration will exceed the limit.
+ For the discussion to come, denote the regulatory standard by 
+\begin_inset Formula $\delta$
+\end_inset
+
+.
+ Each model has two essential components: the mathematical model itself,
+ 
+\begin_inset Formula $\mu(X,y)$
+\end_inset
+
+, and a decision threshold, 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+, that is used to interpret the model's predictions.
+\end_layout
+
+\begin_layout Standard
+There is no reason that 
+\begin_inset Formula $\delta$
+\end_inset
+
+ and 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+ must be equal.
+ Rather, each 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+ should be chosen so that the number of false positives and false negatives
+ are balanced to the satisfaction of the beach manager.
+ Using cross validation allows us to set 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+ to expect that the performance over future data will resemble what was
+ observed over the testing data.
+\end_layout
+
+\begin_layout Subsection
 Listing of specific statistical techniques
 \end_layout
 
@@ -147,14 +255,56 @@ Continuous or binary regression
 \end_layout
 
 \begin_layout Standard
-The goal of predicting exceednaces of the water quality standard was approached
- in two ways: one was to predict the bacterial concentration and then compre
- the prediction to a threshold.
- The other was to predict the state of a binary indicator, which is coded
- as zero when the concetration is below the standard and one when the concentrat
-ion exceeds the standard.
- Techniques taking the former approach are continuous regression techniques,
- those taking the latter approach are binary regression techniques.
+The goal of predicting exceednaces of the water quality standard is approached
+ in two ways: one is to predict the bacterial concentration and then compare
+ the prediction to a threshold, which is referred to as continuous modeling.
+ The other is referred to as binary modeling, in which we predict the state
+ of the binary indicator 
+\begin_inset Formula $z_{i}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+z_{i}=I(y_{i}>\delta)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The indicator is coded as zero when the concetration is below the regulatory
+ standard and one when the concentration exceeds the standard.
+ All of the binary modeling techniques herein use logistic regression, which
+ uses the logistic link function 
+\begin_inset Formula $g$
+\end_inset
+
+ to translate 
+\begin_inset Formula $p_{i}=E(z_{i})$
+\end_inset
+
+ - the probability that the 
+\begin_inset Formula $i$
+\end_inset
+
+th observation is an exceedance - into an unbounded quantity.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+g(p_{i})=\log\frac{p_{i}}{1-p_{i}}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection*
@@ -163,12 +313,36 @@ Weighting of observations in binary regression
 
 \begin_layout Standard
 A weighting scheme was implemented for some of the binary regression techniques.
- In the weighting scheme, observations were given weights equal to the number
- of standard deviations the observed concentration was from the regulatory
- threshold of 235 CFU/100 mL.
+ In the weighting scheme, observations were given weights 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+ where:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+w_{i}= & (y_{i}-\delta)/\hat{{sd}}(y)\\
+\hat{{sd}}(y)= & \sqrt{\sum_{i=1}^{n}(y_{i}-\bar{{y}})^{2}/n}\\
+\bar{{y}}= & \sum_{i=1}^{n}y_{i}/n
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+That is, the weights are equal to the number of standard deviations that
+ the observed concentration lies from the regulatory threshold 
+\begin_inset Formula $\delta$
+\end_inset
+
+.
  Any technique that was implemented with this weighting scheme was separately
  implemented without any weighting of the observations.
- The techniques are then labeled weighted and unweighted, respectively.
+ The techniques are thus labeled weighted and unweighted, respectively.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -185,9 +359,10 @@ select
 \end_inset
 
 , which means that they are used for variable selection only.
- In these cases, once the variables are selected, the regression model is
- estimated using ordinary least squares for the continuous regression techniques
-, or ordinary logistic regression for the binary regression techniques.
+ In these cases, once the predictor variables are selected, the regression
+ model using those predictors is estimated using ordinary least squares
+ for the continuous regression techniques, or ordinary logistic regression
+ for the binary regression techniques.
 \end_layout
 
 \begin_layout Subsubsection
@@ -252,7 +427,8 @@ key "Zou-2006"
  is a regression method that simultaneously selects relevant predictors
  and estimates their coefficients by adding a penalty to the sum of the
  squared residuals.
- For linear regression, the adaptive lasso estimates 
+ For continuous modeling techniques the adaptive lasso selects the predictors
+ for linear regression, estimating 
 \begin_inset Formula $\hat{{\bm{{\beta}}}}$
 \end_inset
 
@@ -269,6 +445,10 @@ key "Zou-2006"
 \end_inset
 
  is a consistent estimate of the regression coefficients.
+\end_layout
+
+\begin_layout Standard
+For binary modeling, 
 \end_layout
 
 \begin_layout Standard
@@ -548,7 +728,18 @@ The area under the ROC (AUROC) curve assesses how accurately the predictions
  of the left-out observations are sorted.
  The methods are ranked at each site by AUROC and a mean rank (across sites)
  is computed for each method.
- The mean ranks are 
+ The mean LOO and LOYO ranks are plotted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mean-ranks"
+
+\end_inset
+
+.
+ The GBM and GBMCV techniques did best under both kinds of cross validation,
+ and in both cases the adaptive lasso was the third-best technique.
+ The PLS and GALM techniques both appeared well down the list of the best
+ techniques.
 \end_layout
 
 \begin_layout Standard
@@ -559,13 +750,15 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename C:/Users/wrbrooks/git/beauty_contest/figures/LOO-mean-ranks.eps
+	filename ../figures/LOO-mean-ranks.eps
+	width 50text%
 
 \end_inset
 
 
 \begin_inset Graphics
-	filename C:/Users/wrbrooks/git/beauty_contest/figures/LOYO-mean-ranks.eps
+	filename ../figures/LOYO-mean-ranks.eps
+	width 50text%
 
 \end_inset
 
@@ -577,7 +770,15 @@ status open
 
 \begin_layout Plain Layout
 Mean ranks of the modeling techniques across the seven sites.
- At left, the ranks
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:mean-ranks"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -594,12 +795,11 @@ Mean ranks of the modeling techniques across the seven sites.
 
 \end_layout
 
-\begin_layout Itemize
-Performance over prediction from cross validation
-\end_layout
-
-\begin_layout Itemize
-Maybe anecdotal showing fit over data set
+\begin_layout Standard
+The performance of GBM was about equivalent to that of GBMCV at a much lower
+ computational cost, so GBMCV will hereafter be set aside for discussion
+ in favor of GBM.
+ Further analysis focuses on GBM and the adaptive lasso.
 \end_layout
 
 \begin_layout Section

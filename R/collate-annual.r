@@ -1,39 +1,12 @@
-#require(stringr)
 require(ggplot2)
-#require(brooks)
 
 root = "~/Dropbox/beauty/output"
-root = "C:\\Users\\wrbrooks\\Dropbox\\beauty\\output"
-#source("R/settings.r")
-#root = "C:\\Users\\wrbrooks\\scratch\\output"
+#root = "C:\\Users\\wrbrooks\\Dropbox\\beauty\\output"
 
 sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redarrow')
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
-#sites = c("hika")
-#methods = c("galogistic-weighted")
-
-#colors = ['rgb(141,211,199)','rgb(255,255,179)','rgb(190,186,218)','rgb(251,128,114)','rgb(128,177,211)','rgb(253,180,98)','rgb(179,222,105)','rgb(252,205,229)','rgb(217,217,217)','rgb(188,128,189)','rgb(204,235,197)','rgb(255,237,111)', 'rgb(A6EC90']
-
-ROC = function(results) {
-    r = results
-    
-    #Begin by assuming that we call every observation an exceedance
-    area = 0
-    spec_last = 0
-    sens_last = 1
-    
-    sensitivity = r$tpos / (r$tpos + r$fneg)
-    specificity = r$tneg / (r$tneg + r$fpos)
-    
-    for (k in 1:nrow(r)) {
-        area = area + (specificity[k] - spec_last) * sensitivity[k]
-        spec_last = specificity[k]
-    }
-    
-    return(area)
-}
-
+source("R/ROC.r")
 
 results_annual = list()
 var_results_annual = list()
