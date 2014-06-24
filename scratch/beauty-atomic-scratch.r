@@ -1,11 +1,11 @@
 require(Matrix)
 require(lattice)
 
-Sys.setenv(R_LIBS="rlibs")
-.libPaths(new="rlibs")
-source("R/galogistic.r")
-#source("R/gbm.r")
-source("R/galm.r")
+#Sys.setenv(R_LIBS="rlibs")
+#.libPaths(new="rlibs")
+#source("R/galogistic.r")
+source("R/gbm.r")
+#source("R/galm.r")
 
 #source("scratch/import-modules.r")
 source("R/settings.r")
@@ -16,9 +16,9 @@ source('R/utils.r')
 
 type='annual'
 cluster = NA
-beach = 'point'
-method = 'galm'
-processes = c(1,2,4)
+beach = 'thompson'
+method = 'gbm'
+processes = c(2)
 
 result = "placeholder"
 output = ""

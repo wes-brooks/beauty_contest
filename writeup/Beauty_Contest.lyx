@@ -350,7 +350,9 @@ Modeling or selection only
 \end_layout
 
 \begin_layout Standard
-Some methods are labeled 
+The regression techniques adaptive lasso and sparse PLS include a variable
+ selection step.
+ , Some methods are labeled 
 \begin_inset Quotes eld
 \end_inset
 
@@ -419,7 +421,7 @@ Adaptive Lasso
 \begin_layout Standard
 The adaptive lasso 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
 key "Zou-2006"
 
 \end_inset
@@ -429,7 +431,7 @@ key "Zou-2006"
  squared residuals.
  For continuous modeling techniques the adaptive lasso selects the predictors
  for linear regression, estimating 
-\begin_inset Formula $\hat{{\bm{{\beta}}}}$
+\begin_inset Formula $\hat{{\bm{\beta}}}$
 \end_inset
 
  minimize the criterion 
@@ -441,22 +443,32 @@ key "Zou-2006"
 \end_inset
 
  is a tuning parameter and 
-\begin_inset Formula $\tilde{{\bm{{\beta}}}}$
+\begin_inset Formula $\tilde{{\bm{\beta}}}$
 \end_inset
 
  is a consistent estimate of the regression coefficients.
 \end_layout
 
 \begin_layout Standard
-For binary modeling, 
+For binary modeling, the adaptive lasso maximizes the penalized log-likelihood
+ 
+\begin_inset Formula $\sum_{i=1}^{n}\left[-\left(1-y_{i}\right)X_{i}\beta-\log\left\{ 1+\exp\left(-X_{i}\beta\right)\right\} \right]+\lambda\sum_{j=1}^{p}\frac{{|\beta_{j}|}}{\tilde{{|\beta_{j}|^{\gamma}}}}$
+\end_inset
+
+, where, as was the case for continuous response, 
+\begin_inset Formula $\tilde{\bm{\beta}}$
+\end_inset
+
+ is a consistent estimate of the regression coefficients, which is calculated
+ by ordinary logistic regression.
 \end_layout
 
 \begin_layout Standard
 In this work, 
-\begin_inset Formula $\gamma$
+\begin_inset Formula $\gamma=1$
 \end_inset
 
- is set to one, 
+ , 
 \family roman
 \series medium
 \shape up
@@ -469,12 +481,12 @@ In this work,
 \noun off
 \color none
 
-\begin_inset Formula $\tilde{{\bm{{\beta}}}}$
+\begin_inset Formula $\tilde{{\bm{\beta}}}$
 \end_inset
 
  are estimated individually by a univariate linear or logistic regression
  (it is necessary to estimate the coefficients individually because there
- are usually more covariates than observations)
+ are usually more covariates than observations),
 \family default
 \series default
 \shape default
@@ -501,8 +513,12 @@ key "Hurvich-Simonoff-Tsai-1998"
 \end_layout
 
 \begin_layout Standard
-Three of the modeling techniques were based on the adaptive lasso - one
- fo
+Five of the modeling techniques were based on the adaptive lasso - one for
+ continuous response (AL), and four for binary response (AL-logistic-weighted,
+ AL-logistic-unweighted, AL-logistic-weighted-select, AL-logistic-unweighted-sel
+ect).
+ The four binary response techniques are the combination of weighted versus
+ unweighted, and selection-only versus selection-and-estimation.
 \end_layout
 
 \begin_layout Subsubsection
@@ -540,7 +556,7 @@ key "Akaike-1973,Hurvich-Tsai-1989"
 \begin_layout Standard
 The implementations in this study used 100 generations, with each generation
  consisting of 200 chromosomes.
- The genetic algorithm method GALM is the default for linear regression
+ The genetic algorithm method (GA) is the default for linear regression
  modeling in Virtual Beach 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -549,9 +565,9 @@ key "Cyterski-Brooks-Galvin-Wolfe-Carvin-Roddick-Fienen-Corsi-2013"
 \end_inset
 
 .
- The study also investigates two genetic algorithm methods for logistic
- regression: one weighted (GALogistic-weighted) and one unweighted (GALogistic-u
-nweighted).
+ This study also investigates two genetic algorithm methods for logistic
+ regression: one weighted (GA-logistic-weighted) and one unweighted (GA-logistic
+-unweighted).
 \end_layout
 
 \begin_layout Subsubsection
@@ -578,7 +594,7 @@ key "Wold-Sjostrum-Eriksson-2001"
 
 \begin_layout Standard
 To use PLS, one must decide how many components to use in the model.
- The technique used in this study follows the method described in 
+ This study follows the method described in 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Brooks-Fienen-Corsi-2013"
@@ -607,8 +623,9 @@ key "Chun-Keles-2007"
  of orthogonal components and one that controls the lasso-type penalty.
  The optimal parameters are those that minimize the mean squared prediction
  error (MSEP) over a two-dimensional grid search.
- The MSEP is calculated by 10-fold cross-validation.
- Two techniques utilizing SPLS were 
+ The MSEP is estimated by 10-fold cross-validation.
+ SPLS was used for both selection-and-estimation (SPLS) and selection-only
+ (SPLS-select).
 \end_layout
 
 \begin_layout Subsection
@@ -619,19 +636,20 @@ Implementation for beach regression
 The response variable for our continuous regression models is the natural
  logarithm of the E.
  coli concentration.
- For the binary regression models, the response variable is 
+ For the binary regression models, the response variable is an indicator
+ of whether the concentration exceeds the regulatory threshold 
+\begin_inset Formula $\delta=235$
+\end_inset
+
+ CFU/mL.Some pre-processing of the data was done.
+ During pre-processing, some transformations were applied to the data.
+ The beach water turbidity and the discharge of tributaries near each beach
+ were log-transformed.
+ Rainfall variables were all square-root transformed.
 \end_layout
 
 \begin_layout Standard
 Include a table with pre/post processing discussion
-\end_layout
-
-\begin_layout Standard
-This includes tuning of parameters
-\end_layout
-
-\begin_layout Standard
-Some specific data issues because we are estimating a threshold exceedence
 \end_layout
 
 \begin_layout Subsection
@@ -639,31 +657,30 @@ Cross Validation
 \end_layout
 
 \begin_layout Standard
-Assessment of the modeling techniques is based on their performance in predictin
-g exceedances of the regulatory standard.
+Our assessment of the modeling techniques is based on their performance
+ in predicting exceedances of the regulatory standard.
  Two types of cross validation was used to measure the performance in prediction
 : leave-one-out (LOO) and leave-one-year-out (LOYO).
  In LOO CV, one observation is held out for validation while the rest of
- the data (the model data) is used to train a model.
+ the data is used to train a model.
  The model is used to predict the concentration of that held out observation,
  and the process is repeated for each observation.
- Each cycle of LOYO CV holds out one year's worth of data for validation
+ Each cycle of LOYO CV holds out an entire year's worth of data for validation
  instead of a single observation.
  It is intended to approximate the performance of the modeling technique
  under a typical use case: a new model is estimated before the start of
  each annual beach season and then used for predicting exceedances during
  the season.
- That year's data is then added to the dataset to estimate a model for the
- next beach season.
- The LOYO models in this study were estimated using all the available data,
- even that from future years - so for instance the 2012 models were estimated
- using the 2010-2011 and 2013 data
+ The LOYO models in this study were estimated using all the available data
+ except for the held out year, even that from future years.
+ So for instance the 2012 models were estimated using the 2010-2011 and
+ 2013 data
 \end_layout
 
 \begin_layout Standard
 Some methods also used cross-validation internally to select tuning parameters.
- In those cases the internal CV was done by partitioning the model data,
- leaving out one partition at a time.
+ In those cases the internal CV was done using only the model data, and
+ never looking at the held-out observation(s).
  This process is separate from - and does not affect - the CV to assess
  predictive performance.
 \end_layout
@@ -678,7 +695,9 @@ How did we evaluate the performance of each technique on all the different
 \end_layout
 
 \begin_layout Itemize
-for all cases ---> AUC (ROC curve)
+AUROC: The area under the ROC (AUROC) curve assesses how accurately the
+ predictions of the left-out observations are sorted.
+ 
 \end_layout
 
 \begin_layout Itemize
@@ -724,9 +743,7 @@ Results
 \end_layout
 
 \begin_layout Standard
-The area under the ROC (AUROC) curve assesses how accurately the predictions
- of the left-out observations are sorted.
- The methods are ranked at each site by AUROC and a mean rank (across sites)
+The methods are ranked at each site by AUROC and a mean rank (across sites)
  is computed for each method.
  The mean LOO and LOYO ranks are plotted in Figure 
 \begin_inset CommandInset ref

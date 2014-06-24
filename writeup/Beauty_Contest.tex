@@ -1,6 +1,6 @@
 %% LyX 2.1.0 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
-\documentclass[english]{article}
+\documentclass{article}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
 \usepackage{geometry}
@@ -25,7 +25,7 @@
 
 \makeatother
 
-\usepackage{babel}
+\usepackage[english]{babel}
 \begin{document}
 
 \title{Beauty Contest}
@@ -58,6 +58,35 @@ What specific sources sources of data (plug EnDDAT)
 Will include a map and tables
 
 
+\subsection{Definitions}
+
+At any site, denote the predictor variables by $X$, which is an $n\times p$
+matrix where $n$ is the number of observations and $p$ is the number
+of predictors. The vector of $n$ observations of bacterial concentration
+is denoted $y$. The mathematical model relating $y$ to $X$ is the
+function $\mu(X,$y).
+
+
+\subsection{Goals}
+
+With input from the US Environmental Protection Agency, the state
+of Wisconsin has established regulatory standards for beach water
+quality, which states that a warning is to be posted when the concentration
+of E. coli exceeds 235 CFU / 100 mL.  The goal of modeling the bacterial
+concentration is to predict in advance when the concentration will
+exceed the limit. For the discussion to come, denote the regulatory
+standard by $\delta$. Each model has two essential components: the
+mathematical model itself, $\mu(X,y)$, and a decision threshold,
+$\hat{{\delta}}$, that is used to interpret the model's predictions.
+
+There is no reason that $\delta$ and $\hat{{\delta}}$ must be equal.
+Rather, each $\hat{{\delta}}$ should be chosen so that the number
+of false positives and false negatives are balanced to the satisfaction
+of the beach manager. Using cross validation allows us to set $\hat{{\delta}}$
+to expect that the performance over future data will resemble what
+was observed over the testing data.
+
+
 \subsection{Listing of specific statistical techniques}
 
 Fourteen different regression modeling techniques were considered.
@@ -69,33 +98,57 @@ or variable selection only.
 
 \subsubsection*{Continuous or binary regression}
 
-The goal of predicting exceednaces of the water quality standard was
-approached in two ways: one was to predict the bacterial concentration
-and then compre the prediction to a threshold. The other was to predict
-the state of a binary indicator, which is coded as zero when the concetration
-is below the standard and one when the concentration exceeds the standard.
-Techniques taking the former approach are continuous regression techniques,
-those taking the latter approach are binary regression techniques.
+The goal of predicting exceednaces of the water quality standard is
+approached in two ways: one is to predict the bacterial concentration
+and then compare the prediction to a threshold, which is referred
+to as continuous modeling. The other is referred to as binary modeling,
+in which we predict the state of the binary indicator $z_{i}$:
+
+\[
+z_{i}=I(y_{i}>\delta)
+\]
+
+
+The indicator is coded as zero when the concetration is below the
+regulatory standard and one when the concentration exceeds the standard.
+All of the binary modeling techniques herein use logistic regression,
+which uses the logistic link function $g$ to translate $p_{i}=E(z_{i})$
+- the probability that the $i$th observation is an exceedance - into
+an unbounded quantity.
+
+\[
+g(p_{i})=\log\frac{p_{i}}{1-p_{i}}
+\]
+
 
 
 \subsubsection*{Weighting of observations in binary regression}
 
 A weighting scheme was implemented for some of the binary regression
 techniques. In the weighting scheme, observations were given weights
-equal to the number of standard deviations the observed concentration
-was from the regulatory threshold of 235 CFU/100 mL. Any technique
-that was implemented with this weighting scheme was separately implemented
-without any weighting of the observations. The techniques are then
-labeled weighted and unweighted, respectively.
+$w_{i}$ where:
+
+\begin{align*}
+w_{i}= & (y_{i}-\delta)/\hat{{sd}}(y)\\
+\hat{{sd}}(y)= & \sqrt{\sum_{i=1}^{n}(y_{i}-\bar{{y}})^{2}/n}\\
+\bar{{y}}= & \sum_{i=1}^{n}y_{i}/n
+\end{align*}
+
+
+That is, the weights are equal to the number of standard deviations
+that the observed concentration lies from the regulatory threshold
+$\delta$. Any technique that was implemented with this weighting
+scheme was separately implemented without any weighting of the observations.
+The techniques are thus labeled weighted and unweighted, respectively.
 
 
 \subsubsection*{Modeling or selection only}
 
 Some methods are labeled ``select'', which means that they are used
-for variable selection only. In these cases, once the variables are
-selected, the regression model is estimated using ordinary least squares
-for the continuous regression techniques, or ordinary logistic regression
-for the binary regression techniques.
+for variable selection only. In these cases, once the predictor variables
+are selected, the regression model using those predictors is estimated
+using ordinary least squares for the continuous regression techniques,
+or ordinary logistic regression for the binary regression techniques.
 
 
 \subsubsection{GBM}
@@ -128,11 +181,13 @@ Bagging fraction: 0.5
 
 The adaptive lasso \citet{Zou-2006} is a regression method that simultaneously
 selects relevant predictors and estimates their coefficients by adding
-a penalty to the sum of the squared residuals. For linear regression,
-the adaptive lasso estimates $\hat{{\bm{{\beta}}}}$ minimize the
-criterion $\sum_{i=1}^{n}(y_{i}-X_{i}\beta)^{2}+\lambda\sum_{j=1}^{p}\frac{{|\beta_{j}|}}{\tilde{{|\beta_{j}|^{\gamma}}}}$,
+a penalty to the sum of the squared residuals. For continuous modeling
+techniques the adaptive lasso selects the predictors for linear regression,
+estimating $\hat{{\bm{{\beta}}}}$ minimize the criterion $\sum_{i=1}^{n}(y_{i}-X_{i}\beta)^{2}+\lambda\sum_{j=1}^{p}\frac{{|\beta_{j}|}}{\tilde{{|\beta_{j}|^{\gamma}}}}$,
 where $\lambda$ is a tuning parameter and $\tilde{{\bm{{\beta}}}}$
 is a consistent estimate of the regression coefficients.
+
+For binary modeling, 
 
 In this work, $\gamma$ is set to one, $\tilde{{\bm{{\beta}}}}$ are
 estimated individually by a univariate linear or logistic regression
@@ -269,10 +324,14 @@ of results
 The area under the ROC (AUROC) curve assesses how accurately the predictions
 of the left-out observations are sorted. The methods are ranked at
 each site by AUROC and a mean rank (across sites) is computed for
-each method. The mean ranks are plotted in 
+each method. The mean LOO and LOYO ranks are plotted in Figure \ref{fig:mean-ranks}.
+The GBM and GBMCV techniques did best under both kinds of cross validation,
+and in both cases the adaptive lasso was the third-best technique.
+The PLS and GALM techniques both appeared well down the list of the
+best techniques.
 
 \begin{figure}
-\includegraphics[width=0.45\textwidth]{../figures/LOO-mean-ranks}\includegraphics[width=0.45\textwidth]{../figures/LOYO-mean-ranks}
+\includegraphics[width=0.5\textwidth]{../figures/LOO-mean-ranks}\includegraphics[width=0.5\textwidth]{../figures/LOYO-mean-ranks}
 
 \protect\caption{Mean ranks of the modeling techniques across the seven sites. At left
 are the mean ranks under leave-one-out cross validation, at the right
@@ -281,10 +340,12 @@ are the mean ranks from leave-one-year-out cross validation.\label{fig:mean-rank
 
 \end{figure}
 
-\begin{itemize}
-\item Performance over prediction from cross validation
-\item Maybe anecdotal showing fit over data set
-\end{itemize}
+
+The performance of GBM was about equivalent to that of GBMCV at a
+much lower computational cost, so GBMCV will hereafter be set aside
+for discussion in favor of GBM. Further analysis focuses on GBM and
+the adaptive lasso.
+
 
 \section{Discussion}
 
