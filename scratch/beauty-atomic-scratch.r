@@ -1,8 +1,8 @@
 require(Matrix)
 require(lattice)
 
-#Sys.setenv(R_LIBS="rlibs")
-#.libPaths(new="rlibs")
+Sys.setenv(R_LIBS="rlibs")
+.libPaths(new="rlibs")
 #source("R/galogistic.r")
 source("R/gbm.r")
 #source("R/galm.r")
@@ -16,9 +16,9 @@ source('R/utils.r')
 
 type='annual'
 cluster = NA
-beach = 'thompson'
-method = 'gbm'
-processes = c(2)
+beach = 'hika'
+method = 'galogistic-unweighted'
+processes = c(1,2,4)
 
 result = "placeholder"
 output = ""

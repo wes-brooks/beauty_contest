@@ -9982,6 +9982,17 @@
   url = {http://www.scopus.com/scopus/inward/record.url?eid=2-s2.0-33745566785&partnerID=40}
 }
 
+@MANUAL{Cyterski-Brooks-Galvin-Wolfe-Carvin-Roddick-Fienen-Corsi-2013,
+  title = {Virtual Beach 3: user's guide},
+  author = {Mike Cyterski and Wesley Brooks and Mike Galvin and Kirt Wolfe and
+	Rebecca Carvin and Tonia Roddick and Michael N. Fienen and Steven
+	R Corsi},
+  organization = {United States Environmental Protection Agency},
+  year = {2013},
+  owner = {wrbrooks},
+  timestamp = {2014.06.12}
+}
+
 @ARTICLE{DAlessio:1981lb,
   author = {D'Alessio,D. J. and Minor,T. E. and Allen,C. I.},
   title = {A study of the proportions of swimmers among well controls and children
