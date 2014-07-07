@@ -1,7 +1,7 @@
 require(ggplot2)
 
-#root = "C:\\Users/wrbrooks/Dropbox/beauty/output"
-root = "~/Dropbox/beauty/output"
+root = "C:\\Users/wrbrooks/Dropbox/beauty/output"
+#root = "~/Dropbox/beauty/output"
 
 source("R/settings.r")
 source("R/ROC.r")
@@ -55,6 +55,9 @@ for (site in sites) {
             }
             results.table = rbind(results.table, read.table(textConnection(results.text), header=TRUE))
         }
+        #Make sure the rownames are sequential and aligned with the observation order
+        rownames(results.table) = NULL
+        rownames(results.table) = 1:nrow(results.table)
         
         #Get the decision-accuracy of the modeling method.
         #First, sort the results based on the decision threshold

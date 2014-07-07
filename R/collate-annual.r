@@ -58,6 +58,9 @@ cat(paste("file: ", f, "\n", sep=""))
             }
             predperf.table = rbind(predperf.table, read.table(textConnection(predperf.text), header=TRUE))
         }
+        #Make sure the rownames are sequential and aligned with the observation order
+        rownames(results.table) = NULL
+        rownames(results.table) = 1:nrow(results.table)
         
         #Get the decision-accuracy of the modeling method.
         #First, sort the results based on the decision threshold

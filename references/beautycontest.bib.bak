@@ -18582,6 +18582,23 @@
   url = {http://www.scopus.com/scopus/inward/record.url?eid=2-s2.0-0017050905&partnerID=40}
 }
 
+@ARTICLE{,
+  author = {David Marvin Green and John A. Swets},
+  title = {Signal detecton theory and phycophysics},
+  owner = {wrbrooks},
+  timestamp = {2014.07.01}
+}
+
+@BOOK{,
+  title = {Signal detection theory and psychophysics},
+  publisher = {Wiley},
+  year = {1966},
+  author = {David Marvin Green and John A. Swets},
+  volume = {1},
+  owner = {wrbrooks},
+  timestamp = {2014.07.01}
+}
+
 @INPROCEEDINGS{Greensmith:en,
   author = {Greensmith,C. and Gow,J. R. and Sekla,L.},
   title = {Health effects of recreational water quality on children swimming

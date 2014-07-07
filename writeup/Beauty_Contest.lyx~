@@ -12,6 +12,7 @@
 theorems-ams
 eqs-within-sections
 figs-within-sections
+knitr
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -865,10 +866,7 @@ ceteris paribus,
 \end_inset
 
  should be set lower in order to properly flag more of those exceedances.
-\end_layout
-
-\begin_layout Standard
-This intuition was encoded into how 
+ This intuition was encoded into how 
 \begin_inset Formula $\hat{\delta}$
 \end_inset
 
@@ -889,17 +887,9 @@ th quantile of the fitted values for non-exceedances in the training set,
  is the proportion of observations in the training set that are non-exceedances.
 \end_layout
 
-\begin_layout Paragraph*
-OPTIONAL
-\end_layout
-
-\begin_layout Itemize
-AIC/BIC? --> not the same model in each fold so maybe not possible
-\end_layout
-
-\begin_layout Itemize
-Maybe some form of confusion matrices -- perhaps a grid of them with or
- without companion variance plots or other estimates of the range of results
+\begin_layout Standard
+These LOYO predictions are summarized in the 2-by-2 tables of true positives,
+ true negatives, false positives, and false negatives.
 \end_layout
 
 \begin_layout Section
@@ -928,6 +918,25 @@ reference "fig:mean-ranks"
 wide false
 sideways false
 status open
+
+\begin_layout Plain Layout
+\begin_inset Flex Chunk
+status open
+
+\begin_layout Plain Layout
+
+setwd("..")
+\end_layout
+
+\begin_layout Plain Layout
+
+source("R/bootstrap-summarize-annual.r")
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -964,10 +973,6 @@ name "fig:mean-ranks"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
