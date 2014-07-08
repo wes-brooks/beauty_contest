@@ -6,6 +6,7 @@
 \begin_preamble
 \renewcommand\[{\begin{equation}}
 \renewcommand\]{\end{equation}}
+\usepackage{subfig}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -84,6 +85,10 @@ knitr
 
 \begin_layout Title
 Beauty Contest
+\end_layout
+
+\begin_layout Author
+Wesley Brooks, Steve Corsi, Rebecca Carvin
 \end_layout
 
 \begin_layout Abstract
@@ -914,71 +919,50 @@ reference "fig:mean-ranks"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Flex Chunk
+\begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-setwd("..")
-\end_layout
-
-\begin_layout Plain Layout
-
-source("R/bootstrap-summarize-annual.r")
-\end_layout
-
-\begin_layout Plain Layout
-
-print(annual.boxplot)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename ../figures/LOO-mean-ranks.eps
-	width 50text%
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename ../figures/LOYO-mean-ranks.eps
-	width 50text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Mean ranks of the modeling techniques across the seven sites.
+<<LOO-boxplot, fig.cap='Mean ranks of the modeling techniques across the
+ seven sites.
  At left are the mean ranks under leave-one-out cross validation, at the
- right are the mean ranks from leave-one-year-out cross validation.
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:mean-ranks"
+ right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
 
-\end_inset
-
-
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
 \end_layout
 
-\end_inset
+\begin_layout Plain Layout
 
+	setwd("..")
+\end_layout
 
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize-annual.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(annual.boxplot)
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(LOO.boxplot)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
 \end_layout
 
 \end_inset

@@ -1,11 +1,12 @@
 require(ggplot2)
+require(reshape)
 require(dplyr)
 
 #Load the raw results of the beauty contest:
 load("beauty_contest.RData")
 
 #S is the number of bootstrap samples
-S = 101
+S = 5
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc.annual = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
@@ -92,4 +93,5 @@ annual.boxplot = ggplot(meanranks.annual) +
     theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
     xlab("modeling technique") + 
     ylab("mean rank") + 
+    ylim(0, 14) +
     scale_x_discrete(labels=meanranks.annual$method %>% levels %>% addline_format)
