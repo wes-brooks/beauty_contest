@@ -10,7 +10,12 @@ S = 5
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
-ranks = list()
+roc.ranks = list()
+
+#Calculate the PRESS only for continuous response:
+conts = c('adapt', 'adapt-select', 'gbm', 'gbmcv', 'pls', 'galm', 'spls', 'spls-select')
+press = sapply(sites, function(s) return( sapply(conts, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+press.ranks = list()
 
 #This section computes bootstrap estimates of the ranks of the modeling methods
 for (site in sites) {
@@ -54,33 +59,45 @@ for (site in sites) {
             #Now add the area under this ROC curve to the vector of bootstrap outputs:
             roc[[site]][[method]] = c(roc[[site]][[method]], ROC(r))
         }
+        
+        for (method in conts) {
+            #Compute the PRESS and add it to the list:
+            press[[site]][[method]] = c(press[[site]][[method]],
+                with(results[[site]][[method]][['res']], (predicted-actual)[as.numeric(boot)])**2 %>% sum)
+        }
     }
     
     #put the results in a data frame and rank the methods on each bootstrap sample:
     roc[[site]] = data.frame(roc[[site]])
-    ranks[[site]] = apply(roc[[site]], 1, rank)
+    roc.ranks[[site]] = apply(roc[[site]], 1, rank)
+    
+    #put the results in a data frame and rank the methods on each bootstrap sample:
+    press[[site]] = data.frame(press[[site]])
+    press.ranks[[site]] = apply(-press[[site]], 1, rank)
 }
 
+    
 #Compute the mean ranking by combining the ranks across sites for each bootstrap replicate
-meanranks = matrix(NA, ncol=0, nrow=length(methods))
+roc.meanranks = matrix(NA, ncol=0, nrow=length(methods))
 for (i in 1:S) {
     rank.matrix = matrix(NA, ncol=0, nrow=length(methods))
     for (site in sites) {
-        rank.matrix = cbind(rank.matrix, ranks[[site]][,i])
+        rank.matrix = cbind(rank.matrix, roc.ranks[[site]][,i])
     }
-    meanranks = cbind(meanranks, apply(rank.matrix, 1, mean))
+    roc.meanranks = cbind(roc.meanranks, apply(rank.matrix, 1, mean))
 }
 
 #Put the ranks in a more vertical data structure
-meanranks = melt(meanranks)
-colnames(meanranks) = c('method', 'rep', 'meanrank')
+roc.meanranks = melt(roc.meanranks)
+colnames(roc.meanranks) = c('method', 'rep', 'meanrank')
 
 #Rename the 'method' factor levels to be sorted like the rankings (best to worst)
-levl = with(meanranks, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
+levl = with(roc.meanranks, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
             %>% sort 
             %>% rev 
             %>% names)
-meanranks$method = factor(meanranks$method, levels=levl)
+roc.meanranks$method = factor(roc.meanranks$method, levels=levl)
+
 
 #This is a formatting function to put newlines in the plot labels
 addline_format <- function(x,...){
@@ -88,11 +105,48 @@ addline_format <- function(x,...){
 }
 
 #Make a boxplot of the distribution of ranks, computed by the bootstrap:
-LOO.boxplot = ggplot(meanranks) +
+LOO.auroc.boxplot = ggplot(roc.meanranks) +
     aes(x=method, y=meanrank) +
     geom_boxplot() +
     theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
     xlab("modeling technique") + 
     ylab("mean rank") + 
     ylim(0, 14) +
-    scale_x_discrete(labels=meanranks$method %>% levels %>% addline_format)
+    scale_x_discrete(labels=roc.meanranks$method %>% levels %>% addline_format) +
+    theme_bw()
+
+
+
+
+#Do the same for PRESS:
+#Compute the mean ranking by combining the ranks across sites for each bootstrap replicate
+press.meanranks = matrix(NA, ncol=0, nrow=length(conts))
+for (i in 1:S) {
+    rank.matrix = matrix(NA, ncol=0, nrow=length(conts))
+    for (site in sites) {
+        rank.matrix = cbind(rank.matrix, press.ranks[[site]][,i])
+    }
+    press.meanranks = cbind(press.meanranks, apply(rank.matrix, 1, mean))
+}
+
+#Put the ranks in a more vertical data structure
+press.meanranks = melt(press.meanranks)
+colnames(press.meanranks) = c('method', 'rep', 'meanrank')
+
+#Rename the 'method' factor levels to be sorted like the rankings (best to worst)
+levl = with(press.meanranks, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
+            %>% sort 
+            %>% rev 
+            %>% names)
+press.meanranks$method = factor(press.meanranks$method, levels=levl)
+
+#Make a boxplot of the distribution of ranks, computed by the bootstrap:
+LOO.press.boxplot = ggplot(press.meanranks) +
+    aes(x=method, y=meanrank) +
+    geom_boxplot() +
+    theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
+    xlab("modeling technique") + 
+    ylab("mean rank") + 
+    ylim(0, 8) +
+    scale_x_discrete(labels=press.meanranks$method %>% levels %>% addline_format) +
+    theme_bw()

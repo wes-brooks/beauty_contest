@@ -773,6 +773,7 @@ While AUROC is concerned with how well the model's predictions separate
  exceedances from non-exceedances, the predictive residual error sum of
  squares (PRESS) measures how well a model's predictions match the observed
  bacterial concentration.
+ The PRESS can only be computed for continuous regression methods.
  Let the model's predictions be denoted 
 \begin_inset Formula $\tilde{y}_{i}$
 \end_inset
@@ -806,13 +807,11 @@ While AUROC is concerned with how well the model's predictions separate
 
 \begin_layout Standard
 The PRESS statistic is of interest because a good model should accurately
- predict the bacterial concentration and a model that more accurately predicts
+ predict the bacterial concentration, and a model that more accurately predicts
  the concentration may be easier to trust.
  However, the AUROC is a more important as a metric of model performance
- than the PRESS because the focus of these models is to accurately decide
- whether the bacterial concentration is or is not in exceedance of the regulator
-y standard, rather than to accurately predict the exact value of the concentrati
-on.
+ than the PRESS because it directly measures the ability of a model to separate
+ exceedances from non-exceedances.
  That said, we expect the two statistics to usually agree on which modeling
  methods are the best.
 \end_layout
@@ -841,28 +840,19 @@ While the AUROC is an important metric that should guide the choice of which
 \end_layout
 
 \begin_layout Standard
-Intuitively, it seems that 
+Intuitively, 
 \begin_inset Formula $\hat{\delta}$
 \end_inset
 
  should adapt to the conditions that are observed in the beach's training
  data.
- If, for instance, at a certain beach the bacterial concentration in the
- training data is very rarely observed to exceed 
-\begin_inset Formula $\delta$
-\end_inset
-
- then, 
-\emph on
-ceteris paribus,
-\emph default
- we expect few exceedances in the future, and should set the threshold 
+ If, for instance, exceedances are rare in the training data, then we expect
+ few exceedances in the future, and should set the threshold 
 \begin_inset Formula $\hat{\delta}$
 \end_inset
 
  high to reflect this prior expectation.
- On the other hand, at beaches where the bacterial concentration commonly
- exceeds 
+ On the other hand, if the bacterial concentration often exceeds 
 \begin_inset Formula $\delta$
 \end_inset
 
@@ -886,19 +876,105 @@ ceteris paribus,
 
 th quantile of the fitted values for non-exceedances in the training set,
  where 
-\begin_inset Formula $q$
+\begin_inset Formula $1-q$
 \end_inset
 
- is the proportion of observations in the training set that are non-exceedances.
-\end_layout
-
-\begin_layout Standard
-These LOYO predictions are summarized in the 2-by-2 tables of true positives,
+ is the proportion of exceednaces in the training set.
+ These LOYO predictions are summarized in the 2-by-2 tables of true positives,
  true negatives, false positives, and false negatives.
 \end_layout
 
 \begin_layout Section
 Results
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<compile-results, fig.cap='Mean ranks of the modeling techniques across
+ the seven sites.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(dplyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(reshape)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(brooks)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Load the raw results of the beauty contest:
+\end_layout
+
+\begin_layout Plain Layout
+
+	setwd("..")
+\end_layout
+
+\begin_layout Plain Layout
+
+	load("beauty_contest.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize-annual.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/get_annual_predictive_performance.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+AUROC
 \end_layout
 
 \begin_layout Standard
@@ -924,7 +1000,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<LOO-boxplot, fig.cap='Mean ranks of the modeling techniques across the
+<<auroc-boxplot, fig.cap='Mean ranks of the modeling techniques across the
  seven sites.
  At left are the mean ranks under leave-one-out cross validation, at the
  right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
@@ -937,27 +1013,12 @@ linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
 
 \begin_layout Plain Layout
 
-	setwd("..")
+	print(annual.auroc.boxplot)
 \end_layout
 
 \begin_layout Plain Layout
 
-	source("R/bootstrap-summarize.r")
-\end_layout
-
-\begin_layout Plain Layout
-
-	source("R/bootstrap-summarize-annual.r")
-\end_layout
-
-\begin_layout Plain Layout
-
-	print(annual.boxplot)
-\end_layout
-
-\begin_layout Plain Layout
-
-	print(LOO.boxplot)
+	print(LOO.auroc.boxplot)
 \end_layout
 
 \begin_layout Plain Layout
@@ -970,11 +1031,88 @@ linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
 
 \end_layout
 
+\begin_layout Subsection
+PRESS
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<press-boxplot, fig.cap='Mean ranks of the modeling techniques across the
+ seven sites.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(annual.press.boxplot)
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(LOO.press.boxplot)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+True positives, etc.
+\end_layout
+
 \begin_layout Standard
 The performance of GBM was about equivalent to that of GBMCV at a much lower
  computational cost, so GBMCV will hereafter be set aside for discussion
  in favor of GBM.
  Further analysis focuses on GBM and the adaptive lasso.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<counts-barcharts, fig.cap='Mean ranks of the modeling techniques across
+ the seven sites.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
+('', 'LOYO'), out.width="0.32
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	multiplot(plotlist=pp, cols=1)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section

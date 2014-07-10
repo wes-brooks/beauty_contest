@@ -10,7 +10,12 @@ S = 5
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc.annual = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
-ranks.annual = list()
+roc.ranks.annual = list()
+
+#Calculate the PRESS only for continuous response:
+conts = c('adapt', 'adapt-select', 'gbm', 'gbmcv', 'pls', 'galm', 'spls', 'spls-select')
+press.annual = sapply(sites, function(s) return( sapply(conts, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+press.ranks.annual = list()
 
 #This section computes bootstrap estimates of the ranks of the modeling methods
 for (site in sites) {
@@ -53,33 +58,43 @@ for (site in sites) {
             #Now add the area under this ROC curve to the vector of bootstrap outputs:
             roc.annual[[site]][[method]] = c(roc.annual[[site]][[method]], ROC(r))
         }
+        
+        for (method in conts) {
+            #Compute the PRESS and add it to the list:
+            press.annual[[site]][[method]] = c(press.annual[[site]][[method]],
+                with(results_annual[[site]][[method]][['res']], (predicted-actual)[as.numeric(boot)])**2 %>% sum)
+        }
     }
     
     #put the results in a data frame and rank the methods on each bootstrap sample:
     roc.annual[[site]] = data.frame(roc.annual[[site]])
-    ranks.annual[[site]] = apply(roc.annual[[site]], 1, rank)
+    roc.ranks.annual[[site]] = apply(roc.annual[[site]], 1, rank)
+    
+    #put the results in a data frame and rank the methods on each bootstrap sample:
+    press.annual[[site]] = data.frame(press.annual[[site]])
+    press.ranks.annual[[site]] = apply(-press.annual[[site]], 1, rank)
 }
 
 #Compute the mean ranking by combining the ranks across sites for each bootstrap replicate
-meanranks.annual = matrix(NA, ncol=0, nrow=length(methods))
+roc.meanranks.annual = matrix(NA, ncol=0, nrow=length(methods))
 for (i in 1:S) {
     rank.matrix.annual = matrix(NA, ncol=0, nrow=length(methods))
     for (site in sites) {
-        rank.matrix.annual = cbind(rank.matrix.annual, ranks.annual[[site]][,i])
+        rank.matrix.annual = cbind(rank.matrix.annual, roc.ranks.annual[[site]][,i])
     }
-    meanranks.annual = cbind(meanranks.annual, apply(rank.matrix.annual, 1, mean))
+    roc.meanranks.annual = cbind(roc.meanranks.annual, apply(rank.matrix.annual, 1, mean))
 }
 
 #Put the ranks in a more vertical data structure
-meanranks.annual = melt(meanranks.annual)
-colnames(meanranks.annual) = c('method', 'rep', 'meanrank')
+roc.meanranks.annual = melt(roc.meanranks.annual)
+colnames(roc.meanranks.annual) = c('method', 'rep', 'meanrank')
 
 #Rename the 'method' factor levels to be sorted like the rankings (best to worst)
-levl = with(meanranks.annual, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
+levl = with(roc.meanranks.annual, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
             %>% sort 
             %>% rev 
             %>% names)
-meanranks.annual$method = factor(meanranks.annual$method, levels=levl)
+roc.meanranks.annual$method = factor(roc.meanranks.annual$method, levels=levl)
 
 #This is a formatting function to put newlines in the plot labels
 addline_format <- function(x,...){
@@ -87,11 +102,51 @@ addline_format <- function(x,...){
 }
 
 #Make a boxplot of the distribution of ranks, computed by the bootstrap:
-annual.boxplot = ggplot(meanranks.annual) +
+annual.auroc.boxplot = ggplot(roc.meanranks.annual) +
     aes(x=method, y=meanrank) +
     geom_boxplot() +
     theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
     xlab("modeling technique") + 
     ylab("mean rank") + 
     ylim(0, 14) +
-    scale_x_discrete(labels=meanranks.annual$method %>% levels %>% addline_format)
+    scale_x_discrete(labels=roc.meanranks.annual$method %>% levels %>% addline_format) +
+    theme_bw()
+
+
+
+
+
+
+#Do the same for PRESS:
+#Compute the mean ranking by combining the ranks across sites for each bootstrap replicate
+press.meanranks.annual = matrix(NA, ncol=0, nrow=length(conts))
+for (i in 1:S) {
+    rank.matrix.annual = matrix(NA, ncol=0, nrow=length(conts))
+    for (site in sites) {
+        rank.matrix.annual = cbind(rank.matrix.annual, press.ranks.annual[[site]][,i])
+    }
+    press.meanranks.annual = cbind(press.meanranks.annual, apply(rank.matrix.annual, 1, mean))
+}
+
+#Put the ranks in a more vertical data structure
+press.meanranks.annual = melt(press.meanranks.annual)
+colnames(press.meanranks.annual) = c('method', 'rep', 'meanrank')
+
+#Rename the 'method' factor levels to be sorted like the rankings (best to worst)
+levl = with(press.meanranks.annual, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
+            %>% sort 
+            %>% rev 
+            %>% names)
+press.meanranks.annual$method = factor(press.meanranks.annual$method, levels=levl)
+
+#Make a boxplot of the distribution of ranks, computed by the bootstrap:
+annual.press.boxplot = ggplot(press.meanranks.annual) +
+    aes(x=method, y=meanrank) +
+    geom_boxplot() +
+    theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
+    xlab("modeling technique") + 
+    ylab("mean rank") + 
+    ylim(0, 8) +
+    scale_x_discrete(labels=press.meanranks.annual$method %>% levels %>% addline_format) +
+    theme_bw()
+
