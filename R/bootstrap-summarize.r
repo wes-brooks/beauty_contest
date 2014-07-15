@@ -1,5 +1,5 @@
 require(ggplot2)
-require(reshape)
+require(reshape2)
 require(dplyr)
 
 #Load the raw results of the beauty contest:

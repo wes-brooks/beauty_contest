@@ -912,7 +912,7 @@ linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
 
 \begin_layout Plain Layout
 
-	require(reshape)
+	require(reshape2)
 \end_layout
 
 \begin_layout Plain Layout
@@ -974,6 +974,49 @@ linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
 \end_layout
 
 \begin_layout Subsection
+Ranking the modeling techniques, and the bootstrap
+\end_layout
+
+\begin_layout Standard
+Our goal is to compare the different modeling techniques.
+ We make comparisons on the basis of rank because the modeling metrics may
+ not be comparable between sites (because, for instance, different sites
+ have different numbers of observations).
+ If it is possible to compute a metric of model performance, then it is
+ possible to rank the techniques based on that metric.
+ Our approach is to rank the techniques at each site (higher is better),
+ and then average the ranks of each method.
+ For instance, if the adaptive lasso is ranked 
+\begin_inset Formula $5,3,7,5,6,6$
+\end_inset
+
+ (one rank for each site), then its mean rank is 
+\begin_inset Formula $5.33$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+It is not enough to compute the mean rank for each technique, though.
+ In order to make a decision about which technique is best, we should wonder
+ whether the ranks are stable or whether they will change when new data
+ is observed.
+ We use the bootstrap to answer this question.
+ Over a large number of bootstrap iterations (here, 
+\begin_inset Formula $B=1001),$
+\end_inset
+
+ the results were resampled, and the ranks recalculated for each resample.
+ Interpreting the distribution of the mean ranks over these resampled results
+ tells us whether the observed ranks are due to real differences between
+ the modeling techniques, or to some method getting lucky to work on data
+ that it can model particularly well.
+ The next sections describe the particular metrics that were used for comparing
+ the modeling techniques.
+\end_layout
+
+\begin_layout Subsection
 AUROC
 \end_layout
 
@@ -983,15 +1026,15 @@ The methods are ranked at each site by AUROC and a mean rank (across sites)
  The mean LOO and LOYO ranks are plotted in Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:mean-ranks"
+reference "fig:auroc-boxplot"
 
 \end_inset
 
 .
- The GBM and GBMCV techniques did best under both kinds of cross validation,
- and in both cases the adaptive lasso was the third-best technique.
+ The top three techniques were GBM, GBMCV and adaptive lasso.
  The PLS and GALM techniques both appeared well down the list of the best
  techniques.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1000,8 +1043,10 @@ status open
 
 \begin_layout Plain Layout
 
-<<auroc-boxplot, fig.cap='Mean ranks of the modeling techniques across the
- seven sites.
+<<auroc-boxplot, fig.cap='Ranking the modeling methods by AUROC (higher is
+ better).
+ The mean rank of each method was computed once for each bootstrap sample
+ of the results.
  At left are the mean ranks under leave-one-out cross validation, at the
  right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
 ('LOO', 'LOYO'), out.width="0.49
@@ -1036,13 +1081,31 @@ PRESS
 \end_layout
 
 \begin_layout Standard
+The methods are ranked at each site by PRESS and a mean rank (across sites)
+ is computed for each method.
+ The mean LOO and LOYO ranks are plotted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:press-boxplot"
+
+\end_inset
+
+.
+ The top three techniques were GBM, GBMCV and adaptive lasso.
+ The PLS and GALM techniques both appeared well down the list of the best
+ techniques.
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-<<press-boxplot, fig.cap='Mean ranks of the modeling techniques across the
- seven sites.
+<<press-boxplot, fig.cap='Ranking the modeling methods by PRESS (higher is
+ better).
+ The mean rank of each method was computed once for each bootstrap sample
+ of the results.
  At left are the mean ranks under leave-one-out cross validation, at the
  right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
 ('LOO', 'LOYO'), out.width="0.49
@@ -1077,10 +1140,37 @@ True positives, etc.
 \end_layout
 
 \begin_layout Standard
-The performance of GBM was about equivalent to that of GBMCV at a much lower
- computational cost, so GBMCV will hereafter be set aside for discussion
- in favor of GBM.
- Further analysis focuses on GBM and the adaptive lasso.
+Since GBM, GBMCV, and adaptive lasso were the top three techniques by both
+ PRESS and AUROC, it seems like the best method to use will be one of these.
+ The mean rankings average the results across all seven sites, and neither
+ PRESS nor AUROC reflect the performance of a model under a particular choice
+ of the decision criterion, 
+\begin_inset Formula $\hat{\delta}$
+\end_inset
+
+, so the results we've seen so far don't convey how often a model would
+ indicate a correct decision if it were used to decide whether an advisory
+ should or should not be posted at the beaches.
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:counts-barcharts"
+
+\end_inset
+
+, we look at the counts on a per-beach basis of four categories of decisions:
+ true positives (correctly posting an advisory), true negatives (correctly
+ not posting an advisory), false positives (wrongly posting an advisory)
+ and false negatives (wrongly not posting an advisory).
+ The results are for GBM and adaptive lasso because the GBM and GBMCV methods
+ are so similar except that GBMCV takes much longer to run.
+\end_layout
+
+\begin_layout Standard
+In most cases, the counts are similar between the two techniques, with GBM
+ tending to make a few more correct decisions.
+ There are exceptions where adaptive lasso makes more correct decisions
+ (especially Hika and Red Arrow).
 \end_layout
 
 \begin_layout Standard
@@ -1089,20 +1179,16 @@ status open
 
 \begin_layout Plain Layout
 
-<<counts-barcharts, fig.cap='Mean ranks of the modeling techniques across
- the seven sites.
+<<counts-barcharts, fig.width=16, fig.height=16, fig.cap='Mean ranks of the
+ modeling techniques across the seven sites.
  At left are the mean ranks under leave-one-out cross validation, at the
  right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
-('', 'LOYO'), out.width="
-\backslash
-
-\backslash
-linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+('', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-	multiplot(plotlist=pp, cols=2)
+	multiplot(plotlist=pp, cols=3)
 \end_layout
 
 \begin_layout Plain Layout

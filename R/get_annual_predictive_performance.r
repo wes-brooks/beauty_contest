@@ -1,9 +1,17 @@
 require(ggplot2)
 require(dplyr)
-require(reshape)
+require(reshape2)
 
 #Load the raw results of the beauty contest:
 load("beauty_contest.RData")
+
+pretty_names = list(hika='Hika',
+                    point='Point',
+                    redarrow='Red Arrow',
+                    neshotah='Neshotah',
+                    maslowski='Maslowski',
+                    kreher='Kreher',
+                    thompson='Thompson')
 
 #Set up some variables and an object to hold the results:
 confusion.methods = c('gbm', 'adapt')
@@ -56,14 +64,21 @@ for (s in sites) {
     pp[[s]] = ggplot(filter(perf, site==s)) +
         aes(x=exceedance, y=count, fill=factor(accurate, levels=c("TRUE", "FALSE"))) +
         scale_fill_grey(start=0.5, end=0.1, labels=c('accurate', 'misclassified')) +
-        geom_bar(stat='identity', position='dodge') +
+        geom_bar(stat='identity', position='dodge')+
         facet_wrap(~method) +
-        aes(order=rev(accurate)) +
+        aes(order=rev(accurate))+
         theme_bw() + 
         scale_x_discrete(labels=c('nonexceedances','exceedances')) +
+        theme(axis.text.x=element_text(angle=15, hjust=0.8, size=rel(1.5)))  +
+        ggtitle(pretty_names[[s]]) +
         xlab(NULL) + 
         labs(fill=NULL) +
-        theme(legend.justification=c(1,1), legend.position=c(1,1))
+        theme(legend.justification=c(1,1),
+              legend.position=c(1,1),
+              legend.text=element_text(size=rel(1.05)),
+              strip.text=element_text(size=rel(1.3)),
+              title=element_text(size=rel(1.3))
+        )
 
     yrange = max(filter(perf, site==s)$count)
     pp[[s]] = pp[[s]] +
