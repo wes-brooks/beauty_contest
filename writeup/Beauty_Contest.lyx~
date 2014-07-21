@@ -986,15 +986,6 @@ Our goal is to compare the different modeling techniques.
  possible to rank the techniques based on that metric.
  Our approach is to rank the techniques at each site (higher is better),
  and then average the ranks of each method.
- For instance, if the adaptive lasso is ranked 
-\begin_inset Formula $5,3,7,5,6,6$
-\end_inset
-
- (one rank for each site), then its mean rank is 
-\begin_inset Formula $5.33$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Standard
@@ -1012,8 +1003,6 @@ It is not enough to compute the mean rank for each technique, though.
  tells us whether the observed ranks are due to real differences between
  the modeling techniques, or to some method getting lucky to work on data
  that it can model particularly well.
- The next sections describe the particular metrics that were used for comparing
- the modeling techniques.
 \end_layout
 
 \begin_layout Subsection

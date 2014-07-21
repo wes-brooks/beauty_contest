@@ -6,7 +6,7 @@ require(dplyr)
 load("beauty_contest.RData")
 
 #S is the number of bootstrap samples
-S = 5
+S = 101
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc.annual = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
@@ -104,13 +104,13 @@ addline_format <- function(x,...){
 #Make a boxplot of the distribution of ranks, computed by the bootstrap:
 annual.auroc.boxplot = ggplot(roc.meanranks.annual) +
     aes(x=method, y=meanrank) +
-    geom_boxplot() +
-    theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
+    geom_boxplot() + 
     xlab("modeling technique") + 
     ylab("mean rank") + 
     ylim(0, 14) +
     scale_x_discrete(labels=roc.meanranks.annual$method %>% levels %>% addline_format) +
-    theme_bw()
+    theme_bw() +
+    theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
 
 
 

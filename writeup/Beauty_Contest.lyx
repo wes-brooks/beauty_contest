@@ -986,15 +986,6 @@ Our goal is to compare the different modeling techniques.
  possible to rank the techniques based on that metric.
  Our approach is to rank the techniques at each site (higher is better),
  and then average the ranks of each method.
- For instance, if the adaptive lasso is ranked 
-\begin_inset Formula $5,3,7,5,6,6$
-\end_inset
-
- (one rank for each site), then its mean rank is 
-\begin_inset Formula $5.33$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Standard
@@ -1168,7 +1159,7 @@ reference "fig:counts-barcharts"
 In most cases, the counts are similar between the two techniques, with GBM
  tending to make a few more correct decisions.
  There are exceptions where adaptive lasso makes more correct decisions
- (especially Hika and Red Arrow).
+ (e.g., Hika and Red Arrow).
 \end_layout
 
 \begin_layout Standard

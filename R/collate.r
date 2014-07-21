@@ -2,6 +2,7 @@ require(ggplot2)
 
 root = "C:\\Users/wrbrooks/Dropbox/beauty/output"
 #root = "~/Dropbox/beauty/output"
+root = "C:\\Users/wrbrooks/scratch/output"
 
 source("R/settings.r")
 source("R/ROC.r")
@@ -10,10 +11,13 @@ sites = c('hika', 'maslowski', 'kreher', 'thompson', 'point', 'neshotah', 'redar
 methods = c('pls', 'gbm', 'gbmcv', 'galogistic-unweighted', 'galogistic-weighted', 'adalasso-unweighted', 'adalasso-unweighted-select', 'adalasso-weighted', 'adalasso-weighted-select', 'galm', 'adapt', 'adapt-select', 'spls', 'spls-select')
 
 results = list()
+var_summary = list()
 var_results = list()
+
 
 for (site in sites) {
     site_results = list()
+    site_var_summary = list()
     site_var_results = list()
   
     for (method in methods) {
@@ -92,7 +96,7 @@ for (site in sites) {
             appearances = sum(sapply(vars, function(x) v %in% x))
             varfreq = c(varfreq, appearances/n)
         }
-        site_var_results[[method]] = list(predictor.frequency=data.frame(variable=predictors, frequency=varfreq))
+        site_var_summary[[method]] = list(predictor.frequency=data.frame(variable=predictors, frequency=varfreq))
         
         #Compute the frequency of each unique variable combination:
         varcombo = list()
@@ -105,9 +109,11 @@ for (site in sites) {
             ord = order(sapply(varcombo, function(x) x[['frequency']]), decreasing=TRUE)
             varcombo = varcombo[ord]
         }
-        site_var_results[[method]][['predictor.combination.frequency']] = varcombo
+        site_var_summary[[method]][['predictor.combination.frequency']] = varcombo
+        site_var_results[[method]] = vars
     }
     results[[site]] = site_results
+    var_summary[[site]] = site_var_summary
     var_results[[site]] = site_var_results
 }
 
