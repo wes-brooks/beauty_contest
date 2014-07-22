@@ -4,6 +4,7 @@ require(dplyr)
 
 #Load the raw results of the beauty contest:
 load("beauty_contest.RData")
+load("variable_supplement.RData")
 
 #S is the number of bootstrap samples
 S = 11
@@ -123,6 +124,9 @@ addline_format <- function(x,...){
     gsub('[.-]', '\n', x, perl=TRUE)
 }
 
+roc.range = cbind(dcast(roc.meanranks, method~'min', min),
+                  dcast(roc.meanranks, method~'max', max)) %>% melt
+
 #Make a boxplot of the distribution of ranks, computed by the bootstrap:
 LOO.auroc.boxplot = ggplot(roc.meanranks) +
     aes(x=method, y=meanrank) +
@@ -170,46 +174,48 @@ LOO.press.boxplot = ggplot(press.meanranks) +
     theme_bw()
 
 
-# nvar.plot = list()
-# for (s in sites) {
-#     nvar.mean = rbind(auto[[s]] %>%
-#                         as.data.frame %>%
-#                         melt(variable.name='method') %>%
-#                         cbind('type'=rep('auto',S)),
-#                     man[[s]] %>%
-#                         as.data.frame %>%
-#                         melt(variable.name='method') %>%
-#                         cbind('type'=rep('man',S))) %>%
-#                     dcast(method~type, fun.aggregate=mean) %>%
-#                     melt(variable.name='type') 
-#     
-# #     nvar.range = cbind(
-# #                     auto[[s]] %>%
-# #                         as.data.frame %>%
-# #                         apply(2, range),
-# #                     man[[s]] %>%
-# #                         as.data.frame %>%
-# #                         apply(2, range))
-# #     rownames(nvar.range) = c('min', 'max')
-# #     
-# #     nvar.data = cbind(nvar.mean, t(nvar.range))
-#     
-#     nvar.plot[[s]] = nvar.data %>%
-#         ggplot +
-#             aes(x=method, fill=type, y=value) +
-#             geom_bar(stat='identity', position='dodge') +
-#             #geom_errorbar(aes(ymin=min, ymax=max), width=.1) +
-#             ylab("nvar") +
-#             ggtitle(s) +
-#             scale_x_discrete(labels=select %>% addline_format) +
-#             theme_bw() +
-#             theme(legend.justification=c(1,1),
-#                   legend.position=c(1,1),
-#                   legend.text=element_text(size=rel(1.05)),
-#                   strip.text=element_text(size=rel(1.3)),
-#                   title=element_text(size=rel(1.3)),
-#                   axis.text.x=element_text(angle=65, hjust=1, vjust=0.95),
-#                   axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
-#             )
-#             
-# }
+nvar.plot = list()
+for (s in sites) {
+    nvar.mean = rbind(auto[[s]] %>%
+                        as.data.frame %>%
+                        melt(variable.name='method') %>%
+                        cbind('type'=rep('auto',S)),
+                    man[[s]] %>%
+                        as.data.frame %>%
+                        melt(variable.name='method') %>%
+                        cbind('type'=rep('man',S))) %>%
+                    dcast(method~type, fun.aggregate=mean) %>%
+                    melt(variable.name='type') 
+    
+    nvar.range = cbind(
+                    auto[[s]] %>%
+                        as.data.frame %>%
+                        apply(2, range),
+                    man[[s]] %>%
+                        as.data.frame %>%
+                        apply(2, range))
+    rownames(nvar.range) = c('min', 'max')
+    
+    nvar.data = cbind(nvar.mean, t(nvar.range))
+    
+    nvar.plot[[s]] = nvar.data %>%
+        ggplot +
+            aes(x=method, fill=type, y=value) +
+            scale_fill_grey(name="Collection", start=0.7, end=0.3, labels=c('automatic', 'manual')) +
+            geom_bar(stat='identity', position='dodge') +
+            geom_errorbar(aes(ymin=min, ymax=max), width=0.15, position=position_dodge(width=0.9)) +
+            ylab("nvar") +
+            xlab(NULL) +
+            ggtitle(s) +
+            scale_x_discrete(labels=select %>% addline_format) +
+            theme_bw() +
+            theme(legend.justification=c(1,1),
+                  legend.position=c(1,1),
+                  legend.text=element_text(size=rel(1.05)),
+                  strip.text=element_text(size=rel(1.3)),
+                  title=element_text(size=rel(1.3)),
+                  axis.text.x=element_text(angle=65, hjust=1, vjust=0.95),
+                  axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
+            )
+            
+}

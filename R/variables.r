@@ -23,3 +23,9 @@ for(site in sites) {
     }
 }
 
+for (site in sites) {
+    vv = colnames(varlist[[site]][['adapt']])
+    cat(paste("site: ", site, "\n", sep=""))
+    cat(paste("auto: ", (1:length(vv))[-grep("beach", vv)] %>% length, "\n", sep=""))
+    cat(paste("man: ", grep("beach", vv) %>% length, "\n", sep=""))
+}

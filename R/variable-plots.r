@@ -4,7 +4,7 @@ varplots = list()
 
 for (site in sites) {
 
-    site_data = var_results[[site]][['adapt']][['predictor.frequency']]
+    site_data = var_summary[[site]][['adapt']][['predictor.frequency']]
     site_data$beachvar = rep(FALSE, nrow(site_data))
     site_data$beachvar[grep("beach", site_data$variable)] = TRUE
     
