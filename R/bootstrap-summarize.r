@@ -6,7 +6,7 @@ require(dplyr)
 load("beauty_contest.RData")
 
 #S is the number of bootstrap samples
-S = 101
+S = 11
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
@@ -16,6 +16,14 @@ roc.ranks = list()
 conts = c('adapt', 'adapt-select', 'gbm', 'gbmcv', 'pls', 'galm', 'spls', 'spls-select')
 press = sapply(sites, function(s) return( sapply(conts, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 press.ranks = list()
+
+#These lists will hold the number of manual and automatic variables for each bootstrap resample:
+select = c('adapt', 'galm', 'spls', 'spls-select',
+           'adalasso-unweighted',
+           'adalasso-weighted',
+           'galogistic-unweighted', 'galogistic-weighted')
+auto = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+man = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 
 #This section computes bootstrap estimates of the ranks of the modeling methods
 for (site in sites) {
@@ -31,7 +39,7 @@ for (site in sites) {
             #Draw the botstrap sample for this method, using the indices in 'boot'
             r = results[[site]][[method]][['res']][,1:4]
             r = r[boot,]
-            colnames(r) = c('predicted', 'actual', 'threshold', 'fold')
+            colnames(r) = c('predicted', 'actual', 'threshold', 'fold')          
             
             #Get the decision-accuracy of the modeling method.
             #First, sort the results based on the decision threshold
@@ -65,6 +73,17 @@ for (site in sites) {
             press[[site]][[method]] = c(press[[site]][[method]],
                 with(results[[site]][[method]][['res']], (predicted-actual)[as.numeric(boot)])**2 %>% sum)
         }
+        
+#         for (method in select) {
+#             v = varlist[[site]][[method]]
+#             v = v[as.integer(boot),]  
+#             
+#             man.indx = grep("beach", colnames(v))
+#             auto.indx = (1:ncol(v))[-man.indx]
+#             
+#             man[[site]][[method]] = c(man[[site]][[method]], v[,man.indx] %>% rowSums %>% mean)
+#             auto[[site]][[method]] = c(auto[[site]][[method]], v[,auto.indx] %>% rowSums %>% mean)
+#         }
     }
     
     #put the results in a data frame and rank the methods on each bootstrap sample:
@@ -101,7 +120,7 @@ roc.meanranks$method = factor(roc.meanranks$method, levels=levl)
 
 #This is a formatting function to put newlines in the plot labels
 addline_format <- function(x,...){
-    gsub('.', '\n', x, fixed=TRUE)
+    gsub('[.-]', '\n', x, perl=TRUE)
 }
 
 #Make a boxplot of the distribution of ranks, computed by the bootstrap:
@@ -149,3 +168,48 @@ LOO.press.boxplot = ggplot(press.meanranks) +
     ylim(0, 8) +
     scale_x_discrete(labels=press.meanranks$method %>% levels %>% addline_format) +
     theme_bw()
+
+
+# nvar.plot = list()
+# for (s in sites) {
+#     nvar.mean = rbind(auto[[s]] %>%
+#                         as.data.frame %>%
+#                         melt(variable.name='method') %>%
+#                         cbind('type'=rep('auto',S)),
+#                     man[[s]] %>%
+#                         as.data.frame %>%
+#                         melt(variable.name='method') %>%
+#                         cbind('type'=rep('man',S))) %>%
+#                     dcast(method~type, fun.aggregate=mean) %>%
+#                     melt(variable.name='type') 
+#     
+# #     nvar.range = cbind(
+# #                     auto[[s]] %>%
+# #                         as.data.frame %>%
+# #                         apply(2, range),
+# #                     man[[s]] %>%
+# #                         as.data.frame %>%
+# #                         apply(2, range))
+# #     rownames(nvar.range) = c('min', 'max')
+# #     
+# #     nvar.data = cbind(nvar.mean, t(nvar.range))
+#     
+#     nvar.plot[[s]] = nvar.data %>%
+#         ggplot +
+#             aes(x=method, fill=type, y=value) +
+#             geom_bar(stat='identity', position='dodge') +
+#             #geom_errorbar(aes(ymin=min, ymax=max), width=.1) +
+#             ylab("nvar") +
+#             ggtitle(s) +
+#             scale_x_discrete(labels=select %>% addline_format) +
+#             theme_bw() +
+#             theme(legend.justification=c(1,1),
+#                   legend.position=c(1,1),
+#                   legend.text=element_text(size=rel(1.05)),
+#                   strip.text=element_text(size=rel(1.3)),
+#                   title=element_text(size=rel(1.3)),
+#                   axis.text.x=element_text(angle=65, hjust=1, vjust=0.95),
+#                   axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
+#             )
+#             
+# }
