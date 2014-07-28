@@ -15,3 +15,5 @@ sh/*
 .Rproj.user
 writeup/#Beauty_Contest.lyx#
 writeup/*~
+writeup/figure/
+writeup/figure/*

@@ -28,9 +28,9 @@ for (site in sites) {
         theme(axis.text.x=element_text(angle=85, hjust=1, vjust=0.98))   
 }
 
-for (s in sites) {
-    pdf(paste("varplot2", s, "pdf", sep="."), width=11, height=8)
-    print(varplots[[s]])
-    dev.off()
-}
-
+# for (s in sites) {
+#     pdf(paste("varplot2", s, "pdf", sep="."), width=11, height=8)
+#     print(varplots[[s]])
+#     dev.off()
+# }
+# 

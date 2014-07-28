@@ -6,7 +6,7 @@ require(dplyr)
 load("beauty_contest.RData")
 
 #S is the number of bootstrap samples
-S = 1001
+S = 11
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc.annual = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
