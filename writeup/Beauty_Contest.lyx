@@ -253,12 +253,14 @@ Listing of specific statistical techniques
 Fourteen different regression modeling techniques were considered.
  Each technique uses one of five modeling algorithms: GBM, the adaptive
  lasso, the genetic algorithm, PLS, or sparse PLS.
- Each technique is aplied to either continuous or binary regression and
- to either modeling, or variable selection only.
+ Each technique is applied to either continuous or binary regression and
+ to either variable selection and model estimation, or variable selection
+ only.
 \end_layout
 
 \begin_layout Subsubsection*
-Continuous or binary regression
+Continuous vs.
+ binary regression
 \end_layout
 
 \begin_layout Standard
@@ -314,7 +316,7 @@ g(p_{i})=\log\frac{p_{i}}{1-p_{i}}
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Paragraph*
 Weighting of observations in binary regression
 \end_layout
 
@@ -659,30 +661,6 @@ The response variable for our continuous regression models is the natural
 Include a table with pre/post processing discussion
 \end_layout
 
-\begin_layout Paragraph*
-Area under the ROC curve
-\end_layout
-
-\begin_layout Paragraph*
-PRESS
-\end_layout
-
-\begin_layout Paragraph*
-Categorization of the models' decisions
-\end_layout
-
-\begin_layout Section
-Results
-\end_layout
-
-\begin_layout Subsection
-Results tables
-\end_layout
-
-\begin_layout Standard
-Results of the cross-validation procedures were compiled into tables
-\end_layout
-
 \begin_layout Standard
 \begin_inset ERT
 status open
@@ -697,7 +675,7 @@ status open
 \backslash
 
 \backslash
-linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+linewidth", echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -778,6 +756,257 @@ linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
 
 \end_layout
 
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Subsection
+Results tables
+\end_layout
+
+\begin_layout Standard
+Results of the cross-validation procedures were compiled into tables
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{table}
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+centering
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+begin{tabular}{ccccc}
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-table, echo=FALSE, warning=FALSE, message=FALSE, results='asis'>>
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Generate an example results table
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	#First, get the reults from hika, bot LOO and LOYO:
+\end_layout
+
+\begin_layout Plain Layout
+
+	r = results[['hika']][['gbm']][['res']]
+\end_layout
+
+\begin_layout Plain Layout
+
+	ra = results_annual[['hika']][['gbm']][['res']]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Find the original ordering of the data:
+\end_layout
+
+\begin_layout Plain Layout
+
+	r %>% rownames %>% as.integer %>% order -> indx
+\end_layout
+
+\begin_layout Plain Layout
+
+	ra %>% rownames %>% as.integer %>% order -> indx_annual
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Produce a results table:
+\end_layout
+
+\begin_layout Plain Layout
+
+	rtable = cbind(r[indx,c(2,1,3)], ra[indx_annual,c(1,3)])[1:4,]
+\end_layout
+
+\begin_layout Plain Layout
+
+	colnames(rtable) = c("Actual",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+prediction
+\backslash
+
+\backslash
+end{tabular}",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+threshold
+\backslash
+
+\backslash
+end{tabular}",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOYO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+prediction
+\backslash
+
+\backslash
+end{tabular}",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOYO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+threshold
+\backslash
+
+\backslash
+end{tabular}")
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Add ellipses for the last row:
+\end_layout
+
+\begin_layout Plain Layout
+
+	rtable = rtable %>% round(2) %>%
+\end_layout
+
+\begin_layout Plain Layout
+
+		rbind(rep("
+\backslash
+
+\backslash
+vdots", 5))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Display only a summary:
+\end_layout
+
+\begin_layout Plain Layout
+
+	rtable %>% xtable %>% print(only.content=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{table}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Cross Validation
 \end_layout
@@ -827,8 +1056,8 @@ Our goal is to compare the different modeling techniques.
 \end_layout
 
 \begin_layout Standard
-In order to make a decision about which technique is best, we must quantify
- the uncertainty in the rankings, which we do via the bootstrap.
+In order tocompare techniques, we must quantify the uncertainty in the rankings,
+ which we do via the bootstrap.
  Since the AUROC and PRESS rankings are functions of the result tables,
  the bootstrap procedure is carried out by resampling the rows of each results
  table, and the AUROC and ROC rankings were recalculated for each bootstrap
@@ -1167,7 +1396,7 @@ RUE)
 \end_layout
 
 \begin_layout Subsection
-Categorizing the models' decisions
+Classification of responses
 \end_layout
 
 \begin_layout Standard
@@ -1176,77 +1405,43 @@ While the AUROC is an important metric that should guide the choice of which
  range of thresholds.
  The real-world performance of any model for predicting exceedances will
  be measured by how well it distinguishes between exceedances and nonexceedances
- at the one specific threshold 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
- that is used in the application.
+ at the one specific threshold.
  Because LOYO CV was used to simulate real-world application of the modeling
  methods, it seems natural to evaluate the models based on the accuracy
- of their decisions when provided with a realistic decision threshold 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
-.
+ of their decisions when provided with a realistic decision threshold.
 \end_layout
 
 \begin_layout Standard
-Intuitively, 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
- should adapt to the conditions that are observed in the beach's training
- data.
+Intuitively, the decision threshold should adapt to the conditions that
+ are observed in the beach's training data.
  If, for instance, exceedances are rare in the training data, then we expect
- few exceedances in the future, and should set the threshold 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
- high to reflect this prior expectation.
- On the other hand, if the bacterial concentration often exceeds 
-\begin_inset Formula $\delta$
-\end_inset
-
-, the threshold 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
- should be set lower in order to properly flag more of those exceedances.
- This intuition was encoded into how 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
- was set for the LOYO models.
- Specifically, 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
- was set to the 
+ few exceedances in the future, and should set the threshold high to reflect
+ this prior expectation.
+ On the other hand, if the bacterial concentration often exceeds the regulatory
+ standard, then the decision threshold should be set lower in order to properly
+ flag more of those exceedances.
+ This intuition was encoded into how the decision threshold was set for
+ the LOYO models.
+ Specifically, the decision threshold was set to the 
 \begin_inset Formula $q$
 \end_inset
 
-th quantile of the fitted values for non-exceedances in the training set,
+th quantile of the fitted values of non-exceedances in the training set,
  where 
 \begin_inset Formula $1-q$
 \end_inset
 
  is the proportion of exceednaces in the training set.
- These LOYO predictions are summarized in the 2-by-2 tables of true positives,
- true negatives, false positives, and false negatives.
 \end_layout
 
 \begin_layout Standard
-Since GBM, GBMCV, and adaptive lasso were the top three techniques by both
+Since GBM, GBM-CV, and adaptive lasso were the top three techniques by both
  PRESS and AUROC, it seems like the best method to use will be one of these.
  The mean rankings average the results across all seven sites, and neither
  PRESS nor AUROC reflect the performance of a model under a particular choice
- of the decision criterion, 
-\begin_inset Formula $\hat{\delta}$
-\end_inset
-
-, so the results we've seen so far don't convey how often a model would
- indicate a correct decision if it were used to decide whether an advisory
- should or should not be posted at the beaches.
+ of the decision criterion, so the results we've seen so far don't convey
+ how often a model would indicate a correct decision if it were used to
+ decide whether an advisory should or should not be posted at the beaches.
  In Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1258,8 +1453,8 @@ reference "fig:counts-barcharts"
  true positives (correctly posting an advisory), true negatives (correctly
  not posting an advisory), false positives (wrongly posting an advisory)
  and false negatives (wrongly not posting an advisory).
- The results are for GBM and adaptive lasso because the GBM and GBMCV methods
- are so similar except that GBM-CV takes much longer to run.
+ The results are for GBM and adaptive lasso because the GBM and GBM-CV methods
+ are so similar.
  In most cases, the counts are similar between the two techniques, with
  GBM tending to make a few more correct decisions.
  There are exceptions where adaptive lasso makes more correct decisions
@@ -1276,7 +1471,7 @@ status open
  modeling techniques across the seven sites.
  At left are the mean ranks under leave-one-out cross validation, at the
  right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
-('', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE>>=
+('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1303,6 +1498,24 @@ Several of the methods we tested do variable selection to pare the number
  of covariates.
  We look here at how many variables were used in the adaptive lasso models
  compared to the GBM models, which use all the available covariates.
+ The variable counts are displayed in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:varselect-barchart"
+
+\end_inset
+
+.
+ At most of the sites, the adaptive lasso uses far fewer covariates than
+ GBM, but at Point the adaptive lasso uses almost all of the available covariate
+s.
+ That's because the selection criterion we used (corrected AIC) is intended
+ to minimize prediction error.
+ As the amount of data increases (Point has far more observations than the
+ other sites), we accumulate enough information to begin to discern the
+ effect even of covariates that are only slightly correlated with the response.
+ As our dataset grows, then, we should expect more covariates to be selected
+ for the model.
 \end_layout
 
 \begin_layout Standard
@@ -1311,7 +1524,10 @@ status open
 
 \begin_layout Plain Layout
 
-<<varselect-barchart, fig.cap="The number of variables selected ", out.width="
+<<varselect-barchart, fig.cap="At each site, the number of variables that
+ were selected for the adaptive lasso and GBM models, divided by whether
+ they were collected from automated web services, or measured manually at
+ the beach.", out.width="
 \backslash
 
 \backslash

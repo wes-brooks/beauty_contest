@@ -1,11 +1,11 @@
 #! /bin/bash
-mkdir -p aux
+mkdir -p latex
 
 lyx --export pdflatex Beauty_Contest.lyx
 
-xelatex -output-directory=aux-latex Beauty_Contest
+xelatex -output-directory=latex Beauty_Contest
 bibtex Beauty_Contest
-xelatex -output-directory=aux-latex Beauty_Contest
-xelatex -output-directory=aux-latex Beauty_Contest
+xelatex -output-directory=latex Beauty_Contest
+xelatex -output-directory=latex Beauty_Contest
 
-mv aux-latex/Beauty_Contest.pdf ./
+mv latex/Beauty_Contest.pdf ./
