@@ -6,7 +6,7 @@ require(dplyr)
 load("beauty_contest.RData")
 
 #S is the number of bootstrap samples
-S = 101
+S = 1001
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc.annual = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
@@ -90,10 +90,10 @@ roc.meanranks.annual = melt(roc.meanranks.annual)
 colnames(roc.meanranks.annual) = c('method', 'rep', 'meanrank')
 
 #Rename the 'method' factor levels to be sorted like the rankings (best to worst)
-levl = with(roc.meanranks.annual, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
-            %>% sort 
-            %>% rev 
-            %>% names)
+levl = with(roc.meanranks.annual, sapply(levels(method), function(m) meanrank[method==m] %>% mean) %>%
+                sort %>%
+                rev %>%
+                names)
 roc.meanranks.annual$method = factor(roc.meanranks.annual$method, levels=levl)
 
 #This is a formatting function to put newlines in the plot labels
@@ -101,18 +101,25 @@ addline_format <- function(x,...){
     gsub('.', '\n', x, fixed=TRUE)
 }
 
-#Make a boxplot of the distribution of ranks, computed by the bootstrap:
-annual.auroc.boxplot = ggplot(roc.meanranks.annual) +
-    aes(x=method, y=meanrank) +
-    geom_boxplot() + 
-    xlab("modeling technique") + 
+
+#Bar chart of ROC rank
+a = roc.meanranks.annual %>%
+    dcast(rep~method, fun.aggregate=mean) %>%
+    apply(2, function(x) quantile(x, c(0.05,0.5,0.95))) %>%
+    t %>%
+    as.data.frame
+a = cbind(a, method=rownames(a))[-1,]
+colnames(a)[c(1,2,3)] = c('low', 'med', 'high')
+a$method = factor(a$method, levels=a$method[order(a$med, decreasing=TRUE)])
+roc.barchart.annual = ggplot(a) +
+    aes(x=method, y=med) +
+    geom_bar(stat='identity', fill=gray(0.5)) +
+    geom_errorbar(aes(ymin=low, ymax=high), width=0.15) +
     ylab("mean rank") + 
     ylim(0, 14) +
-    scale_x_discrete(labels=roc.meanranks.annual$method %>% levels %>% addline_format) +
+    scale_x_discrete(labels=a$method %>% levels %>% addline_format) +
     theme_bw() +
     theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
-
-
 
 
 
@@ -139,14 +146,22 @@ levl = with(press.meanranks.annual, sapply(levels(method), function(m) meanrank[
             %>% names)
 press.meanranks.annual$method = factor(press.meanranks.annual$method, levels=levl)
 
-#Make a boxplot of the distribution of ranks, computed by the bootstrap:
-annual.press.boxplot = ggplot(press.meanranks.annual) +
-    aes(x=method, y=meanrank) +
-    geom_boxplot() +
-    theme(axis.text.x=element_text(angle=45, hjust=0.8, vjust=0.8)) + 
-    xlab("modeling technique") + 
+#Bar chart of ROC rank
+a = press.meanranks.annual %>%
+    dcast(rep~method, fun.aggregate=mean) %>%
+    apply(2, function(x) quantile(x, c(0.05,0.5,0.95))) %>%
+    t %>%
+    as.data.frame
+a = cbind(a, method=rownames(a))[-1,]
+colnames(a)[c(1,2,3)] = c('low', 'med', 'high')
+a$method = factor(a$method, levels=a$method[order(a$med, decreasing=TRUE)])
+press.barchart.annual = ggplot(a) +
+    aes(x=method, y=med) +
+    geom_bar(stat='identity', fill=gray(0.5)) +
+    geom_errorbar(aes(ymin=low, ymax=high), width=0.15)+
     ylab("mean rank") + 
     ylim(0, 8) +
-    scale_x_discrete(labels=press.meanranks.annual$method %>% levels %>% addline_format) +
-    theme_bw()
+    scale_x_discrete(labels=a$method %>% levels %>% addline_format) +
+    theme_bw() +
+    theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
 
