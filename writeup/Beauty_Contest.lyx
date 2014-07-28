@@ -7,6 +7,7 @@
 \renewcommand\[{\begin{equation}}
 \renewcommand\]{\end{equation}}
 \usepackage{subfig}
+\usepackage{rotating}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -658,6 +659,125 @@ The response variable for our continuous regression models is the natural
 Include a table with pre/post processing discussion
 \end_layout
 
+\begin_layout Paragraph*
+Area under the ROC curve
+\end_layout
+
+\begin_layout Paragraph*
+PRESS
+\end_layout
+
+\begin_layout Paragraph*
+Categorization of the models' decisions
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Subsection
+Results tables
+\end_layout
+
+\begin_layout Standard
+Results of the cross-validation procedures were compiled into tables
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<compile-results, fig.cap="Mean ranks of the modeling techniques across
+ the seven sites.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.", fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(dplyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(reshape2)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(brooks)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(xtable)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Load the raw results of the beauty contest:
+\end_layout
+
+\begin_layout Plain Layout
+
+	setwd("..")
+\end_layout
+
+\begin_layout Plain Layout
+
+	load("beauty_contest.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize-annual.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/get_annual_predictive_performance.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/pair-tables.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Cross Validation
 \end_layout
@@ -692,47 +812,36 @@ Some methods also used cross-validation internally to select tuning parameters.
 \end_layout
 
 \begin_layout Subsection
-Performance Metrics
+Comparing methods, and quantifying uncertainty in the ranks
 \end_layout
 
 \begin_layout Standard
-How did we evaluate the performance of each technique on all the different
- data sets
+Our goal is to compare the different modeling techniques.
+ We make comparisons on the basis of rank because the modeling metrics may
+ not be comparable between sites (because, for instance, different sites
+ have different numbers of observations).
+ If it is possible to compute a metric of model performance, then it is
+ possible to rank the techniques based on that metric.
+ Our approach is to rank the techniques at each site (higher is better),
+ and then average the ranks of each method.
 \end_layout
 
-\begin_layout Itemize
-AUROC: The area under the ROC (AUROC) curve assesses how accurately the
- predictions of the left-out observations are sorted.
- 
+\begin_layout Standard
+In order to make a decision about which technique is best, we must quantify
+ the uncertainty in the rankings, which we do via the bootstrap.
+ Since the AUROC and PRESS rankings are functions of the result tables,
+ the bootstrap procedure is carried out by resampling the rows of each results
+ table, and the AUROC and ROC rankings were recalculated for each bootstrap
+ sample.
+ We used 
+\begin_inset Formula $1001$
+\end_inset
+
+ bootstrap samples of each results table in the analysis that follows.
 \end_layout
 
-\begin_layout Itemize
-continuous variables using PRESS (skill --> Like Nash-Sutcliffe/R^2 over
- the fitted data) 
-\end_layout
-
-\begin_layout Itemize
-True/False Positives/Negatives (needs a threshold)
-\end_layout
-
-\begin_layout Itemize
-Which variables are selected for models where variable reduction takes place
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-challenge regarding the fact that different variables are selected in each
- fold.
- Maybe use frequencies?
-\end_layout
-
-\begin_layout Itemize
-also the number of variables selected (metric of complexity)
-\end_layout
-
-\end_deeper
-\begin_layout Paragraph*
-Area under the ROC curve
+\begin_layout Subsection
+AUROC
 \end_layout
 
 \begin_layout Standard
@@ -764,15 +873,136 @@ n has an AUROC of one, while a model that predicts exceedances no better
  than a coin flip has an AUROC of 0.5.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Standard
+The methods are ranked at each site by AUROC and a mean rank (across sites)
+ is computed for each method.
+ The mean LOO and LOYO ranks are plotted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:auroc-boxplot"
+
+\end_inset
+
+.
+ The top three techniques were GBM, GBM-CV and adaptive lasso.
+ In order to facilitate a pairwise comparison between modeling methods,
+ Tables 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs.annual"
+
+\end_inset
+
+ (for the leave-one-year-out analysis) and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs"
+
+\end_inset
+
+ (for the leave-one-out analysis) show the frequency that the mean AUROC
+ rank of GBM, GBM-CV, or the adaptive lasso exceeded each of the other modeling
+ methods.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<auroc-boxplot, fig.cap="Mean ranking of the methods by area under the ROC
+ curce (AUROC) across all sites (higher is better).
+ The error bars are 90
+\backslash
+
+\backslash
+% confidence intervals computed by the bootstrap.
+ At left are the AUROC rankings from the leave-one-year-out cross validation,
+ at right are the AUROC rankings from the leave-one-out cross validation.",
+ fig.subcap=c('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(roc.barchart.annual)
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(roc.barchart)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<auroc-tables, fig.cap="Ranking the modeling methods by AUROC (higher is
+ better).
+ The mean rank of each method was computed once for each bootstrap sample
+ of the results.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.", fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, results='asis', warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(auroc.pairs.annual[1:3,], caption="Under leave-one-year-out cross
+ validation, how often the mean AUROC rank of GBM, GBMCV, or the adaptive
+ lasso (in the rows) exceeded that of the other methods (in the columns).",
+ label="table:auroc.pairs.annual") %>% print(sanitize.colnames.function=tabulate_hea
+ders, rotate.colnames=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(auroc.pairs[1:3,], caption="Under leave-one-out cross validation,
+ how often the mean AUROC rank of GBM, GBMCV, or the adaptive lasso (in
+ the rows) exceeded that of the other methods (in the columns).", label="table:au
+roc.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=T
+RUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
 PRESS
 \end_layout
 
 \begin_layout Standard
 While AUROC is concerned with how well the model's predictions separate
- exceedances from non-exceedances, the predictive residual error sum of
- squares (PRESS) measures how well a model's predictions match the observed
- bacterial concentration.
+ exceedances from non-exceedances, the predictive error sum of squares (PRESS)
+ measures how well a model's predictions match the observed bacterial concentrat
+ion.
  The PRESS can only be computed for continuous regression methods.
  Let the model's predictions be denoted 
 \begin_inset Formula $\tilde{y}_{i}$
@@ -816,16 +1046,137 @@ The PRESS statistic is of interest because a good model should accurately
  methods are the best.
 \end_layout
 
-\begin_layout Paragraph*
-True positives, etc.
+\begin_layout Standard
+The rankings of the methods by PRESS are plotted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:press-boxplot"
+
+\end_inset
+
+.
+ The top three techniques under both LOO and LOYO analysis were GBM, GBM-CV
+ and the adaptive lasso.
+ In order to facilitate a pairwise comparison between modeling methods,
+ Tables 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs.annual"
+
+\end_inset
+
+ (for the leave-one-year-out analysis) and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs"
+
+\end_inset
+
+ (for the leave-one-out analysis) show the frequency that the mean AUROC
+ rank of GBM, GBM-CV, or the adaptive lasso exceeded each of the other modeling
+ methods.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<press-boxplot, fig.cap="Mean ranking of the methods by predictive error
+ sum of squares (PRESS) across all sites (higher is better).
+ The error bars are 90
+\backslash
+
+\backslash
+% confidence intervals computed by the bootstrap.
+ At left are the PRESS rankings from the leave-one-year-out cross validation,
+ at right are the PRESS rankings from the leave-one-out cross validation.",
+ fig.subcap=c('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(press.barchart.annual)
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(press.barchart)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<press-tables, fig.cap="Ranking the modeling methods by PRESS (higher is
+ better).
+ The mean rank of each method was computed once for each bootstrap sample
+ of the results.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.", fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, results='asis', warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(press.pairs.annual[1:3,], caption="Under leave-one-year-out cross
+ validation, how often the mean PRESS rank of GBM, GBMCV, or the adaptive
+ lasso (in the rows) exceeded that of the other methods (in the columns).",
+ label="table:press.pairs.annual") %>% print(sanitize.colnames.function=tabulate_hea
+ders, rotate.colnames=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(press.pairs[1:3,], caption="Under leave-one-out cross validation,
+ how often the mean PRESS rank of GBM, GBMCV, or the adaptive lasso (in
+ the rows) exceeded that of the other methods (in the columns).", label="table:pr
+ess.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=T
+RUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Categorizing the models' decisions
 \end_layout
 
 \begin_layout Standard
 While the AUROC is an important metric that should guide the choice of which
- modeling method to use, the real-world performance of any model for predicting
- exceedances will be measured not by its average performance over the possible
- range of thresholds, but by how well it distinguishes between exceedances
- and nonexceedances at the one specific threshold 
+ modeling method to use, it measures the average performance over the possible
+ range of thresholds.
+ The real-world performance of any model for predicting exceedances will
+ be measured by how well it distinguishes between exceedances and nonexceedances
+ at the one specific threshold 
 \begin_inset Formula $\hat{\delta}$
 \end_inset
 
@@ -884,250 +1235,6 @@ th quantile of the fitted values for non-exceedances in the training set,
  true negatives, false positives, and false negatives.
 \end_layout
 
-\begin_layout Section
-Results
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-<<compile-results, fig.cap='Mean ranks of the modeling techniques across
- the seven sites.
- At left are the mean ranks under leave-one-out cross validation, at the
- right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
-('LOO', 'LOYO'), out.width="0.49
-\backslash
-
-\backslash
-linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-	require(dplyr)
-\end_layout
-
-\begin_layout Plain Layout
-
-	require(reshape2)
-\end_layout
-
-\begin_layout Plain Layout
-
-	require(ggplot2)
-\end_layout
-
-\begin_layout Plain Layout
-
-	require(brooks)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	#Load the raw results of the beauty contest:
-\end_layout
-
-\begin_layout Plain Layout
-
-	setwd("..")
-\end_layout
-
-\begin_layout Plain Layout
-
-	load("beauty_contest.RData")
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	source("R/bootstrap-summarize.r")
-\end_layout
-
-\begin_layout Plain Layout
-
-	source("R/bootstrap-summarize-annual.r")
-\end_layout
-
-\begin_layout Plain Layout
-
-	source("R/get_annual_predictive_performance.r")
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Ranking the modeling techniques, and the bootstrap
-\end_layout
-
-\begin_layout Standard
-Our goal is to compare the different modeling techniques.
- We make comparisons on the basis of rank because the modeling metrics may
- not be comparable between sites (because, for instance, different sites
- have different numbers of observations).
- If it is possible to compute a metric of model performance, then it is
- possible to rank the techniques based on that metric.
- Our approach is to rank the techniques at each site (higher is better),
- and then average the ranks of each method.
-\end_layout
-
-\begin_layout Standard
-It is not enough to compute the mean rank for each technique, though.
- In order to make a decision about which technique is best, we should wonder
- whether the ranks are stable or whether they will change when new data
- is observed.
- We use the bootstrap to answer this question.
- Over a large number of bootstrap iterations (here, 
-\begin_inset Formula $B=1001),$
-\end_inset
-
- the results were resampled, and the ranks recalculated for each resample.
- Interpreting the distribution of the mean ranks over these resampled results
- tells us whether the observed ranks are due to real differences between
- the modeling techniques, or to some method getting lucky to work on data
- that it can model particularly well.
-\end_layout
-
-\begin_layout Subsection
-AUROC
-\end_layout
-
-\begin_layout Standard
-The methods are ranked at each site by AUROC and a mean rank (across sites)
- is computed for each method.
- The mean LOO and LOYO ranks are plotted in Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:auroc-boxplot"
-
-\end_inset
-
-.
- The top three techniques were GBM, GBMCV and adaptive lasso.
- The PLS and GALM techniques both appeared well down the list of the best
- techniques.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-<<auroc-boxplot, fig.cap='Ranking the modeling methods by AUROC (higher is
- better).
- The mean rank of each method was computed once for each bootstrap sample
- of the results.
- At left are the mean ranks under leave-one-out cross validation, at the
- right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
-('LOO', 'LOYO'), out.width="0.49
-\backslash
-
-\backslash
-linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-	print(annual.auroc.boxplot)
-\end_layout
-
-\begin_layout Plain Layout
-
-	print(LOO.auroc.boxplot)
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-PRESS
-\end_layout
-
-\begin_layout Standard
-The methods are ranked at each site by PRESS and a mean rank (across sites)
- is computed for each method.
- The mean LOO and LOYO ranks are plotted in Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:press-boxplot"
-
-\end_inset
-
-.
- The top three techniques were GBM, GBMCV and adaptive lasso.
- The PLS and GALM techniques both appeared well down the list of the best
- techniques.
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-<<press-boxplot, fig.cap='Ranking the modeling methods by PRESS (higher is
- better).
- The mean rank of each method was computed once for each bootstrap sample
- of the results.
- At left are the mean ranks under leave-one-out cross validation, at the
- right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
-('LOO', 'LOYO'), out.width="0.49
-\backslash
-
-\backslash
-linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-	print(annual.press.boxplot)
-\end_layout
-
-\begin_layout Plain Layout
-
-	print(LOO.press.boxplot)
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-True positives, etc.
-\end_layout
-
 \begin_layout Standard
 Since GBM, GBMCV, and adaptive lasso were the top three techniques by both
  PRESS and AUROC, it seems like the best method to use will be one of these.
@@ -1152,12 +1259,9 @@ reference "fig:counts-barcharts"
  not posting an advisory), false positives (wrongly posting an advisory)
  and false negatives (wrongly not posting an advisory).
  The results are for GBM and adaptive lasso because the GBM and GBMCV methods
- are so similar except that GBMCV takes much longer to run.
-\end_layout
-
-\begin_layout Standard
-In most cases, the counts are similar between the two techniques, with GBM
- tending to make a few more correct decisions.
+ are so similar except that GBM-CV takes much longer to run.
+ In most cases, the counts are similar between the two techniques, with
+ GBM tending to make a few more correct decisions.
  There are exceptions where adaptive lasso makes more correct decisions
  (e.g., Hika and Red Arrow).
 \end_layout
@@ -1178,6 +1282,45 @@ status open
 \begin_layout Plain Layout
 
 	multiplot(plotlist=pp, cols=3)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Variable selection
+\end_layout
+
+\begin_layout Standard
+Several of the methods we tested do variable selection to pare the number
+ of covariates.
+ We look here at how many variables were used in the adaptive lasso models
+ compared to the GBM models, which use all the available covariates.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<varselect-barchart, fig.cap="The number of variables selected ", out.width="
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(nvar.plot)
 \end_layout
 
 \begin_layout Plain Layout

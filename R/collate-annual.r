@@ -117,7 +117,6 @@ flatarea_annual = as.data.frame(flatarea_annual)
 #plot the area under the ROC curve:
 areaplot = ggplot(flatarea)
 ggplot(flatarea) + aes(x=site, y=area, fill=method) + geom_bar(stat='identity', position='dodge')
-
 ggplot(flatarea) + aes(x=method, y=area, fill=method) + geom_bar(stat='identity') + facet_wrap(~site)
 
 temp = as.matrix(rowMeans(apply(area_annual, 2, rank)))

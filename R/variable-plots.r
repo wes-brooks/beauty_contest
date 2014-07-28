@@ -3,7 +3,6 @@ require(ggplot2)
 varplots = list()
 
 for (site in sites) {
-
     site_data = var_summary[[site]][['adapt']][['predictor.frequency']]
     site_data$beachvar = rep(FALSE, nrow(site_data))
     site_data$beachvar[grep("beach", site_data$variable)] = TRUE
@@ -26,8 +25,7 @@ for (site in sites) {
               strip.text=element_text(size=rel(1.3)),
               title=element_text(size=rel(1.3))
         ) +
-        theme(axis.text.x=element_text(angle=85, hjust=1, vjust=0.98))
-    
+        theme(axis.text.x=element_text(angle=85, hjust=1, vjust=0.98))   
 }
 
 for (s in sites) {
@@ -35,4 +33,4 @@ for (s in sites) {
     print(varplots[[s]])
     dev.off()
 }
-pdata2 = 
+

@@ -7,7 +7,7 @@ load("beauty_contest.RData")
 load("variable_supplement.RData")
 
 #S is the number of bootstrap samples
-S = 11
+S = 1001
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
@@ -19,12 +19,20 @@ press = sapply(sites, function(s) return( sapply(conts, function(m) return(vecto
 press.ranks = list()
 
 #These lists will hold the number of manual and automatic variables for each bootstrap resample:
-select = c('adapt', 'galm', 'spls', 'spls-select',
-           'adalasso-unweighted',
-           'adalasso-weighted',
-           'galogistic-unweighted', 'galogistic-weighted')
+select = c('adapt',
+           'gbm'
+           #'galm',
+           #'spls',
+           #'spls-select',
+           #'adalasso-unweighted',
+           #'adalasso-weighted',
+           #'galogistic-unweighted',
+           #'galogistic-weighted'
+           )
 auto = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 man = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+
+varlist[['point']] = lapply(varlist[['point']], function(x) x[1:191,])
 
 #This section computes bootstrap estimates of the ranks of the modeling methods
 for (site in sites) {
@@ -75,16 +83,18 @@ for (site in sites) {
                 with(results[[site]][[method]][['res']], (predicted-actual)[as.numeric(boot)])**2 %>% sum)
         }
         
-#         for (method in select) {
-#             v = varlist[[site]][[method]]
-#             v = v[as.integer(boot),]  
-#             
-#             man.indx = grep("beach", colnames(v))
-#             auto.indx = (1:ncol(v))[-man.indx]
-#             
-#             man[[site]][[method]] = c(man[[site]][[method]], v[,man.indx] %>% rowSums %>% mean)
-#             auto[[site]][[method]] = c(auto[[site]][[method]], v[,auto.indx] %>% rowSums %>% mean)
-#         }
+        for (method in select) {
+            #Draw a new sample for point because of its multiple but unequal measurements per day
+            if (site=='point') {boot = sample(1:(varlist[['point']][['adapt']] %>% nrow), replace=TRUE)}
+            v = varlist[[site]][[method]] %>% as.matrix
+            v = v[as.integer(boot),]  
+            
+            man.indx = grep("beach", colnames(v))
+            auto.indx = (1:ncol(v))[-man.indx]
+            
+            man[[site]][[method]] = c(man[[site]][[method]], v[,man.indx] %>% rowSums %>% mean)
+            auto[[site]][[method]] = c(auto[[site]][[method]], v[,auto.indx] %>% rowSums %>% mean)
+        }
     }
     
     #put the results in a data frame and rank the methods on each bootstrap sample:
@@ -127,18 +137,21 @@ addline_format <- function(x,...){
 roc.range = cbind(dcast(roc.meanranks, method~'min', min),
                   dcast(roc.meanranks, method~'max', max)) %>% melt
 
-#Make a boxplot of the distribution of ranks, computed by the bootstrap:
-LOO.auroc.boxplot = ggplot(roc.meanranks) +
-    aes(x=method, y=meanrank) +
-    geom_boxplot() +
-    xlab("modeling technique") + 
+
+#Bar chart of ROC rank
+a = roc.meanranks %>% dcast(rep~method, fun.aggregate=mean) %>% apply(2, function(x) quantile(x, c(0.05,0.5,0.95))) %>% t %>% as.data.frame
+a = cbind(a, method=rownames(a))[-1,]
+colnames(a)[c(1,2,3)] = c('low', 'med', 'high')
+a$method = factor(a$method, levels=a$method[order(a$med, decreasing=TRUE)])
+roc.barchart = ggplot(a) +
+    aes(x=method, y=med) +
+    geom_bar(stat='identity', fill=gray(0.5)) +
+    geom_errorbar(aes(ymin=low, ymax=high), width=0.15)+
     ylab("mean rank") + 
     ylim(0, 14) +
-    scale_x_discrete(labels=roc.meanranks$method %>% levels %>% addline_format) +
+    scale_x_discrete(labels=a$method %>% levels %>% addline_format) +
     theme_bw() +
     theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
-
-
 
 
 #Do the same for PRESS:
@@ -157,65 +170,67 @@ press.meanranks = melt(press.meanranks)
 colnames(press.meanranks) = c('method', 'rep', 'meanrank')
 
 #Rename the 'method' factor levels to be sorted like the rankings (best to worst)
-levl = with(press.meanranks, sapply(levels(method), function(m) meanrank[method==m] %>% mean) 
-            %>% sort 
-            %>% rev 
-            %>% names)
+levl = with(press.meanranks, sapply(levels(method), function(m) meanrank[method==m] %>% mean)  %>%
+                sort %>%
+                rev %>%
+                names)
 press.meanranks$method = factor(press.meanranks$method, levels=levl)
 
-#Make a boxplot of the distribution of ranks, computed by the bootstrap:
-LOO.press.boxplot = ggplot(press.meanranks) +
-    aes(x=method, y=meanrank) +
-    geom_boxplot() + 
-    xlab("modeling technique") + 
+#Bar chart of ROC rank
+a = press.meanranks %>%
+    dcast(rep~method, fun.aggregate=mean) %>%
+    apply(2, function(x) quantile(x, c(0.05,0.5,0.95))) %>%
+    t %>%
+    as.data.frame
+a = cbind(a, method=rownames(a))[-1,]
+colnames(a)[c(1,2,3)] = c('low', 'med', 'high')
+a$method = factor(a$method, levels=a$method[order(a$med, decreasing=TRUE)])
+press.barchart = ggplot(a) +
+    aes(x=method, y=med) +
+    geom_bar(stat='identity', fill=gray(0.5)) +
+    geom_errorbar(aes(ymin=low, ymax=high), width=0.15)+
     ylab("mean rank") + 
     ylim(0, 8) +
-    scale_x_discrete(labels=press.meanranks$method %>% levels %>% addline_format) +
-    theme_bw()
+    scale_x_discrete(labels=a$method %>% levels %>% addline_format) +
+    theme_bw() +
+    theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
 
-
-nvar.plot = list()
-for (s in sites) {
-    nvar.mean = rbind(auto[[s]] %>%
-                        as.data.frame %>%
-                        melt(variable.name='method') %>%
-                        cbind('type'=rep('auto',S)),
-                    man[[s]] %>%
-                        as.data.frame %>%
-                        melt(variable.name='method') %>%
-                        cbind('type'=rep('man',S))) %>%
-                    dcast(method~type, fun.aggregate=mean) %>%
-                    melt(variable.name='type') 
-    
-    nvar.range = cbind(
+#Get the number of variables selected by the adaptive lasso at each site:
+nvar = data.frame()
+for (s in sites) {    
+    nvar.site = cbind(
                     auto[[s]] %>%
                         as.data.frame %>%
-                        apply(2, range),
+                        apply(2, function(x) quantile(x, c(0.05, 0.5, 0.95))),
                     man[[s]] %>%
                         as.data.frame %>%
-                        apply(2, range))
-    rownames(nvar.range) = c('min', 'max')
+                        apply(2, function(x) quantile(x, c(0.05, 0.5, 0.95))))
+    rownames(nvar.site) = c('low', 'med', 'high')
+    colnames(nvar.site) = NULL
     
-    nvar.data = cbind(nvar.mean, t(nvar.range))
-    
-    nvar.plot[[s]] = nvar.data %>%
-        ggplot +
-            aes(x=method, fill=type, y=value) +
-            scale_fill_grey(name="Collection", start=0.7, end=0.3, labels=c('automatic', 'manual')) +
-            geom_bar(stat='identity', position='dodge') +
-            geom_errorbar(aes(ymin=min, ymax=max), width=0.15, position=position_dodge(width=0.9)) +
-            ylab("nvar") +
-            xlab(NULL) +
-            ggtitle(s) +
-            scale_x_discrete(labels=select %>% addline_format) +
-            theme_bw() +
-            theme(legend.justification=c(1,1),
-                  legend.position=c(1,1),
-                  legend.text=element_text(size=rel(1.05)),
-                  strip.text=element_text(size=rel(1.3)),
-                  title=element_text(size=rel(1.3)),
-                  axis.text.x=element_text(angle=65, hjust=1, vjust=0.95),
-                  axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
-            )
-            
+    nvar= rbind(nvar, nvar.site %>% t %>% as.data.frame %>% cbind(site=s) %>% cbind(method=select) %>% cbind(type=c(rep('auto',2), rep('man',2))))
 }
+
+
+#plot the number of variables at each site:
+nvar.plot = nvar %>%
+    melt %>%
+    dcast(site + method + type ~ variable) %>%
+    ggplot +
+    aes(x=method, fill=type, y=med) +
+    scale_fill_grey(name="Collection", start=0.7, end=0.3, labels=c('automatic', 'manual')) +
+    geom_bar(stat='identity', position='dodge') +
+    geom_errorbar(aes(ymin=low, ymax=high), width=0.15, position=position_dodge(width=0.9)) +
+    ylab("nvar") +
+    xlab(NULL) +
+    scale_x_discrete(labels=select %>% addline_format) +
+    theme_bw() +
+    theme(legend.justification=c(1,1),
+          legend.position=c(1,0.2),
+          legend.text=element_text(size=rel(1.05)),
+          strip.text=element_text(size=rel(1.3)),
+          title=element_text(size=rel(1.3)),
+          axis.text.x=element_text(angle=65, hjust=1, vjust=0.95),
+          axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
+    ) +
+    facet_wrap(~site)
