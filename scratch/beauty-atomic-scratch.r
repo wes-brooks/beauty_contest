@@ -5,6 +5,7 @@ Sys.setenv(R_LIBS="rlibs")
 .libPaths(new="rlibs")
 source("R/galogistic.r")
 source("R/gbm.r")
+source("R/spls.r")
 
 #source("scratch/import-modules.r")
 source("R/settings.r")
@@ -16,8 +17,8 @@ source('R/utils.r')
 type='annual'
 cluster = NA
 beach = 'point'
-method = 'gbm'
-processes = c(1,2,4)
+method = 'spls'
+processes = c(1,2,3,4)
 
 result = "placeholder"
 output = ""
