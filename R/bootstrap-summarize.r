@@ -7,7 +7,7 @@ load("beauty_contest.RData")
 load("variable_supplement.RData")
 
 #S is the number of bootstrap samples
-S = 11
+S = 1001
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
@@ -32,6 +32,11 @@ select = c('adapt',
 auto = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 man = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 
+for (s in sites) {
+    for (m in methods) {
+        varlist[[s]][[m]] = varlist[[s]][[m]] %>% as.matrix
+    }
+}
 varlist[['point']] = lapply(varlist[['point']], function(x) x[1:191,])
 
 #This section computes bootstrap estimates of the ranks of the modeling methods
@@ -86,7 +91,7 @@ for (site in sites) {
         for (method in select) {
             #Draw a new sample for point because of its multiple but unequal measurements per day
             if (site=='point') {boot = sample(1:(varlist[['point']][['adapt']] %>% nrow), replace=TRUE)}
-            v = varlist[[site]][[method]] %>% as.matrix
+            v = varlist[[site]][[method]]
             v = v[as.integer(boot),]  
             
             man.indx = grep("beach", colnames(v))
