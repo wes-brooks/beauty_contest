@@ -8,8 +8,12 @@ output/691*
 *.resources
 */TempPE
 *.Rhistory
+.Rproj*
 rlibs
 rlibs/*
 sh/*
 .Rproj.user
 writeup/#Beauty_Contest.lyx#
+writeup/*~
+writeup/figure/
+writeup/figure/*

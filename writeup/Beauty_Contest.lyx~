@@ -6,12 +6,15 @@
 \begin_preamble
 \renewcommand\[{\begin{equation}}
 \renewcommand\]{\end{equation}}
+\usepackage{subfig}
+\usepackage{rotating}
 \end_preamble
 \use_default_options true
 \begin_modules
 theorems-ams
 eqs-within-sections
 figs-within-sections
+knitr
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -30,7 +33,7 @@ figs-within-sections
 \font_tt_scale 100
 \graphics default
 \default_output_format default
-\output_sync 0
+\output_sync 1
 \bibtex_command default
 \index_command default
 \paperfontsize default
@@ -66,8 +69,8 @@ figs-within-sections
 \bottommargin 2cm
 \secnumdepth 3
 \tocdepth 3
-\paragraph_separation indent
-\paragraph_indentation default
+\paragraph_separation skip
+\defskip bigskip
 \quotes_language english
 \papercolumns 1
 \papersides 1
@@ -83,6 +86,10 @@ figs-within-sections
 
 \begin_layout Title
 Beauty Contest
+\end_layout
+
+\begin_layout Author
+Wesley Brooks, Steve Corsi, Rebecca Carvin
 \end_layout
 
 \begin_layout Abstract
@@ -131,97 +138,242 @@ Will include a map and tables
 \end_layout
 
 \begin_layout Subsection
+Definitions
+\end_layout
+
+\begin_layout Standard
+At any site, denote the predictor variables by 
+\begin_inset Formula $X$
+\end_inset
+
+, which is an 
+\begin_inset Formula $n\times p$
+\end_inset
+
+ matrix where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of observations and 
+\begin_inset Formula $p$
+\end_inset
+
+ is the number of predictors.
+ The vector of 
+\begin_inset Formula $n$
+\end_inset
+
+ observations of bacterial concentration is denoted 
+\begin_inset Formula $y$
+\end_inset
+
+.
+ The mathematical model relating 
+\begin_inset Formula $y$
+\end_inset
+
+ to 
+\begin_inset Formula $X$
+\end_inset
+
+ is the function 
+\begin_inset Formula $\mu(X,$
+\end_inset
+
+y).
+\end_layout
+
+\begin_layout Subsection
+Goals
+\end_layout
+
+\begin_layout Standard
+With input from the US Environmental Protection Agency, the state of Wisconsin
+ has established regulatory standards for beach water quality, which states
+ that a warning is to be posted when the concentration of E.
+ coli exceeds 235 CFU / 100 mL.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Is that statement correct?
+\end_layout
+
+\end_inset
+
+ The goal of modeling the bacterial concentration is to predict in advance
+ when the concentration will exceed the limit.
+ For the discussion to come, denote the regulatory standard by 
+\begin_inset Formula $\delta$
+\end_inset
+
+.
+ Each model has two essential components: the mathematical model itself,
+ 
+\begin_inset Formula $\mu(X,y)$
+\end_inset
+
+, and a decision threshold, 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+, that is used to interpret the model's predictions.
+\end_layout
+
+\begin_layout Standard
+There is no reason that 
+\begin_inset Formula $\delta$
+\end_inset
+
+ and 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+ must be equal.
+ Rather, each 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+ should be chosen so that the number of false positives and false negatives
+ are balanced to the satisfaction of the beach manager.
+ Using cross validation allows us to set 
+\begin_inset Formula $\hat{{\delta}}$
+\end_inset
+
+ to expect that the performance over future data will resemble what was
+ observed over the testing data.
+\end_layout
+
+\begin_layout Subsection
 Listing of specific statistical techniques
 \end_layout
 
 \begin_layout Standard
-pls - this is just like the PLS method in Virtual Beach
+Fourteen different regression modeling techniques were considered.
+ Each technique uses one of five modeling algorithms: GBM, the adaptive
+ lasso, the genetic algorithm, PLS, or sparse PLS.
+ Each technique is applied to either continuous or binary regression and
+ to either variable selection and model estimation, or variable selection
+ only.
+\end_layout
+
+\begin_layout Subsubsection*
+Continuous vs.
+ binary regression
 \end_layout
 
 \begin_layout Standard
-gbm - just like in Virtual Beach
+The goal of predicting exceednaces of the water quality standard is approached
+ in two ways: one is to predict the bacterial concentration and then compare
+ the prediction to a threshold, which is referred to as continuous modeling.
+ The other is referred to as binary modeling, in which we predict the state
+ of the binary indicator 
+\begin_inset Formula $z_{i}$
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Standard
-gbmcv - this one differs from gbm in that it chooses the number of trees
- by cross-validation, instead of the so-called "out-of-bag" estimator used
- by plain gbm.
- A little better but a lot slower than gbm.
+\begin_inset Formula 
+\[
+z_{i}=I(y_{i}>\delta)
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-- And these methods do variable selection in addition to model fitting:
+The indicator is coded as zero when the concetration is below the regulatory
+ standard and one when the concentration exceeds the standard.
+ All of the binary modeling techniques herein use logistic regression, which
+ uses the logistic link function 
+\begin_inset Formula $g$
+\end_inset
+
+ to translate 
+\begin_inset Formula $p_{i}=E(z_{i})$
+\end_inset
+
+ - the probability that the 
+\begin_inset Formula $i$
+\end_inset
+
+th observation is an exceedance - into an unbounded quantity.
 \end_layout
 
 \begin_layout Standard
-adapt - uses the adaptive lasso for selection and fitting
+\begin_inset Formula 
+\[
+g(p_{i})=\log\frac{p_{i}}{1-p_{i}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Weighting of observations in binary regression
 \end_layout
 
 \begin_layout Standard
-adapt-select - adaptive lasso for selection, then take those variables and
- fit a model using R's lm() function 
+A weighting scheme was implemented for some of the binary regression techniques.
+ In the weighting scheme, observations were given weights 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+ where:
 \end_layout
 
 \begin_layout Standard
-adalasso-weighted - logistic regression via adaptive lasso with observations
- weighted based on their distance from the threshold
+\begin_inset Formula 
+\begin{align*}
+w_{i}= & (y_{i}-\delta)/\hat{{sd}}(y)\\
+\hat{{sd}}(y)= & \sqrt{\sum_{i=1}^{n}(y_{i}-\bar{{y}})^{2}/n}\\
+\bar{{y}}= & \sum_{i=1}^{n}y_{i}/n
+\end{align*}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-adalasso-weighted-select - like the above method but after selecting variables,
- they're fit using R's glm() function.
- 
+That is, the weights are equal to the number of standard deviations that
+ the observed concentration lies from the regulatory threshold 
+\begin_inset Formula $\delta$
+\end_inset
+
+.
+ Any technique that was implemented with this weighting scheme was separately
+ implemented without any weighting of the observations.
+ The techniques are thus labeled weighted and unweighted, respectively.
+\end_layout
+
+\begin_layout Subsubsection*
+Modeling or selection only
 \end_layout
 
 \begin_layout Standard
-adalasso-unweighted - like adalasso-weighted but without the observation
- weights adalasso-unweighted-select - like the above method but after selecting
- variables, they're fit using R's glm() function.
- 
-\end_layout
+The regression techniques adaptive lasso and sparse PLS include a variable
+ selection step.
+ , Some methods are labeled 
+\begin_inset Quotes eld
+\end_inset
 
-\begin_layout Standard
-galm - genetic algorithm used for selecting variables in a linear regression
- model 
-\end_layout
+select
+\begin_inset Quotes erd
+\end_inset
 
-\begin_layout Standard
-galogistic-weighted - genetic algorithm used for selecting variables in
- a logistic regression model where observations are weighted based on their
- distance from the threshold galogistic-unweighted - just as above but without
- the observation weights.
- 
-\end_layout
-
-\begin_layout Standard
-spls - the sparse pls routine from the spls package 
-\end_layout
-
-\begin_layout Standard
-spls-select - use sparse pls to select variables for linear regression,
- then fit the model using the lm() function.
-\end_layout
-
-\begin_layout Subsubsection
-PLS
-\end_layout
-
-\begin_layout Standard
-Partial least squares (PLS) regression is a tool for building regression
- models when there are many covariates available.
- PLS works by decomposing the covariates into mutually orthogonal components,
- with the components then used as the variables in a regression model.
- This is similar to the singular value decomposition (SVD), but the way
- PLS components are chosen ensures that they are aligned with the model
- output.
- On the other hand, SVD is sometimes criticised for decomposing the covariates
- into components that are unrelated to the model's output.
-\end_layout
-
-\begin_layout Standard
-To use PLS, one must decide how many components to use in the model.
- The code for this paper follows the method described in (Brooks-Fienen-Corsi-20
-12), using the PRESS statistic to select the number of components.
+, which means that they are used for variable selection only.
+ In these cases, once the predictor variables are selected, the regression
+ model using those predictors is estimated using ordinary least squares
+ for the continuous regression techniques, or ordinary logistic regression
+ for the binary regression techniques.
 \end_layout
 
 \begin_layout Subsubsection
@@ -229,25 +381,26 @@ GBM
 \end_layout
 
 \begin_layout Standard
-The gradient boosting machine (GBM) of 
+GBM refers to the gradient boosting machine (GBM) of 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Friedman-2001"
 
 \end_inset
 
- has been called the 
-\begin_inset Quotes eld
-\end_inset
-
-best off-the-shelf machine learning method
-\begin_inset Quotes erd
-\end_inset
-
- (Friedman-Hastie-Tibshirani-2001).
- A GBM model is a collection of many regression trees, and prediction is
- done by averaging the outputs of the several trees.
- The parameters shared by all GBM models in this study are:
+.
+ A GBM model is a so-called random forest model - a collection of many regressio
+n trees.
+ Prediction is done by averaging the outputs of the trees.
+ Two GBM-based techniques are explored - we refer to them as GBM and GBMCV.
+ The difference is in how the optimal number of trees is determined - GBMCV
+ selects the number of trees in a model using leave-one-out CV, while GBM
+ uses the so-called out-of-bag (OOB) error estimate.
+ The CV method is much slower (it has to construct as many random forests
+ as there are observations, while the OOB method only requires computing
+ a single random forest) but GBMCV should more accurately estimate the predictio
+n error.
+ All the GBM and GBMCV models share the following settings:
 \end_layout
 
 \begin_layout Standard
@@ -270,63 +423,6 @@ Depth of each tree: 5
 Bagging fraction: 0.5
 \end_layout
 
-\begin_layout Standard
-One key decision when fitting a GBM model is how many regression trees to
- use.
- Our strategy is to produce a model using more trees than we think are necessary
-, and then to prune back to the optimal number.
- The optimal number of trees is the number than minimizes some error statistic.
- GBM models are 
-\end_layout
-
-\begin_layout Paragraph
-GBM
-\end_layout
-
-\begin_layout Standard
-For these models, the 
-\end_layout
-
-\begin_layout Paragraph
-GBM-CV
-\end_layout
-
-\begin_layout Subsubsection
-SPLS
-\end_layout
-
-\begin_layout Standard
-Sparse PLS (SPLS) is introduced in 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Chun-Keles-2007"
-
-\end_inset
-
-.
- The SPLS method combines the orthogonal decompositions of PLS with lasso-type
- variable selection.
- 
-\end_layout
-
-\begin_layout Paragraph
-SPLS
-\end_layout
-
-\begin_layout Standard
-This modeling method used SPLS to select relevant variables and fit the
- regression model.
-\end_layout
-
-\begin_layout Paragraph
-SPLS-select
-\end_layout
-
-\begin_layout Standard
-This modeling method used SPLS to select the relevant covariates and then
- fit an ordinary least squares regression model using those covariates.
-\end_layout
-
 \begin_layout Subsubsection
 Adaptive Lasso
 \end_layout
@@ -334,22 +430,20 @@ Adaptive Lasso
 \begin_layout Standard
 The adaptive lasso 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
 key "Zou-2006"
 
 \end_inset
 
  is a regression method that simultaneously selects relevant predictors
- and estimates their coefficients by adding an 
-\begin_inset Formula $\ell_{1}$
+ and estimates their coefficients by adding a penalty to the sum of the
+ squared residuals.
+ For continuous modeling techniques the adaptive lasso selects the predictors
+ for linear regression, estimating 
+\begin_inset Formula $\hat{{\bm{\beta}}}$
 \end_inset
 
- penalty to the negative log-likelihood.
- For linear regression, the adaptive lasso estiamtes 
-\begin_inset Formula $\bm{{\beta}}$
-\end_inset
-
- to minimize the criterion 
+ minimize the criterion 
 \begin_inset Formula $\sum_{i=1}^{n}(y_{i}-X_{i}\beta)^{2}+\lambda\sum_{j=1}^{p}\frac{{|\beta_{j}|}}{\tilde{{|\beta_{j}|^{\gamma}}}}$
 \end_inset
 
@@ -358,24 +452,68 @@ key "Zou-2006"
 \end_inset
 
  is a tuning parameter and 
-\begin_inset Formula $\tilde{{\bm{{\beta}}}}$
+\begin_inset Formula $\tilde{{\bm{\beta}}}$
 \end_inset
 
  is a consistent estimate of the regression coefficients.
 \end_layout
 
 \begin_layout Standard
-In this work, 
-\begin_inset Formula $\gamma$
+For binary modeling, the adaptive lasso maximizes the penalized log-likelihood
+ 
+\begin_inset Formula $\sum_{i=1}^{n}\left[-\left(1-y_{i}\right)X_{i}\beta-\log\left\{ 1+\exp\left(-X_{i}\beta\right)\right\} \right]+\lambda\sum_{j=1}^{p}\frac{{|\beta_{j}|}}{\tilde{{|\beta_{j}|^{\gamma}}}}$
 \end_inset
 
- is set to one and the adaptive lasso tuning parameter 
+, where, as was the case for continuous response, 
+\begin_inset Formula $\tilde{\bm{\beta}}$
+\end_inset
+
+ is a consistent estimate of the regression coefficients, which is calculated
+ by ordinary logistic regression.
+\end_layout
+
+\begin_layout Standard
+In this work, 
+\begin_inset Formula $\gamma=1$
+\end_inset
+
+ , 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\tilde{{\bm{\beta}}}$
+\end_inset
+
+ are estimated individually by a univariate linear or logistic regression
+ (it is necessary to estimate the coefficients individually because there
+ are usually more covariates than observations),
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ and the adaptive lasso tuning parameter 
 \begin_inset Formula $\lambda$
 \end_inset
 
- is selected to minimize the bias-corrected AIC of 
+ is selected to minimize the AICc 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
 key "Hurvich-Simonoff-Tsai-1998"
 
 \end_inset
@@ -383,70 +521,13 @@ key "Hurvich-Simonoff-Tsai-1998"
 .
 \end_layout
 
-\begin_layout Paragraph
-Gaussian
-\end_layout
-
-\begin_layout Subparagraph
-adapt
-\end_layout
-
 \begin_layout Standard
-Uses the adaptive lasso of 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Zou-2006"
-
-\end_inset
-
- to select variables and estimate their coefficients.
- 
-\end_layout
-
-\begin_layout Subparagraph
-adapt-select
-\end_layout
-
-\begin_layout Standard
-Uses the adaptive lasso of 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Zou-2006"
-
-\end_inset
-
- to select variables, with the corrected AIC for selection of the tuning
- parameter.
- The results of the variable selection are used in a multiple linear regression
- model.
-\end_layout
-
-\begin_layout Paragraph
-Logistic
-\end_layout
-
-\begin_layout Standard
-Logistic regression (McCullagh-Nelder-1989) is a method for fitting a regression
- model to binary data.
- For our models, bacterial concentration was replaced by an indicator of
- whether the observed concentration exceeded the regulatory standard.
- 
-\end_layout
-
-\begin_layout Subparagraph
-weighted
-\end_layout
-
-\begin_layout Subparagraph
-weighted-select
-\end_layout
-
-\begin_layout Subparagraph
-Unweighted
-\end_layout
-
-\begin_layout Subparagraph
-Unweighted-select
+Five of the modeling techniques were based on the adaptive lasso - one for
+ continuous response (AL), and four for binary response (AL-logistic-weighted,
+ AL-logistic-unweighted, AL-logistic-weighted-select, AL-logistic-unweighted-sel
+ect).
+ The four binary response techniques are the combination of weighted versus
+ unweighted, and selection-only versus selection-and-estimation.
 \end_layout
 
 \begin_layout Subsubsection
@@ -464,12 +545,12 @@ key "Fogel-1998"
  is a variable-selection method that works by analogy to natural selection,
  where so-called chromosomes represent regression models.
  A variable is included in the model if the corresponding element of the
- chrmosome is one, but not otherwise.
+ chromosome is one, but not otherwise.
  Chromosomes are produced in successive generations, where the first generation
  is produced randomly and subsequent generations are produced by combining
  chromosomes from the current generation, with additional random drift.
  The chance that a chromosome in the current generation will produce offspring
- in the next generation is a determined by its fitness.
+ in the next generation is an increasing function of its fitness.
  The fitness of each chromosome is calculated by the corrected Akaike Informatio
 n Criterion (AICc) 
 \begin_inset CommandInset citation
@@ -482,35 +563,78 @@ key "Akaike-1973,Hurvich-Tsai-1989"
 \end_layout
 
 \begin_layout Standard
-Our implementation used 100 generations and each generation contained 200
- chromosomes.
- 
+The implementations in this study used 100 generations, with each generation
+ consisting of 200 chromosomes.
+ The genetic algorithm method (GA) is the default for linear regression
+ modeling in Virtual Beach 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Cyterski-Brooks-Galvin-Wolfe-Carvin-Roddick-Fienen-Corsi-2013"
+
+\end_inset
+
+.
+ This study also investigates two genetic algorithm methods for logistic
+ regression: one weighted (GA-logistic-weighted) and one unweighted (GA-logistic
+-unweighted).
 \end_layout
 
-\begin_layout Paragraph*
-linear
+\begin_layout Subsubsection
+PLS
 \end_layout
 
 \begin_layout Standard
-The genetic algorithm for linear regression is 
-\end_layout
+Partial least squares (PLS) regression is a tool for building regression
+ models with many covariates 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Wold-Sjostrum-Eriksson-2001"
 
-\begin_layout Paragraph
-logistic
+\end_inset
+
+.
+ PLS works by decomposing the covariates into mutually orthogonal components,
+ with the components then used as the variables in a regression model.
+ This is similar to principal components regression (PCR), but the way PLS
+ components are chosen ensures that they are aligned with the model output.
+ On the other hand, PCR is sometimes criticised for decomposing the covariates
+ into components that are unrelated to the model's output.
 \end_layout
 
 \begin_layout Standard
-Two options were considered for observation weights for building logistic
- regression models via the genetica algorithm.
- 
+To use PLS, one must decide how many components to use in the model.
+ This study follows the method described in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Brooks-Fienen-Corsi-2013"
+
+\end_inset
+
+, using the PRESS statistic to select the number of components.
 \end_layout
 
-\begin_layout Subparagraph
-ga-unweighted
+\begin_layout Subsubsection
+SPLS
 \end_layout
 
-\begin_layout Subparagraph
-ga-weighted
+\begin_layout Standard
+Sparse PLS (SPLS) is introduced in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Chun-Keles-2007"
+
+\end_inset
+
+.
+ The SPLS method combines the orthogonal decompositions of PLS with the
+ sparsity of lasso-type variable selection.
+ To do so, SPLS uses two tuning parameters: one that controls the number
+ of orthogonal components and one that controls the lasso-type penalty.
+ The optimal parameters are those that minimize the mean squared prediction
+ error (MSEP) over a two-dimensional grid search.
+ The MSEP is estimated by 10-fold cross-validation.
+ SPLS was used for both selection-and-estimation (SPLS) and selection-only
+ (SPLS-select).
 \end_layout
 
 \begin_layout Subsection
@@ -518,15 +642,369 @@ Implementation for beach regression
 \end_layout
 
 \begin_layout Standard
+The response variable for our continuous regression models is the natural
+ logarithm of the E.
+ coli concentration.
+ For the binary regression models, the response variable is an indicator
+ of whether the concentration exceeds the regulatory threshold 
+\begin_inset Formula $\delta=235$
+\end_inset
+
+ CFU/mL.Some pre-processing of the data was done.
+ During pre-processing, some transformations were applied to the data.
+ The beach water turbidity and the discharge of tributaries near each beach
+ were log-transformed.
+ Rainfall variables were all square-root transformed.
+\end_layout
+
+\begin_layout Standard
 Include a table with pre/post processing discussion
 \end_layout
 
 \begin_layout Standard
-This includes tuning of parameters
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<compile-results, fig.cap="Mean ranks of the modeling techniques across
+ the seven sites.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.", fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(dplyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(reshape2)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(brooks)
+\end_layout
+
+\begin_layout Plain Layout
+
+	require(xtable)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Load the raw results of the beauty contest:
+\end_layout
+
+\begin_layout Plain Layout
+
+	setwd("..")
+\end_layout
+
+\begin_layout Plain Layout
+
+	load("beauty_contest.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/bootstrap-summarize-annual.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/get_annual_predictive_performance.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+	source("R/pair-tables.r")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Subsection
+Results tables
 \end_layout
 
 \begin_layout Standard
-Some specific data issues because we are estimating a threshold exceedence
+Results of the cross-validation procedures were compiled into tables
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{table}
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+centering
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+begin{tabular}{ccccc}
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-table, echo=FALSE, warning=FALSE, message=FALSE, results='asis'>>
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Generate an example results table
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	#First, get the reults from hika, bot LOO and LOYO:
+\end_layout
+
+\begin_layout Plain Layout
+
+	r = results[['hika']][['gbm']][['res']]
+\end_layout
+
+\begin_layout Plain Layout
+
+	ra = results_annual[['hika']][['gbm']][['res']]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Find the original ordering of the data:
+\end_layout
+
+\begin_layout Plain Layout
+
+	r %>% rownames %>% as.integer %>% order -> indx
+\end_layout
+
+\begin_layout Plain Layout
+
+	ra %>% rownames %>% as.integer %>% order -> indx_annual
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Produce a results table:
+\end_layout
+
+\begin_layout Plain Layout
+
+	rtable = cbind(r[indx,c(2,1,3)], ra[indx_annual,c(1,3)])[1:4,]
+\end_layout
+
+\begin_layout Plain Layout
+
+	colnames(rtable) = c("Actual",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+prediction
+\backslash
+
+\backslash
+end{tabular}",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+threshold
+\backslash
+
+\backslash
+end{tabular}",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOYO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+prediction
+\backslash
+
+\backslash
+end{tabular}",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"
+\backslash
+
+\backslash
+begin{tabular}{c}LOYO
+\backslash
+
+\backslash
+
+\backslash
+
+\backslash
+threshold
+\backslash
+
+\backslash
+end{tabular}")
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Add ellipses for the last row:
+\end_layout
+
+\begin_layout Plain Layout
+
+	rtable = rtable %>% round(2) %>%
+\end_layout
+
+\begin_layout Plain Layout
+
+		rbind(rep("
+\backslash
+
+\backslash
+vdots", 5))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	#Display only a summary:
+\end_layout
+
+\begin_layout Plain Layout
+
+	rtable %>% xtable %>% print(only.content=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{table}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -534,76 +1012,553 @@ Cross Validation
 \end_layout
 
 \begin_layout Standard
-Modeling methods were assessed by their performance in cross-validation.
- Two separate assesments were made: leave-one-out and leave-one-year-out
- 
-\end_layout
-
-\begin_layout Subsection
-Performance Metrics
+Our assessment of the modeling techniques is based on their performance
+ in predicting exceedances of the regulatory standard.
+ Two types of cross validation was used to measure the performance in prediction
+: leave-one-out (LOO) and leave-one-year-out (LOYO).
+ In LOO CV, one observation is held out for validation while the rest of
+ the data is used to train a model.
+ The model is used to predict the concentration of that held out observation,
+ and the process is repeated for each observation.
+ Each cycle of LOYO CV holds out an entire year's worth of data for validation
+ instead of a single observation.
+ It is intended to approximate the performance of the modeling technique
+ under a typical use case: a new model is estimated before the start of
+ each annual beach season and then used for predicting exceedances during
+ the season.
+ The LOYO models in this study were estimated using all the available data
+ except for the held out year, even that from future years.
+ So for instance the 2012 models were estimated using the 2010-2011 and
+ 2013 data.
 \end_layout
 
 \begin_layout Standard
-How did we evaluate the performance of each technique on all the different
- data sets
+Some methods also used cross-validation internally to select tuning parameters.
+ In those cases the internal CV was done using only the model data, and
+ never looking at the held-out observation(s).
+ This process is separate from - and does not affect - the CV to assess
+ predictive performance.
 \end_layout
 
-\begin_layout Itemize
-for all cases ---> AUC (ROC curve)
+\begin_layout Subsection
+Comparing methods, and quantifying uncertainty in the ranks
 \end_layout
 
-\begin_layout Itemize
-continuous variables using PRESS (skill --> Like Nash-Sutcliffe/R^2 over
- the fitted data) 
+\begin_layout Standard
+Our goal is to compare the different modeling techniques.
+ We make comparisons on the basis of rank because the modeling metrics may
+ not be comparable between sites (because, for instance, different sites
+ have different numbers of observations).
+ If it is possible to compute a metric of model performance, then it is
+ possible to rank the techniques based on that metric.
+ Our approach is to rank the techniques at each site (higher is better),
+ and then average the ranks of each method.
 \end_layout
 
-\begin_layout Itemize
-True/False Positives/Negatives (needs a threshold)
+\begin_layout Standard
+In order tocompare techniques, we must quantify the uncertainty in the rankings,
+ which we do via the bootstrap.
+ Since the AUROC and PRESS rankings are functions of the result tables,
+ the bootstrap procedure is carried out by resampling the rows of each results
+ table, and the AUROC and ROC rankings were recalculated for each bootstrap
+ sample.
+ We used 
+\begin_inset Formula $1001$
+\end_inset
+
+ bootstrap samples of each results table in the analysis that follows.
 \end_layout
 
-\begin_layout Itemize
-Which variables are selected for models where variable reduction takes place
+\begin_layout Subsection
+AUROC
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
-challenge regarding the fact that different variables are selected in each
- fold.
- Maybe use frequencies?
+\begin_layout Standard
+The receiver operating characteristic (ROC) curve is a graphical display
+ of how well predictions are sorted.
+ Each point on the curve represents the model's performance for a specific
+ choice of the threshold 
+\begin_inset Formula $\hat{\delta}$
+\end_inset
+
+ in terms of specificity and sensitivity.
+ A model with well-sorted predictions is one where the predicted bacterial
+ contentration (or the predicted probability of exeedance in the case of
+ a binary regression model) is consistently greater when the true concentration
+ exceeds the regulatory standard than when it does not.
+ In such a case, the model may have both good sensitivity and good specificity
+ over a wide range of thresholds 
+\begin_inset Formula $\hat{\delta}$
+\end_inset
+
+.
 \end_layout
 
-\begin_layout Itemize
-also the number of variables selected (metric of complexity)
+\begin_layout Standard
+The area under the ROC curve (AUROC) summarizes the model's performance
+ over the range of possible thresholds.
+ A model which perfectly separates exceedances from non-exceedances in predictio
+n has an AUROC of one, while a model that predicts exceedances no better
+ than a coin flip has an AUROC of 0.5.
 \end_layout
 
-\end_deeper
-\begin_layout Paragraph*
-OPTIONAL
+\begin_layout Standard
+The methods are ranked at each site by AUROC and a mean rank (across sites)
+ is computed for each method.
+ The mean LOO and LOYO ranks are plotted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:auroc-boxplot"
+
+\end_inset
+
+.
+ The top three techniques were GBM, GBM-CV and adaptive lasso.
+ In order to facilitate a pairwise comparison between modeling methods,
+ Tables 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs.annual"
+
+\end_inset
+
+ (for the leave-one-year-out analysis) and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs"
+
+\end_inset
+
+ (for the leave-one-out analysis) show the frequency that the mean AUROC
+ rank of GBM, GBM-CV, or the adaptive lasso exceeded each of the other modeling
+ methods.
 \end_layout
 
-\begin_layout Itemize
-AIC/BIC? --> not the same model in each fold so maybe not possible
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<auroc-boxplot, fig.cap="Mean ranking of the methods by area under the ROC
+ curce (AUROC) across all sites (higher is better).
+ The error bars are 90
+\backslash
+
+\backslash
+% confidence intervals computed by the bootstrap.
+ At left are the AUROC rankings from the leave-one-year-out cross validation,
+ at right are the AUROC rankings from the leave-one-out cross validation.",
+ fig.subcap=c('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
 \end_layout
 
-\begin_layout Itemize
-Maybe some form of confusion matrices -- perhaps a grid of them with or
- without companion variance plots or other estimates of the range of results
+\begin_layout Plain Layout
+
+	print(roc.barchart.annual)
 \end_layout
 
-\begin_layout Section
-Results
+\begin_layout Plain Layout
+
+	print(roc.barchart)
 \end_layout
 
-\begin_layout Itemize
-Performance over prediction from cross validation
+\begin_layout Plain Layout
+
+@
 \end_layout
 
-\begin_layout Itemize
-Maybe anecdotal showing fit over data set
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<auroc-tables, fig.cap="Ranking the modeling methods by AUROC (higher is
+ better).
+ The mean rank of each method was computed once for each bootstrap sample
+ of the results.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.", fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, results='asis', warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(auroc.pairs.annual[1:3,], caption="Under leave-one-year-out cross
+ validation, how often the mean AUROC rank of GBM, GBMCV, or the adaptive
+ lasso (in the rows) exceeded that of the other methods (in the columns).",
+ label="table:auroc.pairs.annual") %>% print(sanitize.colnames.function=tabulate_hea
+ders, rotate.colnames=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(auroc.pairs[1:3,], caption="Under leave-one-out cross validation,
+ how often the mean AUROC rank of GBM, GBMCV, or the adaptive lasso (in
+ the rows) exceeded that of the other methods (in the columns).", label="table:au
+roc.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=T
+RUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+PRESS
+\end_layout
+
+\begin_layout Standard
+While AUROC is concerned with how well the model's predictions separate
+ exceedances from non-exceedances, the predictive error sum of squares (PRESS)
+ measures how well a model's predictions match the observed bacterial concentrat
+ion.
+ The PRESS can only be computed for continuous regression methods.
+ Let the model's predictions be denoted 
+\begin_inset Formula $\tilde{y}_{i}$
+\end_inset
+
+ and letting the actual observed bacterial concentrations be denoted 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+ for 
+\begin_inset Formula $i=1,\dots,n$
+\end_inset
+
+ where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the total number of predictions.
+ Then PRESS computed as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\text{PRESS}=\sum_{i=1}^{n}\left(\tilde{y}_{i}-y_{i}\right)^{2}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The PRESS statistic is of interest because a good model should accurately
+ predict the bacterial concentration, and a model that more accurately predicts
+ the concentration may be easier to trust.
+ However, the AUROC is a more important as a metric of model performance
+ than the PRESS because it directly measures the ability of a model to separate
+ exceedances from non-exceedances.
+ That said, we expect the two statistics to usually agree on which modeling
+ methods are the best.
+\end_layout
+
+\begin_layout Standard
+The rankings of the methods by PRESS are plotted in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:press-boxplot"
+
+\end_inset
+
+.
+ The top three techniques under both LOO and LOYO analysis were GBM, GBM-CV
+ and the adaptive lasso.
+ In order to facilitate a pairwise comparison between modeling methods,
+ Tables 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs.annual"
+
+\end_inset
+
+ (for the leave-one-year-out analysis) and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "table:auroc.pairs"
+
+\end_inset
+
+ (for the leave-one-out analysis) show the frequency that the mean AUROC
+ rank of GBM, GBM-CV, or the adaptive lasso exceeded each of the other modeling
+ methods.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<press-boxplot, fig.cap="Mean ranking of the methods by predictive error
+ sum of squares (PRESS) across all sites (higher is better).
+ The error bars are 90
+\backslash
+
+\backslash
+% confidence intervals computed by the bootstrap.
+ At left are the PRESS rankings from the leave-one-year-out cross validation,
+ at right are the PRESS rankings from the leave-one-out cross validation.",
+ fig.subcap=c('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(press.barchart.annual)
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(press.barchart)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<press-tables, fig.cap="Ranking the modeling methods by PRESS (higher is
+ better).
+ The mean rank of each method was computed once for each bootstrap sample
+ of the results.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.", fig.subcap=c
+('LOO', 'LOYO'), out.width="0.49
+\backslash
+
+\backslash
+linewidth", echo=FALSE, results='asis', warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(press.pairs.annual[1:3,], caption="Under leave-one-year-out cross
+ validation, how often the mean PRESS rank of GBM, GBMCV, or the adaptive
+ lasso (in the rows) exceeded that of the other methods (in the columns).",
+ label="table:press.pairs.annual") %>% print(sanitize.colnames.function=tabulate_hea
+ders, rotate.colnames=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+	xtable(press.pairs[1:3,], caption="Under leave-one-out cross validation,
+ how often the mean PRESS rank of GBM, GBMCV, or the adaptive lasso (in
+ the rows) exceeded that of the other methods (in the columns).", label="table:pr
+ess.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=T
+RUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Classification of responses
+\end_layout
+
+\begin_layout Standard
+While the AUROC is an important metric that should guide the choice of which
+ modeling method to use, it measures the average performance over the possible
+ range of thresholds.
+ The real-world performance of any model for predicting exceedances will
+ be measured by how well it distinguishes between exceedances and nonexceedances
+ at the one specific threshold.
+ Because LOYO CV was used to simulate real-world application of the modeling
+ methods, it seems natural to evaluate the models based on the accuracy
+ of their decisions when provided with a realistic decision threshold.
+\end_layout
+
+\begin_layout Standard
+Intuitively, the decision threshold should adapt to the conditions that
+ are observed in the beach's training data.
+ If, for instance, exceedances are rare in the training data, then we expect
+ few exceedances in the future, and should set the threshold high to reflect
+ this prior expectation.
+ On the other hand, if the bacterial concentration often exceeds the regulatory
+ standard, then the decision threshold should be set lower in order to properly
+ flag more of those exceedances.
+ This intuition was encoded into how the decision threshold was set for
+ the LOYO models.
+ Specifically, the decision threshold was set to the 
+\begin_inset Formula $q$
+\end_inset
+
+th quantile of the fitted values of non-exceedances in the training set,
+ where 
+\begin_inset Formula $1-q$
+\end_inset
+
+ is the proportion of exceednaces in the training set.
+\end_layout
+
+\begin_layout Standard
+Since GBM, GBM-CV, and adaptive lasso were the top three techniques by both
+ PRESS and AUROC, it seems like the best method to use will be one of these.
+ The mean rankings average the results across all seven sites, and neither
+ PRESS nor AUROC reflect the performance of a model under a particular choice
+ of the decision criterion, so the results we've seen so far don't convey
+ how often a model would indicate a correct decision if it were used to
+ decide whether an advisory should or should not be posted at the beaches.
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:counts-barcharts"
+
+\end_inset
+
+, we look at the counts on a per-beach basis of four categories of decisions:
+ true positives (correctly posting an advisory), true negatives (correctly
+ not posting an advisory), false positives (wrongly posting an advisory)
+ and false negatives (wrongly not posting an advisory).
+ The results are for GBM and adaptive lasso because the GBM and GBM-CV methods
+ are so similar.
+ In most cases, the counts are similar between the two techniques, with
+ GBM tending to make a few more correct decisions.
+ There are exceptions where adaptive lasso makes more correct decisions
+ (e.g., Hika and Red Arrow).
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<counts-barcharts, fig.width=16, fig.height=16, fig.cap='Mean ranks of the
+ modeling techniques across the seven sites.
+ At left are the mean ranks under leave-one-out cross validation, at the
+ right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c
+('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	multiplot(plotlist=pp, cols=3)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Variable selection
+\end_layout
+
+\begin_layout Standard
+Several of the methods we tested do variable selection to pare the number
+ of covariates.
+ We look here at how many variables were used in the adaptive lasso models
+ compared to the GBM models, which use all the available covariates.
+ The variable counts are displayed in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:varselect-barchart"
+
+\end_inset
+
+.
+ At most of the sites, the adaptive lasso uses far fewer covariates than
+ GBM, but at Point the adaptive lasso uses almost all of the available covariate
+s.
+ That's because the selection criterion we used (corrected AIC) is intended
+ to minimize prediction error.
+ As the amount of data increases (Point has far more observations than the
+ other sites), we accumulate enough information to begin to discern the
+ effect even of covariates that are only slightly correlated with the response.
+ As our dataset grows, then, we should expect more covariates to be selected
+ for the model.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<varselect-barchart, fig.cap="At each site, the number of variables that
+ were selected for the adaptive lasso and GBM models, divided by whether
+ they were collected from automated web services, or measured manually at
+ the beach.", out.width="
+\backslash
+
+\backslash
+linewidth", echo=FALSE, warning=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+	print(nvar.plot)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
 Discussion
+\end_layout
+
+\begin_layout Standard
+In general, the GBM, and GBMCV, and AL techniques produced comparable results
+ that were superior to the other techniques in terms of predictive performance.
+ Since the GBMCV models take much longer to compute than the others, we
+ will not include them in our more detailed analysis of the modeling results.
 \end_layout
 
 \begin_layout Standard
@@ -634,10 +1589,6 @@ Model tuning for GBM versus GBM-CV --> notes on how GBM is faster with similar
  CV is overkill maybe)
 \end_layout
 
-\begin_layout Standard
-
-\end_layout
-
 \begin_layout Section
 Acknowledgments
 \end_layout
@@ -649,8 +1600,8 @@ References
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "/home/wesley/git/beauty_contest/references/beautycontest"
-options "plainnat"
+bibfiles "C:/Users/wrbrooks/git/beauty_contest/references/beautycontest"
+options "bibtotoc,plainnat"
 
 \end_inset
 
