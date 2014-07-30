@@ -5,6 +5,7 @@ Sys.setenv(R_LIBS="rlibs")
 .libPaths(new="rlibs")
 #source("R/galogistic.r")
 source("R/gbm.r")
+source("R/spls.r")
 #source("R/galm.r")
 
 #source("scratch/import-modules.r")
