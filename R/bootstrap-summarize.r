@@ -7,7 +7,7 @@ load("beauty_contest.RData")
 load("variable_supplement.RData")
 
 #S is the number of bootstrap samples
-S = 11
+S = 3
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
