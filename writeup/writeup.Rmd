@@ -1,6 +1,6 @@
 ---
 title: "Comparing methods for predicting health advisories for beach water"
-author: "Wesley Brooks, Rebecca Carvin, Steve Corsi"
+author: "Wesley Brooks, Rebecca Carvin, Steve Corsi, Mike Fienen"
 output: pdf_document
 bibliography: ../references/beautycontest.bib
 ---
@@ -42,12 +42,7 @@ The goal of predicting exceednaces of the water quality standard is approached i
 
 $$ z_{i}=I(y_{i}>\delta) $$
 
-
-The indicator is coded as zero when the concetration is below the regulatory standard and one when the concentration exceeds the standard. All of the binary modeling techniques herein use logistic regression, which uses the logistic link function g
-to translate $p_{i}=E(z_{i})$ - the probability that the $i$th observation is an exceedance - into an unbounded quantity.
-
-$$ g(p_{i})=\log\frac{p_{i}}{1-p_{i}} $$
-
+The indicator is coded as zero when the concetration is below the regulatory standard and one when the concentration exceeds the standard. All of the binary modeling techniques herein use logistic regression [@Hosmer-Lemeshow-2004]. Binary regression methods are indicated with a (b).
 
 #### Weighting of observations in binary regression
 
@@ -58,15 +53,17 @@ $$ w_{i}=    (y_{i}-\delta)/\hat{{sd}}(y)
 \bar{{y}}=	\sum_{i=1}^{n}y_{i}/n $$
 
 
-That is, the weights are equal to the number of standard deviations that the observed concentration lies from the regulatory threshold $\delta$. Any technique that was implemented with this weighting scheme was separately implemented without any weighting of the observations. The techniques are thus labeled weighted and unweighted, respectively.
+That is, the weights are equal to the number of standard deviations that the observed concentration lies from the regulatory threshold $\delta$. Any technique that was implemented with this weighting scheme was separately implemented without any weighting of the observations. The methods that weight the observations are indicated with a (w).
 
-#### Modeling or selection only
+#### Selection-only methods
 
-The regression techniques adaptive lasso and sparse PLS include a variable selection step. Some methods are labeled “select”, which means that they are used for variable selection only. In these cases, once the predictor variables are selected, the regression model using those predictors is estimated using ordinary least squares for the continuous regression techniques, or ordinary logistic regression for the binary regression techniques.
+The contest investigated whether certain modeling methods should be used only to select covariates. Once the predictor variables were selected, the regression model using those predictors were estimated using ordinary least squares for the continuous methods, or ordinary logistic regression for the binary methods. Selection-only methods are indicated by an (s).
 
 ### GBM
 
-GBM refers to the gradient boosting machine (GBM) [@Friedman-2001]. A GBM model is a so-called random forest model - a collection of many regression trees. Prediction is done by averaging the outputs of the trees. Two GBM-based techniques are explored - we refer to them as GBM-OOB and GBM-CV. The difference is in how the optimal number of trees is determined - GBM-CV selects the number of trees in a model using leave-one-out CV, while GBM-OOB uses the so-called out-of-bag error estimate. The CV method is much slower (it has to construct as many random forests as there are observations, while the OOB method only requires computing a single random forest) but GBMCV should more accurately estimate the prediction error. All the GBM-OOB and GBM-CV models share the following settings:
+A gradient boosting machine (GBM) model is a so-called random forest model - a collection of many regression trees [@Friedman-2001]. Prediction is done by averaging the outputs of the trees. Two GBM-based techniques are explored - we refer to them as GBM-OOB and GBM-CV. The difference is in how the optimal number of trees is determined - GBM-CV selects the number of trees in a model using leave-one-out CV, while GBM-OOB uses the so-called out-of-bag error estimate. The CV method is much slower (it has to construct as many random forests as there are observations, while the OOB method only requires computing a single random forest) but GBM-CV should more accurately estimate the prediction error.
+
+All the GBM-OOB and GBM-CV models were estimted using the `gbm` package in `R`, using $10000$ trees, shrinkage parameter $0.0005$, minimum $5$ observations per node, tree depth $5$, and bagging fraction $0.5$ [@.]
 
 Number of trees: 10000
 
@@ -80,19 +77,15 @@ Bagging fraction: 0.5
 
 ### Adaptive Lasso
 
-The adaptive lasso is a regression method that simultaneously selects relevant predictors and estimates their coefficients by adding a penalty to the sum of the squared residuals [@Zou-2006]. For continuous modeling techniques the adaptive lasso selects the predictors for linear regression, estimating $\hat{\bm{\beta}}$ minimize the criterion 
+The adaptive lasso (AL) is a penalized regression method that simultaneously selects relevant predictors and estimates their coefficients [@Zou-2006]. The penalty part of an AL model is proportional to the sum of absolute values of the coefficients - covariates are dropped from the model when they incur a penalty larger than the amount by which they improve the model fit. For continuous response, AL estimates $\hat{\bm{\beta}}$ to minimize the penalized sum of squared residuals:
 
 $$ \sum_{i=1}^n (y_i - X_i \beta)^2 + \lambda \sum_{j=1}^p \frac{|\beta_{j}|}{|\tilde{\beta}_{j}|^{\gamma}}, $$
 
-where $\lambda$ is a tuning parameter and $\tilde{\bm{\beta}}$ is a consistent estimate of the regression coefficients. For binary modeling, the adaptive lasso maximizes the penalized log-likelihood
+where $\lambda$ is a tuning parameter and $\tilde{\bm{\beta}}$ is a consistent estimate of the regression coefficients. For binary modeling, AL maximizes the penalized log-likelihood
 
 $$ \sum_{i=1}^n \left[-(1 - y_i) X_i \beta - \log \left\{ 1 + \exp\left(-X_i \beta \right) \right\} \right] + \lambda \sum_{j=1}^p \frac{|\beta_j|}{|\tilde{\beta}_j|^{\gamma}}, $$
 
-where, as was the case for continuous response, $\tilde{\bm{\beta}}$ is a consistent estimate of the regression coefficients, which is calculated by ordinary logistic regression.
-
-In this work, $\gamma=1$, $\tilde{\bm{\beta}}$ are estimated individually by a univariate linear or logistic regression (it is necessary to estimate the coefficients individually because there are usually more covariates than observations), and the adaptive lasso tuning parameter $\lambda$ is selected to minimize the AICc [@Hurvich-Simonoff-Tsai-1998].
-
-Five of the modeling techniques were based on the adaptive lasso - one for continuous response (AL), and four for binary response (AL-logistic-weighted, AL-logistic-unweighted, AL-logistic-weighted-select, AL-logistic-unweighted-select). The four binary response techniques are the combination of weighted versus unweighted, and selection-only versus selection-and-estimation.
+where, as for continuous response, $\tilde{\bm{\beta}}$ is a consistent estimate of the regression coefficients. For the contest, $\gamma=1$, the $\tilde{\bm{\beta}}$ are estimated individually by a univariate linear or logistic regression (it is necessary to estimate the coefficients individually because there are usually more covariates than observations), and the AL tuning parameter $\lambda$ is selected to minimize the AICc [@Hurvich-Simonoff-Tsai-1998].
 
 ### Genetic algorithm
 
@@ -106,13 +99,11 @@ Partial least squares (PLS) regression is a tool for building regression models 
 
 ### SPLS
 
-Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsity of lasso-type variable selection [@Chun-Keles-2007]. To do so, SPLS uses two tuning parameters: one that controls the number of orthogonal components and one that controls the lasso-type penalty. The optimal parameters are those that minimize the mean squared prediction error (MSEP) over a two-dimensional grid search. The MSEP is estimated by 10-fold cross-validation. SPLS was used for both selection-and-estimation (SPLS) and selection-only (SPLS-select).
+Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsity of lasso-type variable selection [@Chun-Keles-2007]. To do so, SPLS uses two tuning parameters: one that controls the number of orthogonal components and one that controls the lasso-type penalty. The optimal parameters are those that minimize the mean squared prediction error (MSEP) over a two-dimensional grid search. The MSEP is estimated by 10-fold cross-validation.
 
 ## Implementation for beach regression
 
-The response variable for our continuous regression models is the base-10 logarithm of the E. coli concentration. For the binary regression models, the response variable is an indicator of whether the concentration exceeds the regulatory threshold $\delta=235$ CFU/mL. Transformations were applied to some of the data during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed.
-
-Include a table with pre/post processing discussion
+The response variable for our continuous regression models is the base-10 logarithm of the *E. coli* concentration. For the binary regression models, the response variable is an indicator of whether the concentration exceeds the regulatory threshold $\delta=235$ CFU/mL. Transformations were applied to some of the data during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed.
 
 ```{r load-packages, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
     library(dplyr)
@@ -134,6 +125,27 @@ Include a table with pre/post processing discussion
 	source("R/pair-tables.r")
 ```
 
+```{r figures, echo=FALSE, warning=FALSE, message=FALSE}
+    setwd("..")
+    source("R/definitions.r")
+    source("R/figures/classification.r")
+    source("R/figures/press.barchart.r")
+    source("R/figures/press.barchart.annual.r")
+    source("R/figures/roc.naive.barchart.r")
+    source("R/figures/roc.naive.barchart.annual.r")
+    source("R/figures/variable.plots.r")
+    source("R/figures/nvar.plot.r")
+```
+
+```{r tables, echo=FALSE, warning=FALSE, message=FALSE}
+    setwd("..")
+    source("R/definitions.r")
+    source("R/tables/auroc.naive.pairs.annual.r")
+    source("R/tables/auroc.naive.pairs.r")
+    source("R/tables/press.pairs.annual.r")
+    source("R/tables/press.pairs.r")
+```
+
 ## Cross Validation
 
 Our assessment of the modeling techniques is based on their performance in predicting exceedances of the regulatory standard. Two types of cross validation was used to measure the performance in prediction: leave-one-out (LOO) and leave-one-year-out (LOYO). In LOO CV, one observation is held out for validation while the rest of the data is used to train a model. The model is used to predict the concentration of that held out observation, and the process is repeated for each observation. Each cycle of LOYO CV holds out an entire year's worth of data for validation instead of a single observation. It is intended to approximate the performance of the modeling technique under a typical use case: a new model is estimated before the start of each annual beach season and then used for predicting exceedances during the season. The LOYO models in this study were estimated using all the available data except for the held out year, even that from future years. So for instance the 2012 models were estimated using the 2010-2011 and 2013 data.
@@ -145,20 +157,20 @@ Some methods also used cross-validation internally to select tuning parameters. 
 
 Results were compiled into one table for each site, such as the one below which cotains the results of running the contest at Hika. Each observation corresponds to a row in the table. The results table has a column for the observed log *E. coli* concentration and, for each method, columns for the predicted concentration by LOO CV and by LOYO CV. From the table, we can calculate the predictive error sum of squares (PRESS) and the area under the receiver operating characteristic (ROC) curve (AUROC), which are the statistics we use to summarize performance of the modeling methods.
 
-------------------------------------------------------------
-                 `pls`   `pls`            `adapt`   `adapt`      
- Row   Actual    (LOO)   (LOYO)   \dots   (LOO)     (LOYO) 
------ --------  ------- -------- ------- --------- --------- 
-1      2.54      2.35     2.22   \dots   2.29      2.55 
+-----------------------------------------------------------
+                 PLS     PLS              SPLS    SPLS      
+ Row   Actual    (LOO)   (LOYO)   \dots   (LOO)   (LOYO) 
+----- --------  ------- -------- ------- ------- -------- 
+1      2.54      2.35     2.22   \dots   2.29    2.55 
 
-2      2.59      1.87     1.79   \dots   1.91      1.23
+2      2.59      1.87     1.79   \dots   1.91    1.23
 
-\vdots \vdots    \vdots   \vdots \dots   \vdots    \vdots
+\vdots \vdots    \vdots   \vdots \dots   \vdots  \vdots
 
-166    1.57      1.93     2.06   \dots   1.83      2.07 
+166    1.57      1.93     2.06   \dots   1.83    2.07 
 
-167    3.38      1.84     2.01   \dots   1.80      1.71
------  ------    ------   ------ -----   ------    ------ 
+167    3.38      1.84     2.01   \dots   1.80    1.71
+-----  ------    ------   ------ -----   ------  ------ 
 
 In order to identify which modeling methods have the best performance across all sites, the summary statistics at each site were converted to ranks. We report the mean rank of each method across the sites. Uncertainty in the rankings is quantified by the bootstrap. Since PRESS and AUROC are functions of the results tables, the bootstrap procedure is carried out by resampling the rows of each results table and recalculating the ranks for each bootstrap sample. We used $1001$ bootstrap samples of each results table in the analysis that follows.
 
@@ -168,16 +180,17 @@ In order to identify which modeling methods have the best performance across all
 
 The ROC curve is an assessment of how well predictions are sorted. The AUROC averages the model's performance over the range of possible thresholds. A model which perfectly separates exceedances from non-exceedances in prediction has an AUROC of one, while a model that predicts exceedances no better than a coin flip has an AUROC of $0.5$.
 
-The mean LOO and LOYO ranks for all the methods are plotted in Figure [fig:auroc-boxplot]. The three top-ranked methods were GBM-CV, GBM-OOB, and the adaptive lasso. In order to facilitate a pairwise comparison between modeling methods, Tables [table:auroc.pairs.annual] (for the leave-one-year-out analysis) and [table:auroc.pairs] (for the leave-one-out analysis) show the frequency that the mean AUROC rank of GBM-OOB, GBM-CV, or the adaptive lasso exceeded each of the other modeling methods. 
 
 ```{r auroc-barchart, fig.width=14, fig.cap="Mean ranking of the methods by area under the ROC curce (AUROC) across all sites (higher is better). The error bars are 90% confidence intervals computed by the bootstrap. At left are the AUROC rankings from the leave-one-year-out cross validation, at right are the AUROC rankings from the leave-one-out cross validation.", fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
-    multiplot(roc.barchart.annual, roc.barchart, cols=2)
+    multiplot(roc.naive.barchart.annual, roc.naive.barchart, cols=2)
 ```
 
 ```{r auroc-tables, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-    xtable(auroc.naive.pairs.annual[1:3,], caption="Under leave-one-year-out cross validation, how often the mean AUROC rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs.annual") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
-    xtable(auroc.naive.pairs[1:3,], caption="Under leave-one-out cross validation, how often the mean AUROC rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
+    xtable(auroc.naive.pairs.annual[1:3,], caption="Under leave-one-year-out cross validation, how often the mean AUROC rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs.annual", align=c("rccccccccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
+    xtable(auroc.naive.pairs[1:3,], caption="Under leave-one-out cross validation, how often the mean AUROC rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs", align=c("rccccccccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
 ```
+
+The mean LOO and LOYO ranks for all the methods are plotted in Figure [fig:auroc-boxplot]. The three top-ranked methods were GBM-CV, GBM-OOB, and the adaptive lasso. In order to facilitate a pairwise comparison between modeling methods, Tables [table:auroc.pairs.annual] (for the leave-one-year-out analysis) and [table:auroc.pairs] (for the leave-one-out analysis) show the frequency that the mean AUROC rank of GBM-OOB, GBM-CV, or the adaptive lasso exceeded each of the other modeling methods.
 
 ## PRESS
 
@@ -196,19 +209,21 @@ The rankings of the methods by PRESS are plotted in Figure [fig:press-boxplot]. 
     
     
 ```{r press-tables, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-    xtable(press.pairs.annual[1:3,], caption="Under leave-one-year-out cross validation, how often the mean PRESS rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:press.pairs.annual") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
-	xtable(press.pairs[1:3,], caption="Under leave-one-out cross validation, how often the mean PRESS rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:press.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
+    xtable(press.pairs.annual[1:3,], caption="Under leave-one-year-out cross validation, how often the mean PRESS rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeded that of the other methods (in the columns).", label="table:press.pairs.annual", align=c("rccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
+	xtable(press.pairs[1:3,], caption="Under leave-one-out cross validation, how often the mean PRESS rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:press.pairs", align=c("rccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
 ```
     
+## Narrowing the focus
+
+By both AUROC and PRESS, and for both LOO and LOYO analyses, the three highest-ranked modeling methods were  GBM-CV, GBM-OOB, and the adaptive lasso. The fourth-ranked method was not consistent across the different analyses. By the LOO CV analysis, the adaptive lasso was ranked better than the fourth-ranked method by AUROC, `r colnames(auroc.naive.pairs)[3]`, on `r 100*auroc.naive.pairs[3,3]`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r colnames(press.pairs)[3]`, on `r 100*press.pairs[3,3]`% of bootstrap samples. And by the LOYO CV analysis, the adaptive lasso was ranked better than the fourth-ranked method by AUROC, `r colnames(auroc.naive.pairs.annual)[3]`, on `r 100*auroc.naive.pairs.annual[3,3]`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r colnames(press.pairs.annual)[3]`, on `r 100*press.pairs.annual[3,3]`% of bootstrap samples.
+
+Therefore, we conclude that only the GBM methods and the adaptive lasso are worth considering further because they consistently outperform the other methods. We further narrow our study to GBM-OOB and the adaptive lasso because the GBM-OOB and GBM-CV methods are very similar and fitting a GBM-CV takes many times longer than a GBM-OOB model.
+
 ## Classification of responses
 
 The real-world performance of any model for predicting exceedances will be measured by how well it distinguishes between exceedances and nonexceedances. This is quantified similar to AUROC except that AUROC is an average over all possible thresholds instead of an assessment of performance for a specific choice of threshold. Combined with a realistic carefully selected decision threshold, the LOYO CV results were used to simulate real-world use of the models.
 
-Intuitively, the decision threshold should adapt to the conditions that are observed in the beach's training data. If, for instance, exceedances are rare in the training data, then we expect few exceedances in the future, and should set the threshold high to reflect this prior expectation. On the other hand, if the bacterial concentration often exceeds the regulatory standard, then the decision threshold should be set lower in order to properly flag more of those exceedances. This intuition was encoded into how the decision threshold was set for the LOYO models. Specifically, the decision threshold was set to the $q$
-th quantile of the fitted values of non-exceedances in the training set, where $1-q$
-is the proportion of exceedances in the training set.
-
-By both AUROC and PRESS, and for both LOO and LOYO analyses, the three highest-ranked modeling methods were  GBM-CV, GBM-OOB, and the adaptive lasso. Here we assess the performance of GBM-OOB and the adaptive lasso because the GBM-OOB and GBM-CV methods are very similar and fitting a GBM-CV takes many times longer than a GBM-OOB model.
+Intuitively, the decision threshold should adapt to the conditions that are observed in the beach's training data. If, for instance, exceedances are rare in the training data, then we expect few exceedances in the future, and should set the threshold high to reflect this prior expectation. On the other hand, if the bacterial concentration often exceeds the regulatory standard, then the decision threshold should be set lower in order to properly flag more of those exceedances. This intuition was encoded into how the decision threshold was set for the LOYO models. Specifically, the decision threshold was set to the $q$ th quantile of the fitted values of non-exceedances in the training set, where $1-q$ is the proportion of exceedances in the training set.
 
 In Figure [fig:counts-barcharts], we look at the counts on a per-beach basis of four categories of decisions: true positives (correctly posting an advisory), true negatives (correctly not posting an advisory), false positives (wrongly posting an advisory) and false negatives (wrongly not posting an advisory).  In most cases, the counts are similar between the two techniques, with GBM-OOB tending to make a few more correct decisions. There are exceptions where adaptive lasso makes more correct decisions (e.g., Hika and Red Arrow).
 
@@ -218,11 +233,11 @@ In Figure [fig:counts-barcharts], we look at the counts on a per-beach basis of 
 
 ## Variable selection
 
-It was noted in Section [Classification of responses] that GBM-OOB and the adaptive lasso are the two of the three best-ranked methods. One difference between the two is that the adaptive lasso does variable selection while GBM-OOB uses all of the available covariates. We look here at how many variables were used in the adaptive lasso models compared to the GBM-OOB models.
+It was noted in Section [Narrowing the focus] that GBM-OOB and the adaptive lasso are the two of the three best-ranked methods. One difference between the two is that the adaptive lasso does variable selection while GBM-OOB uses all of the available covariates. We look here at how many variables were used in the adaptive lasso models compared to the GBM-OOB models.
 
 The variable counts are displayed in Figure [fig:varselect-barchart]. At most of the sites, the adaptive lasso uses only a small fraction of the available covariates, but at Point the adaptive lasso uses almost all of the available covariates. That's because the variable selection criterion we used (AICc) is intended to minimize prediction error. As the amount of data increases, we accumulate enough information to begin to discern the effect even of covariates that are only slightly correlated with the response. As our dataset grows, then, we should expect more covariates to be selected for an adaptive lasso model, and Point has far more observations than the other sites.
 
-```{r varselect-barchart, fig.cap="At each site, the number of variables that were selected for the adaptive lasso and GBM-OOB models, divided by whether they were collected from automated web services, or measured manually at the beach.", echo=FALSE, warning=FALSE, message=FALSE}
+```{r varselect-barchart, fig.width=14, fig.height=14, fig.cap="At each site, the number of variables that were selected for the adaptive lasso and GBM-OOB models, divided by whether they were collected from automated web services, or measured manually at the beach.", echo=FALSE, warning=FALSE, message=FALSE}
     print(nvar.plot)
 ```
     
