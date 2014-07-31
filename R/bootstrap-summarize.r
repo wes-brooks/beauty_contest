@@ -5,13 +5,18 @@ require(dplyr)
 #Load the raw results of the beauty contest:
 load("beauty_contest.RData")
 load("variable_supplement.RData")
+source("R/ROC.r")
 
 #S is the number of bootstrap samples
-S = 1001
+S = 50
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 roc.ranks = list()
+
+#These are data structures where we'll put the results of the bootstrap analysis
+roc.naive = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+roc.naive.ranks = list()
 
 #Calculate the PRESS only for continuous response:
 conts = c('adapt', 'adapt-select', 'gbm', 'gbmcv', 'pls', 'galm', 'spls', 'spls-select')
@@ -53,33 +58,11 @@ for (site in sites) {
             #Draw the botstrap sample for this method, using the indices in 'boot'
             r = results[[site]][[method]][['res']][,1:4]
             r = r[boot,]
-            colnames(r) = c('predicted', 'actual', 'threshold', 'fold')          
-            
-            #Get the decision-accuracy of the modeling method.
-            #First, sort the results based on the decision threshold
-            r = r[order(r$threshold),]
-            
-            #Summarize the correctness of decisions over this bootstrap sample
-            tpos = rep(NA, n)
-            tneg = rep(NA, n)
-            fpos = rep(NA, n)
-            fneg = rep(NA, n)
-            
-            #For each possible decision compute the projected confusion matrix
-            for (t in unique(r$threshold)) {
-                indx = which(r$threshold == t)
-                posindx = which(r$threshold >= t)
-                negindx = which(r$threshold < t)
-                
-                tpos[indx] = sum(r$actual[posindx] > 2.3711)
-                tneg[indx] = sum(r$actual[negindx] <= 2.3711)
-                fpos[indx] = sum(r$actual[posindx] <= 2.3711)
-                fneg[indx] = sum(r$actual[negindx] > 2.3711)
-            }
-            r = cbind(r, tpos, tneg, fpos, fneg)
+            colnames(r) = c('predicted', 'actual', 'threshold', 'fold')
             
             #Now add the area under this ROC curve to the vector of bootstrap outputs:
             roc[[site]][[method]] = c(roc[[site]][[method]], ROC(r))
+            roc.naive[[site]][[method]] = c(roc.naive[[site]][[method]], ROC.naive(r))
         }
         
         for (method in conts) {
@@ -105,6 +88,10 @@ for (site in sites) {
     #put the results in a data frame and rank the methods on each bootstrap sample:
     roc[[site]] = data.frame(roc[[site]])
     roc.ranks[[site]] = apply(roc[[site]], 1, rank)
+
+    #put the results in a data frame and rank the methods on each bootstrap sample:
+    roc.naive[[site]] = data.frame(roc.naive[[site]])
+    roc.naive.ranks[[site]] = apply(roc.naive[[site]], 1, rank)
     
     #put the results in a data frame and rank the methods on each bootstrap sample:
     press[[site]] = data.frame(press[[site]])
@@ -157,6 +144,10 @@ roc.barchart = ggplot(a) +
     scale_x_discrete(labels=a$method %>% levels %>% addline_format) +
     theme_bw() +
     theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
+
+
+
+
 
 
 #Do the same for PRESS:

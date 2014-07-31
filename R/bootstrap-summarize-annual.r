@@ -4,13 +4,18 @@ require(dplyr)
 
 #Load the raw results of the beauty contest:
 load("beauty_contest.RData")
+source("R/ROC.r")
 
 #S is the number of bootstrap samples
-S = 1001
+S = 101
 
 #These are data structures where we'll put the results of the bootstrap analysis
 roc.annual = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 roc.ranks.annual = list()
+
+#These are data structures where we'll put the results of the bootstrap analysis
+roc.naive.annual = sapply(sites, function(s) return( sapply(methods, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+roc.naive.ranks.annual = list()
 
 #Calculate the PRESS only for continuous response:
 conts = c('adapt', 'adapt-select', 'gbm', 'gbmcv', 'pls', 'galm', 'spls', 'spls-select')
@@ -32,31 +37,9 @@ for (site in sites) {
             r = r[boot,]
             colnames(r) = c('predicted', 'actual', 'threshold', 'fold')
             
-            #Get the decision-accuracy of the modeling method.
-            #First, sort the results based on the decision threshold
-            r = r[order(r$threshold),]
-            
-            #Summarize the correctness of decisions over this bootstrap sample
-            tpos = rep(NA, n)
-            tneg = rep(NA, n)
-            fpos = rep(NA, n)
-            fneg = rep(NA, n)
-            
-            #For each possible decision compute the projected confusion matrix
-            for (t in unique(r$threshold)) {
-                indx = which(r$threshold == t)
-                posindx = which(r$threshold >= t)
-                negindx = which(r$threshold < t)
-                
-                tpos[indx] = sum(r$actual[posindx] > 2.3711)
-                tneg[indx] = sum(r$actual[negindx] <= 2.3711)
-                fpos[indx] = sum(r$actual[posindx] <= 2.3711)
-                fneg[indx] = sum(r$actual[negindx] > 2.3711)
-            }
-            r = cbind(r, tpos, tneg, fpos, fneg)
-            
             #Now add the area under this ROC curve to the vector of bootstrap outputs:
             roc.annual[[site]][[method]] = c(roc.annual[[site]][[method]], ROC(r))
+            roc.naive.annual[[site]][[method]] = c(roc.naive.annual[[site]][[method]], ROC.naive(r))
         }
         
         for (method in conts) {
@@ -69,6 +52,10 @@ for (site in sites) {
     #put the results in a data frame and rank the methods on each bootstrap sample:
     roc.annual[[site]] = data.frame(roc.annual[[site]])
     roc.ranks.annual[[site]] = apply(roc.annual[[site]], 1, rank)
+    
+    #put the results in a data frame and rank the methods on each bootstrap sample:
+    roc.naive.annual[[site]] = data.frame(roc.naive.annual[[site]])
+    roc.naive.ranks.annual[[site]] = apply(roc.naive.annual[[site]], 1, rank)
     
     #put the results in a data frame and rank the methods on each bootstrap sample:
     press.annual[[site]] = data.frame(press.annual[[site]])

@@ -10,6 +10,8 @@ Pithy, concise and informative. May bring the reader to tears due to the beauty 
 
 # Introduction
 
+With input from the US Environmental Protection Agency, the state of Wisconsin has established regulatory standards for beach water quality, which states that a warning is to be posted when the concentration of E. coli exceeds $235$ CFU / $100$ mL. (Is that statement correct?) The goal of modeling the bacterial concentration is to predict in advance when the concentration will exceed the limit.
+
 # Methods
 
 The availability of large data sets for building regression models to predict the bacterial counts in beach water is both an opportunity and a challenge. 
@@ -28,13 +30,7 @@ Will include a map and tables
 
 ## Definitions
 
-At any site, denote the predictor variables by $X$, which is an $n\times p$ matrix where $n$ is the number of observations and $p$ is the number of predictors. The vector of $n$ observations of bacterial concentration is denoted $y$. The mathematical model relating $y$ to $X$ is the function $\mu(X, y)$.
-
-## Goals
-
-With input from the US Environmental Protection Agency, the state of Wisconsin has established regulatory standards for beach water quality, which states that a warning is to be posted when the concentration of E. coli exceeds $235$ CFU / $100$ mL. Is that statement correct? The goal of modeling the bacterial concentration is to predict in advance when the concentration will exceed the limit. For the discussion to come, denote the regulatory standard by $\delta$. Each model has two essential components: the mathematical model itself, $\mu(X,y)$, and a decision threshold, $\hat{{\delta}}$, that is used to interpret the model's predictions.
-
-There is no reason that $\delta$ and $\hat{{\delta}}$ must be equal. Rather, each $\hat{{\delta}}$ should be chosen so that the number of false positives and false negatives are balanced to the satisfaction of the beach manager. Using cross validation allows us to set $\hat{{\delta}}$ to expect that the performance over future data will resemble what was observed over the testing data.
+At any site, denote the predictor variables by $X$, which is an $n\times p$ matrix where $n$ is the number of observations and $p$ is the number of predictors. The vector of $n$ observations of bacterial concentration is denoted $y$. The mathematical model relating $y$ to $X$ is the function $\mu(X, y)$. Denote the regulatory standard by $\delta$ and the decision threshold by $\hat{{\delta}}$.
 
 ## Listing of specific statistical techniques
 
@@ -114,7 +110,7 @@ Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsit
 
 ## Implementation for beach regression
 
-The response variable for our continuous regression models is the natural logarithm of the E. coli concentration. For the binary regression models, the response variable is an indicator of whether the concentration exceeds the regulatory threshold $\delta=235$ CFU/mL. Some pre-processing of the data was done. During pre-processing, some transformations were applied to the data. The beach water turbidity and the discharge of tributaries near each beach were log-transformed. Rainfall variables were all square-root transformed.
+The response variable for our continuous regression models is the base-10 logarithm of the E. coli concentration. For the binary regression models, the response variable is an indicator of whether the concentration exceeds the regulatory threshold $\delta=235$ CFU/mL. Transformations were applied to some of the data during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed.
 
 Include a table with pre/post processing discussion
 
@@ -133,42 +129,9 @@ Include a table with pre/post processing discussion
 
 	source("R/bootstrap-summarize.r")
 	source("R/bootstrap-summarize-annual.r")
+    source("scratch/QFNTD.r")
 	source("R/get_annual_predictive_performance.r")
 	source("R/pair-tables.r")
-```
-    
-# Results
-
-## Results tables
-
-Results of the cross-validation procedures were compiled into tables
-
-```{r results-table, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
-	#Generate an example results table
-	
-	#First, get the reults from hika, bot LOO and LOYO:
-	r = results[['hika']][['gbm']][['res']]
-	ra = results_annual[['hika']][['gbm']][['res']]
-
-	#Find the original ordering of the data:
-	r %>% rownames %>% as.integer %>% order -> indx
-	ra %>% rownames %>% as.integer %>% order -> indx_annual
-
-	#Produce a results table:
-	rtable = cbind(r[indx,c(2,1,3)], ra[indx_annual,c(1,3)])[1:4,]
-	colnames(rtable) = c("Actual",
-		"LOO prediction",
-		"LOO threshold",
-		"LOYO prediction",
-		"LOYO threshold")
-	
-	#Add ellipses for the last row:
-	#rtable = rtable %>% round(2) %>%
-	#	rbind(rep("\\vdots", 5))
-
-	#Display only a summary:
-	#rtable %>% xtable(format='markdown') %>% print(only.content=TRUE)
-    rtable %>% knitr::kable(format='latex', digits=2)
 ```
 
 ## Cross Validation
@@ -177,12 +140,33 @@ Our assessment of the modeling techniques is based on their performance in predi
 
 Some methods also used cross-validation internally to select tuning parameters. In those cases the internal CV was done using only the model data, and never looking at the held-out observation(s). This process is separate from - and does not affect - the CV to assess predictive performance.
 
+
 ## Comparing methods, and quantifying uncertainty in the ranks
+
+Results were compiled into one table for each site, such as the one below which cotains the results of running the contest at Hika. Each observation corresponds to a row in the table. The results table has a column for the observed log *E. coli* concentration and, for each method, columns for the threshold and predicted concentration by LOO CV and for the threshold and predicted concentration by LOYO CV. 
+
+------------------------------------------------------------
+                 `gbm`   `gbm`            `adapt`   `adapt`      
+ Row   Actual    (LOO)   (LOYO)   \dots   (LOO)     (LOYO) 
+----- --------  ------- -------- ------- --------- --------- 
+1      2.54      2.35     2.22   \dots   2.29      2.55 
+
+2      2.59      1.87     1.79   \dots   1.91      1.23
+
+3      2.73      1.97     2.22   \dots   1.79      2.09 
+
+\vdots \vdots    \vdots   \vdots \dots   \vdots    \vdots
+
+166    1.57      1.93     2.06   \dots   1.83      2.07 
+
+167    3.38      1.84     2.01   \dots   1.80      1.71
+----   ------    ------   ------ -----   ------    ------ 
 
 Our goal is to compare the different modeling techniques. We make comparisons on the basis of rank because the modeling metrics may not be comparable between sites (because, for instance, different sites have different numbers of observations). If it is possible to compute a metric of model performance, then it is possible to rank the techniques based on that metric. Our approach is to rank the techniques at each site (higher is better), and then average the ranks of each method.
 
-In order tocompare techniques, we must quantify the uncertainty in the rankings, which we do via the bootstrap. Since the AUROC and PRESS rankings are functions of the result tables, the bootstrap procedure is carried out by resampling the rows of each results table, and the AUROC and ROC rankings were recalculated for each bootstrap sample. We used 1001
-bootstrap samples of each results table in the analysis that follows.
+In order tocompare techniques, we must quantify the uncertainty in the rankings, which we do via the bootstrap. Since the AUROC and PRESS rankings are functions of the result tables, the bootstrap procedure is carried out by resampling the rows of each results table, and the AUROC and ROC rankings were recalculated for each bootstrap sample. We used $1001$ bootstrap samples of each results table in the analysis that follows.
+
+# Results
 
 ## AUROC
 
@@ -197,8 +181,8 @@ The methods are ranked at each site by AUROC and a mean rank (across sites) is c
 ```
 
 ```{r auroc-tables, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-    xtable(auroc.pairs.annual[1:3,], caption="Under leave-one-year-out cross validation, how often the mean AUROC rank of GBM, GBMCV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs.annual") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
-    xtable(auroc.pairs[1:3,], caption="Under leave-one-out cross validation, how often the mean AUROC rank of GBM, GBMCV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
+    xtable(auroc.naive.pairs.annual[1:3,], caption="Under leave-one-year-out cross validation, how often the mean AUROC rank of GBM, GBMCV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs.annual") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
+    xtable(auroc.naive.pairs[1:3,], caption="Under leave-one-out cross validation, how often the mean AUROC rank of GBM, GBMCV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs") %>% print(sanitize.colnames.function=tabulate_headers, rotate.colnames=TRUE)
 ```
 
 ## PRESS
