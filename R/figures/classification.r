@@ -50,7 +50,7 @@ for (s in sites) {
         aes(x=exceedance, y=count, fill=factor(accurate, levels=c("TRUE", "FALSE"))) +
         scale_fill_grey(start=0.5, end=0.1, labels=c('accurate', 'misclassified')) +
         geom_bar(stat='identity', position='dodge')+
-        facet_wrap(~method) +
+        facet_grid(.~method, labeller=function(x, j) return(lasso.and.gbm[j])) +
         aes(order=rev(accurate))+
         theme_bw() + 
         scale_x_discrete(labels=c('nonexceedances','exceedances')) +

@@ -1,7 +1,9 @@
 ---
 title: "Comparing methods for predicting health advisories for beach water"
 author: "Wesley Brooks, Rebecca Carvin, Steve Corsi, Mike Fienen"
-output: pdf_document
+output:
+    pdf_document:
+        fig_caption: true   
 bibliography: ../references/beautycontest.bib
 ---
 
@@ -30,7 +32,7 @@ Will include a map and tables
 
 ## Definitions
 
-At any site, denote the predictor variables by $X$, which is an $n\times p$ matrix where $n$ is the number of observations and $p$ is the number of predictors. The vector of $n$ observations of bacterial concentration is denoted $y$. The mathematical model relating $y$ to $X$ is the function $\mu(X, y)$. Denote the regulatory standard by $\delta$ and the decision threshold by $\hat{{\delta}}$.
+At any site, denote the covariates by $X$, which is an $n\times p$ matrix where $n$ is the number of observations and $p$ is the number of covariates. The vector of $n$ observations of bacterial concentration is denoted $y$. The mathematical model relating $y$ to $X$ is the function $\mu(X, y)$. Denote the regulatory standard by $\delta$ and the decision threshold by $\hat{{\delta}}$.
 
 ## Listing of specific statistical techniques
 
@@ -46,64 +48,46 @@ The indicator is coded as zero when the concetration is below the regulatory sta
 
 #### Weighting of observations in binary regression
 
-A weighting scheme was implemented for some of the binary regression techniques. In the weighting scheme, observations were given weights $w_{i}$ where:
+A weighting scheme was implemented for some of the binary regression techniques. In the weighting scheme, observations were given weights $w_i$ where:
 
-$$ w_{i}=    (y_{i}-\delta)/\hat{{sd}}(y)
-\hat{{sd}}(y)=	\sqrt{\sum_{i=1}^{n}(y_{i}-\bar{{y}})^{2}/n}
-\bar{{y}}=	\sum_{i=1}^{n}y_{i}/n $$
+$$
+    \begin{aligned}
+        w_i &= (y_i - \delta) / \hat{\rm{sd}}(y)\\
+        \hat{\rm{sd}}(y) &= \sqrt{\sum_{i=1}^n (y_i - \bar{y})^2 / n}\\
+        \bar{y} &= \sum_{i=1}^n y_i / n
+    \end{aligned}
+$$
 
-
-That is, the weights are equal to the number of standard deviations that the observed concentration lies from the regulatory threshold $\delta$. Any technique that was implemented with this weighting scheme was separately implemented without any weighting of the observations. The methods that weight the observations are indicated with a (w).
+That is, the weights are equal to the number of standard deviations that the observed concentration lies from the regulatory threshold. Any technique that was implemented with this weighting scheme was separately implemented without any weighting of the observations. The methods that weight the observations are indicated with a (w).
 
 #### Selection-only methods
 
-The contest investigated whether certain modeling methods should be used only to select covariates. Once the predictor variables were selected, the regression model using those predictors were estimated using ordinary least squares for the continuous methods, or ordinary logistic regression for the binary methods. Selection-only methods are indicated by an (s).
+The contest investigated whether certain modeling methods should be used only to select covariates. Once the covariates were selected, the regression model using those covariates were estimated using ordinary least squares for the continuous methods, or ordinary logistic regression for the binary methods. Selection-only methods are indicated by an (s).
 
 ### GBM
 
 A gradient boosting machine (GBM) model is a so-called random forest model - a collection of many regression trees [@Friedman-2001]. Prediction is done by averaging the outputs of the trees. Two GBM-based techniques are explored - we refer to them as GBM-OOB and GBM-CV. The difference is in how the optimal number of trees is determined - GBM-CV selects the number of trees in a model using leave-one-out CV, while GBM-OOB uses the so-called out-of-bag error estimate. The CV method is much slower (it has to construct as many random forests as there are observations, while the OOB method only requires computing a single random forest) but GBM-CV should more accurately estimate the prediction error.
 
-All the GBM-OOB and GBM-CV models were estimted using the `gbm` package in `R`, using $10000$ trees, shrinkage parameter $0.0005$, minimum $5$ observations per node, tree depth $5$, and bagging fraction $0.5$ [@.]
-
-Number of trees: 10000
-
-Shrinkage parameter: 0.0005
-
-Minimum observations per node: 5
-
-Depth of each tree: 5
-
-Bagging fraction: 0.5
-
 ### Adaptive Lasso
 
-The adaptive lasso (AL) is a penalized regression method that simultaneously selects relevant predictors and estimates their coefficients [@Zou-2006]. The penalty part of an AL model is proportional to the sum of absolute values of the coefficients - covariates are dropped from the model when they incur a penalty larger than the amount by which they improve the model fit. For continuous response, AL estimates $\hat{\bm{\beta}}$ to minimize the penalized sum of squared residuals:
-
-$$ \sum_{i=1}^n (y_i - X_i \beta)^2 + \lambda \sum_{j=1}^p \frac{|\beta_{j}|}{|\tilde{\beta}_{j}|^{\gamma}}, $$
-
-where $\lambda$ is a tuning parameter and $\tilde{\bm{\beta}}$ is a consistent estimate of the regression coefficients. For binary modeling, AL maximizes the penalized log-likelihood
-
-$$ \sum_{i=1}^n \left[-(1 - y_i) X_i \beta - \log \left\{ 1 + \exp\left(-X_i \beta \right) \right\} \right] + \lambda \sum_{j=1}^p \frac{|\beta_j|}{|\tilde{\beta}_j|^{\gamma}}, $$
-
-where, as for continuous response, $\tilde{\bm{\beta}}$ is a consistent estimate of the regression coefficients. For the contest, $\gamma=1$, the $\tilde{\bm{\beta}}$ are estimated individually by a univariate linear or logistic regression (it is necessary to estimate the coefficients individually because there are usually more covariates than observations), and the AL tuning parameter $\lambda$ is selected to minimize the AICc [@Hurvich-Simonoff-Tsai-1998].
+The least absolute shrinkage and selection operator (Lasso) is a penalized regression method that simultaneously selects relevant covariates and estimates their coefficients [@Tibshirani-1996]. The adaptive lasso (AL) is a refinement of the Lasso that possesses the so-called "oracle" properties of asymptotically 
+selecting exactly the correct covariates and estimating them as accurately as would be possible if their identities were know in advance [@Zou-2006]. To use the AL for prediction requires selecting a tuning parameter. For the contest, the AL tuning parameter $\lambda$ is selected to minimize the corrected Akaike Information Criterion (AICc) [@Akaike-1973; @Hurvich-Simonoff-Tsai-1998].
 
 ### Genetic algorithm
 
-The genetic algorithm is a variable-selection method that works by analogy to natural selection, where so-called chromosomes represent regression models [@Fogel-1998]. A variable is included in the model if the corresponding element of the chromosome is one, but not otherwise. Chromosomes are produced in successive generations, where the first generation is produced randomly and subsequent generations are produced by combining chromosomes from the current generation, with additional random drift. The chance that a chromosome in the current generation will produce offspring in the next generation is an increasing function of its fitness. The fitness of each chromosome is calculated by the corrected Akaike Information Criterion (AICc) [@Akaike-1973; @Hurvich-Tsai-1989].
-
-The implementations in this study used 100 generations, with each generation consisting of 200 chromosomes. The genetic algorithm method (GA) is the default for linear regression modeling in Virtual Beach [@Cyterski-Brooks-Galvin-Wolfe-Carvin-Roddick-Fienen-Corsi-2013]. This study also investigates two genetic algorithm methods for logistic regression: one weighted (GA-logistic-weighted) and one unweighted (GA-logistic-unweighted).
+The genetic algorithm is a variable-selection method that works by analogy to natural selection, where so-called chromosomes represent regression models [@Fogel-1998]. A covariate is included in the model if the corresponding element of the chromosome is one, but not otherwise. Chromosomes are produced in successive generations, where the first generation is produced randomly and subsequent generations are produced by combining chromosomes from the current generation, with additional random drift. The chance that a chromosome in the current generation will produce offspring in the next generation is an increasing function of its fitness. The fitness of each chromosome is calculated by the (AICc) [@Akaike-1973; @Hurvich-Tsai-1989].
 
 ### PLS
 
-Partial least squares (PLS) regression is a tool for building regression models with many covariates [@Wold-Sjostrum-Eriksson-2001]. PLS works by decomposing the covariates into mutually orthogonal components, with the components then used as the variables in a regression model. This is similar to principal components regression (PCR), but the way PLS components are chosen ensures that they are aligned with the model output. On the other hand, PCR is sometimes criticised for decomposing the covariates into components that are unrelated to the model's output. To use PLS, one must decide how many components to use in the model. This study follows the method described in [@Brooks-Fienen-Corsi-2013], using the PRESS statistic to select the number of components.
+Partial least squares (PLS) regression is a tool for building regression models with many covariates [@Wold-Sjostrum-Eriksson-2001]. PLS works by decomposing the covariates into mutually orthogonal components, with the components then used as the covariates in a regression model. This is similar to principal components regression (PCR), but the way PLS components are chosen ensures that they are aligned with the model output, whereas PCR is sometimes criticised for decomposing the covariates into components that are unrelated to the model's output. To use PLS, one must decide how many components to use in the model. This study follows the method described in [@Brooks-Fienen-Corsi-2013], using the PRESS statistic to select the number of components.
 
 ### SPLS
 
 Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsity of lasso-type variable selection [@Chun-Keles-2007]. To do so, SPLS uses two tuning parameters: one that controls the number of orthogonal components and one that controls the lasso-type penalty. The optimal parameters are those that minimize the mean squared prediction error (MSEP) over a two-dimensional grid search. The MSEP is estimated by 10-fold cross-validation.
 
-## Implementation for beach regression
+## Data transformations for beach regression
 
-The response variable for our continuous regression models is the base-10 logarithm of the *E. coli* concentration. For the binary regression models, the response variable is an indicator of whether the concentration exceeds the regulatory threshold $\delta=235$ CFU/mL. Transformations were applied to some of the data during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed.
+The response for our continuous regression models is the base-10 logarithm of the *E. coli* concentration. For the binary regression models, the response is an indicator of whether the concentration exceeds the regulatory threshold $\delta=235$ CFU/mL. Transformations were applied to some of the data during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed.
 
 ```{r load-packages, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
     library(dplyr)
@@ -111,6 +95,7 @@ The response variable for our continuous regression models is the base-10 logari
     library(ggplot2)
 	library(brooks)
 	library(xtable)
+    options(xtable.comment = FALSE)
 ```
 
 ```{r compile-results, echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
@@ -215,7 +200,7 @@ The rankings of the methods by PRESS are plotted in Figure [fig:press-boxplot]. 
     
 ## Narrowing the focus
 
-By both AUROC and PRESS, and for both LOO and LOYO analyses, the three highest-ranked modeling methods were  GBM-CV, GBM-OOB, and the adaptive lasso. The fourth-ranked method was not consistent across the different analyses. By the LOO CV analysis, the adaptive lasso was ranked better than the fourth-ranked method by AUROC, `r colnames(auroc.naive.pairs)[3]`, on `r 100*auroc.naive.pairs[3,3]`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r colnames(press.pairs)[3]`, on `r 100*press.pairs[3,3]`% of bootstrap samples. And by the LOYO CV analysis, the adaptive lasso was ranked better than the fourth-ranked method by AUROC, `r colnames(auroc.naive.pairs.annual)[3]`, on `r 100*auroc.naive.pairs.annual[3,3]`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r colnames(press.pairs.annual)[3]`, on `r 100*press.pairs.annual[3,3]`% of bootstrap samples.
+By both AUROC and PRESS, and for both LOO and LOYO analyses, the three highest-ranked modeling methods were  GBM-CV, GBM-OOB, and the adaptive lasso. The fourth-ranked method was not consistent across the different analyses. By the LOO CV analysis, the adaptive lasso was ranked better than the fourth-ranked method by AUROC, `r colnames(auroc.naive.pairs)[3]`, on `r round(100*auroc.naive.pairs[3,3],1)`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r colnames(press.pairs)[3]`, on `r round(100*press.pairs[3,3],1)`% of bootstrap samples. And by the LOYO CV analysis, the adaptive lasso was ranked better than the fourth-ranked method by AUROC, `r colnames(auroc.naive.pairs.annual)[3]`, on `r round(100*auroc.naive.pairs.annual[3,3],1)`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r colnames(press.pairs.annual)[3]`, on `r round(100*press.pairs.annual[3,3],1)`% of bootstrap samples.
 
 Therefore, we conclude that only the GBM methods and the adaptive lasso are worth considering further because they consistently outperform the other methods. We further narrow our study to GBM-OOB and the adaptive lasso because the GBM-OOB and GBM-CV methods are very similar and fitting a GBM-CV takes many times longer than a GBM-OOB model.
 
@@ -227,31 +212,31 @@ Intuitively, the decision threshold should adapt to the conditions that are obse
 
 In Figure [fig:counts-barcharts], we look at the counts on a per-beach basis of four categories of decisions: true positives (correctly posting an advisory), true negatives (correctly not posting an advisory), false positives (wrongly posting an advisory) and false negatives (wrongly not posting an advisory).  In most cases, the counts are similar between the two techniques, with GBM-OOB tending to make a few more correct decisions. There are exceptions where adaptive lasso makes more correct decisions (e.g., Hika and Red Arrow).
 
-```{r counts-barcharts, fig.width=16, fig.height=16, fig.cap='Mean ranks of the modeling techniques across the seven sites. At left are the mean ranks under leave-one-out cross validation, at the right are the mean ranks from leave-one-year-out cross validation.', fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
+```{r counts-barcharts, fig.width=16, fig.height=16, fig.cap='At each site, the number of predictions from the adaptive lasso (AL) and GBM-OOB that fell into four categories, from left: correctly predicted exceedance, incorrectly predicted exceedance, correctly predicted non-exceedance, and incorrectly predicted non-exceedance.', fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
     multiplot(plotlist=pp, cols=3)
 ```
 
 ## Variable selection
 
-It was noted in Section [Narrowing the focus] that GBM-OOB and the adaptive lasso are the two of the three best-ranked methods. One difference between the two is that the adaptive lasso does variable selection while GBM-OOB uses all of the available covariates. We look here at how many variables were used in the adaptive lasso models compared to the GBM-OOB models.
+It was noted in Section [Narrowing the focus] that GBM-OOB and the adaptive lasso are the two of the three best-ranked methods. One difference between the two is that the adaptive lasso does variable selection while GBM-OOB uses all of the available covariates. We look here at how many covariates were used in the adaptive lasso models compared to the GBM-OOB models.
 
-The variable counts are displayed in Figure [fig:varselect-barchart]. At most of the sites, the adaptive lasso uses only a small fraction of the available covariates, but at Point the adaptive lasso uses almost all of the available covariates. That's because the variable selection criterion we used (AICc) is intended to minimize prediction error. As the amount of data increases, we accumulate enough information to begin to discern the effect even of covariates that are only slightly correlated with the response. As our dataset grows, then, we should expect more covariates to be selected for an adaptive lasso model, and Point has far more observations than the other sites.
+The covariate counts are displayed in Figure [fig:varselect-barchart]. At most of the sites, the adaptive lasso uses only a small fraction of the available covariates, but at Point the adaptive lasso uses almost all of the available covariates. That's because the variable selection criterion we used (AICc) is intended to minimize prediction error. As the amount of data increases, we accumulate enough information to begin to discern the effect even of covariates that are only slightly correlated with the response. As our dataset grows, then, we should expect more covariates to be selected for an adaptive lasso model, and Point has far more observations than the other sites. 
 
-```{r varselect-barchart, fig.width=14, fig.height=14, fig.cap="At each site, the number of variables that were selected for the adaptive lasso and GBM-OOB models, divided by whether they were collected from automated web services, or measured manually at the beach.", echo=FALSE, warning=FALSE, message=FALSE}
-    print(nvar.plot)
+```{r varselect-barchart, fig.width=14, fig.height=14, fig.cap="At each site, the mean number of covariates that were selected for the adaptive lasso (AL) model, and the total number of covariates, all of which were used in the gradient boosting machine with an out-of-bag estimate of the optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the covariate counts are broken down by whether the covariate values were collected automatically from web services or manually at the beach.", echo=FALSE, warning=FALSE, message=FALSE}
+    multiplot(plotlist=nvar.plot, cols=3)
 ```
     
 # Discussion
 
-Which type of model is generally the best?
+The GBM-CV, GBM-OOB, and AL methods showed the best results by both PRESS and AUROC, under LOO and LOYO cross validation. Though GBM-CV was a bit more accurate than GBM-OOB in all the settings, the small improvement in accuracy was perhaps not worth the large additional cost in time to fit the model. However, the additional computation cost is incurred once when the model is fitted - given a new observation of beach data, both the GBM-CV and GBM-OOB models produce predictions nigh-instantaneously. Where predictive accuracy is the most important consideration and no difficulty is anticipated in acquiring the data, it is hard to argue against using a GBM-type model.
 
-Under what conditions do some outperform others?
+The predictive performance of the AL models was somewhat worse than that of the GBM models, but by including a variable selection step the AL models reduce the number of covariates that must be measured in order to make daily predictions. A model that requires fewer covariates is less expensive and more robust (as the probability of encountering some missing data increases with the number of required covariates). This is particularly important for manually-collected covariates because collecting data by hand takes more time and costs more money than accessing publically available data from a web service. Across all the sites, the ratio of manually-collected to automatically collected covariates in the AL models seems to mirror the ratio among all available covariates, indicating that neither the manually- nor automatically-collected covariates are systematically more important to predicting the bacterial concentration. Some covariates tended to appear at every site in the AL models (and other models that include a variable selection step). The manually-collected covariates that were consistently selected for the models were the (log) turbidity in the beach water, and wave height at the beach.
 
-Relative value of overall best model versus methods that help trim variables? e.g. how valuable is it to reduce number of predictors? Further, which variables get cut? Expensive ones? Cheap ones?
+Where minimizing the number of covariates is important, the selection criterion used here (corrected AIC) may not be appropriate. In that case, the Bayesian information criterion (BIC) is more stingy about including covariates in the model and does not exhibit the property of the AIC (or AICc) where more covariates are included in the model as the number of observations increases. However, the BIC is derived from the standpoint of identifying the most probably model, rather than minimizing the prediction error. It is likely that an AL model using the BIC for variable selection will have slightly worse predictive performance than one using the AICc.
 
-How important is computational expense? Only an issue for model fitting --- not prediction, but worth quantifying. E.g. if GBM with cross validation takes hours, how much better? 
+Another advantage of the AL over GBM-type models is interpretability. As a linear regression technique, fitting an AL model means generating a set of coefficients, which can be interpreted as the marginal effect of a change in the corresponding covariate. On the other hand, GBM produces black-box models that make very accurate predictions but are difficult to intrepret. One common way to interpret a GBM-type model (which consists of a plethora of regression trees) is to observe the proportion of splits in the underlying trees that involve a particular covariate. The split proportion is a measurement of that covariate's importance to the model but gives no indication of how that covariate affects the bacterial concentraion.
 
-Model tuning for GBM-OOB versus GBM-CV --> notes on how GBM-OOB is faster with similar performance (e.g. CV is overkill maybe)
+This comparison was carried out in the R statistical software environment. As of version 3.0, the U.S. Environmental Protection Agency's Virtual Beach software can use GBM models for prediction of bacterial concentration. A version that can use the AL is anticipated. Scripts and details of the how the modeling methods were implemented are in the online supplement.
 
 # Acknowledgments
 

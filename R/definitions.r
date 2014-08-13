@@ -8,7 +8,7 @@ load("variable_supplement.RData")
 source("R/ROC.r")
 
 #S is the number of bootstrap samples
-S = 1001
+S = 11
 
 #Nicer names for the paper
 pretty.methods = list(
@@ -26,6 +26,11 @@ pretty.methods = list(
     'galm'='GA',
     'galogistic-weighted'='GA (w,b)',
     'galogistic-unweighted'='GA (b)'
+)
+
+lasso.and.gbm = list(
+    'adapt'='AL',
+    'gbm'='GBM-OOB'
 )
 
 pretty.sites = list(
