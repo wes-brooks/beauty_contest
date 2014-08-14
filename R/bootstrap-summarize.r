@@ -15,7 +15,6 @@ press.ranks = list()
 
 #These lists will hold the number of manual and automatic variables for each bootstrap resample:
 select = c('adapt',
-           'gbm'
            #'galm',
            #'spls',
            #'spls-select',
@@ -23,9 +22,14 @@ select = c('adapt',
            #'adalasso-weighted',
            #'galogistic-unweighted',
            #'galogistic-weighted'
+           'gbm'
            )
 auto = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 man = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+
+#For the online supplement:
+auto.complete = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
+man.complete = sapply(sites, function(s) return( sapply(select, function(m) return(vector()), simplify=FALSE) ), simplify=FALSE)
 
 for (s in sites) {
     for (m in methods) {
@@ -72,6 +76,20 @@ for (site in sites) {
             
             man[[site]][[method]] = c(man[[site]][[method]], v[,man.indx] %>% rowSums %>% mean)
             auto[[site]][[method]] = c(auto[[site]][[method]], v[,auto.indx] %>% rowSums %>% mean)
+        }
+        
+        #This gets the auto, manual vars for all methods (used in the online supplement)
+        for (method in methods) {
+            #Draw a new sample for point because of its multiple but unequal measurements per day
+            if (site=='point') {boot = sample(1:(varlist[['point']][['adapt']] %>% nrow), replace=TRUE)}
+            v = varlist[[site]][[method]]
+            v = v[as.integer(boot),]  
+            
+            man.indx = grep("beach", colnames(v))
+            auto.indx = (1:ncol(v))[-man.indx]
+            
+            man.complete[[site]][[method]] = c(man.complete[[site]][[method]], v[,man.indx] %>% rowSums %>% mean)
+            auto.complete[[site]][[method]] = c(auto.complete[[site]][[method]], v[,auto.indx] %>% rowSums %>% mean)
         }
     }
     

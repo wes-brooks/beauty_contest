@@ -1,0 +1,65 @@
+---
+title: "Comparing methods for predicting health advisories for beach water: supplemental material"
+author: "Wesley Brooks, Rebecca Carvin, Steve Corsi, Mike Fienen"
+output:
+    pdf_document:
+        fig_caption: true   
+bibliography: ../references/beautycontest.bib
+---
+
+```{r load-packages, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
+    library(dplyr)
+    library(reshape2)
+    library(ggplot2)
+    library(brooks)
+	library(xtable)
+    options(xtable.comment = FALSE)
+```
+
+```{r compile-results, echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
+	#Load the raw results of the beauty contest:
+	setwd("..")
+	load("beauty_contest.RData")
+
+	source("R/bootstrap-summarize.r")
+	source("R/bootstrap-summarize-annual.r")
+	source("R/get_annual_predictive_performance.r")
+	source("R/pair-tables.r")
+```
+
+```{r figures, echo=FALSE, warning=FALSE, message=FALSE}
+    setwd("..")
+    source("R/definitions.r")
+    source("R/figures/supplement/classification.r")
+    source("R/figures/supplement/nvar.plot.r")
+```
+
+```{r tables, echo=FALSE, warning=FALSE, message=FALSE}
+    setwd("..")
+    source("R/definitions.r")
+    source("R/tables/supplement/auroc.naive.pairs.annual.r")
+    source("R/tables/supplement/auroc.naive.pairs.r")
+    source("R/tables/supplement/press.pairs.annual.r")
+    source("R/tables/supplement/press.pairs.r")
+```
+
+```{r auroc-tables, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+    xtable(auroc.naive.pairs.annual, caption="Under leave-one-year-out cross validation, how often the mean AUROC rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs.annual", align=c("rccccccccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
+    xtable(auroc.naive.pairs, caption="Under leave-one-out cross validation, how often the mean AUROC rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:auroc.pairs", align=c("rccccccccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
+```
+
+
+```{r press-tables, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+    xtable(press.pairs.annual, caption="Under leave-one-year-out cross validation, how often the mean PRESS rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeded that of the other methods (in the columns).", label="table:press.pairs.annual", align=c("rccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
+    xtable(press.pairs, caption="Under leave-one-out cross validation, how often the mean PRESS rank of GBM-OOB, GBM-CV, or the adaptive lasso (in the rows) exceeded that of the other methods (in the columns).", label="table:press.pairs", align=c("rccccccc")) %>% print(sanitize.colnames.function=pretty.cols, sanitize.rownames.function=pretty.rows, rotate.colnames=FALSE)
+```
+
+
+```{r counts-barcharts, fig.width=16, fig.height=16, fig.cap='At each site, the number of predictions from the adaptive lasso (AL) and GBM-OOB that fell into four categories, from left: correctly predicted exceedance, incorrectly predicted exceedance, correctly predicted non-exceedance, and incorrectly predicted non-exceedance.', fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
+    multiplot(plotlist=pp, cols=1)
+```
+
+
+```{r varselect-barchart, fig.width=14, fig.height=14, fig.cap="At each site, the mean number of covariates that were selected for the adaptive lasso (AL) model, and the total number of covariates, all of which were used in the gradient boosting machine with an out-of-bag estimate of the optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the covariate counts are broken down by whether the covariate values were collected automatically from web services or manually at the beach.", echo=FALSE, warning=FALSE, message=FALSE}
+    multiplot(plotlist=nvar.plot, cols=1)
+```
