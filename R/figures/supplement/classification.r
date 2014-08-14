@@ -65,15 +65,15 @@ for (s in sites) {
               title=element_text(size=rel(1.3))
         )
 
-    yrange = max(filter(perf, site==s)$count)
-    pp[[s]] = pp[[s]] +
-        geom_text(
-            aes(x=rep(c(1.775, 0.775, 1.225, 2.225), 2),
-                y=count + yrange/50,
-                label=count),
-            hjust=0.5,
-            vjust=0
-            )
+#     yrange = max(filter(perf, site==s)$count)
+#     pp[[s]] = pp[[s]] +
+#         geom_text(
+#             aes(x=rep(c(1.775, 0.775, 1.225, 2.225), 2),
+#                 y=count + yrange/50,
+#                 label=count),
+#             hjust=0.5,
+#             vjust=0
+#             )
         
 }
 

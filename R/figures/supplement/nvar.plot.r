@@ -11,7 +11,7 @@ for (s in sites) {
     colnames(nvar.site) = c('auto', 'man')
     rownames(nvar.site) = NULL
     
-    nvar= rbind(nvar, nvar.site %>% as.data.frame %>% cbind(site=s) %>% cbind(method=select) %>% melt)
+    nvar= rbind(nvar, nvar.site %>% as.data.frame %>% cbind(site=s) %>% cbind(method=methods) %>% melt)
 }
 colnames(nvar)[3] = "type"
 
@@ -27,7 +27,7 @@ for (s in sites) {
         geom_bar(stat='identity', position='dodge') +
         ylab("nvar") +
         xlab(NULL) +
-        scale_x_discrete(labels=select %>% pretty) +
+        scale_x_discrete(labels=methods %>% pretty) +
         theme_bw() +
         theme(legend.justification=c(1,1),
               legend.position=c(1,1),
@@ -38,13 +38,13 @@ for (s in sites) {
               axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
         )
     
-    yrange = max(filter(nvar, site==s)$value)
-    nvar.plot[[s]] = nvar.plot[[s]] +
-        geom_text(
-            aes(x=c(0.775, 1.225, 1.775, 2.225),
-                y=value + yrange/50,
-                label=round(value, 1)),
-            hjust=0.5,
-            vjust=0
-        )
+#     yrange = max(filter(nvar, site==s)$value)
+#     nvar.plot[[s]] = nvar.plot[[s]] +
+#         geom_text(
+#             aes(x=c(0.775, 1.225, 1.775, 2.225),
+#                 y=value + yrange/50,
+#                 label=round(value, 1)),
+#             hjust=0.5,
+#             vjust=0
+#         )
 }

@@ -108,9 +108,6 @@ The response for our continuous regression models is the base-10 logarithm of th
 
 	source("R/bootstrap-summarize.r")
 	source("R/bootstrap-summarize-annual.r")
-    source("scratch/QFNTD.r")
-	source("R/get_annual_predictive_performance.r")
-	source("R/pair-tables.r")
 ```
 
 ```{r figures, echo=FALSE, warning=FALSE, message=FALSE}

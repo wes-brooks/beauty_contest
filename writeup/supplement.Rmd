@@ -23,13 +23,15 @@ bibliography: ../references/beautycontest.bib
 
 	source("R/bootstrap-summarize.r")
 	source("R/bootstrap-summarize-annual.r")
-	source("R/get_annual_predictive_performance.r")
-	source("R/pair-tables.r")
 ```
 
 ```{r figures, echo=FALSE, warning=FALSE, message=FALSE}
     setwd("..")
     source("R/definitions.r")
+    source("R/figures/press.barchart.r")
+    source("R/figures/press.barchart.annual.r")
+    source("R/figures/roc.naive.barchart.r")
+    source("R/figures/roc.naive.barchart.annual.r")
     source("R/figures/supplement/classification.r")
     source("R/figures/supplement/nvar.plot.r")
 ```
