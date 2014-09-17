@@ -28,15 +28,15 @@ for (s in sites) {
         ylab("nvar") +
         xlab(NULL) +
         scale_x_discrete(labels=select %>% pretty) +
-        theme_bw() +
+        theme_minimal() +
         theme(legend.justification=c(1,1),
               legend.position=c(1,1),
               legend.text=element_text(size=rel(1.05)),
-              strip.text=element_text(size=rel(1.3)),
-              title=element_text(size=rel(1.3)),
-              axis.text.x=element_text(angle=65, hjust=1, vjust=0.95),
-              axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
-        )
+              strip.text=element_text(size=rel(1.25)),
+              title=element_text(size=rel(1.25))#,
+              #axis.text.x=element_text(angle=65, hjust=1, vjust=0.95),
+              #axis.text.x=element_text(angle=65, hjust=1, vjust=0.95)
+        ) + facet_wrap(~site)
     
     yrange = max(filter(nvar, site==s)$value)
     nvar.plot[[s]] = nvar.plot[[s]] +

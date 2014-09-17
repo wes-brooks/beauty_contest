@@ -21,11 +21,19 @@ pretty.methods = list(
     'adapt-select'='AL (s)',
     'adalasso-weighted'='AL (w,b)',
     'adalasso-weighted-select'='AL (w,b,s)',
-    'adalasso-unweighted'='AL (l)',
+    'adalasso-unweighted'='AL (b)',
     'adalasso-unweighted-select'='AL (b,s)',
     'galm'='GA',
     'galogistic-weighted'='GA (w,b)',
-    'galogistic-unweighted'='GA (b)'
+    'galogistic-unweighted'='GA (b)',
+    'spls.select'='SPLS (s)',
+    'adapt.select'='AL (s)',
+    'adalasso.weighted'='AL (w,b)',
+    'adalasso.weighted-select'='AL (w,b,s)',
+    'adalasso.unweighted'='AL (b)',
+    'adalasso.unweighted-select'='AL (b,s)',
+    'galogistic.weighted'='GA (w,b)',
+    'galogistic.unweighted'='GA (b)'
 )
 
 lasso.and.gbm = list(

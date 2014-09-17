@@ -34,9 +34,10 @@ roc.naive.barchart.annual = ggplot(a) +
     geom_bar(stat='identity', fill=gray(0.5)) +
     geom_errorbar(aes(ymin=low, ymax=high), width=0.15) +
     ylab("mean rank") + 
+    xlab("(a) AUROC rank for LOYO CV") +
     ylim(0, 14) +
     scale_x_discrete(labels=a$method %>% levels %>% pretty) +
-    theme_bw() +
+    theme_minimal() +
     theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
 
 

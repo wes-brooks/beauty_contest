@@ -48,7 +48,7 @@ pp = list()
 for (s in sites) {
     pp[[s]] = ggplot(filter(perf, site==s)) +
         aes(x=exceedance, y=count, fill=factor(accurate, levels=c("TRUE", "FALSE"))) +
-        scale_fill_grey(start=0.5, end=0.1, labels=c('accurate', 'misclassified')) +
+        scale_fill_grey(start=0.5, end=0.1, labels=c('correct', 'misclassified')) +
         geom_bar(stat='identity', position='dodge')+
         facet_grid(.~method, labeller=function(x, j) return(lasso.and.gbm[j])) +
         aes(order=rev(accurate))+
