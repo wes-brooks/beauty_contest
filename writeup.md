@@ -41,19 +41,47 @@ What specific sources sources of data (plug EnDDAT)
 
 Will include a map and tables
 
-Concentration of Escherichia coli (E. coli) was measured at each beach 4 times each week for 12 to 14 weeks each swimming season between Memorial Day and Labor Day from 2010 through 2013. Samples were collected from the center of the beach swim area, 12 inches below the water surface where total water depth was 24 inches. All samples were quantified using Colilert®, which gives the most probable number (MPN) of E. coli colony forming units (CFU) and is read after 24 hours of incubation. Further explanation of sampling protocol and technique is available here (busse must have a paper on this).
-
-Independent variables were compiled from a variety of sources including online datasets and manual measurements collected at the sites. Online datasets were all accessed using Environmental Data Discovery and Transformation (EnDDaT), a web service that accesses data from a variety of data sources, compiles and processes the data, and performs common transformations (cite webpage/cida). Three datasets were accessed: National Water Information System (NWIS), North Central River Forecasting Center (NCRFS), and Great Lakes Costal Forecasting System (GLCFS). Variables available from these datasets included: river discharge, precipitation, lake current vectors, wave height, wave direction, lake level, water temperature, air temperature, wind vector, and percent cloud cover. Transformations computed using EnDDaT were mean, minimum, maximum, difference, sum, and standard deviation. These were computed when they described an aspect that might affect E. coli colony growth. For example standard deviation of water temperature indicated if water temperature was consistent or highly variable, which would make conditions favorable or not for colony formation. 12 hour sum of rainfall indicated if there had recently been a rain event better, and 6 hour average cloud cover would approximate the effect of UV light breaking down colonies during a sunny day. Exploration of how independent variables might correlate to E. coli included several transformations and several time periods for each of the 10 basic (root?) variables listed above. The total number of web-service independent variables ranged from 76 (Kreher) to 158 (Neshotah).
-
-Manual variables had the benefit of being measured where E. coli samples were collected, but did not have the hourly time-resolution, or ability to be gathered remotely. Turbidity, estimated wave height, number of birds present, number of people present, amount of algae floating in the swim area and on the beach, specific conductance, water and air temperature, wind direction and speed, were among the variables gathered manually. Many of these variables were dropped from the datasets because of missing values, or questionable reliability. Every beach had manual turbidity measurements in the beauty contest dataset.
-
 ## Definitions
 
 At any site, denote the covariates, or explanatory variables, by $X$, which is an $n \times p$ matrix where $n$ is the number of observations and $p$ is the number of covariates. The vector of $n$ observations of bacterial concentration is denoted $y$. Denote the regulatory standard $\delta$ and the decision threshold $\hat{\delta}$. The decision threshold $\hat{\delta}$--described in more detail below--is used to balance the conclusions of exceedance or nonexceedance of $\delta$. Structural error inherent to the modeling process results in bias. This bias can cause poor performance with respect to predicted actual concentration in cases with a continuous response, but adjusting the decision threshold to account for the bias can improve exceedance calcualtions. 
 
 ## Statistical techniques evaluated
 
-Fourteen different regression modeling techniques were considered (Table 1). Each technique uses one of five modeling algorithms: the gradient boosting machine (GBM), the adaptive lasso (AL), the genetic algorithm (GA), partial least squares (PLS), or sparse PLS (SPLS). Each technique is applied to either continuous or binary regression and to either variable selection and model estimation, or variable selection only.
+-------------------------------------------------------------------------
+                                                               Selection 
+Name         Algorithm                     Binary   Weighted   Only
+----------- ----------------------------- -------- ---------- ----------- 
+GBM-OOB     Gradient boosting         
+
+GBM-CV      Gradient boosting
+
+AL          Adaptive lasso
+
+AL (s)      Adaptive lasso                                       X
+
+AL (b)      Adaptive lasso                   X                    
+
+AL (b,w)    Adaptive lasso                   X          X          
+
+AL (s,b)    Adaptive lasso                   X                   X
+
+AL (s,b,w)  Adaptive lasso                   X          X        X
+
+GA          Genetic algorithm
+
+GA (b)      Genetic algorithm                X
+
+GA (b,w)    Genetic algorithm                X          X
+
+PLS         Patrial least squares
+
+SPLS        Sparse partial least squares
+
+SPLS (s)    Sparse partial least squares                         X
+---------- ------------------------------  -------- --------- -----------
+[Table 2](#table:methods): The methods that were compared in this study.
+
+Fourteen different regression modeling techniques were considered. Each technique uses one of five modeling algorithms: gradient boosting machine (GBM), the adaptive lasso (AL), ordinary least squares (OLS) using the genetic algorithm, partial least squares (PLS), or sparse PLS. Each technique is applied to either continuous or binary regression and to either variable selection and model estimation, or variable selection only.
 
 *COMMENT:* We should include mention of OLS being used in the genetic algorithm. This is stated as the most common method, so should be very obvious right from the start. I have made a suggested change above.
 
@@ -90,15 +118,15 @@ The contest investigated whether certain modeling methods should be used only to
 
 ### GBM
 
-A GBM model is a so-called random forest model - a collection of many regression trees, each fitted to a randomly drawn subsample of the training data [@Friedman-2001]. Prediction is done by averaging the outputs of the trees. Two GBM-based techniques are explored - we refer to them as GBM-OOB and GBM-CV. The difference is in how the optimal number of trees is determined - GBM-CV selects the number of trees in a model using leave-one-out cross validation (CV), while GBM-OOB uses the so-called out-of-bag error estimate, where the predictive error of each tree is estimated by its predictive error over the observations that were left out when fitting the tree. In contrast, the predictive error of CV is estimated from observations that are left out from the training data altogether, and are therefore not used in the fitting of any trees. The CV method is much slower (it has to construct as many random forests as there are observations, while the OOB method only requires computing a single random forest).  However, GBM-CV should more accurately estimate the prediction error.
+A gradient boosting machine (GBM) model is a so-called random forest model - a collection of many regression trees, each fitted to a randomly drawn subsample of the training data [@Friedman-2001]. Prediction is done by averaging the outputs of the trees. Two GBM-based techniques are explored - we refer to them as GBM-OOB and GBM-CV. The difference is in how the optimal number of trees is determined - GBM-CV selects the number of trees in a model using leave-one-out cross validation (CV), while GBM-OOB uses the so-called out-of-bag error estimate, where the predictive error of each tree is estimated by its predictive error over the observations that were left out when fitting the tree. In contrast, the predictive error of CV is estimated from observations that are left out from the training data altogether, and are therefore not used in the fitting of any trees. The CV method is much slower (it has to construct as many random forests as there are observations, while the OOB method only requires computing a single random forest).  However, GBM-CV should more accurately estimate the prediction error.
 
 ### Adaptive Lasso
 
-The least absolute shrinkage and selection operator (LASSO) is a penalized regression method that simultaneously selects relevant covariates and estimates their coefficients [@Tibshirani-1996]. The AL is a refinement of the LASSO that possesses the so-called "oracle" properties of asymptotically selecting exactly the correct covariates and estimating them as accurately as would be possible if their identities were known in advance [@Zou-2006]. To use the AL for prediction requires selecting a tuning parameter. For the contest, the AL tuning parameter $\lambda$ is selected to minimize the corrected Akaike Information Criterion (AICc) [@Akaike-1973; @Hurvich-Simonoff-Tsai-1998].
+The least absolute shrinkage and selection operator (Lasso) is a penalized regression method that simultaneously selects relevant covariates and estimates their coefficients [@Tibshirani-1996]. The adaptive lasso is a refinement of the Lasso that possesses the so-called "oracle" properties of asymptotically selecting exactly the correct covariates and estimating them as accurately as would be possible if their identities were known in advance [@Zou-2006]. To use the AL for prediction requires selecting a tuning parameter. For the contest, the AL tuning parameter $\lambda$ is selected to minimize the corrected Akaike Information Criterion (AICc) [@Akaike-1973; @Hurvich-Simonoff-Tsai-1998].
 
 ### Genetic algorithm
 
-Here, the GA is used to select variables for either an OLS or a logistic regression model. By analogy to natural selection, so-called chromosomes in the GA represent regression models [@Fogel-1998]. A covariate is included in the model if the corresponding element of the chromosome is one, but not otherwise. Chromosomes are produced in successive generations, where the first generation is produced randomly and subsequent generations are produced by combining chromosomes from the current generation, with additional random drift. The chance that a chromosome in the current generation will produce offspring in the next generation is an increasing function of its fitness. The fitness of each chromosome is calculated by the AICc.
+The genetic algorithm is a variable-selection method that works by analogy to natural selection, where so-called chromosomes represent regression models [@Fogel-1998]. A covariate is included in the model if the corresponding element of the chromosome is one, but not otherwise. Chromosomes are produced in successive generations, where the first generation is produced randomly and subsequent generations are produced by combining chromosomes from the current generation, with additional random drift. The chance that a chromosome in the current generation will produce offspring in the next generation is an increasing function of its fitness. The fitness of each chromosome is calculated by the AICc.
 
 ### PLS
 
@@ -108,84 +136,17 @@ Partial least squares (PLS) regression is a tool for building regression models 
 
 Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsity of lasso-type variable selection [@Chun-Keles-2007]. To do so, SPLS uses two tuning parameters: one that controls the number of orthogonal components and one that controls the lasso-type penalty. The optimal parameters are those that minimize the mean squared prediction error (MSEP) over a two-dimensional grid search. The MSEP is estimated by 10-fold cross-validation.
 
-
--------------------------------------------------------------------------
-                                                               Selection 
-Name         Algorithm                     Binary   Weighted   Only
------------ ----------------------------- -------- ---------- ----------- 
-GBM-OOB     Gradient boosting         
-
-GBM-CV      Gradient boosting
-
-AL          Adaptive lasso
-
-AL (s)      Adaptive lasso                                       X
-
-AL (b)      Adaptive lasso                   X                    
-
-AL (b,w)    Adaptive lasso                   X          X          
-
-AL (s,b)    Adaptive lasso                   X                   X
-
-AL (s,b,w)  Adaptive lasso                   X          X        X
-
-GA          Genetic algorithm
-
-GA (b)      Genetic algorithm                X
-
-GA (b,w)    Genetic algorithm                X          X
-
-PLS         Patrial least squares
-
-SPLS        Sparse partial least squares
-
-SPLS (s)    Sparse partial least squares                         X
----------- ------------------------------  -------- --------- -----------
-[Table 1](#table:methods): Comprehensive list of the modeling methods analyzed in this study. Listed for each method are the method's abbreviation, the algorithm used by the method, and indicators of whether the method 
-
-
 ## Data transformations for beach regression
 
 The response for our continuous regression models is the base-10 logarithm of the *E. coli* concentration. For the binary regression models, the response is an indicator of whether the concentration exceeds the regulatory threshold $\delta=235$ CFU/mL. Transformations were applied to some of the data during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed. These transformations were based on the performance of previous studies (REFS: Francy? PLS paper? Nevers? Others?) and applied to all datasets equally. 
 
-```{r load-packages, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
-    library(dplyr)
-    library(reshape2)
-    library(ggplot2)
-	library(brooks)
-	library(xtable)
-    options(xtable.comment = FALSE)
-```
 
-```{r compile-results, echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
-	#Load the raw results of the beauty contest:
-	setwd("..")
-	load("beauty_contest.RData")
 
-	source("R/bootstrap-summarize.r")
-	source("R/bootstrap-summarize-annual.r")
-```
 
-```{r figures, echo=FALSE, warning=FALSE, message=FALSE}
-    setwd("..")
-    source("R/definitions.r")
-    source("R/figures/classification.r")
-    source("R/figures/press.barchart.r")
-    source("R/figures/press.barchart.annual.r")
-    source("R/figures/roc.naive.barchart.r")
-    source("R/figures/roc.naive.barchart.annual.r")
-    source("R/figures/variable.plots.r")
-    source("R/figures/nvar.plot.r")
-```
 
-```{r tables, echo=FALSE, warning=FALSE, message=FALSE}
-    setwd("..")
-    source("R/definitions.r")
-    source("R/tables/auroc.naive.pairs.annual.r")
-    source("R/tables/auroc.naive.pairs.r")
-    source("R/tables/press.pairs.annual.r")
-    source("R/tables/press.pairs.r")
-```
+
+
+
 
 ## Cross Validation
 
@@ -196,7 +157,7 @@ Some methods also used CV internally to select tuning parameters. In those cases
 
 ## Comparing methods, and quantifying uncertainty in the ranks
 
-Results were compiled into one table for each site where each observation corresponds to a row in the table. For example, a few rows from the results table at Hika are presented in Figure 1. The results table has a column for the observed log *E. coli* concentration and, for each method, columns for the predicted concentration by LOO CV and by LOYO CV. From the table, we can calculate the predictive error sum of squares (PRESS) and the area under the receiver operating characteristic (ROC) curve (AUROC), which are the statistics we use to summarize performance of the modeling methods.
+Results were compiled into one table for each site, such as Table 1, which contains the results of running the contest at Hika. Each observation corresponds to a row in the table. The results table has a column for the observed log *E. coli* concentration and, for each method, columns for the predicted concentration by LOO CV and by LOYO CV. From the table, we can calculate the predictive error sum of squares (PRESS) and the area under the receiver operating characteristic (ROC) curve (AUROC), which are the statistics we use to summarize performance of the modeling methods.
 
 -----------------------------------------------------------
                  PLS     PLS              SPLS    SPLS      
@@ -212,11 +173,11 @@ Results were compiled into one table for each site where each observation corres
 
 167    3.38      1.84     2.01   \dots   1.80    1.71
 -----  ------    ------   ------ -----   ------  ------ 
-[Table 2](#table:hika-results): An example of how the results for a site (Hika here) were compiled into a results table. The summary statistics used to compare predictive performance (area under the ROC curve and predictive error sum of squares) were calculated from the table. Confidence intervals for the summary statistics were computed via the bootstrap by resampling (with replacement) the rows of the results table.
+[Table 1](#table:hika-results): The results table from Hika.
 
 *COMMENT:* Need a table caption here and reference to it in the text.
 
-To identify which modeling methods have the best performance across all sites, the methods at each site were ranked from worst to best according to the performance summary statistics (the ranks were taken worst to best so that larger numbers represent better performance). The mean rank of each method was then taken across the sites as an measurement of how each of our modeling methods performed relative to the others. Uncertainty in the rankings is quantified by the bootstrap: since PRESS and AUROC are functions of the results tables, the bootstrap procedure is carried out by resampling the rows of each results table and recalculating the ranks for each bootstrap sample. We used $1001$ bootstrap samples of each results table in the analysis that follows.
+To identify which modeling methods have the best performance across all sites, the summary statistics at each site were converted to ranks. We report the mean rank of each method across the sites. Uncertainty in the rankings is quantified by the bootstrap. Since PRESS and AUROC are functions of the results tables, the bootstrap procedure is carried out by resampling the rows of each results table and recalculating the ranks for each bootstrap sample. We used $1001$ bootstrap samples of each results table in the analysis that follows.
 
 # Results
 
@@ -228,39 +189,39 @@ The ROC curve is an assessment of how well predictions are sorted into exceedanc
 
 *COMMENT:* These two tables could be made into one two-section table to save a bit of space. They do logically go together well.
 
-```{r auroc-barchart, fig.width=14, fig.height=9, fig.cap="Mean ranking of the methods by area under the ROC curce (AUROC) across all seven sites (higher is better). The error bars are 90% confidence intervals computed by the bootstrap. At left are the AUROC rankings from the leave-one-year-out cross validation (a), at right are the AUROC rankings from the leave-one-out cross validation (b).", fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
-    multiplot(roc.naive.barchart.annual, press.barchart.annual, roc.naive.barchart, press.barchart, cols=2)
-```
+![Mean ranking of the methods by area under the ROC curce (AUROC) across all seven sites (higher is better). The error bars are 90% confidence intervals computed by the bootstrap. At left are the AUROC rankings from the leave-one-year-out cross validation (a), at right are the AUROC rankings from the leave-one-out cross validation (b).](figure/auroc-barchart.png) 
 
-
-\begin{table}
-    \scalebox{0.73}{
-    \begin{tabular}{rccccccccccccc}
-
-```{r auroc-tables, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-    cat("\\multicolumn{6}{l}{\\kern-4em \\textbf{Leave-one-year-out cross-validation:}} & & & & & & & & \\\\\n")
-
-    xtable(auroc.naive.pairs.annual[1:3,]) %>%
-        print(sanitize.colnames.function=pretty.cols,
-              sanitize.rownames.function=pretty.rows,
-              rotate.colnames=FALSE,
-              only.contents=TRUE,
-              hline.after=c(0))
-
-    cat("& & & & & & & & & & & & & \\\\\n")
-    cat("\\multicolumn{6}{l}{\\kern-4em \\textbf{Leave-one-out cross-validation:}} & & & & & & & & \\\\\n")
-
-    xtable(auroc.naive.pairs[1:3,]) %>%
-        print(sanitize.colnames.function=pretty.cols,
-              sanitize.rownames.function=pretty.rows,
-              rotate.colnames=FALSE,
-              only.contents=TRUE,
-              hline.after=c(0))
-```
-
-    \end{tabular}}
-    \caption{Under leave-one-year-out (top) and leave-one-out (bottom) cross validation, frequency of the mean AUROC rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeding that of the other methods (in the columns).
-    \label{tab:AUROC}}
+\begin{table}[ht]
+\centering
+\scalebox{0.73}{
+\begin{tabular}{rccccccccccccc}
+  \hline
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} \\ 
+  \hline
+GBM-CV & 0.82 & 0.82 & 0.91 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  GBM-OOB &  & 0.73 & 0.82 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL &  &  & 0.73 & 0.91 & 1.00 & 0.91 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+   \hline
+\end{tabular}
+}
+\caption{Under leave-one-year-out cross validation, frequency of the mean AUROC rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeding that of the other methods (in the columns).} 
+\label{table:auroc.pairs.annual}
+\end{table}
+\begin{table}[ht]
+\centering
+\scalebox{0.73}{
+\begin{tabular}{rccccccccccccc}
+  \hline
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} \\ 
+  \hline
+GBM-CV & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  GBM-OOB &  & 1.00 & 0.91 & 1.00 & 1.00 & 0.91 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL &  &  & 0.73 & 1.00 & 1.00 & 0.91 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+   \hline
+\end{tabular}
+}
+\caption{Under leave-one-out cross validation, frequency of the mean AUROC rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeding that of the other methods (in the columns).} 
+\label{table:auroc.pairs}
 \end{table}
 
 The mean LOO and LOYO ranks for all the methods are plotted in Figure 1. The three top-ranked methods were GBM-CV, GBM-OOB, and AL. In order to facilitate a pairwise comparison between modeling methods, Tables 2 (for the leave-one-year-out analysis) and 3 (for the leave-one-out analysis) show the frequency that the mean AUROC rank of GBM-OOB, GBM-CV, or AL exceeded each of the other modeling methods.
@@ -276,9 +237,7 @@ The PRESS statistic is of interest because a good model should accurately predic
 
 The rankings of the methods by PRESS are plotted in Figure 2. The top three techniques under both LOO and LOYO analysis were GBM-CV, GBM-OOB, and AL. The pairwise comparison of modeling methods by PRESS are in Tables 4 (for the leave-one-year-out analysis) and 5 (for the leave-one-out analysis).
 
-```{r press-barchart, fig.width=14, fig.cap="Mean ranking of the methods by predictive error sum of squares (PRESS) across all sites (higher is better). The error bars are 90% confidence intervals computed by the bootstrap. At left are the PRESS rankings from the leave-one-year-out cross validation (a), at right are the PRESS rankings from the leave-one-out cross validation (b).", echo=FALSE, warning=FALSE, message=FALSE}
-    multiplot(press.barchart.annual, press.barchart, cols=2)
-```
+![Mean ranking of the methods by predictive error sum of squares (PRESS) across all sites (higher is better). The error bars are 90% confidence intervals computed by the bootstrap. At left are the PRESS rankings from the leave-one-year-out cross validation (a), at right are the PRESS rankings from the leave-one-out cross validation (b).](figure/press-barchart.png) 
     
     
 \begin{table}
@@ -286,35 +245,31 @@ The rankings of the methods by PRESS are plotted in Figure 2. The top three tech
     \begin{tabular}{rccccccc}
     
 
-```{r press-table, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-    cat("\\multicolumn{6}{l}{\\kern-4em \\textbf{Leave-one-year-out cross-validation:}} & & \\\\\n")
-
-    xtable(press.pairs.annual[1:3,]) %>%
-        print(sanitize.colnames.function=pretty.cols,
-              sanitize.rownames.function=pretty.rows,
-              rotate.colnames=FALSE,
-              only.contents=TRUE,
-              hline.after=c(0))
-
-    cat("& & & & & & & \\\\\n")
-    cat("\\multicolumn{6}{l}{\\kern-4em \\textbf{Leave-one-out cross-validation:}} & & \\\\\n")
-
-	xtable(press.pairs[1:3,]) %>%
-        print(sanitize.colnames.function=pretty.cols,
-              sanitize.rownames.function=pretty.rows,
-              rotate.colnames=FALSE,
-              only.contents=TRUE,
-              hline.after=c(0))
-```
+\textbf{Leave-one-year-out cross-validation:}&&&&&&&&\\
+ & \begin{tabular}{c}NULL\end{tabular} & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
+  \hline
+GBM-CV &  & 0.727272727272727 & 0.909090909090909 & 1 & 1 & 1 & 1 & 1 \\ 
+  GBM-OOB &  &  & 0.909090909090909 & 1 & 1 & 1 & 1 & 1 \\ 
+  AL &  &  &  & 0.727272727272727 & 0.909090909090909 & 1 & 1 & 1 \\ 
+   \hline
+\textbf{Leave-one-out cross-validation:}&&&&&&&&\\
+ & \begin{tabular}{c}NULL\end{tabular} & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
+  \hline
+GBM-CV &  & 0.545454545454545 & 1 & 1 & 1 & 1 & 1 & 1 \\ 
+  GBM-OOB &  &  & 1 & 0.909090909090909 & 1 & 1 & 1 & 1 \\ 
+  AL &  &  &  & 0.818181818181818 & 0.909090909090909 & 1 & 1 & 1 \\ 
+   \hline
     \end{tabular}
     \caption{Under leave-one-year-out (top) or leave-one-out (bottom) cross validation, frequency of the mean PRESS rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeding that of the other methods (in the columns).", label="table:press.pairs.annual}
 \end{table}
+
+*COMMENT:* Again, these two tables could be made into one two-section table.
 
 ## Narrowing the focus
 
 *COMMENT:*Probably just include the abbreviations for the models that are referenced beyond the 1-3 ranked methods. The abbrevs are used in tables and figs and that is what the reader is used to by this point in the manuscript. Also, the acronyms should be upper case (SPLS was in lower case).
 
-By both AUROC and PRESS, and for both LOO and LOYO analyses, the three highest-ranked modeling methods were  GBM-CV, GBM-OOB, and AL. The fourth-ranked method was not consistent across the different analyses. By the LOO CV analysis, AL was ranked better than the fourth-ranked method by AUROC, `r pretty.methods[[colnames(auroc.naive.pairs)[3]]]`, on `r round(100*auroc.naive.pairs[3,3],1)`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r pretty.methods[[colnames(press.pairs)[3]]]`, on `r round(100*press.pairs[3,3],1)`% of bootstrap samples. And by the LOYO CV analysis, AL was ranked better than the fourth-ranked method by AUROC, `r pretty.methods[[colnames(auroc.naive.pairs.annual)[3]]]`, on `r round(100*auroc.naive.pairs.annual[3,3],1)`% of bootstrap samples and better than the fourth-ranked method by PRESS, `r pretty.methods[[colnames(press.pairs.annual)[3]]]`, on `r round(100*press.pairs.annual[3,3],1)`% of bootstrap samples.
+By both AUROC and PRESS, and for both LOO and LOYO analyses, the three highest-ranked modeling methods were  GBM-CV, GBM-OOB, and AL. The fourth-ranked method was not consistent across the different analyses. By the LOO CV analysis, AL was ranked better than the fourth-ranked method by AUROC, AL (b,w), on 72.7% of bootstrap samples and better than the fourth-ranked method by PRESS, SPLS (s), on 81.8% of bootstrap samples. And by the LOYO CV analysis, AL was ranked better than the fourth-ranked method by AUROC, AL (b,w), on 72.7% of bootstrap samples and better than the fourth-ranked method by PRESS, SPLS, on 72.7% of bootstrap samples.
 
 Therefore, we consider only the GBM methods and AL for the following analyses because they consistently outperform the other methods. We further narrow our study to GBM-OOB and AL because the GBM-OOB and GBM-CV methods showed similar performance but fitting a GBM-CV takes many times longer than a GBM-OOB model. While we focus on the AL and GBM-OOB ... SOMETHING HERE ABOUT STILL LOOKING AT OTHERS???
 
@@ -328,9 +283,7 @@ Intuitively, the decision threshold should adapt to the conditions that are obse
 
 In Figure [fig:counts-barcharts], we look at the counts on a per-beach basis of four categories of decisions: true positives (correctly posting an advisory), true negatives (correctly not posting an advisory), false positives (wrongly posting an advisory) and false negatives (wrongly not posting an advisory).  In most cases, the counts are similar between the two techniques, with GBM-OOB tending to make a few more correct decisions. There are exceptions where AL makes more correct decisions (e.g., Hika and Red Arrow).
 
-```{r counts-barcharts, fig.width=16, fig.height=16, fig.cap='At each site, the number of predictions from AL and GBM-OOB that fell into four categories, from left: correctly predicted exceedance, incorrectly predicted exceedance, correctly predicted non-exceedance, and incorrectly predicted non-exceedance.', fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
-    multiplot(plotlist=pp, cols=3)
-```
+![At each site, the number of predictions from AL and GBM-OOB that fell into four categories, from left: correctly predicted exceedance, incorrectly predicted exceedance, correctly predicted non-exceedance, and incorrectly predicted non-exceedance.](figure/counts-barcharts.png) 
 
 ## Variable selection
 
@@ -341,9 +294,7 @@ It was noted in Section [Narrowing the focus] that GBM-OOB and AL are two of the
 
 The covariate counts are displayed in Figure [fig:varselect-barchart]. At most of the sites, AL uses only a small fraction of the available covariates, but at Point, AL uses almost all of the available covariates. This is due to the variable selection criterion we used (AICc) which is intended to minimize prediction error. As the amount of data increases, we accumulate enough information to discern the effect even of covariates that are only slightly correlated with the response. As our dataset grows, then, we should expect more covariates to be selected for an AL model, and Point has far more observations than the other sites. 
 
-```{r varselect-barchart, fig.width=14, fig.height=14, fig.cap="At each site, the mean number of covariates that were selected for the AL model, and the total number of covariates, all of which were used in the gradient boosting machine with an out-of-bag estimate of the optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the covariate counts are broken down by whether the covariate values were collected automatically from web services or manually at the beach.", echo=FALSE, warning=FALSE, message=FALSE}
-    multiplot(plotlist=nvar.plot, cols=3)
-```
+![At each site, the mean number of covariates that were selected for the AL model, and the total number of covariates, all of which were used in the gradient boosting machine with an out-of-bag estimate of the optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the covariate counts are broken down by whether the covariate values were collected automatically from web services or manually at the beach.](figure/varselect-barchart.png) 
     
 # Discussion
 
@@ -360,8 +311,6 @@ All statistical methods and the comparison for this study were carried out in th
 Often times, beach management practitioners are not very familiar with statistical analysis and rely on more accessible software to help guide them through development of models for recreational water quality predictions. For this purpose, the Virtual Beach software was developed (ADD REFERENCE TO MANUAL HERE AND LINK TO WEB SITE). Through version 2.4, the only method available in the Virtual Beach software was GA. As of version 3.0,  Virtual Beach includes implementations of GBM, GA, and PLS models for prediction of bacterial concentration. An implementation of AL is also an anticipated addition to Virtual Beach. 
 
 # Acknowledgments
-
-The predictive models for this study were generated on facilities and software (HTCondor) provided by the University of Wisconsin-Madison's Center for High Throughput Computing.
 
 # References
 
