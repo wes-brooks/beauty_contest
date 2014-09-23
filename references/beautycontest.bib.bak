@@ -2811,8 +2811,10 @@
 	waters: a review},
   journal = {Critical Reviews in Environmental Science and Technology},
   year = {2014},
+  bdsk-url-1 = {http://www.tandfonline.com/doi/pdf/10.1080/10643389.2013.829978},
   owner = {wrbrooks},
-  timestamp = {2014.08.14}
+  timestamp = {2014.08.14},
+  url = {http://www.tandfonline.com/doi/pdf/10.1080/10643389.2013.829978}
 }
 
 @ARTICLE{Brennan:2010ft,
@@ -13485,6 +13487,17 @@
   ty = {JOUR}
 }
 
+@ARTICLE{,
+  author = {Willard James and Charles Stein},
+  title = {Estimation with quadratic loss},
+  journal = {Proceedings of the fourth {B}erkeley symposium on mathematical statistics
+	and probability},
+  year = {1961},
+  volume = {1},
+  owner = {wrbrooks},
+  timestamp = {2014.09.23}
+}
+
 @ARTICLE{Jamieson:2003fk,
   author = {Jamieson,R. C. and Gordon,R. J. and Tattrie,S. C. and Stratton,G.
 	W. and Environment Canada, Burlington, ON (Canada) National Water
@@ -14140,6 +14153,7 @@
   year = {2012},
   volume = {185},
   pages = {2355--2366},
+  bdsk-url-1 = {http://link.springer.com/article/10.1007/s10661-012-2716-8},
   owner = {wrbrooks},
   timestamp = {2014.08.14},
   url = {http://link.springer.com/article/10.1007/s10661-012-2716-8}
@@ -14327,6 +14341,7 @@
   year = {2005},
   volume = {158},
   pages = {111--118},
+  bdsk-url-1 = {http://www.icevirtuallibrary.com/content/article/10.1680/wama.2005.158.3.111},
   owner = {wrbrooks},
   timestamp = {2014.08.14},
   url = {http://www.icevirtuallibrary.com/content/article/10.1680/wama.2005.158.3.111}
@@ -21404,6 +21419,17 @@
   ty = {JOUR}
 }
 
+@MISC{RajbirParmar2010,
+  author = {Rajbir Parmar and Mike Ormond Galvin and Mike Cyterski and Kurt Wolfe},
+  title = {[wrbrooks]},
+  month = {Jun},
+  year = {2010},
+  bdsk-url-1 = {http://iemhub.org/resources/139},
+  date-modified = {2014-08-15 22:24:12 +0000},
+  owner = {wrbrooks},
+  timestamp = {2011.05.18}
+}
+
 @ARTICLE{Parnell:2003pm,
   author = {Parnell,P. E.},
   title = {The effects of sewage discharge on water quality and phytoplankton
@@ -22591,18 +22617,6 @@
 	Terms: USA, Michigan L.; Freshwater},
   m = {Journal Article},
   ty = {JOUR}
-}
-
-@MISC{RajbirParmar2010,
-  author = {Rajbir Parmar , and Mike Ormond Galvin , and Mike Cyterski , and
-	Kurt Wolfe ,},
-  title = {[wrbrooks]},
-  month = {Jun},
-  year = {2010},
-  bdsk-url-1 = {http://iemhub.org/resources/139},
-  date-modified = {2014-07-29 19:56:52 +0000},
-  owner = {wrbrooks},
-  timestamp = {2011.05.18}
 }
 
 @ARTICLE{Ram:2004oi,
@@ -26262,6 +26276,7 @@
   year = {2012},
   volume = {26},
   pages = {1747--6593},
+  bdsk-url-1 = {http://onlinelibrary.wiley.com/doi/10.1111/j.1747-6593.2011.00258.x/abstract;jsessionid=BD291BB8B49C5EBBA2F8CABD79A23F2E.f03t02},
   owner = {wrbrooks},
   timestamp = {2014.08.14},
   url = {http://onlinelibrary.wiley.com/doi/10.1111/j.1747-6593.2011.00258.x/abstract;jsessionid=BD291BB8B49C5EBBA2F8CABD79A23F2E.f03t02}
@@ -27713,6 +27728,7 @@
   institution = {USEPA},
   year = {2012},
   number = {EPA-820-F-12-058},
+  bdsk-url-1 = {http://water.epa.gov/scitech/swguidance/standards/criteria/health/recreation/upload/RWQC2012.pdf},
   owner = {wrbrooks},
   timestamp = {2014.08.14},
   url = {http://water.epa.gov/scitech/swguidance/standards/criteria/health/recreation/upload/RWQC2012.pdf}
@@ -28910,10 +28926,9 @@
 
 @TECHREPORT{WDNR-2012,
   author = {WDNR},
-  title = {Wisconsin’s Great Lakes Beach Monitoring \& Notification Program
-	Annual Report 2012 Beach Season},
   institution = {WDNR},
   year = {2012},
+  bdsk-url-1 = {http://dnr.wi.gov/topic/Beaches/documents/BeachReport2012.pdf},
   owner = {wrbrooks},
   timestamp = {2014.08.14},
   url = {http://dnr.wi.gov/topic/Beaches/documents/BeachReport2012.pdf}

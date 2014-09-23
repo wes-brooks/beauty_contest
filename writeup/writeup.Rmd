@@ -3,7 +3,8 @@ title: "Comparing methods for predicting health advisories for beach water"
 author: "Wesley Brooks, Rebecca Carvin, Steve Corsi, Mike Fienen"
 output:
     pdf_document:
-        fig_caption: true   
+        fig_caption: true  
+        number_sections: true
 bibliography: ../references/beautycontest.bib
 ---
 
@@ -49,13 +50,13 @@ Manual variables had the benefit of being measured where E. coli samples were co
 
 ## Definitions
 
-At any site, denote the covariates, or explanatory variables, by $X$, which is an $n \times p$ matrix where $n$ is the number of observations and $p$ is the number of covariates. The vector of $n$ observations of bacterial concentration is denoted $y$. Denote the regulatory standard $\delta$ and the decision threshold $\hat{\delta}$. The decision threshold $\hat{\delta}$--described in more detail below--is used to balance the conclusions of exceedance or nonexceedance of $\delta$. Structural error inherent to the modeling process results in bias. This bias can cause poor performance with respect to predicted actual concentration in cases with a continuous response, but adjusting the decision threshold to account for the bias can improve exceedance calcualtions. 
+At any site, let $\bm{y}=(y_1, \dots, y_n)$ be the vector of FIB concentration measurements, let $n$ be the number of observations, and let $p$ be the number of explanatory variables. The beach action value (BAV) of $235$ CFU / $100$ mL was recommended by the USEPA as the "do not exceed" threshold in order to limit gastrointestinal illnesses among those coming into contact with beach water to 36 cases per 1000 [@USEPA-2012]. The BAV is represented symbolically by $\delta$. Define an exceedance as a FIB measurement that exceeds the BAV. Conversely, a nonexceedance is a FIB measurement that does not exceed the BAV.
+
+Applying a model to data that was not used to estimate the model produces predictions, which are denoted by a tilde (e.g., $\tilde{y}_i$). On the other hand applying the model to the same data as was used to estimate the model produces fitted values, which are denoted by a hat (e.g., $\hat{y}_j$). A predicted exceedance is when a model predicts that the FIB concentration exceeds the BAV. This is not the same as $\tilde{y}_i > \delta$ because predictions are compared to a decision threshold $\hat{\delta}$ rather than to the BAV $\delta$. The decision threshold $\hat{\delta}$ is a parameter that can be adjusted to tune the predictive performance. For instance, increasing the decision threshold reduces the number of false positives but increases the number of false negatives. Setting the decision threshold is an important detail that is discussed in Section 4.4.
 
 ## Statistical techniques evaluated
 
 Fourteen different regression modeling techniques were considered (Table 1). Each technique uses one of five modeling algorithms: the gradient boosting machine (GBM), the adaptive lasso (AL), the genetic algorithm (GA), partial least squares (PLS), or sparse PLS (SPLS). Each technique is applied to either continuous or binary regression and to either variable selection and model estimation, or variable selection only.
-
-*COMMENT:* We should include mention of OLS being used in the genetic algorithm. This is stated as the most common method, so should be very obvious right from the start. I have made a suggested change above.
 
 #### Continuous vs. binary regression
 
@@ -70,17 +71,17 @@ where $\tilde{y}_i$ is the predicted concentration. The indicator is coded as ze
 
 #### Weighting of observations in binary regression
 
-A weighting scheme was implemented for some of the binary regression techniques. In the weighting scheme, observations were given weights $w_i$ where:
+The concentration of *E. coli* in the water at a single beach on a single day can be subject to a large degree of spatiotemporal heterogeneity [@Whitman:2004pc]. Thus, when the concentration in a sample is observed to fall near the BAV, there is considerable uncertainty as to whether an independent sample from the same date and location would or would not exceed the BAV. A weighting scheme for the binary regression techniques was designed to reflect this ambiguity by giving more weight to observations far from the BAV. In the weighting scheme, observations were given weights $w_i$ for $i=1,\dots,n$, where
 
 $$
     \begin{aligned}
         w_i &= (y_i - \delta) / \hat{\rm{sd}}(y)\\
         \hat{\rm{sd}}(y) &= \sqrt{\sum_{i=1}^n (y_i - \bar{y})^2 / n}\\
-        \bar{y} &= \sum_{i=1}^n y_i / n
+        \bar{y} &= \sum_{i=1}^n y_i / n.
     \end{aligned}
 $$
 
-That is, the weights are equal to the number of standard deviations that the observed concentration lies from the regulatory threshold. Any technique that was implemented with this weighting scheme was separately implemented without any weighting of the observations. The methods that weight the observations are indicated with a (w).
+That is, the weights are equal to the number of standard deviations that the observed concentration lies from the regulatory threshold. Any technique that was implemented with this weighting scheme was separately implemented without any weighting of the observations. The methods using the weighting scheme are indicated by (w).
 
 #### Selection-only methods
 
@@ -109,38 +110,38 @@ Partial least squares (PLS) regression is a tool for building regression models 
 Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsity of lasso-type variable selection [@Chun-Keles-2007]. To do so, SPLS uses two tuning parameters: one that controls the number of orthogonal components and one that controls the lasso-type penalty. The optimal parameters are those that minimize the mean squared prediction error (MSEP) over a two-dimensional grid search. The MSEP is estimated by 10-fold cross-validation.
 
 
--------------------------------------------------------------------------
-                                                               Selection 
-Name         Algorithm                     Binary   Weighted   Only
------------ ----------------------------- -------- ---------- ----------- 
-GBM-OOB     Gradient boosting         
+-----------------------------------------------------------------------------------------------------------------------------
+                                                               Selection   
+Name         Algorithm                     Binary   Weighted   Only       Note
+----------- ----------------------------- -------- ---------- ----------- ---------------------------------------------------
+GBM-OOB     Gradient boosting                                             Out-of-bag estimate of optimal trees
 
-GBM-CV      Gradient boosting
+GBM-CV      Gradient boosting                                             Cross-validation estimate of optimal trees
 
-AL          Adaptive lasso
+AL          Adaptive lasso                                                Select tuning parameter by AICc
 
-AL (s)      Adaptive lasso                                       X
+AL (s)      Adaptive lasso                                       X        Select tuning parameter by AICc
 
-AL (b)      Adaptive lasso                   X                    
+AL (b)      Adaptive lasso                   X                            Select tuning parameter by AICc
 
-AL (b,w)    Adaptive lasso                   X          X          
+AL (b,w)    Adaptive lasso                   X          X                 Select tuning parameter by AICc
 
-AL (s,b)    Adaptive lasso                   X                   X
+AL (s,b)    Adaptive lasso                   X                   X        Select tuning parameter by AICc
 
-AL (s,b,w)  Adaptive lasso                   X          X        X
+AL (s,b,w)  Adaptive lasso                   X          X        X        Select tuning parameter by AICc
 
-GA          Genetic algorithm
+GA          Genetic algorithm                                             Fitness calculated as AICc
 
-GA (b)      Genetic algorithm                X
+GA (b)      Genetic algorithm                X                            Fitness calculated as AICc
 
-GA (b,w)    Genetic algorithm                X          X
+GA (b,w)    Genetic algorithm                X          X                 Fitness calculated as AICc
 
-PLS         Patrial least squares
+PLS         Patrial least squares                                         Select components to minimize PRESS
 
-SPLS        Sparse partial least squares
+SPLS        Sparse partial least squares                                  Cross-validation used to select tuning parameters
 
-SPLS (s)    Sparse partial least squares                         X
----------- ------------------------------  -------- --------- -----------
+SPLS (s)    Sparse partial least squares                         X        Cross-validation used to select tuning parameters
+---------- ------------------------------  -------- --------- ----------- ----------------------------------------------------
 [Table 1](#table:methods): Comprehensive list of the modeling methods analyzed in this study. Listed for each method are the method's abbreviation, the algorithm used by the method, and indicators of whether the method 
 
 
@@ -318,7 +319,7 @@ By both AUROC and PRESS, and for both LOO and LOYO analyses, the three highest-r
 
 Therefore, we consider only the GBM methods and AL for the following analyses because they consistently outperform the other methods. We further narrow our study to GBM-OOB and AL because the GBM-OOB and GBM-CV methods showed similar performance but fitting a GBM-CV takes many times longer than a GBM-OOB model. While we focus on the AL and GBM-OOB ... SOMETHING HERE ABOUT STILL LOOKING AT OTHERS???
 
-## Classification of responses and the decision threshold
+## Classification of responses and the decision threshold {#threshold}
 
 *COMMENT:* I like this figure--nicely done. This fig should be placed in the results section rather than the discussion section. Need to work out the figure numbers in the text. Something is going wrong with the links.
 
