@@ -56,7 +56,7 @@ Applying a model to data that was not used to estimate the model produces predic
 
 ## Statistical techniques evaluated
 
-Fourteen different regression modeling techniques were considered (Table 1). Each technique uses one of five modeling algorithms: the gradient boosting machine (GBM), the adaptive lasso (AL), the genetic algorithm (GA), partial least squares (PLS), or sparse PLS (SPLS). Each technique is applied to either continuous or binary regression and to either variable selection and model estimation, or variable selection only.
+Fourteen different regression modeling techniques were considered (Table 1). Each technique uses one of five modeling algorithms: the gradient boosting machine (GBM), the adaptive Lasso (AL), the genetic algorithm (GA), partial least squares (PLS), or sparse PLS (SPLS). Each technique is applied to either continuous or binary regression and to either variable selection and model estimation, or variable selection only.
 
 #### Continuous vs. binary regression
 
@@ -95,7 +95,7 @@ A GBM model is a so-called random forest model - a collection of many regression
 
 ### Adaptive Lasso
 
-The least absolute shrinkage and selection operator (LASSO) is a penalized regression method that simultaneously selects relevant covariates and estimates their coefficients [@Tibshirani-1996]. The AL is a refinement of the LASSO that possesses the so-called "oracle" properties of asymptotically selecting exactly the correct covariates and estimating them as accurately as would be possible if their identities were known in advance [@Zou-2006]. To use the AL for prediction requires selecting a tuning parameter. For the contest, the AL tuning parameter $\lambda$ is selected to minimize the corrected Akaike Information Criterion (AICc) [@Akaike-1973; @Hurvich-Simonoff-Tsai-1998].
+The least absolute shrinkage and selection operator (Lasso) is a penalized regression method that simultaneously selects relevant covariates and estimates their coefficients [@Tibshirani-1996]. The AL is a refinement of the Lasso that possesses the so-called "oracle" properties of asymptotically selecting exactly the correct covariates and estimating them as accurately as would be possible if their identities were known in advance [@Zou-2006]. To use the AL for prediction requires selecting a tuning parameter. For the contest, the AL tuning parameter $\lambda$ is selected to minimize the corrected Akaike Information Criterion (AICc) [@Akaike-1973; @Hurvich-Simonoff-Tsai-1998].
 
 ### Genetic algorithm
 
@@ -107,7 +107,7 @@ Partial least squares (PLS) regression is a tool for building regression models 
 
 ### SPLS
 
-Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsity of lasso-type variable selection [@Chun-Keles-2007]. To do so, SPLS uses two tuning parameters: one that controls the number of orthogonal components and one that controls the lasso-type penalty. The optimal parameters are those that minimize the mean squared prediction error (MSEP) over a two-dimensional grid search. The MSEP is estimated by 10-fold cross-validation.
+Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the sparsity of Lasso-type variable selection [@Chun-Keles-2007]. To do so, SPLS uses two tuning parameters: one that controls the number of orthogonal components and one that controls the Lasso-type penalty. The optimal parameters are those that minimize the mean squared prediction error (MSEP) over a two-dimensional grid search. The MSEP is estimated by 10-fold cross-validation.
 
 
 -----------------------------------------------------------------------------------------------------------------------------
@@ -118,17 +118,17 @@ GBM-OOB     Gradient boosting                                             Out-of
 
 GBM-CV      Gradient boosting                                             Cross-validation estimate of optimal trees
 
-AL          Adaptive lasso                                                Select tuning parameter by AICc
+AL          Adaptive Lasso                                                Select tuning parameter by AICc
 
-AL (s)      Adaptive lasso                                       X        Select tuning parameter by AICc
+AL (s)      Adaptive Lasso                                       X        Select tuning parameter by AICc
 
-AL (b)      Adaptive lasso                   X                            Select tuning parameter by AICc
+AL (b)      Adaptive Lasso                   X                            Select tuning parameter by AICc
 
-AL (b,w)    Adaptive lasso                   X          X                 Select tuning parameter by AICc
+AL (b,w)    Adaptive Lasso                   X          X                 Select tuning parameter by AICc
 
-AL (s,b)    Adaptive lasso                   X                   X        Select tuning parameter by AICc
+AL (s,b)    Adaptive Lasso                   X                   X        Select tuning parameter by AICc
 
-AL (s,b,w)  Adaptive lasso                   X          X        X        Select tuning parameter by AICc
+AL (s,b,w)  Adaptive Lasso                   X          X        X        Select tuning parameter by AICc
 
 GA          Genetic algorithm                                             Fitness calculated as AICc
 
@@ -229,7 +229,7 @@ The ROC curve is an assessment of how well predictions are sorted into exceedanc
 
 *COMMENT:* These two tables could be made into one two-section table to save a bit of space. They do logically go together well.
 
-```{r auroc-barchart, fig.width=14, fig.height=9, fig.cap="Mean ranking of the methods by area under the ROC curce (AUROC) across all seven sites (higher is better). The error bars are 90% confidence intervals computed by the bootstrap. At left are the AUROC rankings from the leave-one-year-out cross validation (a), at right are the AUROC rankings from the leave-one-out cross validation (b).", fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
+```{r auroc-barchart, fig.width=14, fig.height=9, fig.cap="Mean ranking of the methods across all seven sites by area under the receiver operating characteristic curve (AUROC) and predictive residual sum of squares (PRESS). The left column is For both statistics, higher is better. The error bars are 90% confidence intervals computed by the bootstrap. The left column are the rankings from the leave-one-year-out cross validation, at right are the AUROC rankings from the leave-one-out cross validation (b). Bottom: ", echo=FALSE, warning=FALSE, message=FALSE}
     multiplot(roc.naive.barchart.annual, press.barchart.annual, roc.naive.barchart, press.barchart, cols=2)
 ```
 
@@ -239,7 +239,7 @@ The ROC curve is an assessment of how well predictions are sorted into exceedanc
     \begin{tabular}{rccccccccccccc}
 
 ```{r auroc-tables, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-    cat("\\multicolumn{6}{l}{\\kern-4em \\textbf{Leave-one-year-out cross-validation:}} & & & & & & & & \\\\\n")
+    cat("\\multicolumn{6}{l}{\\kern-2em \\textbf{Leave-one-year-out cross-validation:}} & & & & & & & & \\\\\n")
 
     xtable(auroc.naive.pairs.annual[1:3,]) %>%
         print(sanitize.colnames.function=pretty.cols,
@@ -249,7 +249,7 @@ The ROC curve is an assessment of how well predictions are sorted into exceedanc
               hline.after=c(0))
 
     cat("& & & & & & & & & & & & & \\\\\n")
-    cat("\\multicolumn{6}{l}{\\kern-4em \\textbf{Leave-one-out cross-validation:}} & & & & & & & & \\\\\n")
+    cat("\\multicolumn{6}{l}{\\kern-2em \\textbf{Leave-one-out cross-validation:}} & & & & & & & & \\\\\n")
 
     xtable(auroc.naive.pairs[1:3,]) %>%
         print(sanitize.colnames.function=pretty.cols,
@@ -323,14 +323,28 @@ Therefore, we consider only the GBM methods and AL for the following analyses be
 
 *COMMENT:* I like this figure--nicely done. This fig should be placed in the results section rather than the discussion section. Need to work out the figure numbers in the text. Something is going wrong with the links.
 
-The real-world performance of any model for predicting exceedances will be measured by how well it distinguishes between exceedances and nonexceedances. This is quantified similar to AUROC except that AUROC is an average over all possible thresholds instead of an assessment of performance for a specific choice of threshold. Combined with a realistic carefully selected decision threshold, the LOYO CV results were used to simulate real-world use of the models.
+In real-world use, a model's performance will be judged by how well it distinguishes between exceedances and nonexceedances. While AUROC measures how well exceedances and nonexcedances are sorted among the predictions, AUROC is an average accuracy over all possible thresholds. In order to provide the assessment most relevant for real-world use, the LOYO CV results were used to simulate how many correct and incorrect predictions would be seen from an AL, GBM-OOB, or GBM-CV model with a specific choice of decision threshold. Using the LOYO CV results simulates the common scenario that a model is estimated at the beginning of each beach season and used to make predictions during that season, with a new model incorporating the new season of data estimated the following year into the new model's training data.
 
-Intuitively, the decision threshold should adapt to the conditions that are observed in the beach's training data. If, for instance, exceedances are rare in the training data, then we expect few exceedances in the future, and should set the threshold high to reflect this prior expectation. On the other hand, if the bacterial concentration often exceeds the regulatory standard, then the decision threshold should be set lower in order to properly flag more of those exceedances. This intuition was encoded into how the decision threshold was set for the LOYO models. Specifically, the decision threshold ($\hat{\delta}$) was set to the $q^{th}$ quantile of the fitted values of non-exceedances in the training set, where $1-q$ is the proportion of exceedances in the training set.
+Intuitively, the decision threshold should adapt to the conditions that are observed in the beach's training data. If, for instance, exceedances were rare in the training data, then we expect few exceedances in the future, and should set the decision threshold high to reflect this expectation. On the other hand, if the bacterial concentration often exceeds the regulatory standard, then the decision threshold should be set lower in order to properly flag more of those exceedances. This intuition was encoded into how the decision threshold was set for the LOYO models. Specifically, the decision threshold ($\hat{\delta}$) was set to the $q^{th}$ quantile of the fitted values of non-exceedances in the training set, where $1-q$ was the proportion of training set observations that are exceedances.
 
-In Figure [fig:counts-barcharts], we look at the counts on a per-beach basis of four categories of decisions: true positives (correctly posting an advisory), true negatives (correctly not posting an advisory), false positives (wrongly posting an advisory) and false negatives (wrongly not posting an advisory).  In most cases, the counts are similar between the two techniques, with GBM-OOB tending to make a few more correct decisions. There are exceptions where AL makes more correct decisions (e.g., Hika and Red Arrow).
+In Figure [fig:counts-barcharts], we look at the counts on a per-beach basis of four categories of decisions: true positives (correctly posting an advisory), true negatives (correctly not posting an advisory), false positives (wrongly posting an advisory) and false negatives (wrongly not posting an advisory).  In most cases, the counts were similar between the two techniques, with GBM-OOB and GBM-CV both tending to make a few more correct decisions than AL. There are, however, exceptions where AL made more correct decisions (e.g., Hika and Red Arrow).
 
-```{r counts-barcharts, fig.width=16, fig.height=16, fig.cap='At each site, the number of predictions from AL and GBM-OOB that fell into four categories, from left: correctly predicted exceedance, incorrectly predicted exceedance, correctly predicted non-exceedance, and incorrectly predicted non-exceedance.', fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
-    multiplot(plotlist=pp, cols=3)
+```{r counts-barcharts, fig.width=12, fig.height=16, fig.cap='At each site, the number of predictions from AL, GBM-OOB, and GBM-CV that fell into four categories, from left: correctly predicted exceedance, incorrectly predicted exceedance, correctly predicted non-exceedance, and incorrectly predicted non-exceedance.', fig.subcap=c('LOO', 'LOYO'), echo=FALSE, warning=FALSE, message=FALSE}
+    # Set up the page
+    grid.newpage()
+
+    vp = list()
+    # Make each plot, in the correct location
+    for (i in 1:7) {
+        j = i-1
+        vp[[i]] = viewport(width=0.5, height=0.25, x=(j%%2)/2+0.25, y=0.875 - (j%/%2)/4)
+        print(pp[[i]], vp=vp[[i]])
+    }
+
+    vpleg <- viewport(width=0.5, height=0.25, x=0.4, y=-0.1)
+    upViewport(0)
+    pushViewport(vpleg)
+    grid.draw(leg)
 ```
 
 ## Variable selection
@@ -348,7 +362,7 @@ The covariate counts are displayed in Figure [fig:varselect-barchart]. At most o
     
 # Discussion
 
-The GBM-CV, GBM-OOB, and AL methods showed the best results by both PRESS and AUROC, under LOO and LOYO cross validation. Though GBM-CV was a bit more accurate than GBM-OOB in all the settings, the small improvement in accuracy may not outweight the large additional cost in time to fit the model. However, the additional computation cost is incurred once when the model is fitted - given a new observation of beach data, both the GBM-CV and GBM-OOB models produce predictions nigh-instantaneously. Where predictive accuracy is the most important consideration and no difficulty is anticipated in acquiring the data, it is hard to argue against using a GBM-type model.
+The GBM-CV, GBM-OOB, and AL methods showed the best results by both PRESS and AUROC, under LOO and LOYO cross validation. Though GBM-CV was a bit more accurate than GBM-OOB in all the settings, the small improvement in accuracy may not outweight the large additional cost in time to fit the model. However, the additional computational cost is incurred only once when the model is estimated - given a new observation of beach data, both the GBM-CV and GBM-OOB models produce predictions nigh-instantaneously. Where predictive accuracy is the most important consideration and no difficulty is anticipated in acquiring the data, it is hard to argue against using a GBM-type model.
 
 The predictive performance of the AL models was somewhat worse than that of the GBM models, but by including a variable selection step, the AL models reduce the number of covariates that must be measured in order to make daily predictions. A model that requires fewer covariates is less expensive and more robust (as the probability of encountering some missing data increases with the number of required covariates). This is particularly important for manually-collected covariates because collecting data by hand takes more time and costs more money than accessing publically available data from a web service. Across all the sites, the ratio of manually-collected to automatically collected covariates in the AL models seems to mirror the ratio among all available covariates, indicating that neither the manually- nor automatically-collected covariates are systematically more important to predicting the bacterial concentration. Some covariates tended to appear at every site in the AL models (and other models that include a variable selection step). The manually-collected covariates that were consistently selected for the models were the (log) turbidity in the beach water, and wave height at the beach.
 

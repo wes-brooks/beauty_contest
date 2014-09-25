@@ -1,5 +1,5 @@
 #Set up some variables and an object to hold the results:
-confusion.methods = c('gbm', 'adapt')
+confusion.methods = c('gbm', 'gbmcv', 'adapt')
 perf = sapply(confusion.methods, function(m) sapply(sites, function(s) return(matrix(NA, ncol=5, nrow=0)), simplify=FALSE), simplify=FALSE)
 crit = 2.3711
 
@@ -46,10 +46,13 @@ perf$accurate = perf$flag == perf$exceedance
 #plot the results:
 pp = list()
 for (s in sites) {
+    yrange = max(filter(perf, site==s)$count)
+    
     pp[[s]] = ggplot(filter(perf, site==s)) +
         aes(x=exceedance, y=count, fill=factor(accurate, levels=c("TRUE", "FALSE"))) +
-        scale_fill_grey(start=0.5, end=0.1, labels=c('correct', 'misclassified')) +
+        scale_fill_grey(start=0.5, end=0.1, labels=c('correct', 'misclassified'), name="Predictions:") +
         geom_bar(stat='identity', position='dodge')+
+        ylim(c(0,1.1*yrange)) +
         facet_grid(.~method, labeller=function(x, j) return(lasso.and.gbm[j])) +
         aes(order=rev(accurate))+
         theme_bw() + 
@@ -59,16 +62,15 @@ for (s in sites) {
         xlab(NULL) + 
         labs(fill=NULL) +
         theme(legend.justification=c(1,1),
-              legend.position=c(1,1),
+              legend.position='none',
               legend.text=element_text(size=rel(1.05)),
               strip.text=element_text(size=rel(1.3)),
               title=element_text(size=rel(1.3))
         )
 
-    yrange = max(filter(perf, site==s)$count)
     pp[[s]] = pp[[s]] +
         geom_text(
-            aes(x=rep(c(1.775, 0.775, 1.225, 2.225), 2),
+            aes(x=rep(c(1.775, 0.775, 1.225, 2.225), 3),
                 y=count + yrange/50,
                 label=count),
             hjust=0.5,
@@ -77,3 +79,15 @@ for (s in sites) {
         
 }
 
+pp[[tail(sites,1)]] = pp[[tail(sites,1)]] +
+    theme(legend.justification=c(0,-1),
+          legend.position=c(1,1),
+          legend.text=element_text(size=rel(1.05)),
+          strip.text=element_text(size=rel(1.3)),
+          title=element_text(size=rel(1.3))
+    )
+
+leg = g_legend(pp[[tail(sites,1)]])
+
+pp[[tail(sites,1)]] = pp[[tail(sites,1)]] +
+    theme(legend.position='none')

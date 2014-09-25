@@ -15,6 +15,7 @@ for (s in sites) {
 }
 colnames(nvar)[3] = "type"
 
+
 nvar.plot = list()
 for (s in sites) {
     #plot the number of variables at each site:
@@ -25,7 +26,7 @@ for (s in sites) {
         aes(x=type, fill=type, y=value) +
         scale_fill_grey(name="Collection", start=0.5, end=0.1, labels=c('auto', 'man')) +
         geom_bar(stat='identity', position='dodge') +
-        facet_grid(.~method, labeller=function(x, j) return(lasso.and.gbm[j])) +
+        facet_grid(.~method, labeller=function(x, j) return(lasso.and.total[j])) +
         ggtitle(pretty.sites[[s]]) +
         ylab("nvar") +
         xlab(NULL) +
