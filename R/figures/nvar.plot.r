@@ -28,7 +28,7 @@ for (s in sites) {
         geom_bar(stat='identity', position='dodge') +
         facet_grid(.~method, labeller=function(x, j) return(lasso.and.total[j])) +
         ggtitle(pretty.sites[[s]]) +
-        ylab("nvar") +
+        ylab("# of covariates") +
         xlab(NULL) +
         #scale_x_discrete(labels=select %>% pretty) +
         theme_bw() +
