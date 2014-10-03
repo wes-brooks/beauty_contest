@@ -42,19 +42,17 @@ Red Arrow beach is within the city of Manitowoc. It has numerous potential influ
 
 ## Data sources
 
-Data collection and sample analysis followed methods described in @Francy-et-al-2013. Concentration of *E. coli* was measured at each beach $2-4$ times per week for $12-14$ weeks between Memorial Day and Labor Day from 2010 through 2013. Samples were collected from the center of the length of the beach, $12$ inches below the water surface where total water depth was $24$ inches. All samples were quantified by use of the Colilert® QuantiTray/2000 method, which is reported as the most probable number (MPN) of *E. coli* colony forming units (CFU) and is read after $24$ hours of incubation.
+Data collection and sample analysis followed methods described in @Francy-et-al-2013. Concentration of *E. coli* was measured at each beach $2-4$ times per week for $12-14$ weeks between Memorial Day and Labor Day from 2010 through 2013. Samples were collected from the center of the length of the beach, $12$ inches below the water surface where total water depth was $24$ inches. All samples were quantified by use of the Colilert® QuantiTray/2000 method, which is reported as the most probable number (MPN) of *E. coli* colony forming units (CFU) and is read after $24$ hours of incubation [@Colilert].
 
-Covariates were compiled from a variety of sources including online data and physical measurements. Online data were accessed using Environmental Data Discovery and Transformation (EnDDaT), a web service that accesses data from a variety of sources, compiles and processes the data, and performs common transformations [@EnDDaT-2014]. Three sources of data were accessed: National Water Information System (NWIS), North Central River Forecasting Center (NCRFS), and Great Lakes Costal Forecasting System (GLCFS).  Variables acquired through these sources included: river discharge, precipitation, lake current vectors, wave height, wave direction, lake level, water temperature, air temperature, wind vector, and percent cloud cover. Transformations computed in EnDDaT included: mean, minimum, maximum, difference, sum, and standard deviation. Most raw data were available in an hourly time-step with the exception of NWIS data which were available in a 15 minute time-step. Transformations on the raw data were taken over 1, 2, 6, 12, 24, 48, 72, and 120 hour increments.  These were computed when they described a real phenomenon that might affect *E. coli* concentrations. For example, standard deviation of water temperature indicated if water temperature was consistent or highly variable, which would make conditions favorable or not for *E. coli*. Sum of rainfall indicated the magnitude of recent rain events, which corresponds to the magnitude of bacteria washed into the lake from sources on land. Average cloud cover would approximate the effect of UV light breaking down colonies during a sunny day.
+Covariates were compiled from a variety of sources including online data and manual measurements. Online data were accessed using Environmental Data Discovery and Transformation (EnDDaT), a web service that accesses data from a variety of sources, compiles and processes the data, and performs common transformations [@EnDDaT-2014]. Three sources of data were accessed: National Water Information System (NWIS), North Central River Forecasting Center (NCRFS), and Great Lakes Costal Forecasting System (GLCFS).  Variables acquired through these sources included: river discharge, precipitation, lake current vectors, wave height, wave direction, lake level, water temperature, air temperature, wind vector, and percent cloud cover.
 
-## WE SHOULD HAVE AN EXAMPLE OF VARIABLE TRANSFORMATIONS/STATISTICS THAT WERE NOT INCLUDED
+Most covariates from online sources were available in hourly increments with the exception of NWIS data which were available in 15 minute increments. In order to make best use of this high-frequency data for daily predictions, several summary statistics were calculated over several time windows for use as potential covariates. The use of 1, 2, 6, 12, 24, 48, 72, and 120 hour time windows for calculating the summary statistics follows recent research showing that selecting from windowed and lagged versions of raw high-frequency covariates can improve the predictive accuracy of regression models [@Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012]. The choice of summary statistics to include as potential covariates was guided by scientific judgement regarding phenomena that could affect the FIB concentration. For example, standard deviation of water temperature measurements over the window period reflected the variability in water temperature, which may affect the survival and growth of FIB; the sum of rainfall measurements over the window period indicated the magnitude of recent rain events, which may be associated with FIB washed into the lake from sources on land; and the mean of cloud cover measurements over the window period may measure the degree to which UV light was inhibited from breaking down FIB colonies in the water. The available summary statistics from EnDDaT were the mean, minimum, maximum, difference, sum, and standard deviation.
 
-Variables collected by field personnel at each site were instantaneous observations that had the benefit of being measured where *E. coli* samples were taken, but did not have hourly time resolution, and could not be gathered remotely. Among the variables measured were turbidity, wave height, number of birds present, number of people present, amount of algae floating in the swim area and on the beach, specific conductance, water and air temperature, and wind direction and speed. Every beach dataset included turbidity. Other field variables had to be dropped from some of the datasets because of missing values or questionable reliability. 
-
-## GIVE ME AN IDEA OF FIELD VARIABLES THAT WERE DROPPED, OR JUST DONT INCLUDE THAT NOTE
+Manually observed data were instantaneous observations that had the benefit of being measured when and where the FIB samples were collected. However, these covariates were measured only once per day and at greater expense than the online data because the data had to be collected by field personnel. Manual data collection was guided by the USEPA's Great Lakes Beach Sanitary Survey [@Sanitary-Survey-2008]. Among the manually measured data were turbidity, wave height, number of birds present, number of people present, amount of algae floating in the swim area and on the beach, specific conductance, water and air temperature, wind direction, and wind speed. Every beach dataset included turbidity, but other field variables occasionally had to be dropped from some of the datasets because of missing values or questionable reliability. 
 
 ## Data transformations
 
-The response for our continuous regression models is the base-10 logarithm of the *E. coli* concentration. For the binary regression models, the response is an indicator of whether the concentration exceeds the BAV. Transformations were applied to some of the covariates during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed. These transformations were based on the performance of previous studies (REFS: Francy? PLS paper? Nevers? Others?) and applied to all datasets equally. 
+The response for our continuous regression models is the base-10 logarithm of the FIB concentration. For the binary regression models, the response is an indicator of whether the concentration exceeds the BAV. Transformations were applied to some of the covariates during pre-processing: the beach water turbidity and the discharge of tributaries near each beach were log-transformed, and rainfall variables were all square root transformed. These transformations were based on the performance of previous studies  and were applied to all datasets [@Ge:2007ou;@Frick:2008jo]. 
 
 #Methods
 
@@ -82,7 +80,7 @@ where $\tilde{y}_i$ is the predicted concentration. The indicator is coded as ze
 
 ### Weighting of observations in binary regression
 
-The concentration of *E. coli* in the water at a single beach on a single day can be subject to a large degree of spatiotemporal heterogeneity [@Whitman:2004pc]. Thus, when the concentration in a sample is observed to fall near the BAV, there is considerable uncertainty as to whether an independent sample from the same date and location would or would not exceed the BAV. A weighting scheme for the binary regression techniques was designed to reflect this ambiguity by giving more weight to observations far from the BAV. In the weighting scheme, observations were given weights $w_i$ for $i=1,\dots,n$, where
+The concentration of FIB in the water at a single beach on a single day can be subject to a large degree of spatiotemporal heterogeneity [@Whitman:2004pc]. Thus, when the concentration in a sample is observed to fall near the BAV, there is considerable uncertainty as to whether an independent sample from the same date and location would or would not exceed the BAV. A weighting scheme for the binary regression techniques was designed to reflect this ambiguity by giving more weight to observations far from the BAV. In the weighting scheme, observations were given weights $w_i$ for $i=1,\dots,n$, where
 
 $$
     \begin{aligned}
@@ -204,25 +202,23 @@ Some methods also used CV internally to select tuning parameters. In those cases
 
 ## Comparing methods, and quantifying uncertainty in the ranks
 
-Results were compiled into one table for each site where each observation corresponds to a row in the table. For example, a few rows from the results table at Hika are presented in Figure 1. The results table has a column for the observed $\log_10$ *E. coli* concentration and, for each method, columns for the predicted concentration by LOO CV and by LOYO CV. From the table, performance of the modeling methods was summarized by calculating the predictive error sum of squares (PRESS) and the area under the receiver operating characteristic (ROC) curve (AUROC).
+Results were compiled into one table for each site where each observation corresponds to a row in the table. For example, a few rows from the results table at Hika are presented in Figure 1. The results table has a column for the observed $\log_{10}$ FIB concentration and, for each method, columns for the predicted concentration by LOO CV and by LOYO CV. From the table, performance of the modeling methods was summarized by calculating the predictive error sum of squares (PRESS) and the area under the receiver operating characteristic (ROC) curve (AUROC).
 
------------------------------------------------------------
-                 PLS     PLS              SPLS    SPLS      
- Row   Actual    (LOO)   (LOYO)   \dots   (LOO)   (LOYO) 
------ --------  ------- -------- ------- ------- -------- 
-1      2.54      2.35     2.22   \dots   2.29    2.55 
+-----------------------------------------------------------------
+         $\log_{10}$    PLS     PLS              SPLS    SPLS      
+ Row      FIB           (LOO)   (LOYO)   \dots   (LOO)   (LOYO) 
+------- -------------  ------- -------- ------- ------- -------- 
+1        2.54           2.35     2.22   \dots   2.29    2.55 
 
-2      2.59      1.87     1.79   \dots   1.91    1.23
+2        2.59           1.87     1.79   \dots   1.91    1.23
 
-\vdots \vdots    \vdots   \vdots \dots   \vdots  \vdots
+\vdots   \vdots         \vdots   \vdots \dots   \vdots  \vdots
 
-166    1.57      1.93     2.06   \dots   1.83    2.07 
+166      1.57           1.93     2.06   \dots   1.83    2.07 
 
-167    3.38      1.84     2.01   \dots   1.80    1.71
------  ------    ------   ------ -----   ------  ------ 
+167      3.38           1.84     2.01   \dots   1.80    1.71
+---------------------------------------------------------------- 
 [Table 2](#table:hika-results): An example of how the results for a site (Hika here) were compiled into a results table. The summary statistics used to compare predictive performance (area under the ROC curve and predictive error sum of squares) were calculated from the table. Confidence intervals for the summary statistics were computed via the bootstrap by resampling (with replacement) the rows of the results table.
-
-*COMMENT:* Need a table caption here and reference to it in the text.
 
 To identify which modeling methods had the best performance across all sites, the methods at each site were ranked from worst to best according to the performance summary statistics (the ranks were taken worst to best so that larger numbers represent better performance). The mean rank of each method was then taken across the sites as an measurement of how each of our modeling methods performed relative to the others. Uncertainty in the rankings is quantified by the bootstrap: since PRESS and AUROC are functions of the results tables, the bootstrap procedure is carried out by resampling the rows of each results table and recalculating the ranks for each bootstrap sample. We used $1,000$ bootstrap samples of each results table in the analysis that follows.
 

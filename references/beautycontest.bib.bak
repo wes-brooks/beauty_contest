@@ -5665,7 +5665,7 @@
 }
 
 @MANUAL{VB3-2013,
-  title = {Virtual Beach 3: User’s Guide},
+  title = {Virtual Beach 3: User's Guide},
   author = {Mike Cyterski and Wesley Brooks and Mike Galvin and Kurt Wolfe and
 	Rebecca Carvin and Tonia Roddick and Mike Fienen and Steve Corsi},
   organization = {United States Environmental Protection Agency},
@@ -12790,7 +12790,7 @@
 }
 
 @ARTICLE{Hou:2006nf,
-  author = {Hou,D. and Rabinovici,S. J. M. and Boehm,A. B.},
+  author = {Hou, D. and Rabinovici, S. J. M. and Boehm, A. B.},
   title = {Enterococci predictions from partial least squares regression models
 	in conjunction with a single-sample standard improve the efficacy
 	of beach management advisories},
@@ -27881,6 +27881,17 @@
   volume = {EPA-823-R-08-004}
 }
 
+@ELECTRONIC{Sanitary-Survey-2008,
+  author = {USEPA},
+  year = {2008},
+  title = {Great Lakes Beach Sanitary Survey User Manual},
+  organization = {US Environmental Protection Agency, Office of Water},
+  address = {Washington, DC},
+  url = {http://www2.epa.gov/sites/production/files/documents/greatlakesmanual.pdf},
+  owner = {wrbrooks},
+  timestamp = {2014.10.03}
+}
+
 @TECHREPORT{Agency:2007bc,
   author = {USEPA},
   title = {Criteria Development Plan and Schedule: Recreational Water Quality
@@ -30310,6 +30321,19 @@
   ty = {JOUR}
 }
 
+@ARTICLE{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012,
+  author = {Michael Cyterski \& Shuyan Zhang \& Emily White \& Marirosa Molina
+	\& Kurt Wolfe \& Rajbir Parmar \& Richard Zepp},
+  title = {Temporal synchronization analysis for improving regression modeling
+	of fecal indicator bacteria levels},
+  journal = {Water, Air \&Soil Pollution},
+  year = {2012},
+  volume = {223},
+  pages = {4841--4851},
+  owner = {wrbrooks},
+  timestamp = {2014.10.03}
+}
+
 @ARTICLE{Zhao:2001sw,
   author = {Zhao,T. and Doyle,M. P. and Zhao,P. and Blake,P. and Wu,F. -M},
   title = {Chlorine Inactivation of Escherichia coli O157:H7 in Water},
@@ -30460,6 +30484,14 @@
 	Rome; Seawater; Water Microbiology},
   m = {Journal Article},
   ty = {JOUR}
+}
+
+@ELECTRONIC{Colilert,
+  title = {Colilert Test Kit Procedure},
+  organization = {National environmental methods index},
+  url = {https://www.nemi.gov/methods/method_summary/5584/},
+  owner = {wrbrooks},
+  timestamp = {2014.10.03}
 }
 
 @ELECTRONIC{GLRI:Website,
