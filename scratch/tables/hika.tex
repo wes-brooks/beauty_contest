@@ -1,12 +1,11 @@
-\documentclass[12pt]{article}
-\usepackage{multirow}
-\usepackage{graphicx}
-
-\begin{document}
 
 \begin{table}
-    \scalebox{0.5}{
+    \centering
+    \resizebox{\textwidth}{!}{\begin{minipage}{\textwidth}
+    \caption{Listing of the variables used in the regression models at Hika beach. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}
+    \label{table:hika-variables}
     \begin{tabular}{ll|cccccccc}
+        \hline
         Covariate & Statistic & 1h & 2h & 6h & 12h & 24h & 48h & 72h & 120h \\
         \hline
         \multicolumn{2}{l|}{Sheboygan River Discharge} &&&&&&&& \\
@@ -103,7 +102,6 @@
         \hline
         \multicolumn{2}{l|}{Julian date} & Manual&&&&&&& \\
         \hline
-        \end{tabular}}
+        \end{tabular}
+        \end{minipage}}
 \end{table}
-
-\end{document}

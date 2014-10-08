@@ -8,7 +8,7 @@ load("variable_supplement.RData")
 source("R/ROC.r")
 
 #S is the number of bootstrap samples
-S = 11
+S = 1000
 
 #Nicer names for the paper
 pretty.methods = list(

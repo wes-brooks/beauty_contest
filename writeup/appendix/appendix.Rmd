@@ -1,0 +1,14 @@
+---
+title: "appendix"
+output: pdf_document
+---
+
+# Appendix
+
+\input{hika.tex}
+\input{kreher.tex}
+\input{maslowski.tex}
+\input{point.tex}
+\input{thompson.tex}
+\input{neshotah.tex}
+\input{redarrow.tex}

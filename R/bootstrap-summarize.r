@@ -71,7 +71,7 @@ for (site in sites) {
             v = varlist[[site]][[method]]
             v = v[as.integer(boot),]  
             
-            man.indx = grep("beach", colnames(v))
+            man.indx = grep("beach|trib", colnames(v))
             auto.indx = (1:ncol(v))[-man.indx]
             
             man[[site]][[method]] = c(man[[site]][[method]], v[,man.indx] %>% rowSums %>% mean)
@@ -85,7 +85,7 @@ for (site in sites) {
             v = varlist[[site]][[method]]
             v = v[as.integer(boot),]  
             
-            man.indx = grep("beach", colnames(v))
+            man.indx = grep("beach|trib", colnames(v))
             auto.indx = (1:ncol(v))[-man.indx]
             
             man.complete[[site]][[method]] = c(man.complete[[site]][[method]], v[,man.indx] %>% rowSums %>% mean)
