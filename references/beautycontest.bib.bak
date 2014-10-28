@@ -2789,10 +2789,8 @@
 	Human Health},
   publisher = {American Geophysical Union},
   year = {2006},
-  author = {Brandt,S. and Schwab,D. and Croley,T. and Belestky,D. and Whitman,R.},
-  volume = {87},
-  number = {36; Suppl.},
-  month = {, Sep},
+  author = {Brandt, S. and Schwab, D. and Croley, T. and Belestky, D. and Whitman,
+	R.},
   booktitle = {AGU Ocean Sciences Meeting, Honolulu, HI (USA), 20-24 Feb 2006},
   date = {2010-12-23 11:37:42 -0600},
   isbn = {0096-3941},
@@ -19724,6 +19722,14 @@
   ty = {JOUR}
 }
 
+@ELECTRONIC{NCRFC,
+  author = {{National Oceanic and Atmospheric Administration}},
+  title = {North {C}entral {R}iver {F}orecasting {C}enter},
+  url = {http://www.crh.noaa.gov/ncrfc/},
+  owner = {wrbrooks},
+  timestamp = {2014.10.28}
+}
+
 @INPROCEEDINGS{Nauta:1992nq,
   author = {Nauta,Tjitte and van Pagee,Hans and de Vries,Mindert},
   title = {Modeling transport and fate of micropollutants in coastal waters},
@@ -20979,24 +20985,18 @@
 }
 
 @ARTICLE{Olyphant:2004yq,
-  author = {Olyphant,G. A. and Whitman,R. L.},
+  author = {Olyphant, G. A. and Whitman, R. L.},
   title = {Elements of a predictive model for determining beach closures on
-	a real time basis: the case of 63rd {Street Beach Chicago}},
-  journal = {Environ.Monit.Assess.},
+	a real time basis: the case of 63rd {S}treet {B}each {C}hicago},
+  journal = {Environmental Monitoring and Assessment},
   year = {2004},
   volume = {98},
   pages = {175--190},
-  number = {1-3},
-  month = {Nov},
   bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/olyphant_2004_predictive_model_beach_closures_rt_chicago.pdf},
   bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/olyphant_2004_predictive_model_beach_closures_rt_chicago.pdf},
   date = {2010-12-23 11:37:44 -0600},
   date-modified = {2014-07-29 19:56:51 +0000},
   isbn = {0167-6369},
-  keywords = {Bathing Beaches/statistics \& numerical data; Chicago; Environmental
-	Monitoring/methods/statistics \& numerical data; Escherichia coli/growth
-	\& development/isolation \& purification; Forecasting; Fresh Water/analysis/microbiology;
-	Models, Statistical; Regression Analysis; Time Factors; Weather},
   m = {Journal Article},
   ty = {JOUR}
 }
@@ -24677,6 +24677,17 @@
   ty = {JOUR}
 }
 
+@ARTICLE{Schwab-Bedford-1999,
+  author = {Schwab, David J and Bedford, Keith W},
+  title = {The great lakes forecasting system},
+  journal = {Coastal and Estuarine Studies},
+  year = {1999},
+  pages = {157--174},
+  owner = {wrbrooks},
+  publisher = {Wiley Online Library},
+  timestamp = {2014.10.28}
+}
+
 @MISC{Schwab:2007ez,
   author = {Schwab,K. J.},
   title = {Are Existing Bacterial Indicators Adequate for Determining Recreational
@@ -26685,22 +26696,6 @@
   ty = {JOUR}
 }
 
-@TECHREPORT{Survey:2010an,
-  author = {U. S. Geological Survey},
-  title = {Biological Indicators},
-  year = {variously dated},
-  bdsk = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
-  bdsk-url-1 = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
-  booktitle = {Techniques of Water-Resource Investigation},
-  date = {2010-12-23 11:37:44 -0600},
-  date-modified = {2014-07-29 19:56:52 +0000},
-  m = {Report},
-  publisher = {U.S. Geological Survey},
-  ty = {RPRT},
-  volume = {U.S. Geological Survey Techniques of Water-Resources Investigations,
-	book 9, chap. A7}
-}
-
 @INPROCEEDINGS{Susilo:2005fn,
   author = {Susilo,K. and Tam,W. and Moglen G. E.},
   title = {Cost-effective TMDL implementation planning and hydrology as a critical
@@ -27664,6 +27659,22 @@
   ty = {JOUR}
 }
 
+@TECHREPORT{Survey:2010an,
+  author = {{U. S. Geological Survey}},
+  title = {Biological Indicators},
+  year = {variously dated},
+  bdsk = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
+  bdsk-url-1 = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
+  booktitle = {Techniques of Water-Resource Investigation},
+  date = {2010-12-23 11:37:44 -0600},
+  date-modified = {2014-07-29 19:56:52 +0000},
+  m = {Report},
+  publisher = {U.S. Geological Survey},
+  ty = {RPRT},
+  volume = {U.S. Geological Survey Techniques of Water-Resources Investigations,
+	book 9, chap. A7}
+}
+
 @ELECTRONIC{EnDDaT-2014,
   author = {{U.S. Geological Survey}},
   month = {September},
@@ -27770,6 +27781,14 @@
 	Swimming Pools; Water Microbiology},
   m = {Journal Article},
   ty = {JOUR}
+}
+
+@ELECTRONIC{NWIS,
+  author = {{United States Geological Survey}},
+  title = {The {N}ational {W}ater {I}nformation {S}ystem},
+  url = {http://waterdata.usgs.gov/nwis},
+  owner = {wrbrooks},
+  timestamp = {2014.10.28}
 }
 
 @INPROCEEDINGS{Urish:1989rc,
@@ -29498,7 +29517,7 @@
 }
 
 @ARTICLE{Whitman:2004pc,
-  author = {Whitman,R. L. and Nevers,M. B.},
+  author = {Whitman, R. L. and Nevers, M. B.},
   title = {Escherichia coli Sampling Reliability at a Frequently Closed Chicago
 	Beach: Monitoring and Management Implications},
   journal = {Environ.Sci.Technol.},
