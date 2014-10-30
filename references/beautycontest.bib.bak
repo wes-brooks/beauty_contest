@@ -2792,15 +2792,7 @@
   author = {Brandt, S. and Schwab, D. and Croley, T. and Belestky, D. and Whitman,
 	R.},
   booktitle = {AGU Ocean Sciences Meeting, Honolulu, HI (USA), 20-24 Feb 2006},
-  date = {2010-12-23 11:37:42 -0600},
-  isbn = {0096-3941},
-  keywords = {Article Subject Terms: Algal blooms; American Geophysical Union; Coastal
-	zone management; Eutrophication; Hydrology; Meteorological data;
-	Microbiology; Pathogens; Phytoplankton; Prediction; Public health;
-	Risks; Water quality; Article Geographic Terms: USA},
-  m = {Book, Whole},
-  sp = {{$[$}np{$]$}. suppl},
-  ty = {BOOK}
+  isbn = {0096-3941}
 }
 
 @ARTICLE{deBrauwere-Koffi-Servais-2014,
@@ -2809,10 +2801,11 @@
 	waters: a review},
   journal = {Critical Reviews in Environmental Science and Technology},
   year = {2014},
-  bdsk-url-1 = {http://www.tandfonline.com/doi/pdf/10.1080/10643389.2013.829978},
+  volume = {44},
+  pages = {2380--2453},
+  number = {21},
   owner = {wrbrooks},
-  timestamp = {2014.08.14},
-  url = {http://www.tandfonline.com/doi/pdf/10.1080/10643389.2013.829978}
+  timestamp = {2014.08.14}
 }
 
 @ARTICLE{Brennan:2010ft,
@@ -2995,7 +2988,7 @@
   author = {Wesley R. Brooks and Michael N. Fienen and Steven R. Corsi},
   title = {Partial least squares for efficient models of fecal indicator bacteria
 	on Great Lakes beaches},
-  journal = {Journal of Environmental Mana},
+  journal = {Journal of Environmental Management},
   year = {2013},
   volume = {114},
   pages = {470-475},
@@ -3705,18 +3698,11 @@
 @TECHREPORT{Cabelli:1983od,
   author = {Cabelli,V. J.},
   title = {Health Effects Criteria for Marine Recreational Waters},
-  institution = {U.S. Environmental Protection Agency},
+  institution = {{United States Environmental Protection Agency Office of Research
+	and Development}},
   year = {1983},
-  type = {Research and Development},
-  number = {EPA-600/1-80-031},
-  month = {Aug. 1983},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/cabelli_1983_health_effects_criteria_marine_recreational_waters.htm},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/cabelli_1983_health_effects_criteria_marine_recreational_waters.htm},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:49 +0000},
-  m = {Report},
-  ty = {RPRT},
-  volume = {EPA-600/1-80-031}
+  type = {Tech report},
+  number = {EPA-600/1-80-031}
 }
 
 @ARTICLE{Cabelli:1982kn,
@@ -3752,23 +3738,15 @@
 }
 
 @ARTICLE{Cabelli:1979lb,
-  author = {Cabelli,V. J. and Dufour,A. P. and Levin,M. A. and McCabe,L. J. and
-	Haberman,P. W. and Jensen,L. D.},
+  author = {Cabelli, V. J. and Dufour, A. P. and Levin, M. A. and McCabe, L.
+	J. and Haberman, P. W. and Jensen, L. D.},
   title = {Relationship of microbial indicators to health effects at marine
 	bathing beaches},
-  journal = {Am.J.Public Health, 69(7), 690-696},
+  journal = {American Journal of Public Health},
   year = {1979},
-  month = {(1979)},
-  date = {2010-12-23 11:37:42 -0600},
-  keywords = {public health; microbial contamination; recreational waters; ANW,
-	New York; coastal waters; beaches; pollution; USA; New York; recreation
-	sites; indicator organisms; disease resistance; gastrointestinal
-	tract diseases; marine environments; association; respiratory tract
-	diseases; symptoms; man; children; gastrointestinal tract; respiratory
-	tract; infection; water-borne diseases; sewage; water; wastes; marine
-	pollution; pollution effects; sewage pollution; Marine},
-  m = {Journal Article},
-  ty = {JOUR}
+  volume = {69},
+  pages = {690--696},
+  number = {7}
 }
 
 @ARTICLE{Cabelli:1983vx,
@@ -4920,11 +4898,15 @@
   ty = {JOUR}
 }
 
-@UNPUBLISHED{Chun-Keles-2007,
+@ARTICLE{Chun-Keles-2010,
   author = {Hyonho Chun and Sunduz Keles},
   title = {Sparse partial least squares regression for simultaneous dimension
 	reduction and variable selection},
-  year = {2007}
+  journal = {Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
+  year = {2010},
+  volume = {72},
+  pages = {3--25},
+  number = {1}
 }
 
 @ARTICLE{Ciani:1970es,
@@ -5682,6 +5664,19 @@
   year = {2013},
   owner = {wrbrooks},
   timestamp = {2014.06.12}
+}
+
+@ARTICLE{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012,
+  author = {Michael Cyterski and Shuyan Zhang and Emily White and Marirosa Molina
+	and Kurt Wolfe and Rajbir Parmar and Richard Zepp},
+  title = {Temporal synchronization analysis for improving regression modeling
+	of fecal indicator bacteria levels},
+  journal = {Water, Air \& Soil Pollution},
+  year = {2012},
+  volume = {223},
+  pages = {4841--4851},
+  owner = {wrbrooks},
+  timestamp = {2014.10.03}
 }
 
 @ARTICLE{DAlessio:1981lb,
@@ -6826,15 +6821,11 @@
 @TECHREPORT{Dufour:1984yn,
   author = {Dufour,A. P.},
   title = {Health Effects Criteria for Fresh Recreational Waters},
+  institution = {{United States Environmental Protection Agency Office of Research
+	and Development}},
   year = {1984},
-  month = {August 1984},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/dufour_1984_health_effects_criteria_fresh_recreational_waters.htm},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/dufour_1984_health_effects_criteria_fresh_recreational_waters.htm},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:49 +0000},
-  m = {Report},
-  ty = {RPRT},
-  volume = {EPA-600/1-84-004}
+  type = {Tech report},
+  number = {EPA-600/1-84-004}
 }
 
 @ARTICLE{Duhigg:2009yk,
@@ -8461,16 +8452,13 @@
 	D. and Withum,K. and Shibata,T. and Gidley,M. L. and Abdelzaher,A.
 	and He,G. and Ortega,C. and Zhu,X. and Wright,M. and Hollenbeck,J.
 	and Backer,L. C.},
-  title = {The BEACHES Study: health effects and exposures from non-point source
+  title = {The BEACHES study: health effects and exposures from non-point source
 	microbial contaminants in subtropical recreational marine waters},
   journal = {International Journal of Epidemiology},
   year = {2010},
-  pages = {8--8},
-  date = {2010-12-23 11:37:42 -0600},
-  keywords = {Gastrointestinal illness; respiratory illness; skin illness; indicator
-	organisms; enterococci; recreational water quality},
-  m = {Journal Article},
-  ty = {JOUR}
+  volume = {39},
+  pages = {1291--1298},
+  number = {5}
 }
 
 @ARTICLE{Fleisher:1996ff,
@@ -8825,10 +8813,10 @@
 	M. Zimmerman},
   title = {Developing and implementing the use of predictive models for estimating
 	water quality at {G}reat {L}akes beaches},
-  institution = {USGS Scientific Investigations Report 2013-5166},
+  institution = {United States Geological Survey},
   year = {2013},
-  owner = {wrbrooks},
-  timestamp = {2014.09.30}
+  type = {Scientific Investigations Report},
+  number = {2013-5166}
 }
 
 @TECHREPORT{Francy:2004lv,
@@ -8852,17 +8840,10 @@
 @TECHREPORT{Francy:2007yv,
   author = {Francy,Donna S. and Darner,Robert A.},
   title = {Nowcasting Beach Advisories at {Ohio Lake Erie Beaches}},
+  institution = {United States Geological Survey},
   year = {2007},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/francy_2007_nowcasting_beach_advisories_ohio_lake_erie_beaches.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/francy_2007_nowcasting_beach_advisories_ohio_lake_erie_beaches.pdf},
-  booktitle = {Open-File Report},
-  date = {2010-12-23 11:37:43 -0600},
-  date-modified = {2014-07-29 19:56:49 +0000},
-  m = {Report},
-  pages = {iv, 13 p.--iv, 13 p.},
-  publisher = {U.S. Geological Survey},
-  ty = {RPRT},
-  volume = {Open-File Report 2007-1427}
+  type = {Open File Report},
+  number = {2007-1427}
 }
 
 @TECHREPORT{Francy:2006ih,
@@ -9239,35 +9220,11 @@
   author = {Frick,W. E. and Ge,Z. and Zepp,R. G.},
   title = {Nowcasting and forecasting concentrations of biological contaminants
 	at beaches: A feasibility and case study},
-  journal = {Environ.Sci.Technol.},
+  journal = {Environmental Science \& Technology},
   year = {2008},
   volume = {42},
   pages = {4818--4824},
-  number = {13},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/frick_2008_nowcasting_forecasting_conc_biological_contaminants_beaches_feasibility_case_study.pdf},
-  bdsk-url-1 = {http://www.scopus.com/scopus/inward/record.url?eid=2-s2.0-46849107708&partnerID=40},
-  date = {2010-12-23 11:37:43 -0600},
-  date-modified = {2014-07-29 19:56:50 +0000},
-  isbn = {0013936X},
-  keywords = {Bacteriology; Beaches; Contamination; Dynamic programming; Escherichia
-	coli; Food processing; Forecasting; Hydraulic models; Lakes; Landforms;
-	Least squares approximations; Regression analysis; Reusability; Statistical
-	methods; Statistics; Water pollution; Water quality; Bacterial levels;
-	biological contaminants; case studies; Data sets; E. coli; Environmental
-	data; Explanatory variables; fitting models; Great Lakes (CO); Lake
-	Erie; Least squares fitting (LSF); Limited data; Microbial contaminations;
-	Nowcasting; Predictive modeling; public concerns; Public domains;
-	site specific; Static modelling; Statistical modelling; Statistical
-	regression models; Time periods; Dynamic models; comparative study;
-	concentration (composition); forecasting method; marine pollution;
-	modeling; accuracy; article; concentration (parameters); environmental
-	monitoring; feasibility study; microbial contamination; pollutant;
-	seashore; statistical model; United States; virtual reality; Bathing
-	Beaches; Feasibility Studies; Fresh Water; Least-Squares Analysis;
-	Models, Biological; Ohio; Software; Water Microbiology; California;
-	Huntington Beach; North America; Bacteria (microorganisms)},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {13}
 }
 
 @ARTICLE{Frick:1997zd,
@@ -9314,9 +9271,8 @@
 @ARTICLE{Friedman-2001,
   author = {Jerome Friedman},
   title = {Greedy function approximation: a gradient boosting machine},
-  journal = {The Annals of Statistics},
+  journal = {Annals of Statistics},
   year = {2001},
-  volume = {29},
   pages = {1189-1232}
 }
 
@@ -9928,26 +9884,11 @@
   author = {Ge,Z. and Frick,W. E.},
   title = {Some statistical issues related to multiple linear regression modeling
 	of beach bacteria concentrations},
-  journal = {Environ.Res.},
+  journal = {Environmental Research},
   year = {2007},
   volume = {103},
   pages = {358--364},
-  number = {3},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/ge_2007_statistical_issues_related_to_multiple_linear_regression_modeling_beach_bacteria_conc.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/ge_2007_statistical_issues_related_to_multiple_linear_regression_modeling_beach_bacteria_conc.pdf},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:50 +0000},
-  isbn = {00139351},
-  keywords = {Empirical; Model evaluation; Model selection; Multiple linear regression;
-	Prediction; bacterium; beach; concentration (composition); model
-	test; multiple regression; numerical model; article; bacterial count;
-	data analysis; error; microbial contamination; multiple linear regression
-	analysis; nonhuman; priority journal; seashore; statistical model;
-	statistics; water contamination; Bathing Beaches; Data Interpretation,
-	Statistical; Environmental Microbiology; Linear Models; Ohio; Research
-	Design; Time Factors},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {3}
 }
 
 @ARTICLE{Geissler:2000di,
@@ -12107,16 +12048,7 @@
   year = {2008},
   volume = {42},
   pages = {2563--2573},
-  number = {10-11},
-  month = {May},
-  av = {Print-Electronic},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/he_2008_QW_prediction_beaches_baseflow_stormwater_runoff.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/he_2008_QW_prediction_beaches_baseflow_stormwater_runoff.pdf},
-  date = {2010-12-23 11:37:43 -0600},
-  date-modified = {2014-07-29 19:56:50 +0000},
-  isbn = {0043-1354},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {10}
 }
 
 @ARTICLE{Head:1992ss,
@@ -12792,27 +12724,11 @@
   title = {Enterococci predictions from partial least squares regression models
 	in conjunction with a single-sample standard improve the efficacy
 	of beach management advisories},
-  journal = {Environ. Sci. Technol.},
+  journal = {Environmental Science \& Technology},
   year = {2006},
   volume = {40},
   pages = {1737--1743},
-  number = {6},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/hou_2006_enterococci_predictions_regression_models_single-sample_standard_improve_advisories.pdf},
-  bdsk-url-1 = {http://www.scopus.com/scopus/inward/record.url?eid=2-s2.0-33645241088&partnerID=40&rel=R8.0.0},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:50 +0000},
-  isbn = {0013936X},
-  keywords = {Decision making; Environmental impact; Least squares approximations;
-	Mathematical models; Regression analysis; Water quality; Dynamic
-	Partial Least Square Regression (DPLSR) models; Enterococci; Environmental
-	data; Geometric mean; Beaches; beach; coastal zone management; modeling;
-	article; bacterial count; Enterococcus; environmental monitoring;
-	nonhuman; prediction; recreation; seashore; swimming; United States;
-	Animals; Bathing Beaches; California; Environmental Health; Forecasting;
-	Humans; Least-Squares Analysis; Models, Biological; Pacific Ocean;
-	Policy Making; Seawater; Water Microbiology; Bacteria (microorganisms)},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {6}
 }
 
 @ARTICLE{Hrudey:2002hb,
@@ -13040,7 +12956,8 @@
   journal = {Journal of the Royal Statistical Society: Series B (Methodology)},
   year = {1998},
   volume = {60},
-  pages = {271-293}
+  pages = {271-293},
+  number = {2}
 }
 
 @ARTICLE{Hurvich-Tsai-1989,
@@ -13898,19 +13815,11 @@
 @ARTICLE{Jin:2006tr,
   author = {Jin,G. and Englande Jr. ,A. J.},
   title = {Prediction of swimmability in a brackish water body},
-  journal = {Manage.Environ.Qual.},
+  journal = {Management of Environmental Quality},
   year = {2006},
   volume = {17},
   pages = {197--208},
-  number = {2},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/jin_2006_prediction_swimmability_brackish_water_body.pdf},
-  bdsk-url-1 = {http://www.scopus.com/scopus/inward/record.url?eid=2-s2.0-33645016774&partnerID=40},
-  date = {2010-12-23 11:37:43 -0600},
-  date-modified = {2014-07-29 19:56:50 +0000},
-  isbn = {14777835},
-  keywords = {Lake pollution; Statistical analysis; United States of America},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {2}
 }
 
 @ARTICLE{Jin:2003fk,
@@ -14189,10 +14098,7 @@
   year = {2012},
   volume = {185},
   pages = {2355--2366},
-  bdsk-url-1 = {http://link.springer.com/article/10.1007/s10661-012-2716-8},
-  owner = {wrbrooks},
-  timestamp = {2014.08.14},
-  url = {http://link.springer.com/article/10.1007/s10661-012-2716-8}
+  number = {3}
 }
 
 @ARTICLE{Joseph:2006ph,
@@ -14377,10 +14283,7 @@
   year = {2005},
   volume = {158},
   pages = {111--118},
-  bdsk-url-1 = {http://www.icevirtuallibrary.com/content/article/10.1680/wama.2005.158.3.111},
-  owner = {wrbrooks},
-  timestamp = {2014.08.14},
-  url = {http://www.icevirtuallibrary.com/content/article/10.1680/wama.2005.158.3.111}
+  number = {3}
 }
 
 @ARTICLE{Kashefipour:2002en,
@@ -19724,6 +19627,7 @@
 
 @ELECTRONIC{NCRFC,
   author = {{National Oceanic and Atmospheric Administration}},
+  year = {2012},
   title = {North {C}entral {R}iver {F}orecasting {C}enter},
   url = {http://www.crh.noaa.gov/ncrfc/},
   owner = {wrbrooks},
@@ -20027,20 +19931,7 @@
   year = {2005},
   volume = {39},
   pages = {5250--5260},
-  number = {20},
-  month = {Dec},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/nevers_2005_nowcast_modeling_ecoli_concentrations_southern_lake_michigan.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/nevers_2005_nowcast_modeling_ecoli_concentrations_southern_lake_michigan.pdf},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:51 +0000},
-  isbn = {0043-1354},
-  keywords = {Bathing Beaches; Cities; Coliphages/isolation \& purification; Colony
-	Count, Microbial; Environmental Monitoring; Escherichia coli/isolation
-	\& purification; Fresh Water/microbiology; Indiana; Models, Theoretical;
-	Regression Analysis; Reproducibility of Results; Water Pollutants/isolation
-	\& purification; Weather},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {20}
 }
 
 @INBOOK{Nevers:2004jp,
@@ -20991,14 +20882,7 @@
   journal = {Environmental Monitoring and Assessment},
   year = {2004},
   volume = {98},
-  pages = {175--190},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/olyphant_2004_predictive_model_beach_closures_rt_chicago.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/olyphant_2004_predictive_model_beach_closures_rt_chicago.pdf},
-  date = {2010-12-23 11:37:44 -0600},
-  date-modified = {2014-07-29 19:56:51 +0000},
-  isbn = {0167-6369},
-  m = {Journal Article},
-  ty = {JOUR}
+  pages = {175--190}
 }
 
 @ARTICLE{Ong:1996sj,
@@ -21435,26 +21319,11 @@
   author = {Parkhurst,D. F. and Brenner,K. P. and Dufour,A. P. and Wymer,L. J.},
   title = {Indicator bacteria at five swimming beaches - Analysis using random
 	forests},
-  journal = {Water Res.},
+  journal = {Water Research},
   year = {2005},
   volume = {39},
   pages = {1354--1360},
-  number = {7},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/parkhurst_2005_indicator_bacteria_swimming_beaches_analysis_random_forests.pdf},
-  bdsk-url-1 = {http://www.scopus.com/scopus/inward/record.url?eid=2-s2.0-18144426434&partnerID=40},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:51 +0000},
-  isbn = {00431354},
-  keywords = {Indicator bacteria; Random forests; Swimming beaches; Tree regression;
-	Beaches; Biomarkers; Data acquisition; Environmental impact; Surface
-	waters; Data sets; Bacteria; bacterium; bathing water; beach; water
-	quality; analytic method; article; bacterium identification; biological
-	monitoring; cloud; forest; nonhuman; priority journal; seashore;
-	Bathing Beaches; Colony Count, Microbial; Environmental Monitoring;
-	Escherichia coli; Regression Analysis; Rivers; Seawater; Swimming;
-	United States; Water Microbiology},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {7}
 }
 
 @MISC{RajbirParmar2010,
@@ -26335,11 +26204,8 @@
   journal = {Water and Environment Journal},
   year = {2012},
   volume = {26},
-  pages = {1747--6593},
-  bdsk-url-1 = {http://onlinelibrary.wiley.com/doi/10.1111/j.1747-6593.2011.00258.x/abstract;jsessionid=BD291BB8B49C5EBBA2F8CABD79A23F2E.f03t02},
-  owner = {wrbrooks},
-  timestamp = {2014.08.14},
-  url = {http://onlinelibrary.wiley.com/doi/10.1111/j.1747-6593.2011.00258.x/abstract;jsessionid=BD291BB8B49C5EBBA2F8CABD79A23F2E.f03t02}
+  pages = {7--18},
+  number = {1}
 }
 
 @ARTICLE{Stine:2003lo,
@@ -27195,7 +27061,7 @@
   author = {W. Thoe and M. Gold and A Griesbach and M. Grimmer and M. L. Taggart
 	and A. B. Boehm},
   title = {Predicting water quality at {S}anta {M}onica {B}each: evaluation
-	of five different models fror public notification of unsafe swimming
+	of five different models for public notification of unsafe swimming
 	confditions},
   journal = {Water Research},
   year = {2014},
@@ -27659,32 +27525,6 @@
   ty = {JOUR}
 }
 
-@TECHREPORT{Survey:2010an,
-  author = {{U. S. Geological Survey}},
-  title = {Biological Indicators},
-  year = {variously dated},
-  bdsk = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
-  bdsk-url-1 = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
-  booktitle = {Techniques of Water-Resource Investigation},
-  date = {2010-12-23 11:37:44 -0600},
-  date-modified = {2014-07-29 19:56:52 +0000},
-  m = {Report},
-  publisher = {U.S. Geological Survey},
-  ty = {RPRT},
-  volume = {U.S. Geological Survey Techniques of Water-Resources Investigations,
-	book 9, chap. A7}
-}
-
-@ELECTRONIC{EnDDaT-2014,
-  author = {{U.S. Geological Survey}},
-  month = {September},
-  year = {2014},
-  title = {Environmental {D}ata {D}iscovery and {T}ransformation},
-  url = {http://cida.usgs.gov/enddat/},
-  owner = {wrbrooks},
-  timestamp = {2014.09.30}
-}
-
 @ARTICLE{Ufnar:2006li,
   author = {Ufnar,D. and Ufnar,J. A. and Ellender,R. D. and Rebarchik,D. and
 	Stone,G.},
@@ -27783,8 +27623,72 @@
   ty = {JOUR}
 }
 
+@TECHREPORT{USEPA-2012,
+  author = {{United States Environmental Protection Agency}},
+  title = {Recreational Water Quality Criteria},
+  year = {2012},
+  number = {EPA-820-F-12-058}
+}
+
+@ELECTRONIC{Sanitary-Survey-2008,
+  author = {{United States Environmental Protection Agency}},
+  year = {2008},
+  title = {Great Lakes Beach Sanitary Survey User Manual}
+}
+
+@TECHREPORT{USEPA:2008ib,
+  author = {{United States Environmental Protection Agency}},
+  title = {Graeat Lakes beach sanitary survey user's manual},
+  year = {2008},
+  number = {EPA-823-B-06-001},
+  pages = {81--81}
+}
+
+@TECHREPORT{USEPA:2007lj,
+  author = {{United States Environmental Protection Agency}},
+  title = {Critical Path Science Plan for the Development of New or Revised
+	Recreational Water Quality Criteria},
+  year = {2007},
+  number = {EPA-823-R-08-002}
+}
+
+@TECHREPORT{USEPA:ecs,
+  author = {{United States Environmental Protection Agency}},
+  title = {Ambient Water Quality Criteria for Bacteria},
+  year = {1986},
+  number = {EPA-440-5-84-00},
+  owner = {wesleybrooks},
+  timestamp = {2011.06.06}
+}
+
+@TECHREPORT{Survey:2010an,
+  author = {{United States Geological Survey}},
+  title = {Biological Indicators},
+  year = {variously dated},
+  bdsk = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
+  bdsk-url-1 = {http://water.usgs.gov/owq/FieldManual/Chapter7/index.html},
+  booktitle = {Techniques of Water-Resource Investigation},
+  date = {2010-12-23 11:37:44 -0600},
+  date-modified = {2014-07-29 19:56:52 +0000},
+  m = {Report},
+  publisher = {U.S. Geological Survey},
+  ty = {RPRT},
+  volume = {U.S. Geological Survey Techniques of Water-Resources Investigations,
+	book 9, chap. A7}
+}
+
+@ELECTRONIC{EnDDaT-2014,
+  author = {{United States Geological Survey}},
+  year = {2014},
+  title = {Environmental {D}ata {D}iscovery and {T}ransformation},
+  url = {http://cida.usgs.gov/enddat/},
+  owner = {wrbrooks},
+  timestamp = {2014.09.30}
+}
+
 @ELECTRONIC{NWIS,
   author = {{United States Geological Survey}},
+  year = {2014},
   title = {The {N}ational {W}ater {I}nformation {S}ystem},
   url = {http://waterdata.usgs.gov/nwis},
   owner = {wrbrooks},
@@ -27812,18 +27716,6 @@
 	Zones},
   m = {Conference Proceedings},
   ty = {CONF}
-}
-
-@TECHREPORT{USEPA-2012,
-  author = {USEPA},
-  title = {Recreational Water Quality Criteria},
-  institution = {USEPA},
-  year = {2012},
-  number = {EPA-820-F-12-058},
-  bdsk-url-1 = {http://water.epa.gov/scitech/swguidance/standards/criteria/health/recreation/upload/RWQC2012.pdf},
-  owner = {wrbrooks},
-  timestamp = {2014.08.14},
-  url = {http://water.epa.gov/scitech/swguidance/standards/criteria/health/recreation/upload/RWQC2012.pdf}
 }
 
 @INPROCEEDINGS{Agency:2009bf,
@@ -27868,22 +27760,6 @@
   volume = {EPA 822-R-09-002}
 }
 
-@TECHREPORT{Agency:2008ib,
-  author = {USEPA},
-  title = {GREAT LAKES BEACH SANITARY SURVEY USER MANUAL},
-  year = {2008},
-  month = {May 2008},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/usepa_2008_great_lakes_beach_sanitary_survey_user_manual.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/usepa_2008_great_lakes_beach_sanitary_survey_user_manual.pdf},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:48 +0000},
-  m = {Report},
-  pages = {81--81},
-  publisher = {USEPA Office of Water},
-  ty = {RPRT},
-  volume = {EPA-823-B-06-001}
-}
-
 @TECHREPORT{Agency:2008ig,
   author = {USEPA},
   title = {National List of Beaches},
@@ -27898,17 +27774,6 @@
   publisher = {U.S. Environmental Protection Agency Office of Water},
   ty = {RPRT},
   volume = {EPA-823-R-08-004}
-}
-
-@ELECTRONIC{Sanitary-Survey-2008,
-  author = {USEPA},
-  year = {2008},
-  title = {Great Lakes Beach Sanitary Survey User Manual},
-  organization = {US Environmental Protection Agency, Office of Water},
-  address = {Washington, DC},
-  url = {http://www2.epa.gov/sites/production/files/documents/greatlakesmanual.pdf},
-  owner = {wrbrooks},
-  timestamp = {2014.10.03}
 }
 
 @TECHREPORT{Agency:2007bc,
@@ -27926,21 +27791,6 @@
   ty = {RPRT}
 }
 
-@TECHREPORT{Agency:2007lj,
-  author = {USEPA},
-  title = {Critical Path Science Plan for the Development of New or Revised
-	Recreational Water Quality Criteria},
-  year = {2007},
-  month = {August 31, 2007},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/usepa_2007_critical_path_science_plan_development_new_revised_QW_criteria.pdf;%20https://internal.mdc.usgs.gov/glrwq/RefLinks/usepa_2007_critical_path_science_plan_development_new_revised_QW_criteria_ERRATA.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/usepa_2007_critical_path_science_plan_development_new_revised_QW_criteria.pdf;%20https://internal.mdc.usgs.gov/glrwq/RefLinks/usepa_2007_critical_path_science_plan_development_new_revised_QW_criteria_ERRATA.pdf},
-  date = {2010-12-23 11:37:44 -0600},
-  date-modified = {2014-07-29 19:56:48 +0000},
-  m = {Report},
-  pages = {43--43},
-  ty = {RPRT}
-}
-
 @TECHREPORT{Agency:2001eu,
   author = {USEPA},
   title = {Method 1602: Male-specific (F+) and Somatic Coliphage in Water by
@@ -27954,15 +27804,6 @@
   m = {Report},
   ty = {RPRT},
   volume = {EPA 821-R-01-029}
-}
-
-@TECHREPORT{USEPA:ecs,
-  author = {USEPA},
-  title = {Ambient Water Quality Criteria for Bacteria},
-  year = {1986},
-  number = {EPA440/5-84-00},
-  owner = {wesleybrooks},
-  timestamp = {2011.06.06}
 }
 
 @ARTICLE{Valer:1997ei,
@@ -28520,20 +28361,11 @@
 	and Dufour,Alfred P.},
   title = {High sensitivity of children to swimming-associated gastrointestinal
 	illness: results using a rapid assay of recreational water quality},
-  journal = {Epidemiology (Cambridge, Mass.)},
+  journal = {Epidemiology},
   year = {2008},
   volume = {19},
   pages = {375--383},
-  number = {3},
-  month = {May},
-  av = {Print},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/wade_2008_high_sensitivity_children_gastrointestinal_illness.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/wade_2008_high_sensitivity_children_gastrointestinal_illness.pdf},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:52 +0000},
-  isbn = {1044-3983},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {3}
 }
 
 @ARTICLE{Wade:2006qc,
@@ -28541,27 +28373,11 @@
 	P. and Williams,A. H. and Dufour,A. P.},
   title = {Rapidly Measured Indicators of Recreational Water Quality Are Predictive
 	of Swimming-Associated Gastrointestinal Illness},
-  journal = {Environmental health perspectives},
+  journal = {Environmental Health Perspectives},
   year = {2006},
   volume = {114},
   pages = {24--28},
-  number = {1},
-  month = {Jan},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/wade_2006_rapidly_measured_indicators_predictive_gastrointestinal_illness.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/wade_2006_rapidly_measured_indicators_predictive_gastrointestinal_illness.pdf},
-  date = {2010-12-23 11:37:44 -0600},
-  date-modified = {2014-07-29 19:56:52 +0000},
-  isbn = {0091-6765},
-  keywords = {Article Subject Terms: Recreational waters; Prediction; Public health;
-	Polymerase chain reaction; Environmental monitoring; Symptoms; Water
-	quality; Recreation areas; Lakes; Gastrointestinal tract; Beaches;
-	Water-borne diseases; Swimming; Assessments; Water Quality Standards;
-	Indicators; Water Analysis; Testing Procedures; Water Sampling; Article
-	Taxonomic Terms: Enterococcus; Bacteroides; Article Geographic Terms:
-	North America, Erie L.; USA, Michigan L.; North America, Great Lakes;
-	DNA; Freshwater},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {1}
 }
 
 @ARTICLE{Wade:2003iz,
@@ -28874,24 +28690,16 @@
   ty = {CONF}
 }
 
-@ARTICLE{Waschbusch:2004bd,
+@TECHREPORT{Waschbusch:2004bd,
   author = {Waschbusch,R. and Corsi,S. and Sorsa,K. and Walker,J. and Standridge,J.
 	and Schnieder,T.},
-  title = {Data collection and modeling of enteric pathogens, fecal indicators
-	and real-time environmental data at {Madison, Wisconsin} recreational
-	beaches for timely public access to water quality information},
-  journal = {Stormwater: The Journal for Surface Water Quality Professionals},
+  title = {Final report for the {EMPACT} project: data collection and modeling
+	of enteric pathogens, fecal indicators and real-time environmental
+	data at {Madison, Wisconsin} recreational beaches for timely public
+	access to water quality information},
+  institution = {Madison Beach EMPACT Team},
   year = {2004},
-  volume = {Final report for the EMPACT Project R-82933901-0},
-  month = {May},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/wapnick_2009_beating_bacteria_new_method_id_prioritize_water_florida.htm},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/waschbusch_2005_data_collection_modeling_pathogens_fecal_indicators_real-time_madison_recreational.pdf},
-  date = {2010-12-23 11:37:44 -0600},
-  date-modified = {2014-07-29 19:56:52 +0000},
-  keywords = {model; fecal indicator bacteria; real-time; beaches; public outreach;
-	monitoring},
-  m = {Report},
-  ty = {RPRT}
+  number = {R-82933901-0}
 }
 
 @ARTICLE{Washburn:2003wi,
@@ -29025,16 +28833,6 @@
   isbn = {00380717},
   m = {Journal Article},
   ty = {JOUR}
-}
-
-@TECHREPORT{WDNR-2012,
-  author = {WDNR},
-  institution = {WDNR},
-  year = {2012},
-  bdsk-url-1 = {http://dnr.wi.gov/topic/Beaches/documents/BeachReport2012.pdf},
-  owner = {wrbrooks},
-  timestamp = {2014.08.14},
-  url = {http://dnr.wi.gov/topic/Beaches/documents/BeachReport2012.pdf}
 }
 
 @ARTICLE{Webb:1991ht,
@@ -29486,19 +29284,13 @@
 }
 
 @ARTICLE{Whitman:2008nb,
-  author = {Whitman,R. L. and Nevers,M. B.},
+  author = {Whitman, R. L. and Nevers, M. B.},
   title = {Summer E. coli Patterns and Responses along 23 Chicago Beaches},
-  journal = {ENVIRONMENTAL SCIENCE \& TECHNOLOGY},
+  journal = {Environmental Science \& Technology},
   year = {2008},
   volume = {42},
   pages = {9217--9224},
-  number = {24},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/whitman_2008_summer_ecoli_patterns_responses_23_chicago_beaches.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/whitman_2008_summer_ecoli_patterns_responses_23_chicago_beaches.pdf},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:53 +0000},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {24}
 }
 
 @TECHREPORT{Whitman:2005qw,
@@ -29520,25 +29312,11 @@
   author = {Whitman, R. L. and Nevers, M. B.},
   title = {Escherichia coli Sampling Reliability at a Frequently Closed Chicago
 	Beach: Monitoring and Management Implications},
-  journal = {Environ.Sci.Technol.},
+  journal = {Environmental Science \& Technology},
   year = {2004},
   volume = {38},
   pages = {4241--4246},
-  number = {16},
-  month = {15 Aug},
-  bdsk = {https://internal.mdc.usgs.gov/glrwq/RefLinks/whitman_2004_ecoli_sampling_reliability_chicago_beach_implications.pdf},
-  bdsk-url-1 = {https://internal.mdc.usgs.gov/glrwq/RefLinks/whitman_2004_ecoli_sampling_reliability_chicago_beach_implications.pdf},
-  date = {2010-12-23 11:37:42 -0600},
-  date-modified = {2014-07-29 19:56:53 +0000},
-  isbn = {0013-936X},
-  keywords = {Article Subject Terms: Assessments; Beaches; Computer programs; Costs;
-	Databases; Errors; Escherichia Coli; Microbial contamination; Monitoring;
-	Pollution monitoring; Precision; Recreation areas; Replication; Risk;
-	Risk assessment; Sampling; Technology; Water Depth; Water Quality;
-	Water sampling; Yield; Article Taxonomic Terms: Escherichia coli;
-	Article Geographic Terms: USA, Illinois, Chicago},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {16}
 }
 
 @ARTICLE{Whitman:2003co,
@@ -29605,18 +29383,11 @@
 	N.},
   title = {Solar and temporal effects on {E}scherichia coli concentration at
 	a {Lake Michigan} swimming beach},
-  journal = {Appl.Environ.Microbiol.},
+  journal = {Applied and Environmental Microbiology},
   year = {2004},
   volume = {70},
   pages = {4276--4285},
-  number = {7},
-  month = {Jul},
-  date = {2010-12-23 11:37:42 -0600},
-  isbn = {0099-2240},
-  keywords = {Colony Count, Microbial; Escherichia coli/isolation \& purification;
-	Fresh Water/microbiology; Sunlight; Swimming; Time Factors},
-  m = {Journal Article},
-  ty = {JOUR}
+  number = {7}
 }
 
 @ARTICLE{Whitman:2009kh,
@@ -29792,6 +29563,12 @@
   ty = {JOUR}
 }
 
+@TECHREPORT{WDNR-2012,
+  author = {{Wisconsin Department of Natural Resources}},
+  title = {Wisconsin's {G}reat {L}akes beach monitoring and notification program},
+  year = {2012}
+}
+
 @MISC{Wither:2005il,
   author = {Wither,A. and Greaves,J. and Dunhill,I. and Wyer,M. and Stapleton,C.
 	and Kay,D. and Humphrey,N. and Watkins,J. and Francis,C. and McDonald,A.
@@ -29870,6 +29647,7 @@
   year = {2001},
   volume = {58},
   pages = {109-130},
+  number = {2},
   file = {:C\:\\Users\\wrbrooks\\git\\beauty_contest\\references\\pdfs\\Wold-Sjostrum-Eriksson-2001.pdf:PDF},
   owner = {wrbrooks},
   timestamp = {2014.04.22}
@@ -30340,19 +30118,6 @@
   ty = {JOUR}
 }
 
-@ARTICLE{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012,
-  author = {Michael Cyterski \& Shuyan Zhang \& Emily White \& Marirosa Molina
-	\& Kurt Wolfe \& Rajbir Parmar \& Richard Zepp},
-  title = {Temporal synchronization analysis for improving regression modeling
-	of fecal indicator bacteria levels},
-  journal = {Water, Air \&Soil Pollution},
-  year = {2012},
-  volume = {223},
-  pages = {4841--4851},
-  owner = {wrbrooks},
-  timestamp = {2014.10.03}
-}
-
 @ARTICLE{Zhao:2001sw,
   author = {Zhao,T. and Doyle,M. P. and Zhao,P. and Blake,P. and Wu,F. -M},
   title = {Chlorine Inactivation of Escherichia coli O157:H7 in Water},
@@ -30482,7 +30247,8 @@
   journal = {Journal of the American Statistical Association},
   year = {2006},
   volume = {101},
-  pages = {1418-1429}
+  pages = {1418-1429},
+  number = {476}
 }
 
 @ARTICLE{Zucchetti:1975xl,
@@ -30505,14 +30271,6 @@
   ty = {JOUR}
 }
 
-@ELECTRONIC{Colilert,
-  title = {Colilert Test Kit Procedure},
-  organization = {National environmental methods index},
-  url = {https://www.nemi.gov/methods/method_summary/5584/},
-  owner = {wrbrooks},
-  timestamp = {2014.10.03}
-}
-
 @ELECTRONIC{GLRI:Website,
   title = {{U.S. Environmental Protection Agency Great Lakes Restoration Initiative}
 	website, http://www.epa.gov/glnpo/glri/, accessed 7/16/2011},
@@ -30522,6 +30280,15 @@
   date-modified = {2014-07-29 19:56:53 +0000},
   owner = {wrbrooks},
   timestamp = {2011.05.31}
+}
+
+@MANUAL{Colilert,
+  title = {Colilert Test Kit Procedure},
+  organization = {National environmental methods index},
+  year = {2013},
+  owner = {wrbrooks},
+  timestamp = {2014.10.03},
+  url = {https://www.nemi.gov/methods/method_summary/5584/}
 }
 
 @OTHER{Rockwell:2010,
