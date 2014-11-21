@@ -1,0 +1,202 @@
+\relax 
+\emailauthor{wrbrooks@usgs.gov}{Wesley Brooks}
+\emailauthor{rbcarvin@usgs.gov}{Rebecca Carvin}
+\emailauthor{srcorsi@usgs.gov}{Steven Corsi}
+\emailauthor{mnfienen@usgs.gov}{Michael Fienen}
+\Newlabel{usgs-wiwsc}{a}
+\citation{Cabelli:1979lb,Wade:2006qc,Wade:2008yi,Fleisher:2010xo}
+\citation{Cabelli:1983od,Dufour:1984yn,USEPA:ecs}
+\citation{USEPA-2012,WDNR-2012}
+\citation{USEPA-2012}
+\citation{USEPA:2007lj}
+\citation{Whitman:2004wv,Whitman:2008nb}
+\citation{Brandt:2006gj,Olyphant:2004yq}
+\citation{Nevers:2005ln,Francy:2007yv}
+\citation{Hou:2006nf,Brooks-Fienen-Corsi-2013}
+\citation{Waschbusch:2004bd,Jin:2006tr}
+\citation{Stidson-2012}
+\citation{Parkhurst:2005zf,Jones-Liu-Dorovitch-2012}
+\citation{Kashefipour-Lin-Falconer-2005,He:2008jx}
+\citation{deBrauwere-Koffi-Servais-2014}
+\citation{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}}
+\newlabel{introduction}{{1}{2}}
+\citation{deBrauwere-Koffi-Servais-2014}
+\citation{Ge:2007ou}
+\citation{Francy-et-al-2013}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Data}{4}}
+\newlabel{data}{{2}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Site descriptions}{4}}
+\newlabel{site-descriptions}{{2.1}{4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Chequamegon Bay sites}{4}}
+\newlabel{chequamegon-bay-sites}{{2.1.1}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Map showing the location of the seven Wisconsin beaches used for this study.}}{5}}
+\newlabel{fig:sites}{{1}{5}}
+\citation{Francy-et-al-2013}
+\citation{Colilert}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Manitowoc County sites}{6}}
+\newlabel{manitowoc-county-sites}{{2.1.2}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Data sources}{6}}
+\newlabel{data-sources}{{2.2}{6}}
+\citation{EnDDaT-2014}
+\citation{NWIS}
+\citation{NCRFC}
+\citation{Schwab-Bedford-1999}
+\citation{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012}
+\citation{USEPA:2008ib}
+\citation{Ge:2007ou,Frick:2008jo}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Data transformations}{8}}
+\newlabel{data-transformations}{{2.3}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{9}}
+\newlabel{methods}{{3}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Definitions}{9}}
+\newlabel{definitions}{{3.1}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Listing of statistical techniques}{9}}
+\newlabel{listing-of-statistical-techniques}{{3.2}{9}}
+\citation{Hosmer-Lemeshow-2004}
+\citation{Whitman:2004pc}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Continuous vs.\nobreakspace  {}binary regression}{10}}
+\newlabel{continuous-vs.binary-regression}{{3.2.1}{10}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Weighting of observations in binary regression}{10}}
+\newlabel{weighting-of-observations-in-binary-regression}{{3.2.2}{10}}
+\citation{Friedman-2001}
+\citation{Tibshirani-1996}
+\citation{Zou-2006}
+\citation{Akaike-1973,Hurvich-Simonoff-Tsai-1998}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Selection-only methods}{11}}
+\newlabel{selection-only-methods}{{3.2.3}{11}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Listing of modeling algorithms}{11}}
+\newlabel{listing-of-modeling-algorithms}{{3.2.4}{11}}
+\newlabel{gbm}{{3.2.4}{11}}
+\@writefile{toc}{\contentsline {paragraph}{GBM}{11}}
+\newlabel{adaptive-lasso}{{3.2.4}{11}}
+\@writefile{toc}{\contentsline {paragraph}{Adaptive Lasso}{11}}
+\citation{Fogel-1998}
+\newlabel{eq:AICc-continuous}{{1}{12}}
+\newlabel{eq:AICc-binary}{{2}{12}}
+\newlabel{genetic-algorithm}{{3.2.4}{12}}
+\@writefile{toc}{\contentsline {paragraph}{Genetic algorithm}{12}}
+\citation{Wold-Sjostrum-Eriksson-2001}
+\citation{Brooks-Fienen-Corsi-2013}
+\citation{Chun-Keles-2010}
+\newlabel{pls}{{3.2.4}{13}}
+\@writefile{toc}{\contentsline {paragraph}{PLS}{13}}
+\newlabel{spls}{{3.2.4}{13}}
+\@writefile{toc}{\contentsline {paragraph}{SPLS}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Cross Validation}{13}}
+\newlabel{cross-validation}{{3.3}{13}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Comprehensive list of the modeling methods analyzed in this study. Listed for each method are the method's abbreviation, the algorithm used by the method, and indicators of whether the method uses binary regression, observation weighting, and/or covariate selection separately from estimation. The two methods GBM-CV and GBM-OOB differ in how the number of GBM trees are selected, as described in the main text.}}{14}}
+\newlabel{table:methods}{{1}{14}}
+\citation{Hanley-McNeil-1982}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces An example of how the results for a site (Hika here) were compiled into a results table. The summary statistics used to compare predictive performance (area under the ROC curve and predictive error sum of squares) were calculated from the table. Confidence intervals for the summary statistics were computed via the bootstrap by resampling (with replacement) the rows of the results table.}}{15}}
+\newlabel{table:hika-results}{{2}{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Comparing methods, and quantifying uncertainty in the ranks}{15}}
+\newlabel{comparing-methods-and-quantifying-uncertainty-in-the-ranks}{{3.4}{15}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Under leave-one-year-out (top) and leave-one-out (bottom) cross validation, frequency of the mean AUROC rank of GBM-OOB, GBM-CV, or AL (in the rows) exceeding that of the other methods (in the columns). }}{17}}
+\newlabel{tab:AUROC}{{3}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{17}}
+\newlabel{results}{{4}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}AUROC}{17}}
+\newlabel{auroc}{{4.1}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}PRESS}{17}}
+\newlabel{press}{{4.2}{17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Mean ranking of the methods across all seven sites by area under the receiver operating characteristic curve (AUROC) and predictive residual sum of squares (PRESS) (higher is better). The error bars are 90\% confidence intervals computed by the bootstrap. At left are the AUROC rankings from the leave-one-year-out cross validation (a), at right are the AUROC rankings from the leave-one-out cross validation (b)}}{18}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Under leave-one-year-out (top) or leave-one-out (bottom) cross validation, frequency of the mean PRESS rank of GBM-CV, GBM-OOB, or AL (in the rows) exceeding that of the other methods (in the columns).}}{19}}
+\newlabel{table:press.pairs.annual}{{4}{19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Narrowing the focus}{19}}
+\newlabel{narrowing-the-focus}{{4.3}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Mean ranking of the methods by predictive error sum of squares (PRESS) across all sites (higher is better). The error bars are 90\% confidence intervals computed by the bootstrap. At left are the PRESS rankings from the leave-one-year-out cross validation (a), at right are the PRESS rankings from the leave-one-out cross validation (b).}}{20}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Classification of responses, and the decision threshold}{21}}
+\newlabel{threshold}{{4.4}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces At each site, the number of predictions from AL, GBM-OOB, and GBM-CV that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Covariate selection}{23}}
+\newlabel{covariate-selection}{{4.5}{23}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{23}}
+\newlabel{discussion}{{5}{23}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces At each site, the mean number of covariates that were selected for the AL model, and the total number of covariates, all of which were used in the gradient boosting machine with an out-of-bag estimate of the optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the covariate counts are broken down by whether the covariate values were collected automatically from web services or manually at the beach.}}{24}}
+\citation{R-2014}
+\citation{VB3-2013}
+\bibstyle{chicago}
+\bibcite{Akaike-1973}{{1}{1973}{{Akaike}}{{Akaike}}}
+\bibcite{Brandt:2006gj}{{2}{2006}{{Brandt et~al.}}{{Brandt, Schwab, Croley, Belestky, and Whitman}}}
+\bibcite{Brooks-Fienen-Corsi-2013}{{3}{2013}{{Brooks et~al.}}{{Brooks, Fienen, and Corsi}}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Acknowledgments}{26}}
+\newlabel{acknowledgments}{{6}{26}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}References}{26}}
+\newlabel{references}{{7}{26}}
+\bibcite{Cabelli:1983od}{{4}{1983}{{Cabelli}}{{Cabelli}}}
+\bibcite{Cabelli:1979lb}{{5}{1979}{{Cabelli et~al.}}{{Cabelli, Dufour, Levin, McCabe, Haberman, and Jensen}}}
+\bibcite{Chun-Keles-2010}{{6}{2010}{{Chun and Keles}}{{Chun and Keles}}}
+\bibcite{VB3-2013}{{7}{2013}{{Cyterski et~al.}}{{Cyterski, Brooks, Galvin, Wolfe, Carvin, Roddick, Fienen, and Corsi}}}
+\bibcite{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012}{{8}{2012}{{Cyterski et~al.}}{{Cyterski, Zhang, White, Molina, Wolfe, Parmar, and Zepp}}}
+\bibcite{deBrauwere-Koffi-Servais-2014}{{9}{2014}{{de~Brauwere et~al.}}{{de~Brauwere, Ouattara, and Servais}}}
+\bibcite{Dufour:1984yn}{{10}{1984}{{Dufour}}{{Dufour}}}
+\bibcite{Fleisher:2010xo}{{11}{2010}{{Fleisher et~al.}}{{Fleisher, Fleming, Solo-Gabriele, Kish, Sinigalliano, Plano, Elmir, Wang, Withum, Shibata, Gidley, Abdelzaher, He, Ortega, Zhu, Wright, Hollenbeck, and Backer}}}
+\bibcite{Fogel-1998}{{12}{1998}{{Fogel}}{{Fogel}}}
+\bibcite{Francy-et-al-2013}{{13}{2013}{{Francy et~al.}}{{Francy, Brady, Carvin, Corsi, Fuller, Harrison, Hayhurst, Lant, Nevers, Terrio, and Zimmerman}}}
+\bibcite{Francy:2007yv}{{14}{2007}{{Francy and Darner}}{{Francy and Darner}}}
+\bibcite{Frick:2008jo}{{15}{2008}{{Frick et~al.}}{{Frick, Ge, and Zepp}}}
+\bibcite{Friedman-2001}{{16}{2001}{{Friedman}}{{Friedman}}}
+\bibcite{Ge:2007ou}{{17}{2007}{{Ge and Frick}}{{Ge and Frick}}}
+\bibcite{Hanley-McNeil-1982}{{18}{1982}{{Hanley and McNeil}}{{Hanley and McNeil}}}
+\bibcite{He:2008jx}{{19}{2008}{{He and He}}{{He and He}}}
+\bibcite{Hosmer-Lemeshow-2004}{{20}{2004}{{Hosmer~Jr and Lemeshow}}{{Hosmer~Jr and Lemeshow}}}
+\bibcite{Hou:2006nf}{{21}{2006}{{Hou et~al.}}{{Hou, Rabinovici, and Boehm}}}
+\bibcite{Hurvich-Simonoff-Tsai-1998}{{22}{1998}{{Hurvich et~al.}}{{Hurvich, Simonoff, and Tsai}}}
+\bibcite{Jin:2006tr}{{23}{2006}{{Jin and Englande~Jr.}}{{Jin and Englande~Jr.}}}
+\bibcite{Jones-Liu-Dorovitch-2012}{{24}{2012}{{Jones et~al.}}{{Jones, Liu, and Dorovitch}}}
+\bibcite{Kashefipour-Lin-Falconer-2005}{{25}{2005}{{Kashefipour et~al.}}{{Kashefipour, Lin, and Falconer}}}
+\bibcite{Colilert}{{26}{2013}{{National environmental methods index}}{{National environmental methods index}}}
+\bibcite{NCRFC}{{27}{2012}{{{National Oceanic and Atmospheric Administration}}}{{{National Oceanic and Atmospheric Administration}}}}
+\bibcite{Nevers:2005ln}{{28}{2005}{{Nevers and Whitman}}{{Nevers and Whitman}}}
+\bibcite{Olyphant:2004yq}{{29}{2004}{{Olyphant and Whitman}}{{Olyphant and Whitman}}}
+\bibcite{Parkhurst:2005zf}{{30}{2005}{{Parkhurst et~al.}}{{Parkhurst, Brenner, Dufour, and Wymer}}}
+\bibcite{R-2014}{{31}{2014}{{{R Core Team}}}{{{R Core Team}}}}
+\bibcite{Schwab-Bedford-1999}{{32}{1999}{{Schwab and Bedford}}{{Schwab and Bedford}}}
+\bibcite{Stidson-2012}{{33}{2012}{{Stidson et~al.}}{{Stidson, Gray, and McPhail}}}
+\bibcite{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}{{34}{2014}{{Thoe et~al.}}{{Thoe, Gold, Griesbach, Grimmer, Taggart, and Boehm}}}
+\bibcite{Tibshirani-1996}{{35}{1996}{{Tibshirani}}{{Tibshirani}}}
+\bibcite{USEPA:ecs}{{36}{1986}{{{USEPA}}}{{{United States Environmental Protection Agency}}}}
+\bibcite{USEPA:2007lj}{{37}{2007}{{{USEPA}}}{{{United States Environmental Protection Agency}}}}
+\bibcite{USEPA:2008ib}{{38}{2008}{{{USEPA}}}{{{United States Environmental Protection Agency}}}}
+\bibcite{USEPA-2012}{{39}{2012}{{{USEPA}}}{{{United States Environmental Protection Agency}}}}
+\bibcite{EnDDaT-2014}{{40}{2014a}{{{USGS}}}{{{United States Geological Survey}}}}
+\bibcite{NWIS}{{41}{2014b}{{{USGS}}}{{{United States Geological Survey}}}}
+\bibcite{Wade:2008yi}{{42}{2008}{{Wade et~al.}}{{Wade, Calderon, Brenner, Sams, Beach, Haugland, Wymer, and Dufour}}}
+\bibcite{Wade:2006qc}{{43}{2006}{{Wade et~al.}}{{Wade, Calderon, Sams, Beach, Brenner, Williams, and Dufour}}}
+\bibcite{Waschbusch:2004bd}{{44}{2004}{{Waschbusch et~al.}}{{Waschbusch, Corsi, Sorsa, Walker, Standridge, and Schnieder}}}
+\bibcite{Whitman:2004pc}{{45}{2004}{{Whitman and Nevers}}{{Whitman and Nevers}}}
+\bibcite{Whitman:2008nb}{{46}{2008}{{Whitman and Nevers}}{{Whitman and Nevers}}}
+\bibcite{Whitman:2004wv}{{47}{2004}{{Whitman et~al.}}{{Whitman, Nevers, Korinek, and Byappanahalli}}}
+\bibcite{WDNR-2012}{{48}{2012}{{{Wisconsin Department of Natural Resources}}}{{{Wisconsin Department of Natural Resources}}}}
+\bibcite{Wold-Sjostrum-Eriksson-2001}{{49}{2001}{{Wold et~al.}}{{Wold, Sjostrom, and Eriksson}}}
+\bibcite{Zou-2006}{{50}{2006}{{Zou}}{{Zou}}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Appendix}{33}}
+\newlabel{appendix}{{8}{33}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Under leave-one-year-out (top) and leave-one-out (bottom) cross validation, frequency of the mean AUROC rank of each method (rows) exceeding that of the other methods (columns). }}{33}}
+\newlabel{tab:AUROC-comprehensive}{{5}{33}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.0.1}Comprehensive counts from simulating the models in use:}{33}}
+\newlabel{comprehensive-counts-from-simulating-the-models-in-use}{{8.0.1}{33}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces At Thompson, the number of predictions from every prediction method that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{34}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces At Maslowski, the number of predictions from every prediction method that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{34}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces At Kreher, the number of predictions from every prediction method that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{34}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces At Neshotah, the number of predictions from every prediction method that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{35}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces At Red Arrow, the number of predictions from every prediction method that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{35}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces At Point, the number of predictions from every prediction method that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{35}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Under leave-one-year-out (top) or leave-one-out (bottom) cross validation, frequency of the mean PRESS rank of each method (rows) exceeding that of the other methods (columns).}}{36}}
+\newlabel{table:press.pairs.annual-comprehensive}{{6}{36}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces At Hika, the number of predictions from every prediction method that fell into four categories, from left: true negatives, false positives, true positive, and false negatives.}}{36}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Listing of the variables used in the regression models at Thompson beach. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}}{37}}
+\newlabel{table:thompson-variables}{{7}{37}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Listing of the variables used in the regression models at Maslowski beach. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}}{38}}
+\newlabel{table:maslowski-variables}{{8}{38}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Listing of the variables used in the regression models at Kreher beach. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}}{39}}
+\newlabel{table:kreher-variables}{{9}{39}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Listing of the variables used in the regression models at Neshotah beach. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}}{40}}
+\newlabel{table:neshotah-variables}{{10}{40}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Listing of the variables used in the regression models at Red Arrow beach. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}}{41}}
+\newlabel{table:redarrow-variables}{{11}{41}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Listing of the variables used in the regression models at the Point beaches. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}}{42}}
+\newlabel{table:point-variables}{{12}{42}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Listing of the variables used in the regression models at Hika beach. For each variable, the listing indicates which summary statistics were computed, and over what time scales.}}{43}}
+\newlabel{table:hika-variables}{{13}{43}}

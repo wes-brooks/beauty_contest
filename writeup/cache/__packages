@@ -1,0 +1,17 @@
+base
+brooks
+datasets
+devtools
+dplyr
+ggplot2
+graphics
+grDevices
+knitr
+Matrix
+methods
+plotrix
+RColorBrewer
+reshape2
+stats
+utils
+xtable
