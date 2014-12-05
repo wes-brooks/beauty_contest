@@ -1,7 +1,7 @@
-This is XeTeX, Version 3.1415926-2.5-0.9999.3 (MiKTeX 2.9) (preloaded format=xelatex 2014.6.23)  4 DEC 2014 19:48
+This is XeTeX, Version 3.1415926-2.5-0.9999.3 (MiKTeX 2.9) (preloaded format=xelatex 2014.6.23)  4 DEC 2014 20:52
 entering extended mode
-**writeup-1.tex
-(C:\Users\wrbrooks\git\beauty_contest\writeup\writeup-1.tex
+**manuscript.tex
+(C:\Users\wrbrooks\git\beauty_contest\writeup\manuscript.tex
 LaTeX2e <2014/05/01>
 Babel <3.9k> and hyphenation patterns for 68 languages loaded.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\elsarticle\elsarticle.cls"
@@ -82,7 +82,7 @@ Requested font "psyr" at 12.0pt
 \@sep=\skip43
 \@@sep=\skip44
 
-(C:\Users\wrbrooks\git\beauty_contest\writeup\writeup-1.spl)
+(C:\Users\wrbrooks\git\beauty_contest\writeup\manuscript.spl)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\natbib\natbib.sty"
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip45
@@ -307,7 +307,7 @@ LaTeX Info: Redefining \\ on input line 3056.
 \c@thm=\count126
 \c@lem=\count127
 
-(C:\Users\wrbrooks\git\beauty_contest\writeup\writeup-1.aux)
+(C:\Users\wrbrooks\git\beauty_contest\writeup\manuscript.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
 LaTeX Font Info:    ... okay on input line 60.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
@@ -445,11 +445,7 @@ Overfull \vbox (39.65776pt too high) has occurred while \output is active []
 [1
 
 
-] [2] [3]
-
-LaTeX Warning: Reference `fig:sites' on page 4 undefined on input line 164.
-
-[4] [5] [6] [7] [8] [9]
+] [2] [3] [4] [5] [6] [7] [8] [9]
 Overfull \hbox (0.8697pt too wide) in paragraph at lines 327--333
 \T1/cmr/m/n/12 tech-nique uses one of five mod-el-ing al-go-rithms: the gra-di-
 ent boost-ing ma-chine (GBM),
@@ -461,25 +457,18 @@ Requested font "cmtt8" at 8.0pt
 Requested font "cmtt8" at 6.0pt
  [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22] [23] [24]
 [25] [26] [27] [28] [29] [30] [31] [32] [33] [34]
-(C:\Users\wrbrooks\git\beauty_contest\writeup\writeup-1.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- )
+(C:\Users\wrbrooks\git\beauty_contest\writeup\manuscript.aux) )
 (\end occurred inside a group at level 1)
 
-### simple group (level 1) entered at line 854 ({)
+### simple group (level 1) entered at line 853 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 3751 strings out of 428791
- 45857 string characters out of 3163815
- 123334 words of memory out of 3000000
- 6966 multiletter control sequences out of 15000+200000
+ 3750 strings out of 428791
+ 45858 string characters out of 3163815
+ 123336 words of memory out of 3000000
+ 6965 multiletter control sequences out of 15000+200000
  25618 words of font info for 81 fonts, out of 3000000 for 9000
  1096 hyphenation exceptions out of 8191
- 32i,16n,34p,1638b,358s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 32i,16n,34p,1639b,358s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on writeup-1.pdf (34 pages).
+Output written on manuscript.pdf (34 pages).

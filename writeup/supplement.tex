@@ -1,0 +1,226 @@
+\documentclass[authoryear,review, 12pt]{elsarticle}
+
+
+
+\newcommand{\maxwidth}{\textwidth}
+
+\usepackage{alltt}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{verbose}
+\setlength{\parskip}{\bigskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{bm}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{undertilde}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{setspace}
+\usepackage{esint}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{ifthen}
+\usepackage{longtable}
+
+\mathchardef\mhyphen="2D % Define a "math hyphen"
+
+\newcommand{\hlc}[2][yellow]{ {\sethlcolor{#1} \hl{#2}} }
+\newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+
+\newcommand\pr{\mathbf P}
+\newcommand{\E}{\mathbb{E}}
+
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.5in}
+\textwidth=6.5in
+\textheight=8.5in
+\setlength{\topmargin}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+
+\journal{Water Research}
+
+\newboolean{thesis}
+\setboolean{thesis}{false}
+
+\begin{document}
+
+
+\begin{frontmatter}
+
+\title{Predicting recreational water quality advisories: A comparison of statistical methods}
+
+\author[usgs-wiwsc]{Wesley Brooks}
+\ead{wrbrooks@usgs.gov}
+
+\author[usgs-wiwsc]{Rebecca Carvin}
+\ead{rbcarvin@usgs.gov}
+
+\author[usgs-wiwsc]{Steven Corsi}
+\ead{srcorsi@usgs.gov}
+
+\author[usgs-wiwsc]{Michael Fienen}
+\ead{mnfienen@usgs.gov}
+
+\address[usgs-wiwsc]{Wisconsin Water Science Center, United States Geological Survey, 8505 Research Way, Middleton, WI 53562}
+
+\begin{abstract}
+This is an appendix of supplemental online material for the report "Predicting recreational water quality advisories: A comparison of statistical methods".
+\end{abstract}
+
+\begin{keyword}
+Beach water quality, Statistical model, Performance evaluation, Real-time prediction
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Appendix}\label{appendix}
+
+\begin{table}[h!]
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{rccccccccccccc}
+    
+\multicolumn{6}{l}{\kern-2em \textbf{Leave-one-year-out cross-validation:}} & & & & & & & & \\
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} \\ 
+  \hline
+GBM-CV & 0.86 & 0.87 & 0.98 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  GBM-OOB &  & 0.69 & 0.92 & 0.95 & 1.00 & 0.99 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL &  &  & 0.96 & 0.87 & 1.00 & 0.97 & 0.98 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL (s) &  &  &  & 0.52 & 0.85 & 0.83 & 0.85 & 0.95 & 0.98 & 0.98 & 1.00 & 1.00 & 1.00 \\ 
+  AL (b,w) &  &  &  &  & 0.80 & 0.78 & 0.90 & 0.95 & 0.98 & 1.00 & 0.99 & 1.00 & 1.00 \\ 
+  SPLS &  &  &  &  &  & 0.53 & 0.51 & 0.74 & 0.86 & 0.87 & 0.97 & 0.99 & 1.00 \\ 
+  PLS &  &  &  &  &  &  & 0.50 & 0.65 & 0.82 & 0.82 & 0.94 & 0.99 & 1.00 \\ 
+  AL (b) &  &  &  &  &  &  &  & 0.66 & 0.91 & 0.89 & 0.93 & 0.99 & 1.00 \\ 
+  SPLS (s) &  &  &  &  &  &  &  &  & 0.74 & 0.76 & 0.90 & 0.98 & 0.99 \\ 
+  AL (b,s) &  &  &  &  &  &  &  &  &  & 0.50 & 0.67 & 0.91 & 0.97 \\ 
+  AL (b,w,s) &  &  &  &  &  &  &  &  &  &  & 0.65 & 0.89 & 0.94 \\ 
+  GA &  &  &  &  &  &  &  &  &  &  &  & 0.82 & 0.86 \\ 
+  GA (b,w) &  &  &  &  &  &  &  &  &  &  &  &  & 0.52 \\ 
+  & & & & & & & & & & & & & \\
+\multicolumn{6}{l}{\kern-2em \textbf{Leave-one-out cross-validation:}} & & & & & & & & \\
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} \\ 
+  \hline
+GBM-CV & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  GBM-OOB &  & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL &  &  & 0.72 & 0.99 & 0.93 & 0.96 & 0.98 & 1.00 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL (b,w) &  &  &  & 0.78 & 0.91 & 0.82 & 0.90 & 0.97 & 0.94 & 0.99 & 1.00 & 1.00 & 0.99 \\ 
+  AL (s) &  &  &  &  & 0.53 & 0.60 & 0.70 & 0.79 & 0.83 & 0.94 & 0.94 & 0.96 & 0.95 \\ 
+  AL (b,w,s) &  &  &  &  &  & 0.55 & 0.63 & 0.73 & 0.80 & 0.92 & 0.97 & 0.98 & 0.94 \\ 
+  GA &  &  &  &  &  &  & 0.59 & 0.66 & 0.75 & 0.89 & 0.89 & 0.88 & 0.90 \\ 
+  SPLS &  &  &  &  &  &  &  & 0.58 & 0.68 & 0.83 & 0.87 & 0.88 & 0.85 \\ 
+  SPLS (s) &  &  &  &  &  &  &  &  & 0.63 & 0.80 & 0.83 & 0.84 & 0.80 \\ 
+  PLS &  &  &  &  &  &  &  &  &  & 0.65 & 0.68 & 0.69 & 0.70 \\ 
+  GA (b) &  &  &  &  &  &  &  &  &  &  & 0.49 & 0.49 & 0.52 \\ 
+  AL (b) &  &  &  &  &  &  &  &  &  &  &  & 0.46 & 0.50 \\ 
+  AL (b,s) &  &  &  &  &  &  &  &  &  &  &  &  & 0.51 \\ 
+  
+    \end{tabular}}
+    \caption{Under leave-one-year-out (top) and leave-one-out (bottom) cross validation, frequency of the mean AUROC rank of each method (rows) exceeding that of the other methods (columns).
+    \label{tab:AUROC-comprehensive}}
+\end{table}
+
+\begin{table}[h!]
+    \centering
+\resizebox{0.8\textwidth}{!}{%
+    \begin{tabular}{rccccccc}
+
+\multicolumn{6}{l}{\kern-4em \textbf{Leave-one-year-out cross-validation:}} & & \\
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
+  \hline
+GBM-CV & 0.58 & 0.96 & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  GBM-OOB &  & 0.94 & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL &  &  & 0.52 & 0.88 & 0.94 & 0.99 & 1.00 \\ 
+  SPLS &  &  &  & 0.87 & 0.93 & 1.00 & 1.00 \\ 
+  PLS &  &  &  &  & 0.59 & 0.91 & 1.00 \\ 
+  SPLS (s) &  &  &  &  &  & 0.83 & 1.00 \\ 
+  AL (s) &  &  &  &  &  &  & 1.00 \\ 
+  & & & & & & & \\
+\multicolumn{6}{l}{\kern-4em \textbf{Leave-one-out cross-validation:}} & & \\
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
+  \hline
+GBM-CV & 0.66 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  GBM-OOB &  & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
+  AL &  &  & 0.73 & 0.80 & 0.85 & 0.93 & 1.00 \\ 
+  SPLS (s) &  &  &  & 0.57 & 0.66 & 0.82 & 1.00 \\ 
+  SPLS &  &  &  &  & 0.52 & 0.75 & 1.00 \\ 
+  PLS &  &  &  &  &  & 0.69 & 1.00 \\ 
+  AL (s) &  &  &  &  &  &  & 0.99 \\ 
+  
+    \end{tabular}}
+    \caption{Under leave-one-year-out (top) or leave-one-out (bottom) cross validation, frequency of the mean PRESS rank of each method (rows) exceeding that of the other methods (columns).}
+    \label{table:press.pairs.annual-comprehensive}
+\end{table}
+
+\subsubsection{Comprehensive counts from simulating the models in
+use:}\label{comprehensive-counts-from-simulating-the-models-in-use}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-thompson.png}
+\caption{At Thompson, the number of predictions from every prediction
+method that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-maslowski.png}
+\caption{At Maslowski, the number of predictions from every prediction
+method that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-kreher.png}
+\caption{At Kreher, the number of predictions from every prediction
+method that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-neshotah.png}
+\caption{At Neshotah, the number of predictions from every prediction
+method that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-redarrow.png}
+\caption{At Red Arrow, the number of predictions from every prediction
+method that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-point.png}
+\caption{At Point, the number of predictions from every prediction
+method that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-hika.png}
+\caption{At Hika, the number of predictions from every prediction method
+that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\input{appendix/thompson.tex} \input{appendix/maslowski.tex}
+\input{appendix/kreher.tex}
+
+\input{appendix/neshotah.tex} \input{appendix/redarrow.tex}
+\input{appendix/point.tex} \input{appendix/hika.tex}
+
+\end{document}

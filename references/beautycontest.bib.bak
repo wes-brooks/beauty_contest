@@ -8452,8 +8452,9 @@
 	D. and Withum,K. and Shibata,T. and Gidley,M. L. and Abdelzaher,A.
 	and He,G. and Ortega,C. and Zhu,X. and Wright,M. and Hollenbeck,J.
 	and Backer,L. C.},
-  title = {The BEACHES study: health effects and exposures from non-point source
-	microbial contaminants in subtropical recreational marine waters},
+  title = {The {BEACHES} study: health effects and exposures from non-point
+	source microbial contaminants in subtropical recreational marine
+	waters},
   journal = {International Journal of Epidemiology},
   year = {2010},
   volume = {39},
@@ -12015,7 +12016,7 @@
 @ARTICLE{He:2007bs,
   author = {He,L. -M and Lu,J. and Shi,W.},
   title = {Variability of fecal indicator bacteria in flowing and ponded waters
-	in southern California: Implications for bacterial TMDL development
+	in southern {C}alifornia: Implications for bacterial {TMDL} development
 	and implementation},
   journal = {Water research},
   year = {2007},
@@ -27638,7 +27639,7 @@
 
 @TECHREPORT{USEPA:2008ib,
   author = {{United States Environmental Protection Agency}},
-  title = {Graeat Lakes beach sanitary survey user's manual},
+  title = {Great Lakes beach sanitary survey user's manual},
   year = {2008},
   number = {EPA-823-B-06-001},
   pages = {81--81}
@@ -29285,7 +29286,7 @@
 
 @ARTICLE{Whitman:2008nb,
   author = {Whitman, R. L. and Nevers, M. B.},
-  title = {Summer E. coli Patterns and Responses along 23 Chicago Beaches},
+  title = {Summer \emph{{E}. coli} Patterns and Responses along 23 Chicago Beaches},
   journal = {Environmental Science \& Technology},
   year = {2008},
   volume = {42},

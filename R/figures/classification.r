@@ -46,7 +46,7 @@ perf$accurate = perf$flag == perf$exceedance
 #plot the results:
 pp = list()
 for (s in sites) {
-    yrange = max(filter(perf, site==s)$count)
+    yrange = max(c(filter(perf, site==s)$count, 110))
     
     pp[[s]] = ggplot(filter(perf, site==s)) +
         aes(x=exceedance, y=count, fill=factor(accurate, levels=c("TRUE", "FALSE"))) +

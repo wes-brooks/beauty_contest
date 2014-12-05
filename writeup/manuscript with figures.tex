@@ -1,53 +1,115 @@
-\section{Abstract}\label{abstract}
+\documentclass[authoryear,review, 12pt]{elsarticle}
 
-Epidemiological studies have indicated that the concentration of fecal
-indicator bacteria (FIB) in beach water is associated with illnesses
-among people who have contact with the water. In order to mitigate
-public health impacts, many beaches are managed so that an advisory is
-posted when the concentration of FIB exeeds a beach action value. The
-most commonly used method of measuring FIB concentration takes \(18-24\)
-hours before returning a result. It has become common to base beach
-management decisions on the output from nowcast models that use
-environmental and meteorological conditions to predict the current
-concentration of FIB, avoiding the \(24\)h lag. Most commonly, nowcast
-models are estimated using ordinary least squares regression, but other
-regression methods from the statistical and machine learning literature
-are appearing in growing numbers. The choice of regression method is
-quite important to the accuracy of the nowcast model, and the literature
-comparing different methods has often made those comparisons at a single
-site, which may or may not be representative. We compare several
-regression methods to identify which produces the most accurate
-predictions. The comparison is made at several sites in Wisconsin,
-including beaches on Lake Superior and Lake Michigan. A random forest
-model is identified as the most accurate. That is followed by the
-adaptive Lasso, which also includes a variable selection step that
-reduces the number of covariates that need to be measured in order to
-make predictions.
+
+
+\newcommand{\maxwidth}{\textwidth}
+
+\usepackage{alltt}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{verbose}
+\setlength{\parskip}{\bigskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{bm}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{undertilde}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{setspace}
+\usepackage{esint}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{ifthen}
+\usepackage{longtable}
+
+\usepackage{setspace}
+\doublespacing
+
+\usepackage{lineno}
+
+\mathchardef\mhyphen="2D % Define a "math hyphen"
+
+\newcommand{\hlc}[2][yellow]{ {\sethlcolor{#1} \hl{#2}} }
+\newcommand{\highlight}[1]{\colorbox{yellow}{$\displaystyle #1$}}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+
+\newcommand\pr{\mathbf P}
+\newcommand{\E}{\mathbb{E}}
+
+\setlength{\textwidth}{6in}
+\setlength{\textheight}{8in}
+\textwidth=6in
+\textheight=8in
+\setlength{\topmargin}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+
+\journal{}
+\date{}
+
+\newboolean{thesis}
+\setboolean{thesis}{false}
+
+\begin{document}
+
+
+\begin{frontmatter}
+
+\title{Predicting recreational water quality advisories: a comparison of statistical methods}
+
+\author[usgs-wiwsc]{Wesley Brooks}
+\ead{wrbrooks@usgs.gov}
+
+\author[usgs-wiwsc]{Rebecca Carvin}
+\ead{rbcarvin@usgs.gov}
+
+\author[usgs-wiwsc]{Steven Corsi}
+\ead{srcorsi@usgs.gov}
+
+\author[usgs-wiwsc]{Michael Fienen}
+\ead{mnfienen@usgs.gov}
+
+\address[usgs-wiwsc]{Wisconsin Water Science Center, United States Geological Survey, 8505 Research Way, Middleton, WI 53562}
+
+\begin{abstract}
+Epidemiological studies have indicated that the concentration of fecal indicator bacteria (FIB) in beach water is associated with illnesses among people who have contact with the water. In order to mitigate public health impacts, many beaches are managed so that an advisory is posted when the concentration of FIB exeeds a beach action value. The most commonly used method of measuring FIB concentration takes $18 - 24$ hours before returning a result. It has become common to base beach management decisions on the output from nowcast models that use environmental and meteorological conditions to predict the current concentration of FIB, avoiding the 24h lag. Most commonly, nowcast models are estimated using ordinary least squares regression, but other regression methods from the statistical and machine learning literature are appearing in growing numbers. The choice of regression method is quite important to the accuracy of the nowcast model, and the literature comparing the performance of different methods has often made those comparisons at a single site, which may or may not be representative. We compare several regression methods to identify which produces the most accurate predictions. The comparison is made at several sites in Wisconsin, including beaches on Lake Superior and Lake Michigan. A random forest model is identified as the most accurate. That is followed by the adaptive Lasso, which also includes a variable selection step that reduces the number of covariates that need to be measured in order to make predictions.
+\end{abstract}
+
+\begin{keyword}
+Beach water quality, Statistical model, Performance evaluation, Real-time prediction
+\end{keyword}
+
+\end{frontmatter}
 
 \section{Introduction}\label{introduction}
 
 Fecal indicator bacteria (FIB) in beach water are often used to indicate
-contamination by harmful pathogens {[}@Cabelli:1979lb; @Wade:2006qc;
-@Wade:2008yi; @Fleisher:2010xo{]}. The United States Environmental
+contamination by harmful pathogens \citep{Cabelli:1979lb,Wade:2006qc,Wade:2008yi,Fleisher:2010xo}. The United States Environmental
 Protection Agency (USEPA) has established, through epidemiological
 studies, that FIB concentration is associated with human health outcomes
-{[}@Cabelli:1983od; @Dufour:1984yn; @USEPA:ecs{]}. Accordingly, many
+\citep{Cabelli:1983od,Dufour:1984yn,USEPA:ecs}. Accordingly, many
 states have established regulatory standards for water quality;
 Wisconsin states that a beach should be posted with a swimmer's advisory
 when the concentration of the FIB \emph{Escherichia coli} exceeds the
 beach action value (BAV) of \(235\) colony forming units (CFU) / \(100\)
-mL {[}@USEPA-2012; @WDNR-2012{]}. The BAV of \(235\) CFU / \(100\) mL
+mL \citep{USEPA-2012,WDNR-2012}. The BAV of \(235\) CFU / \(100\) mL
 was recommended by the USEPA as the ``do not exceed'' threshold in order
 to limit gastrointestinal illnesses among those coming into contact with
-beach water to 36 cases per 1000 people {[}@USEPA-2012{]}. Traditional
+beach water to 36 cases per 1000 people \citep{USEPA-2012}. Traditional
 analysis methods for FIB concentration requires \(18-24\) hours for
 culturing a sample, so the decision to post an advisory is often made
 based on the previous day's FIB concentration, which is the so-called
-``persistence model'' for beach management {[}@USEPA:2007lj{]}. Previous
+``persistence model'' for beach management \citep{USEPA:2007lj}. Previous
 research has shown that the concentration of FIB in beach water can vary
 substantially during the \(18-24\) h analysis period, with the result
 that the persistence model often provides incorrect information for
-posting warnings {[}@Whitman:2004wv; @Whitman:2008nb{]}. Thus, at
+posting warnings \citep{Whitman:2004wv,Whitman:2008nb}. Thus, at
 beaches managed using the persistence model, the public is sometimes
 exposed to health risks or unnecessarily deprived of recreation
 opportunities.
@@ -55,28 +117,25 @@ opportunities.
 In order to have more immediate knowledge of the FIB concentration, it
 is now common to use regression models that ``nowcast'' the FIB
 concentration based on easily observed surrogate covariates,
-e.g.~turbidity and running \(24\) h rainfall total {[}@Brandt:2006gj;
-@Olyphant:2004yq{]}. Numerous regression techniques have been used to
+e.g.~turbidity and running $24$ h rainfall total \citep{Brandt:2006gj,Olyphant:2004yq}. Numerous regression techniques have been used to
 generate nowcast models of FIB concentration. The techniques include
-ordinary least squares (OLS) {[}@Nevers:2005ln; @Francy:2007yv{]},
-partial least squares (PLS) {[}@Hou:2006nf;
-@Brooks-Fienen-Corsi-2013{]}, logistic regression {[}@Waschbusch:2004bd;
-@Jin:2006tr{]}, decision trees {[}@Stidson-2012{]}, random forests
-{[}@Parkhurst:2005zf; @Jones-Liu-Dorovitch-2012{]}, and artificial
-neural networks {[}@Kashefipour-Lin-Falconer-2005; @He:2008jx{]}. A
+ordinary least squares (OLS) \citep{Nevers:2005ln,Francy:2007yv},
+partial least squares (PLS) \citep{Hou:2006nf,Brooks-Fienen-Corsi-2013}, logistic regression \citep{Waschbusch:2004bd,Jin:2006tr}, decision trees \citep{Stidson-2012}, random forests
+\citep{Parkhurst:2005zf,Jones-Liu-Dorovitch-2012}, and artificial
+neural networks \citep{Kashefipour-Lin-Falconer-2005,He:2008jx}. A
 thorough review of the regression techniques being used in nowcast
 models for FIB concentration is provided by
-@deBrauwere-Koffi-Servais-2014. An assessment of seven methods of
+\citep{deBrauwere-Koffi-Servais-2014}. An assessment of seven methods of
 regression for FIB concentration in beach water at Santa Monica Beach in
 California identified classification trees, artificial neural networks,
 and logistic regression as the three best methods
-{[}@Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014{]}.
+\citep{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}.
 
 Ordinary least squares (OLS) regression is the most commonly used
 regression technique in the nowcast models
-{[}@deBrauwere-Koffi-Servais-2014{]}. However, OLS is well-known for
+\citep{deBrauwere-Koffi-Servais-2014}. However, OLS is well-known for
 drawbacks like overfitting, difficulty of covariate selection, and the
-inflexibility of its linear modeling structure {[}@Ge:2007ou{]}. The
+inflexibility of its linear modeling structure \citep{Ge:2007ou}. The
 literature suggests that many regression techniques have been
 successfully used for nowcast modeling, but due to differences in such
 factors as local conditions, data handling, and performance validation,
@@ -102,7 +161,7 @@ best choices for a regression technique in a nowcast model.
 
 The seven beach sites analyzed in this study are located within two
 distinct regions of Wisconsin (Figure \ref{fig:sites}). Three of the
-sites are on Chequamegon Bay (Lake Superior) and the remaining five are
+sites are on Chequamegon Bay in Lake Superior and the remaining five are
 in Manitowoc County in Lake Michigan. For each site in the study, the
 data used to estimate the predictive models for FIB concentration were
 measured by a combination of automatic sensing, hydrodynamic and
@@ -111,12 +170,6 @@ included for modeling the FIB concentration at each beach site is in the
 Appendix.
 
 \subsection{Site descriptions}\label{site-descriptions}
-
-\begin{figure}
-    \includegraphics{../figures/sites.png}
-    \caption{Map showing the location of the seven Wisconsin beaches used for this study.}
-    \label{fig:sites}
-\end{figure}
 
 \subsubsection{Chequamegon Bay sites}\label{chequamegon-bay-sites}
 
@@ -137,7 +190,7 @@ km northeast of Maslowski beach. Kreher Park has an RV campground,
 playground and boat launch, and is nearest to Bay City Creek, which is
 \(1\) km east of the beach. All of the listed streams are influenced by
 areas of agricultural and forested land use, with Bay City Creek also
-influenced by urban land use {[}@Francy-et-al-2013{]}. Contributions
+influenced by urban land use \citep{Francy-et-al-2013}. Contributions
 from Fish Creek are dynamic due to a wetland at the creek's outlet that
 is influenced by the lake level.
 
@@ -169,24 +222,24 @@ agricultural land use, drains to the lake adjacent to the beach.
 \subsection{Data sources}\label{data-sources}
 
 Field data collection and sample analysis followed methods described in
-@Francy-et-al-2013. Concentration of \emph{E. coli} was measured at each
+\cite{Francy-et-al-2013}. Concentration of \emph{E. coli} was measured at each
 beach \(2-4\) times per week for \(12-14\) weeks between Memorial Day
 and Labor Day from 2010 through 2013. Samples were collected from the
 center of the length of the beach, \(30\) cm below the water surface
 where total water depth was \(60\) cm. All samples were quantified by
 use of the Colilert® QuantiTray/2000 method, which were reported as the
 most probable number (MPN) of \emph{E. coli} colony forming units (CFU)
-and were read after \(24\) hours of incubation {[}@Colilert{]}.
+and were read after \(24\) hours of incubation \citep{Colilert}.
 
 Additional covariates were compiled from a variety of sources including
 online data and manual measurements. Online data were accessed using
 Environmental Data Discovery and Transformation (EnDDaT), a web service
 that accesses data from a variety of sources, compiles and processes the
-data, and performs common transformations {[}@EnDDaT-2014{]}. Three
+data, and performs common transformations \citep{EnDDaT-2014}. Three
 sources of data were accessed: The U.S. Geological survey National Water
-Information System (NWIS) {[}@NWIS{]}, the National Weather Service
-North Central River Forecasting Center {[}@NCRFC{]}, and the Great Lakes
-Costal Forecasting System {[}@Schwab-Bedford-1999{]}. Covariates
+Information System (NWIS) \citep{NWIS}, the National Weather Service
+North Central River Forecasting Center \citep{NCRFC}, and the Great Lakes
+Costal Forecasting System \citep{Schwab-Bedford-1999}. Covariates
 acquired through these sources included: river discharge, precipitation,
 lake current vectors, wave height, wave direction, lake level, water
 temperature, air temperature, wind vector, and percent cloud cover.
@@ -195,12 +248,12 @@ Most covariates from online sources were available in hourly increments
 with the exception of NWIS data which were available in 15 minute
 increments. In order to make best use of this high-frequency data for
 daily predictions, several summary statistics were calculated over
-several time windows for use as potential covariates. The use of 1, 2,
-6, 12, 24, 48, 72, and 120 hour time windows for calculating the summary
+several time windows for use as potential covariates. The use of $1$, $2$,
+$6$, $12$, $24$, $48$, $72$, and $120$ hour time windows for calculating the summary
 statistics followed recent research showing that selecting from windowed
 and lagged versions of raw high-frequency covariates can improve the
 predictive accuracy of regression models
-{[}@Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012{]}. The choice of
+\citep{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012}. The choice of
 summary statistics to include as potential covariates was guided by
 scientific judgement regarding phenomena that could affect the FIB
 concentration. For example, standard deviation of water temperature
@@ -219,7 +272,7 @@ benefit of being measured when and where the FIB samples were collected.
 However, these covariates were measured only once per day and at greater
 expense than the online data because the data had to be collected by
 field personnel. Manual data collection techniques were guided by the
-USEPA's Great Lakes Beach Sanitary Survey {[}@USEPA:2008ib{]}. Among the
+USEPA's Great Lakes Beach Sanitary Survey \citep{USEPA:2008ib}. Among the
 manually measured data were turbidity, wave height, number of birds
 present, number of people present, amount of algae floating in the swim
 area and on the beach, specific conductance, water and air temperature,
@@ -237,7 +290,7 @@ pre-processing: the beach water turbidity and the discharge of
 tributaries near each beach were log-transformed, and rainfall
 covariates were all square root transformed. These transformations were
 based on the performance of previous studies and were applied to all
-datasets {[}@Ge:2007ou;@Frick:2008jo{]}.
+datasets \citep{Ge:2007ou,Frick:2008jo}.
 
 \section{Methods}\label{methods}
 
@@ -294,7 +347,7 @@ which we predict the state of the binary indicator \(z_{i}\):
 where \(y_i\) is the FIB concentration and \(\delta\) is the BAV. The
 indicator is coded as zero when the concetration is below the BAV and
 one when the concentration exceeds the BAV. All of the binary modeling
-techniques herein use logistic regression {[}@Hosmer-Lemeshow-2004{]}.
+techniques herein use logistic regression \citep{Hosmer-Lemeshow-2004}.
 Binary regression methods are indicated with a (b).
 
 \subsubsection{Weighting of observations in binary
@@ -302,7 +355,7 @@ regression}\label{weighting-of-observations-in-binary-regression}
 
 The concentration of FIB in the water at a single beach on a single day
 can be subject to a large degree of spatiotemporal heterogeneity
-{[}@Whitman:2004pc{]}. Thus, when the concentration in a sample is
+\citep{Whitman:2004pc}. Thus, when the concentration in a sample is
 observed to fall near the BAV, there is considerable uncertainty as to
 whether an independent sample from the same date and location would or
 would not exceed the BAV. A weighting scheme for the binary regression
@@ -339,7 +392,7 @@ algorithms}\label{listing-of-modeling-algorithms}
 
 A GBM model is a so-called random forest model - a collection of many
 regression trees, each fit to a randomly drawn subsample of the training
-data {[}@Friedman-2001{]}. Prediction is done by averaging the outputs
+data \citep{Friedman-2001}. Prediction is done by averaging the outputs
 of the trees. Two GBM-based techniques were studied - we refer to them
 as GBM-OOB and GBM-CV. The difference between these two techniques is in
 how the optimal number of trees is determined - GBM-CV selects the
@@ -358,15 +411,14 @@ more accurately estimate the prediction error.
 
 The least absolute shrinkage and selection operator (Lasso) is a
 penalized regression method that simultaneously selects relevant
-covariates and estimates their coefficients {[}@Tibshirani-1996{]}. The
+covariates and estimates their coefficients \citep{Tibshirani-1996}. The
 AL is a refinement of the Lasso that possesses the so-called ``oracle''
 properties of asymptotically selecting exactly the correct covariates
 and estimating them as accurately as would be possible if their
-identities were known in advance {[}@Zou-2006{]}. To use the AL for
+identities were known in advance \citep{Zou-2006}. To use the AL for
 prediction requires selecting a tuning parameter. In this study, the AL
 tuning parameter \(\lambda\) was selected to minimize the corrected
-Akaike Information Criterion (\(\text{AIC}_{\tt c}\)) {[}@Akaike-1973;
-@Hurvich-Simonoff-Tsai-1998{]}. The \(\text{AIC}_{\tt c}\) for the
+Akaike Information Criterion (\(\text{AIC}_{\tt c}\)) \citep{Akaike-1973,Hurvich-Simonoff-Tsai-1998}. The \(\text{AIC}_{\tt c}\) for the
 continuous regression models is
 
 \begin{align}\label{eq:AICc-continuous}
@@ -390,7 +442,7 @@ value of the \(i\)th BAV exceedance indicator.
 
 The GA was used to select covariates for either an OLS or a logistic
 regression model. By analogy to natural selection, so-called chromosomes
-in the GA represent regression models {[}@Fogel-1998{]}. A covariate is
+in the GA represent regression models \citep{Fogel-1998}. A covariate is
 included in the model if the corresponding element of the chromosome is
 one, but not otherwise. Chromosomes are produced in successive
 generations, where the first generation is produced randomly and
@@ -404,7 +456,7 @@ chromosome is calculated by the \(\text{AIC}_{\tt c}\)
 \paragraph{PLS}\label{pls}
 
 Partial least squares (PLS) regression is a tool for building regression
-models with many covariates {[}@Wold-Sjostrum-Eriksson-2001{]}. PLS
+models with many covariates \citep{Wold-Sjostrum-Eriksson-2001}. PLS
 works by decomposing the covariates into mutually orthogonal components,
 with the components then used as the covariates in a regression model.
 This is similar to principal components regression (PCR), but the way
@@ -412,229 +464,44 @@ PLS components are chosen ensures that they are aligned with the
 response, whereas PCR is sometimes criticised for decomposing the
 covariates into components that are unrelated to the response. To use
 PLS, one must decide how many components to use in the model. Following
-{[}@Brooks-Fienen-Corsi-2013{]}, we use the PRESS statistic to select
+\citep{Brooks-Fienen-Corsi-2013}, we use the PRESS statistic to select
 the number of components.
 
 \paragraph{SPLS}\label{spls}
 
 Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the
-sparsity of Lasso-type covariate selection {[}@Chun-Keles-2010{]}. To do
+sparsity of Lasso-type covariate selection \citep{Chun-Keles-2010}. To do
 so, SPLS uses two tuning parameters: one that controls the number of
 orthogonal components and one that controls the Lasso-type penalty. The
 optimal parameters are those that minimize the mean squared prediction
 error (MSEP) over a two-dimensional grid search. The MSEP is estimated
 by 10-fold cross-validation.
 
-\begin{longtable}[c]{@{}lcccc@{}}
-\toprule
-\begin{minipage}[b]{0.14\columnwidth}\raggedright\strut
-Name
-\strut\end{minipage} &
-\begin{minipage}[b]{0.35\columnwidth}\centering\strut
-Algorithm
-\strut\end{minipage} &
-\begin{minipage}[b]{0.11\columnwidth}\centering\strut
-Binary
-\strut\end{minipage} &
-\begin{minipage}[b]{0.13\columnwidth}\centering\strut
-Weighted
-\strut\end{minipage} &
-\begin{minipage}[b]{0.13\columnwidth}\centering\strut
-Selection Only
-\strut\end{minipage}\tabularnewline
-\midrule
-\endhead
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-GBM-OOB
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Gradient boosting
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-GBM-CV
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Gradient boosting
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-AL
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Adaptive Lasso
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-AL (s)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Adaptive Lasso
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-X
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-AL (b)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Adaptive Lasso
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-AL (b,w)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Adaptive Lasso
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-AL (s,b)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Adaptive Lasso
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-X
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-AL (s,b,w)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Adaptive Lasso
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-X
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-GA
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Genetic algorithm
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-GA (b)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Genetic algorithm
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-GA (b,w)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Genetic algorithm
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-X
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-PLS
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Patrial least squares
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-SPLS
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Sparse partial least squares
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-SPLS (s)
-\strut\end{minipage} &
-\begin{minipage}[t]{0.35\columnwidth}\centering\strut
-Sparse partial least squares
-\strut\end{minipage} &
-\begin{minipage}[t]{0.11\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-X
-\strut\end{minipage}\tabularnewline
-\bottomrule
-\end{longtable}
+\begin{table}
+\centering
+\begin{tabular}{lcccc}                       
+Name & Algorithm & Binary & Weighted & \begin{tabular}{c}Selection\\Only\end{tabular} \\
+\hline
+GBM-OOB & Gradient boosting & & & \\
+GBM-CV & Gradient boosting     & & & \\
+AL & Adaptive Lasso & & & \\
+AL (s) & Adaptive Lasso & & & X \\
+AL (b) & Adaptive Lasso & X & & \\
+AL (b,w)  &  Adaptive Lasso & X & X & \\
+AL (s,b) & Adaptive Lasso & X & & X \\
+AL (s,b,w) & Adaptive Lasso & X & X & X \\
+GA & Genetic algorithm & & & \\
+GA (b) & Genetic algorithm & X & & \\
+GA (b,w) & Genetic algorithm & X & X & \\
+PLS & Patrial least squares & & & \\
+SPLS & Sparse partial least squares & & & \\
+SPLS (s) & Sparse partial least squares & & & X \\
+\end{tabular}
+\caption{Comprehensive list of the modeling methods analyzed in this study. Listed for each method are the method's abbreviation, the algorithm used by the method, and indicators of whether the method uses binary regression, observation weighting, and/or covariate selection separately from estimation. The two methods GBM-CV and GBM-OOB differ in how the number of GBM trees are selected, as described in the main text.}
+\label{table:methods}
+\end{table}
 
-\hyperref[table:methods]{Table 1}: Comprehensive list of the modeling
-methods analyzed in this study. Listed for each method are the method's
-abbreviation, the algorithm used by the method, and indicators of
-whether the method uses binary regression, observation weighting, and/or
-covariate selection separately from estimation. The two methods GBM-CV
-and GBM-OOB differ in how the number of GBM trees are selected, as
-described in the main text.
+
 
 \subsection{Cross Validation}\label{cross-validation}
 
@@ -676,149 +543,29 @@ summarized by calculating the area under the receiver operating
 characteristic (ROC) curve (AUROC) and the predictive error sum of
 squares (PRESS).
 
-\begin{longtable}[c]{@{}ccccccc@{}}
-\toprule
-\begin{minipage}[b]{0.09\columnwidth}\centering\strut
-Row
-\strut\end{minipage} &
-\begin{minipage}[b]{0.17\columnwidth}\centering\strut
-\(\log_{10}\) FIB
-\strut\end{minipage} &
-\begin{minipage}[b]{0.09\columnwidth}\centering\strut
-PLS (LOO)
-\strut\end{minipage} &
-\begin{minipage}[b]{0.10\columnwidth}\centering\strut
-PLS (LOYO)
-\strut\end{minipage} &
-\begin{minipage}[b]{0.09\columnwidth}\centering\strut
-\dots
-\strut\end{minipage} &
-\begin{minipage}[b]{0.09\columnwidth}\centering\strut
-SPLS (LOO)
-\strut\end{minipage} &
-\begin{minipage}[b]{0.10\columnwidth}\centering\strut
-SPLS (LOYO)
-\strut\end{minipage}\tabularnewline
-\midrule
-\endhead
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-1
-\strut\end{minipage} &
-\begin{minipage}[t]{0.17\columnwidth}\centering\strut
-2.54
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-2.35
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-2.22
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\dots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-2.29
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-2.55
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-2
-\strut\end{minipage} &
-\begin{minipage}[t]{0.17\columnwidth}\centering\strut
-2.59
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-1.87
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-1.79
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\dots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-1.91
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-1.23
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\vdots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.17\columnwidth}\centering\strut
-\vdots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\vdots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-\vdots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\dots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\vdots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-\vdots
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-166
-\strut\end{minipage} &
-\begin{minipage}[t]{0.17\columnwidth}\centering\strut
-1.57
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-1.93
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-2.06
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\dots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-1.83
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-2.07
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-167
-\strut\end{minipage} &
-\begin{minipage}[t]{0.17\columnwidth}\centering\strut
-3.38
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-1.84
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-2.01
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-\dots
-\strut\end{minipage} &
-\begin{minipage}[t]{0.09\columnwidth}\centering\strut
-1.80
-\strut\end{minipage} &
-\begin{minipage}[t]{0.10\columnwidth}\centering\strut
-1.71
-\strut\end{minipage}\tabularnewline
-\bottomrule
-\end{longtable}
-
-\hyperref[table:hika-results]{Table 2}: An example of how the results
+\begin{table}
+\centering
+\begin{tabular}{ccccccc}
+Row & \begin{tabular}{c}$\log_{10}$\\FIB\end{tabular} & \begin{tabular}{c}PLS\\(LOO)\end{tabular} & \begin{tabular}{c}PLS\\(LOYO)\end{tabular} & $\cdots$ & \begin{tabular}{c}SPLS\\(LOO)\end{tabular} & \begin{tabular}{c}SPLS\\(LOYO)\end{tabular} \\
+\hline
+1 & 2.54 & 2.35 & 2.22 & \dots & 2.29 & 2.55 \\
+2 & 2.59 & 1.87 & 1.79 & \dots & 1.91 & 1.23 \\
+\vdots & \vdots & \vdots & \vdots & \dots & \vdots & \vdots \\
+166 & 1.57 & 1.93 & 2.06 & \dots & 1.83 & 2.07 \\
+167 & 3.38 & 1.84 & 2.01 & \dots & 1.80 & 1.71
+\end{tabular}
+\caption{An example of how the results
 for a site (Hika here) were compiled into a results table. The summary
 statistics used to compare predictive performance (area under the ROC
 curve and predictive error sum of squares) were calculated from the
 table. Confidence intervals for the summary statistics were computed via
 the bootstrap by resampling (with replacement) the rows of the results
-table.
+table.}
+\label{table:hika-results}
+\end{table}
 
 The ROC curve is an assessment of how well predictions are separated
-into exceedances and nonexceedances {[}@Hanley-McNeil-1982{]}. Every
+into exceedances and nonexceedances \citep{Hanley-McNeil-1982}. Every
 possible value of the decision threshold \(\hat{\delta}\) corresponds to
 a point on the ROC curve, with coordinates
 \((1-\text{specificity}(\hat{\delta}), \text{sensitivity}(\hat{\delta}))\).
@@ -875,18 +622,6 @@ GBM-OOB, GBM-CV, or AL exceeded each of the other modeling methods for
 the leave-one-year-out and the leave-one-out analyses were also computed
 (Table 3).
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/auroc-barchart.png}
-\caption{Mean ranking of the methods across all seven sites by area
-under the receiver operating characteristic curve (AUROC) and predictive
-residual sum of squares (PRESS) (higher is better). The error bars are
-90\% confidence intervals computed by the bootstrap. At left are the
-AUROC rankings from the leave-one-year-out cross validation (a), at
-right are the AUROC rankings from the leave-one-out cross validation
-(b)}
-\end{figure}
-
 \begin{table}
     \resizebox{\textwidth}{!}{
     \begin{tabular}{rccccccccccccc}
@@ -921,21 +656,11 @@ exceedances from nonexceedances. That said, we expect the two statistics
 to usually agree on which modeling methods perform best.
 
 The top three techniques under both LOO and LOYO analysis as determined
-by PRESS were GBM-CV, GBM-OOB, and AL (Figure 2). Again, to facilitate a
+by PRESS were GBM-CV, GBM-OOB, and AL (Figure 3). Again, to facilitate a
 pairwise comparison between modeling methods, the frequency that the
 mean PRESS rank of GBM-OOB, GBM-CV, or AL exceeded each of the other
 modeling methods for the leave-one-year-out and the leave-one-out
 analyses were computed (Table 4).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/press-barchart.png}
-\caption{Mean ranking of the methods by predictive error sum of squares
-(PRESS) across all sites (higher is better). The error bars are 90\%
-confidence intervals computed by the bootstrap. At left are the PRESS
-rankings from the leave-one-year-out cross validation (a), at right are
-the PRESS rankings from the leave-one-out cross validation (b).}
-\end{figure}
 
 \begin{table}
     \centering
@@ -1014,14 +739,6 @@ commonly resulting in a few more correct decisions than AL. There are,
 however, exceptions where AL results had more correct decisions (e.g.,
 Hika and Red Arrow).
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/counts-barcharts.png}
-\caption{At each site, the number of predictions from AL, GBM-OOB, and
-GBM-CV that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
 \subsection{Covariate selection}\label{covariate-selection}
 
 It was noted in Section 4.3 that GBM-OOB and AL are two of the three
@@ -1040,40 +757,38 @@ with the response. As our dataset grows, then, we should expect more
 covariates to be selected for an AL model, and Point has far more
 observations than the other sites.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/varselect-barchart.png}
-\caption{At each site, the mean number of covariates that were selected
-for the AL model, and the total number of covariates, all of which were
-used in the gradient boosting machine with an out-of-bag estimate of the
-optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the
-covariate counts are broken down by whether the covariate values were
-collected automatically from web services or manually at the beach.}
-\end{figure}
-
 \section{Discussion}\label{discussion}
 
-Though GBM-CV was a bit more accurate than GBM-OOB in all the settings,
-the small improvement in accuracy may not outweigh the large additional
-cost in computational time to fit the model. However, the additional
+The GBM-CV, GBM-OOB, and AL methods showed the best results by both
+PRESS and AUROC, under LOO and LOYO cross validation. Though GBM-CV was
+a bit more accurate than GBM-OOB in all the settings, the small
+improvement in accuracy may not outweigh the large additional cost in
+computational time to fit the model. However, the additional
 computational cost is incurred only once when the model is estimated -
 given a new observation of beach data, both the GBM-CV and GBM-OOB
-models produce predictions nigh-instantaneously.
+models produce predictions nigh-instantaneously. Where predictive
+accuracy is the most important consideration and no difficulty is
+anticipated in acquiring the data, it is hard to argue against using a
+GBM-type model.
 
-A model that requires fewer covariates is less expensive and more robust
-(as the probability of encountering some missing data increases with the
-number of required covariates). This is particularly important for
-manually-collected covariates because collecting data by hand takes more
-time and is more costly than accessing publically available data from a
-web service. Across all of the sites, the ratio of manually-collected to
-automatically collected covariates in the AL models seems to mirror the
-ratio among all available covariates, indicating that neither the
-manually- nor automatically-collected covariates are systematically more
-important to predicting the bacterial concentration. Some covariates
-tended to appear at every site in the AL models (and other models that
-include a covariate selection step). The manually-collected covariates
-that were consistently selected for the models were the (log) turbidity
-in the beach water, and wave height at the beach.
+The predictive performance of the AL models was somewhat worse than that
+of the GBM models, but by including a covariate selection step, the AL
+models reduce the number of covariates that must be measured in order to
+make daily predictions. A model that requires fewer covariates is less
+expensive and more robust (as the probability of encountering some
+missing data increases with the number of required covariates). This is
+particularly important for manually-collected covariates because
+collecting data by hand takes more time and is more costly than
+accessing publically available data from a web service. Across all of
+the sites, the ratio of manually-collected to automatically collected
+covariates in the AL models seems to mirror the ratio among all
+available covariates, indicating that neither the manually- nor
+automatically-collected covariates are systematically more important to
+predicting the bacterial concentration. Some covariates tended to appear
+at every site in the AL models (and other models that include a
+covariate selection step). The manually-collected covariates that were
+consistently selected for the models were the (log) turbidity in the
+beach water, and wave height at the beach.
 
 Where minimizing the number of covariates is important, the selection
 criterion used here (\(\text{AIC}_{\tt c}\)) may not be ideal. In that
@@ -1090,33 +805,10 @@ rather than minimizing the predictive error. It is therefore likely that
 an AL model using the BIC for covariate selection will have slightly
 worse predictive performance than one using the \(\text{AIC}_{\tt c}\).
 
-All statistical methods and the comparison for this study were carried
-out in the R statistical software environment {[}@R-2014{]}. Scripts and
-details of the how the modeling methods were implemented are in the
-online supplement. Often, beach management practitioners are not very
-familiar with statistical analysis and rely on more accessible software
-to help guide them through development of models for recreational water
-quality predictions. For this purpose, the Virtual Beach software was
-developed {[}@VB3-2013{]}. The GA, PLS, and GBM algorithms used in this
-study are based on simplified versions of the comparable algorithms in
-Virtual Beach version 3.0. An implementation of AL is also an
-anticipated addition to Virtual Beach.
-
-\section{Conclusions}\label{conclusions}
-
-The GBM-CV, GBM-OOB, and AL methods showed the best results by both
-PRESS and AUROC, under LOO and LOYO cross validation. Where predictive
-accuracy is the most important consideration and no difficulty is
-anticipated in acquiring the data, it is hard to argue against using a
-GBM-type model. The predictive performance of the AL models was somewhat
-worse than that of the GBM models, but by including a covariate
-selection step, the AL models reduce the number of covariates that must
-be measured in order to make daily predictions.
-
-An advantage of the AL over GBM-type models is interpretability. As a
-linear regression technique, fitting an AL model means generating a set
-of coefficients, which can be interpreted as the marginal effect of a
-change in the corresponding covariate. On the other hand, GBM produces
+Another advantage of the AL over GBM-type models is interpretability. As
+a linear regression technique, fitting an AL model means generating a
+set of coefficients, which can be interpreted as the marginal effect of
+a change in the corresponding covariate. On the other hand, GBM produces
 black-box models that typically make more accurate predictions but are
 difficult to intrepret. One common way to interpret a random forest
 model (such as from the GBM algorithm) is to observe the proportion of
@@ -1125,157 +817,429 @@ split proportion is a measurement of that covariate's importance to the
 model but gives no indication of how that covariate affects the
 bacterial concentraion.
 
+All statistical methods and the comparison for this study were carried
+out in the R statistical software environment \citep{R-2014}. Scripts and
+details of the how the modeling methods were implemented are in the
+online supplement. Often times, beach management practitioners are not
+very familiar with statistical analysis and rely on more accessible
+software to help guide them through development of models for
+recreational water quality predictions. For this purpose, the Virtual
+Beach software was developed \citep{VB3-2013}. The GA, PLS, and GBM
+algorithms used in this study are based on simplified versions of the
+comparable algorithms in Virtual Beach version 3.0. An implementation of
+AL is also an anticipated addition to Virtual Beach.
+
 \section{Acknowledgments}\label{acknowledgments}
 
-The predictive models for this study were generated on hardware and
+The predictive models for this study were generated on facilities and
 software (HTCondor) provided by the University of Wisconsin-Madison's
 Center for High Throughput Computing.
 
-\section{Appendix}\label{appendix}
+\section{Figures}
 
-\subsubsection{Comprehensive AUROC pairwise comparison
-table:}\label{comprehensive-auroc-pairwise-comparison-table}
+\begin{figure}
+    \includegraphics[width=\textwidth]{figure/sites.png}
+    \caption{Map showing the location of the seven Wisconsin beaches for which models were analyzed in this work.}
+    \label{fig:sites}
+\end{figure}
 
-\begin{table}[h!]
-    \resizebox{\textwidth}{!}{
-    \begin{tabular}{rccccccccccccc}
-    
-\multicolumn{6}{l}{\kern-2em \textbf{Leave-one-year-out cross-validation:}} & & & & & & & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} \\ 
-  \hline
-GBM-CV & 0.86 & 0.87 & 0.98 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 0.69 & 0.92 & 0.95 & 1.00 & 0.99 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.96 & 0.87 & 1.00 & 0.97 & 0.98 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL (s) &  &  &  & 0.52 & 0.85 & 0.83 & 0.85 & 0.95 & 0.98 & 0.98 & 1.00 & 1.00 & 1.00 \\ 
-  AL (b,w) &  &  &  &  & 0.80 & 0.78 & 0.90 & 0.95 & 0.98 & 1.00 & 0.99 & 1.00 & 1.00 \\ 
-  SPLS &  &  &  &  &  & 0.53 & 0.51 & 0.74 & 0.86 & 0.87 & 0.97 & 0.99 & 1.00 \\ 
-  PLS &  &  &  &  &  &  & 0.50 & 0.65 & 0.82 & 0.82 & 0.94 & 0.99 & 1.00 \\ 
-  AL (b) &  &  &  &  &  &  &  & 0.66 & 0.91 & 0.89 & 0.93 & 0.99 & 1.00 \\ 
-  SPLS (s) &  &  &  &  &  &  &  &  & 0.74 & 0.76 & 0.90 & 0.98 & 0.99 \\ 
-  AL (b,s) &  &  &  &  &  &  &  &  &  & 0.50 & 0.67 & 0.91 & 0.97 \\ 
-  AL (b,w,s) &  &  &  &  &  &  &  &  &  &  & 0.65 & 0.89 & 0.94 \\ 
-  GA &  &  &  &  &  &  &  &  &  &  &  & 0.82 & 0.86 \\ 
-  GA (b,w) &  &  &  &  &  &  &  &  &  &  &  &  & 0.52 \\ 
-  & & & & & & & & & & & & & \\
-\multicolumn{6}{l}{\kern-2em \textbf{Leave-one-out cross-validation:}} & & & & & & & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} \\ 
-  \hline
-GBM-CV & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.72 & 0.99 & 0.93 & 0.96 & 0.98 & 1.00 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL (b,w) &  &  &  & 0.78 & 0.91 & 0.82 & 0.90 & 0.97 & 0.94 & 0.99 & 1.00 & 1.00 & 0.99 \\ 
-  AL (s) &  &  &  &  & 0.53 & 0.60 & 0.70 & 0.79 & 0.83 & 0.94 & 0.94 & 0.96 & 0.95 \\ 
-  AL (b,w,s) &  &  &  &  &  & 0.55 & 0.63 & 0.73 & 0.80 & 0.92 & 0.97 & 0.98 & 0.94 \\ 
-  GA &  &  &  &  &  &  & 0.59 & 0.66 & 0.75 & 0.89 & 0.89 & 0.88 & 0.90 \\ 
-  SPLS &  &  &  &  &  &  &  & 0.58 & 0.68 & 0.83 & 0.87 & 0.88 & 0.85 \\ 
-  SPLS (s) &  &  &  &  &  &  &  &  & 0.63 & 0.80 & 0.83 & 0.84 & 0.80 \\ 
-  PLS &  &  &  &  &  &  &  &  &  & 0.65 & 0.68 & 0.69 & 0.70 \\ 
-  GA (b) &  &  &  &  &  &  &  &  &  &  & 0.49 & 0.49 & 0.52 \\ 
-  AL (b) &  &  &  &  &  &  &  &  &  &  &  & 0.46 & 0.50 \\ 
-  AL (b,s) &  &  &  &  &  &  &  &  &  &  &  &  & 0.51 \\ 
-  
-    \end{tabular}}
-    \caption{Under leave-one-year-out (top) and leave-one-out (bottom) cross validation, frequency of the mean AUROC rank of each method (rows) exceeding that of the other methods (columns).
-    \label{tab:AUROC-comprehensive}}
-\end{table}
-
-\subsubsection{Comprehensive PRESS pairwise comparison
-table:}\label{comprehensive-press-pairwise-comparison-table}
-
-\begin{table}[h!]
-    \centering
-    \begin{tabular}{rccccccc}
-
-\multicolumn{6}{l}{\kern-4em \textbf{Leave-one-year-out cross-validation:}} & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
-  \hline
-GBM-CV & 0.58 & 0.96 & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 0.94 & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.52 & 0.88 & 0.94 & 0.99 & 1.00 \\ 
-  SPLS &  &  &  & 0.87 & 0.93 & 1.00 & 1.00 \\ 
-  PLS &  &  &  &  & 0.59 & 0.91 & 1.00 \\ 
-  SPLS (s) &  &  &  &  &  & 0.83 & 1.00 \\ 
-  AL (s) &  &  &  &  &  &  & 1.00 \\ 
-  & & & & & & & \\
-\multicolumn{6}{l}{\kern-4em \textbf{Leave-one-out cross-validation:}} & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
-  \hline
-GBM-CV & 0.66 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.73 & 0.80 & 0.85 & 0.93 & 1.00 \\ 
-  SPLS (s) &  &  &  & 0.57 & 0.66 & 0.82 & 1.00 \\ 
-  SPLS &  &  &  &  & 0.52 & 0.75 & 1.00 \\ 
-  PLS &  &  &  &  &  & 0.69 & 1.00 \\ 
-  AL (s) &  &  &  &  &  &  & 0.99 \\ 
-  
-    \end{tabular}
-    \caption{Under leave-one-year-out (top) or leave-one-out (bottom) cross validation, frequency of the mean PRESS rank of each method (rows) exceeding that of the other methods (columns).}
-    \label{table:press.pairs.annual-comprehensive}
-\end{table}
-
-\subsubsection{Comprehensive counts from simulating the models in
-use:}\label{comprehensive-counts-from-simulating-the-models-in-use}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{figure/counts-barcharts-comprehensive-thompson.png}
-\caption{At Thompson, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
+\includegraphics[width=\textwidth]{figure/auroc-barchart.pdf}
+\caption{Mean ranking of the methods across all seven sites by area
+under the receiver operating characteristic curve (AUROC). The error bars are
+90\% confidence intervals computed by the bootstrap. At left are the
+AUROC rankings from the leave-one-year-out cross validation (a), at
+right are the AUROC rankings from the leave-one-out cross validation
+(b)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/press-barchart.pdf}
+\caption{Mean ranking of the methods by predictive error sum of squares
+(PRESS) across all sites (higher is better). The error bars are 90\%
+confidence intervals computed by the bootstrap. At left are the PRESS
+rankings from the leave-one-year-out cross validation (a), at right are
+the PRESS rankings from the leave-one-out cross validation (b).}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figure/counts-barcharts.pdf}
+\caption{At each site, the number of predictions from AL, GBM-OOB, and
+GBM-CV that fell into four categories, from left: true negatives, false
 positives, true positive, and false negatives.}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{figure/counts-barcharts-comprehensive-maslowski.png}
-\caption{At Maslowski, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
+\includegraphics[width=\textwidth]{figure/varselect-barchart.pdf}
+\caption{At each site, the mean number of covariates that were selected
+for the AL model, and the total number of covariates, all of which were
+used in the gradient boosting machine with an out-of-bag estimate of the
+optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the
+covariate counts are broken down by whether the covariate values were
+collected automatically from web services or manually at the beach.}
 \end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/counts-barcharts-comprehensive-kreher.png}
-\caption{At Kreher, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/counts-barcharts-comprehensive-neshotah.png}
-\caption{At Neshotah, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/counts-barcharts-comprehensive-redarrow.png}
-\caption{At Red Arrow, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/counts-barcharts-comprehensive-point.png}
-\caption{At Point, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/counts-barcharts-comprehensive-hika.png}
-\caption{At Hika, the number of predictions from every prediction method
-that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\input{appendix/thompson.tex} \input{appendix/maslowski.tex}
-\input{appendix/kreher.tex}
-
-\input{appendix/neshotah.tex} \input{appendix/redarrow.tex}
-\input{appendix/point.tex} \input{appendix/hika.tex}
 
 \section{References}\label{references}
+\bibliographystyle{chicago}
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Akaike}{Akaike}{1973}]{Akaike-1973}
+Akaike, H. (1973).
+\newblock Information theory and an extension of the maximum likelihood
+  principle.
+\newblock In {\em Second international symposium on information theory}, pp.\
+  267--281. Akademinai Kiado.
+
+\bibitem[\protect\citeauthoryear{Brandt, Schwab, Croley, Belestky, and
+  Whitman}{Brandt et~al.}{2006}]{Brandt:2006gj}
+Brandt, S., D.~Schwab, T.~Croley, D.~Belestky, and R.~Whitman (2006).
+\newblock {\em Ecosystem Forecasting: Integrating Science to Reduce the Risks
+  to Human Health}.
+\newblock American Geophysical Union.
+
+\bibitem[\protect\citeauthoryear{Brooks, Fienen, and Corsi}{Brooks
+  et~al.}{2013}]{Brooks-Fienen-Corsi-2013}
+Brooks, W.~R., M.~N. Fienen, and S.~R. Corsi (2013).
+\newblock Partial least squares for efficient models of fecal indicator
+  bacteria on great lakes beaches.
+\newblock {\em Journal of Environmental Management\/}~{\em 114}, 470--475.
+
+\bibitem[\protect\citeauthoryear{Cabelli}{Cabelli}{1983}]{Cabelli:1983od}
+Cabelli, V.~J. (1983).
+\newblock Health effects criteria for marine recreational waters.
+\newblock Tech report EPA-600/1-80-031, {United States Environmental Protection
+  Agency Office of Research and Development}.
+
+\bibitem[\protect\citeauthoryear{Cabelli, Dufour, Levin, McCabe, Haberman, and
+  Jensen}{Cabelli et~al.}{1979}]{Cabelli:1979lb}
+Cabelli, V.~J., A.~P. Dufour, M.~A. Levin, L.~J. McCabe, P.~W. Haberman, and
+  L.~D. Jensen (1979).
+\newblock Relationship of microbial indicators to health effects at marine
+  bathing beaches.
+\newblock {\em American Journal of Public Health\/}~{\em 69\/}(7), 690--696.
+
+\bibitem[\protect\citeauthoryear{Chun and Keles}{Chun and
+  Keles}{2010}]{Chun-Keles-2010}
+Chun, H. and S.~Keles (2010).
+\newblock Sparse partial least squares regression for simultaneous dimension
+  reduction and variable selection.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)\/}~{\em 72\/}(1), 3--25.
+
+\bibitem[\protect\citeauthoryear{Cyterski, Brooks, Galvin, Wolfe, Carvin,
+  Roddick, Fienen, and Corsi}{Cyterski et~al.}{2013}]{VB3-2013}
+Cyterski, M., W.~Brooks, M.~Galvin, K.~Wolfe, R.~Carvin, T.~Roddick, M.~Fienen,
+  and S.~Corsi (2013).
+\newblock {\em Virtual Beach 3: User's Guide}.
+\newblock United States Environmental Protection Agency.
+
+\bibitem[\protect\citeauthoryear{Cyterski, Zhang, White, Molina, Wolfe, Parmar,
+  and Zepp}{Cyterski
+  et~al.}{2012}]{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012}
+Cyterski, M., S.~Zhang, E.~White, M.~Molina, K.~Wolfe, R.~Parmar, and R.~Zepp
+  (2012).
+\newblock Temporal synchronization analysis for improving regression modeling
+  of fecal indicator bacteria levels.
+\newblock {\em Water, Air \& Soil Pollution\/}~{\em 223}, 4841--4851.
+
+\bibitem[\protect\citeauthoryear{de~Brauwere, Ouattara, and
+  Servais}{de~Brauwere et~al.}{2014}]{deBrauwere-Koffi-Servais-2014}
+de~Brauwere, A., N.~K. Ouattara, and P.~Servais (2014).
+\newblock Modeling fecal indicator bacteria concentrations in natural surface
+  waters: a review.
+\newblock {\em Critical Reviews in Environmental Science and Technology\/}~{\em
+  44\/}(21), 2380--2453.
+
+\bibitem[\protect\citeauthoryear{Dufour}{Dufour}{1984}]{Dufour:1984yn}
+Dufour, A.~P. (1984).
+\newblock Health effects criteria for fresh recreational waters.
+\newblock Tech report EPA-600/1-84-004, {United States Environmental Protection
+  Agency Office of Research and Development}.
+
+\bibitem[\protect\citeauthoryear{Fleisher, Fleming, Solo-Gabriele, Kish,
+  Sinigalliano, Plano, Elmir, Wang, Withum, Shibata, Gidley, Abdelzaher, He,
+  Ortega, Zhu, Wright, Hollenbeck, and Backer}{Fleisher
+  et~al.}{2010}]{Fleisher:2010xo}
+Fleisher, J.~M., L.~E. Fleming, H.~M. Solo-Gabriele, J.~K. Kish, C.~D.
+  Sinigalliano, L.~Plano, S.~M. Elmir, J.~D. Wang, K.~Withum, T.~Shibata, M.~L.
+  Gidley, A.~Abdelzaher, G.~He, C.~Ortega, X.~Zhu, M.~Wright, J.~Hollenbeck,
+  and L.~C. Backer (2010).
+\newblock The {BEACHES} study: health effects and exposures from non-point source
+  microbial contaminants in subtropical recreational marine waters.
+\newblock {\em International Journal of Epidemiology\/}~{\em 39\/}(5),
+  1291--1298.
+
+\bibitem[\protect\citeauthoryear{Fogel}{Fogel}{1998}]{Fogel-1998}
+Fogel, D.~B. (1998).
+\newblock {\em Evolutionary computation: the fossil record}.
+\newblock Wiley-IEEE Press.
+
+\bibitem[\protect\citeauthoryear{Francy, Brady, Carvin, Corsi, Fuller,
+  Harrison, Hayhurst, Lant, Nevers, Terrio, and Zimmerman}{Francy
+  et~al.}{2013}]{Francy-et-al-2013}
+Francy, D.~S., A.~M.~G. Brady, R.~B. Carvin, S.~R. Corsi, L.~M. Fuller, J.~H.
+  Harrison, B.~A. Hayhurst, J.~Lant, M.~B. Nevers, P.~J. Terrio, and T.~M.
+  Zimmerman (2013).
+\newblock Developing and implementing the use of predictive models for
+  estimating water quality at {G}reat {L}akes beaches.
+\newblock Scientific Investigations Report 2013-5166, United States Geological
+  Survey.
+
+\bibitem[\protect\citeauthoryear{Francy and Darner}{Francy and
+  Darner}{2007}]{Francy:2007yv}
+Francy, D.~S. and R.~A. Darner (2007).
+\newblock Nowcasting beach advisories at {Ohio Lake Erie Beaches}.
+\newblock Open File Report 2007-1427, United States Geological Survey.
+
+\bibitem[\protect\citeauthoryear{Frick, Ge, and Zepp}{Frick
+  et~al.}{2008}]{Frick:2008jo}
+Frick, W.~E., Z.~Ge, and R.~G. Zepp (2008).
+\newblock Nowcasting and forecasting concentrations of biological contaminants
+  at beaches: A feasibility and case study.
+\newblock {\em Environmental Science \& Technology\/}~{\em 42\/}(13),
+  4818--4824.
+
+\bibitem[\protect\citeauthoryear{Friedman}{Friedman}{2001}]{Friedman-2001}
+Friedman, J. (2001).
+\newblock Greedy function approximation: a gradient boosting machine.
+\newblock {\em Annals of Statistics\/}, 1189--1232.
+
+\bibitem[\protect\citeauthoryear{Ge and Frick}{Ge and Frick}{2007}]{Ge:2007ou}
+Ge, Z. and W.~E. Frick (2007).
+\newblock Some statistical issues related to multiple linear regression
+  modeling of beach bacteria concentrations.
+\newblock {\em Environmental Research\/}~{\em 103\/}(3), 358--364.
+
+\bibitem[\protect\citeauthoryear{Hanley and McNeil}{Hanley and
+  McNeil}{1982}]{Hanley-McNeil-1982}
+Hanley, J.~A. and B.~J. McNeil (1982).
+\newblock The meaning and use of the area under a receiver operating
+  characteristic ({ROC}) curve.
+\newblock {\em Radiology\/}~{\em 148\/}(1), 29--36.
+
+\bibitem[\protect\citeauthoryear{He and He}{He and He}{2008}]{He:2008jx}
+He, L.-M.~L. and Z.-L. He (2008).
+\newblock Water quality prediction of marine recreational beaches receiving
+  watershed baseflow and stormwater runoff in southern {C}alifornia, {USA}.
+\newblock {\em Water research\/}~{\em 42\/}(10), 2563--2573.
+
+\bibitem[\protect\citeauthoryear{Hosmer~Jr and Lemeshow}{Hosmer~Jr and
+  Lemeshow}{2004}]{Hosmer-Lemeshow-2004}
+Hosmer~Jr, D.~W. and S.~Lemeshow (2004).
+\newblock {\em Applied logistic regression}.
+\newblock John Wiley \& Sons.
+
+\bibitem[\protect\citeauthoryear{Hou, Rabinovici, and Boehm}{Hou
+  et~al.}{2006}]{Hou:2006nf}
+Hou, D., S.~J.~M. Rabinovici, and A.~B. Boehm (2006).
+\newblock Enterococci predictions from partial least squares regression models
+  in conjunction with a single-sample standard improve the efficacy of beach
+  management advisories.
+\newblock {\em Environmental Science \& Technology\/}~{\em 40\/}(6),
+  1737--1743.
+
+\bibitem[\protect\citeauthoryear{Hurvich, Simonoff, and Tsai}{Hurvich
+  et~al.}{1998}]{Hurvich-Simonoff-Tsai-1998}
+Hurvich, C.~M., J.~S. Simonoff, and C.-L. Tsai (1998).
+\newblock Smoothing parameter selection in nonparametric regression using an
+  improved {A}kaike information criterion.
+\newblock {\em Journal of the Royal Statistical Society: Series B
+  (Methodology)\/}~{\em 60\/}(2), 271--293.
+
+\bibitem[\protect\citeauthoryear{Jin and Englande~Jr.}{Jin and
+  Englande~Jr.}{2006}]{Jin:2006tr}
+Jin, G. and A.~J. Englande~Jr. (2006).
+\newblock Prediction of swimmability in a brackish water body.
+\newblock {\em Management of Environmental Quality\/}~{\em 17\/}(2), 197--208.
+
+\bibitem[\protect\citeauthoryear{Jones, Liu, and Dorovitch}{Jones
+  et~al.}{2012}]{Jones-Liu-Dorovitch-2012}
+Jones, R.~M., L.~Liu, and S.~Dorovitch (2012).
+\newblock Hydrometeorological variables predict fecal indicator bacteria
+  densities in freshwater: data-driven methods for variable selection.
+\newblock {\em Environmental Monitoring and Assessment\/}~{\em 185\/}(3),
+  2355--2366.
+
+\bibitem[\protect\citeauthoryear{Kashefipour, Lin, and Falconer}{Kashefipour
+  et~al.}{2005}]{Kashefipour-Lin-Falconer-2005}
+Kashefipour, S.~M., B.~Lin, and R.~A. Falconer (2005).
+\newblock Neural networks for predicting seawater bacterial levels.
+\newblock {\em Proceedings of the Institution of Civil Engineers-Water
+  Management\/}~{\em 158\/}(3), 111--118.
+
+\bibitem[\protect\citeauthoryear{National environmental methods index}{National
+  environmental methods index}{2013}]{Colilert}
+National environmental methods index (2013).
+\newblock {\em Colilert Test Kit Procedure}.
+\newblock National environmental methods index.
+
+\bibitem[\protect\citeauthoryear{{National Oceanic and Atmospheric
+  Administration}}{{National Oceanic and Atmospheric
+  Administration}}{2012}]{NCRFC}
+{National Oceanic and Atmospheric Administration} (2012).
+\newblock North {C}entral {R}iver {F}orecasting {C}enter.
+
+\bibitem[\protect\citeauthoryear{Nevers and Whitman}{Nevers and
+  Whitman}{2005}]{Nevers:2005ln}
+Nevers, M.~B. and R.~L. Whitman (2005).
+\newblock Nowcast modeling of \emph{{E}scherichia coli} concentrations at multiple
+  urban beaches of southern {Lake Michigan}.
+\newblock {\em Water research\/}~{\em 39\/}(20), 5250--5260.
+
+\bibitem[\protect\citeauthoryear{Olyphant and Whitman}{Olyphant and
+  Whitman}{2004}]{Olyphant:2004yq}
+Olyphant, G.~A. and R.~L. Whitman (2004).
+\newblock Elements of a predictive model for determining beach closures on a
+  real time basis: the case of 63rd {S}treet {B}each {C}hicago.
+\newblock {\em Environmental Monitoring and Assessment\/}~{\em 98}, 175--190.
+
+\bibitem[\protect\citeauthoryear{Parkhurst, Brenner, Dufour, and
+  Wymer}{Parkhurst et~al.}{2005}]{Parkhurst:2005zf}
+Parkhurst, D.~F., K.~P. Brenner, A.~P. Dufour, and L.~J. Wymer (2005).
+\newblock Indicator bacteria at five swimming beaches - analysis using random
+  forests.
+\newblock {\em Water Research\/}~{\em 39\/}(7), 1354--1360.
+
+\bibitem[\protect\citeauthoryear{{R Core Team}}{{R Core Team}}{2014}]{R-2014}
+{R Core Team} (2014).
+\newblock {\em {R: A Language and Environment for Statistical Computing}}.
+\newblock Vienna, Austria: R Foundation for Statistical Computing.
+
+\bibitem[\protect\citeauthoryear{Schwab and Bedford}{Schwab and
+  Bedford}{1999}]{Schwab-Bedford-1999}
+Schwab, D.~J. and K.~W. Bedford (1999).
+\newblock The {Great Lakes} forecasting system.
+\newblock {\em Coastal and Estuarine Studies\/}, 157--174.
+
+\bibitem[\protect\citeauthoryear{Stidson, Gray, and McPhail}{Stidson
+  et~al.}{2012}]{Stidson-2012}
+Stidson, R.~T., C.~A. Gray, and C.~D. McPhail (2012).
+\newblock Development and use of modelling techniques for real-time bathing
+  water quality predictions.
+\newblock {\em Water and Environment Journal\/}~{\em 26\/}(1), 7--18.
+
+\bibitem[\protect\citeauthoryear{Thoe, Gold, Griesbach, Grimmer, Taggart, and
+  Boehm}{Thoe et~al.}{2014}]{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}
+Thoe, W., M.~Gold, A.~Griesbach, M.~Grimmer, M.~L. Taggart, and A.~B. Boehm
+  (2014).
+\newblock Predicting water quality at {S}anta {M}onica {B}each: evaluation of
+  five different models for public notification of unsafe swimming confditions.
+\newblock {\em Water Research\/}~{\em 67}, 105--117.
+
+\bibitem[\protect\citeauthoryear{Tibshirani}{Tibshirani}{1996}]{Tibshirani-1996}
+Tibshirani, R. (1996).
+\newblock Regression shrinkage and selection via the lasso.
+\newblock {\em Journal of the Royal Statistical Society, Series B
+  (Methodological)\/}, 267--288.
+
+\bibitem[\protect\citeauthoryear{{United States Environmental Protection
+  Agency}}{{USEPA}}{1986}]{USEPA:ecs}
+{United States Environmental Protection Agency} (1986).
+\newblock Ambient water quality criteria for bacteria.
+\newblock Technical Report EPA-440-5-84-00.
+
+\bibitem[\protect\citeauthoryear{{United States Environmental Protection
+  Agency}}{{USEPA}}{2007}]{USEPA:2007lj}
+{United States Environmental Protection Agency} (2007).
+\newblock Critical path science plan for the development of new or revised
+  recreational water quality criteria.
+\newblock Technical Report EPA-823-R-08-002.
+
+\bibitem[\protect\citeauthoryear{{United States Environmental Protection
+  Agency}}{{USEPA}}{2008}]{USEPA:2008ib}
+{United States Environmental Protection Agency} (2008).
+\newblock {G}reat {L}akes beach sanitary survey user's manual.
+\newblock Technical Report EPA-823-B-06-001.
+
+\bibitem[\protect\citeauthoryear{{United States Environmental Protection
+  Agency}}{{USEPA}}{2012}]{USEPA-2012}
+{United States Environmental Protection Agency} (2012).
+\newblock Recreational water quality criteria.
+\newblock Technical Report EPA-820-F-12-058.
+
+\bibitem[\protect\citeauthoryear{{United States Geological Survey}}{{USGS}}{2014a}]{EnDDaT-2014}
+{United States Geological Survey} (2014a).
+\newblock Environmental {D}ata {D}iscovery and {T}ransformation.
+
+\bibitem[\protect\citeauthoryear{{United States Geological Survey}}{{USGS}}{2014b}]{NWIS}
+{United States Geological Survey} (2014b).
+\newblock The {N}ational {W}ater {I}nformation {S}ystem.
+
+\bibitem[\protect\citeauthoryear{Wade, Calderon, Brenner, Sams, Beach,
+  Haugland, Wymer, and Dufour}{Wade et~al.}{2008}]{Wade:2008yi}
+Wade, T.~J., R.~L. Calderon, K.~P. Brenner, E.~Sams, M.~Beach, R.~Haugland,
+  L.~Wymer, and A.~P. Dufour (2008).
+\newblock High sensitivity of children to swimming-associated gastrointestinal
+  illness: results using a rapid assay of recreational water quality.
+\newblock {\em Epidemiology\/}~{\em 19\/}(3), 375--383.
+
+\bibitem[\protect\citeauthoryear{Wade, Calderon, Sams, Beach, Brenner,
+  Williams, and Dufour}{Wade et~al.}{2006}]{Wade:2006qc}
+Wade, T.~J., R.~L. Calderon, E.~Sams, M.~Beach, K.~P. Brenner, A.~H. Williams,
+  and A.~P. Dufour (2006).
+\newblock Rapidly measured indicators of recreational water quality are
+  predictive of swimming-associated gastrointestinal illness.
+\newblock {\em Environmental Health Perspectives\/}~{\em 114\/}(1), 24--28.
+
+\bibitem[\protect\citeauthoryear{Waschbusch, Corsi, Sorsa, Walker, Standridge,
+  and Schnieder}{Waschbusch et~al.}{2004}]{Waschbusch:2004bd}
+Waschbusch, R., S.~Corsi, K.~Sorsa, J.~Walker, J.~Standridge, and T.~Schnieder
+  (2004).
+\newblock Final report for the {EMPACT} project: data collection and modeling
+  of enteric pathogens, fecal indicators and real-time environmental data at
+  {Madison, Wisconsin} recreational beaches for timely public access to water
+  quality information.
+\newblock Technical Report R-82933901-0, Madison Beach EMPACT Team.
+
+\bibitem[\protect\citeauthoryear{Whitman and Nevers}{Whitman and
+  Nevers}{2004}]{Whitman:2004pc}
+Whitman, R.~L. and M.~B. Nevers (2004).
+\newblock Escherichia coli sampling reliability at a frequently closed {C}hicago
+  beach: Monitoring and management implications.
+\newblock {\em Environmental Science \& Technology\/}~{\em 38\/}(16),
+  4241--4246.
+
+\bibitem[\protect\citeauthoryear{Whitman and Nevers}{Whitman and
+  Nevers}{2008}]{Whitman:2008nb}
+Whitman, R.~L. and M.~B. Nevers (2008).
+\newblock Summer \emph{{E}. coli} patterns and responses along 23 {C}hicago beaches.
+\newblock {\em Environmental Science \& Technology\/}~{\em 42\/}(24),
+  9217--9224.
+
+\bibitem[\protect\citeauthoryear{Whitman, Nevers, Korinek, and
+  Byappanahalli}{Whitman et~al.}{2004}]{Whitman:2004wv}
+Whitman, R.~L., M.~B. Nevers, G.~C. Korinek, and M.~N. Byappanahalli (2004).
+\newblock Solar and temporal effects on {E}scherichia coli concentration at a
+  {Lake Michigan} swimming beach.
+\newblock {\em Applied and Environmental Microbiology\/}~{\em 70\/}(7),
+  4276--4285.
+
+\bibitem[\protect\citeauthoryear{{Wisconsin Department of Natural
+  Resources}}{{Wisconsin Department of Natural Resources}}{2012}]{WDNR-2012}
+{Wisconsin Department of Natural Resources} (2012).
+\newblock Wisconsin's {G}reat {L}akes beach monitoring and notification
+  program.
+\newblock Technical report.
+
+\bibitem[\protect\citeauthoryear{Wold, Sjostrom, and Eriksson}{Wold
+  et~al.}{2001}]{Wold-Sjostrum-Eriksson-2001}
+Wold, S., M.~Sjostrom, and L.~Eriksson (2001).
+\newblock Pls-regression: a basic tool of chemometrics.
+\newblock {\em Chemometrics and intelligent laboratory systems\/}~{\em
+  58\/}(2), 109--130.
+
+\bibitem[\protect\citeauthoryear{Zou}{Zou}{2006}]{Zou-2006}
+Zou, H. (2006).
+\newblock The adaptive lasso and its oracle properties.
+\newblock {\em Journal of the American Statistical Association\/}~{\em
+  101\/}(476), 1418--1429.
+
+\end{thebibliography}
+
+\end{document}
+

@@ -26,6 +26,12 @@
 \usepackage{ifthen}
 \usepackage{longtable}
 
+\usepackage{setspace}
+\doublespacing
+
+\usepackage{lineno}
+\linenumbers
+
 \mathchardef\mhyphen="2D % Define a "math hyphen"
 
 \newcommand{\hlc}[2][yellow]{ {\sethlcolor{#1} \hl{#2}} }
@@ -37,15 +43,16 @@
 \newcommand\pr{\mathbf P}
 \newcommand{\E}{\mathbb{E}}
 
-\setlength{\textwidth}{6.5in}
-\setlength{\textheight}{8.5in}
-\textwidth=6.5in
-\textheight=8.5in
+\setlength{\textwidth}{6in}
+\setlength{\textheight}{8in}
+\textwidth=6in
+\textheight=8in
 \setlength{\topmargin}{0in}
 \setlength{\oddsidemargin}{0in}
 \setlength{\evensidemargin}{0in}
 
-\journal{Water Research}
+\journal{}
+\date{}
 
 \newboolean{thesis}
 \setboolean{thesis}{false}
@@ -55,7 +62,7 @@
 
 \begin{frontmatter}
 
-\title{Local Adaptive Grouped Regularization and its Oracle Properties for Varying Coefficient Regression}
+\title{Predicting recreational water quality advisories: a comparison of statistical methods}
 
 \author[usgs-wiwsc]{Wesley Brooks}
 \ead{wrbrooks@usgs.gov}
@@ -72,7 +79,7 @@
 \address[usgs-wiwsc]{Wisconsin Water Science Center, United States Geological Survey, 8505 Research Way, Middleton, WI 53562}
 
 \begin{abstract}
-Epidemiological studies have indicated that the concentration of fecal indicator bacteria (FIB) in beach water is associated with illnesses among people who have contact with the water. In order to mitigate public health impacts, many beaches are managed according to a policy that an advisory should be posted when the concentration of FIB exeeds a beach action value. The most commonly used method of measuring FIB concentration takes 18 - 24 hours before returning a result. It has become common to base beach management decisions on the output from nowcast models that use environmental and meteorological conditions to predict the current concentration of FIB, avoiding the 24h lag. Most commonly, nowcast models are estimated using ordinary least squares regression, but other regression methods from the statistical and machine learning literature are appearing in growing numbers. The choice of regression method is quite important to the accuracy of the nowcast model, and the literature comparing the performance of different methods has often made those comparisons at a single site, which may or may not be representative. We compare several regression methods to identify which produces the most accurate predictions. The comparison is made at several sites in Wisconsin, including beaches on Lake Superior and Lake Michigan. A random forest model is identified as the most accurate. That is followed by the adaptive Lasso, which also includes a variable selection step that reduces the number of covariates that need to be measured in order to make predictions.
+Epidemiological studies have indicated that the concentration of fecal indicator bacteria (FIB) in beach water is associated with illnesses among people who have contact with the water. In order to mitigate public health impacts, many beaches are managed so that an advisory is posted when the concentration of FIB exeeds a beach action value. The most commonly used method of measuring FIB concentration takes $18 - 24$ hours before returning a result. It has become common to base beach management decisions on the output from nowcast models that use environmental and meteorological conditions to predict the current concentration of FIB, avoiding the 24h lag. Most commonly, nowcast models are estimated using ordinary least squares regression, but other regression methods from the statistical and machine learning literature are appearing in growing numbers. The choice of regression method is quite important to the accuracy of the nowcast model, and the literature comparing the performance of different methods has often made those comparisons at a single site, which may or may not be representative. We compare several regression methods to identify which produces the most accurate predictions. The comparison is made at several sites in Wisconsin, including beaches on Lake Superior and Lake Michigan. A random forest model is identified as the most accurate. That is followed by the adaptive Lasso, which also includes a variable selection step that reduces the number of covariates that need to be measured in order to make predictions.
 \end{abstract}
 
 \begin{keyword}
@@ -154,8 +161,8 @@ best choices for a regression technique in a nowcast model.
 \section{Data}\label{data}
 
 The seven beach sites analyzed in this study are located within two
-distinct regions of Wisconsin (Figure \ref{fig:sites}). Three of the
-sites are on Chequamegon Bay (Lake Superior) and the remaining five are
+distinct regions of Wisconsin (Figure 1). Three of the
+sites are on Chequamegon Bay in Lake Superior and the remaining five are
 in Manitowoc County in Lake Michigan. For each site in the study, the
 data used to estimate the predictive models for FIB concentration were
 measured by a combination of automatic sensing, hydrodynamic and
@@ -164,12 +171,6 @@ included for modeling the FIB concentration at each beach site is in the
 Appendix.
 
 \subsection{Site descriptions}\label{site-descriptions}
-
-\begin{figure}
-    \includegraphics[width=\textwidth]{../figures/sites.png}
-    \caption{Map showing the location of the seven Wisconsin beaches used for this study.}
-    \label{fig:sites}
-\end{figure}
 
 \subsubsection{Chequamegon Bay sites}\label{chequamegon-bay-sites}
 
@@ -481,6 +482,7 @@ by 10-fold cross-validation.
 \centering
 \begin{tabular}{lcccc}                       
 Name & Algorithm & Binary & Weighted & \begin{tabular}{c}Selection\\Only\end{tabular} \\
+\hline
 GBM-OOB & Gradient boosting & & & \\
 GBM-CV & Gradient boosting     & & & \\
 AL & Adaptive Lasso & & & \\
@@ -621,18 +623,6 @@ GBM-OOB, GBM-CV, or AL exceeded each of the other modeling methods for
 the leave-one-year-out and the leave-one-out analyses were also computed
 (Table 3).
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/auroc-barchart.png}
-\caption{Mean ranking of the methods across all seven sites by area
-under the receiver operating characteristic curve (AUROC) and predictive
-residual sum of squares (PRESS) (higher is better). The error bars are
-90\% confidence intervals computed by the bootstrap. At left are the
-AUROC rankings from the leave-one-year-out cross validation (a), at
-right are the AUROC rankings from the leave-one-out cross validation
-(b)}
-\end{figure}
-
 \begin{table}
     \resizebox{\textwidth}{!}{
     \begin{tabular}{rccccccccccccc}
@@ -667,21 +657,11 @@ exceedances from nonexceedances. That said, we expect the two statistics
 to usually agree on which modeling methods perform best.
 
 The top three techniques under both LOO and LOYO analysis as determined
-by PRESS were GBM-CV, GBM-OOB, and AL (Figure 2). Again, to facilitate a
+by PRESS were GBM-CV, GBM-OOB, and AL (Figure 3). Again, to facilitate a
 pairwise comparison between modeling methods, the frequency that the
 mean PRESS rank of GBM-OOB, GBM-CV, or AL exceeded each of the other
 modeling methods for the leave-one-year-out and the leave-one-out
 analyses were computed (Table 4).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/press-barchart.png}
-\caption{Mean ranking of the methods by predictive error sum of squares
-(PRESS) across all sites (higher is better). The error bars are 90\%
-confidence intervals computed by the bootstrap. At left are the PRESS
-rankings from the leave-one-year-out cross validation (a), at right are
-the PRESS rankings from the leave-one-out cross validation (b).}
-\end{figure}
 
 \begin{table}
     \centering
@@ -760,14 +740,6 @@ commonly resulting in a few more correct decisions than AL. There are,
 however, exceptions where AL results had more correct decisions (e.g.,
 Hika and Red Arrow).
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/counts-barcharts.png}
-\caption{At each site, the number of predictions from AL, GBM-OOB, and
-GBM-CV that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
 \subsection{Covariate selection}\label{covariate-selection}
 
 It was noted in Section 4.3 that GBM-OOB and AL are two of the three
@@ -785,17 +757,6 @@ discern an effect even of covariates that are only slightly correlated
 with the response. As our dataset grows, then, we should expect more
 covariates to be selected for an AL model, and Point has far more
 observations than the other sites.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics{figure/varselect-barchart.png}
-\caption{At each site, the mean number of covariates that were selected
-for the AL model, and the total number of covariates, all of which were
-used in the gradient boosting machine with an out-of-bag estimate of the
-optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the
-covariate counts are broken down by whether the covariate values were
-collected automatically from web services or manually at the beach.}
-\end{figure}
 
 \section{Discussion}\label{discussion}
 
@@ -874,6 +835,39 @@ AL is also an anticipated addition to Virtual Beach.
 The predictive models for this study were generated on facilities and
 software (HTCondor) provided by the University of Wisconsin-Madison's
 Center for High Throughput Computing.
+
+\section{Figure Captions}
+
+\subsection{Figure 1}
+Map showing the location of the seven Wisconsin beaches for which models were analyzed in this work.
+
+\subsection{Figure 2}
+Mean ranking of the methods across all seven sites by area
+under the receiver operating characteristic curve (AUROC). The error bars are
+90\% confidence intervals computed by the bootstrap. At left are the
+AUROC rankings from the leave-one-year-out cross validation (a), at
+right are the AUROC rankings from the leave-one-out cross validation
+(b).
+
+\subsection{Figure 3}
+{Mean ranking of the methods by predictive error sum of squares
+(PRESS) across all sites (higher is better). The error bars are 90\%
+confidence intervals computed by the bootstrap. At left are the PRESS
+rankings from the leave-one-year-out cross validation (a), at right are
+the PRESS rankings from the leave-one-out cross validation (b).
+
+\subsection{Figure 4}
+At each site, the number of predictions from AL, GBM-OOB, and
+GBM-CV that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.
+
+\subsection{Figure 5}
+At each site, the mean number of covariates that were selected
+for the AL model, and the total number of covariates, all of which were
+used in the gradient boosting machine with an out-of-bag estimate of the
+optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the
+covariate counts are broken down by whether the covariate values were
+collected automatically from web services or manually at the beach.
 
 \section{References}\label{references}
 \bibliographystyle{chicago}
@@ -960,7 +954,7 @@ Fleisher, J.~M., L.~E. Fleming, H.~M. Solo-Gabriele, J.~K. Kish, C.~D.
   Sinigalliano, L.~Plano, S.~M. Elmir, J.~D. Wang, K.~Withum, T.~Shibata, M.~L.
   Gidley, A.~Abdelzaher, G.~He, C.~Ortega, X.~Zhu, M.~Wright, J.~Hollenbeck,
   and L.~C. Backer (2010).
-\newblock The beaches study: health effects and exposures from non-point source
+\newblock The {BEACHES} study: health effects and exposures from non-point source
   microbial contaminants in subtropical recreational marine waters.
 \newblock {\em International Journal of Epidemiology\/}~{\em 39\/}(5),
   1291--1298.
@@ -1016,7 +1010,7 @@ Hanley, J.~A. and B.~J. McNeil (1982).
 \bibitem[\protect\citeauthoryear{He and He}{He and He}{2008}]{He:2008jx}
 He, L.-M.~L. and Z.-L. He (2008).
 \newblock Water quality prediction of marine recreational beaches receiving
-  watershed baseflow and stormwater runoff in southern california, usa.
+  watershed baseflow and stormwater runoff in southern {C}alifornia, {USA}.
 \newblock {\em Water research\/}~{\em 42\/}(10), 2563--2573.
 
 \bibitem[\protect\citeauthoryear{Hosmer~Jr and Lemeshow}{Hosmer~Jr and
@@ -1038,7 +1032,7 @@ Hou, D., S.~J.~M. Rabinovici, and A.~B. Boehm (2006).
   et~al.}{1998}]{Hurvich-Simonoff-Tsai-1998}
 Hurvich, C.~M., J.~S. Simonoff, and C.-L. Tsai (1998).
 \newblock Smoothing parameter selection in nonparametric regression using an
-  improved akaike information criterion.
+  improved {A}kaike information criterion.
 \newblock {\em Journal of the Royal Statistical Society: Series B
   (Methodology)\/}~{\em 60\/}(2), 271--293.
 
@@ -1078,7 +1072,7 @@ National environmental methods index (2013).
 \bibitem[\protect\citeauthoryear{Nevers and Whitman}{Nevers and
   Whitman}{2005}]{Nevers:2005ln}
 Nevers, M.~B. and R.~L. Whitman (2005).
-\newblock Nowcast modeling of {E}scherichia coli concentrations at multiple
+\newblock Nowcast modeling of \emph{{E}scherichia coli} concentrations at multiple
   urban beaches of southern {Lake Michigan}.
 \newblock {\em Water research\/}~{\em 39\/}(20), 5250--5260.
 
@@ -1104,7 +1098,7 @@ Parkhurst, D.~F., K.~P. Brenner, A.~P. Dufour, and L.~J. Wymer (2005).
 \bibitem[\protect\citeauthoryear{Schwab and Bedford}{Schwab and
   Bedford}{1999}]{Schwab-Bedford-1999}
 Schwab, D.~J. and K.~W. Bedford (1999).
-\newblock The great lakes forecasting system.
+\newblock The {Great Lakes} forecasting system.
 \newblock {\em Coastal and Estuarine Studies\/}, 157--174.
 
 \bibitem[\protect\citeauthoryear{Stidson, Gray, and McPhail}{Stidson
@@ -1144,7 +1138,7 @@ Tibshirani, R. (1996).
 \bibitem[\protect\citeauthoryear{{United States Environmental Protection
   Agency}}{{USEPA}}{2008}]{USEPA:2008ib}
 {United States Environmental Protection Agency} (2008).
-\newblock Great lakes beach sanitary survey user's manual.
+\newblock {G}reat {L}akes beach sanitary survey user's manual.
 \newblock Technical Report EPA-823-B-06-001.
 
 \bibitem[\protect\citeauthoryear{{United States Environmental Protection
@@ -1190,7 +1184,7 @@ Waschbusch, R., S.~Corsi, K.~Sorsa, J.~Walker, J.~Standridge, and T.~Schnieder
 \bibitem[\protect\citeauthoryear{Whitman and Nevers}{Whitman and
   Nevers}{2004}]{Whitman:2004pc}
 Whitman, R.~L. and M.~B. Nevers (2004).
-\newblock Escherichia coli sampling reliability at a frequently closed chicago
+\newblock Escherichia coli sampling reliability at a frequently closed {C}hicago
   beach: Monitoring and management implications.
 \newblock {\em Environmental Science \& Technology\/}~{\em 38\/}(16),
   4241--4246.
@@ -1198,7 +1192,7 @@ Whitman, R.~L. and M.~B. Nevers (2004).
 \bibitem[\protect\citeauthoryear{Whitman and Nevers}{Whitman and
   Nevers}{2008}]{Whitman:2008nb}
 Whitman, R.~L. and M.~B. Nevers (2008).
-\newblock Summer e. coli patterns and responses along 23 chicago beaches.
+\newblock Summer \emph{{E}. coli} patterns and responses along 23 {C}hicago beaches.
 \newblock {\em Environmental Science \& Technology\/}~{\em 42\/}(24),
   9217--9224.
 
@@ -1231,149 +1225,6 @@ Zou, H. (2006).
   101\/}(476), 1418--1429.
 
 \end{thebibliography}
-\clearpage
-
-\section{Appendix}\label{appendix}
-
-
-\begin{table}[h!]
-    \resizebox{\textwidth}{!}{
-    \begin{tabular}{rccccccccccccc}
-    
-\multicolumn{6}{l}{\kern-2em \textbf{Leave-one-year-out cross-validation:}} & & & & & & & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} \\ 
-  \hline
-GBM-CV & 0.86 & 0.87 & 0.98 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 0.69 & 0.92 & 0.95 & 1.00 & 0.99 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.96 & 0.87 & 1.00 & 0.97 & 0.98 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL (s) &  &  &  & 0.52 & 0.85 & 0.83 & 0.85 & 0.95 & 0.98 & 0.98 & 1.00 & 1.00 & 1.00 \\ 
-  AL (b,w) &  &  &  &  & 0.80 & 0.78 & 0.90 & 0.95 & 0.98 & 1.00 & 0.99 & 1.00 & 1.00 \\ 
-  SPLS &  &  &  &  &  & 0.53 & 0.51 & 0.74 & 0.86 & 0.87 & 0.97 & 0.99 & 1.00 \\ 
-  PLS &  &  &  &  &  &  & 0.50 & 0.65 & 0.82 & 0.82 & 0.94 & 0.99 & 1.00 \\ 
-  AL (b) &  &  &  &  &  &  &  & 0.66 & 0.91 & 0.89 & 0.93 & 0.99 & 1.00 \\ 
-  SPLS (s) &  &  &  &  &  &  &  &  & 0.74 & 0.76 & 0.90 & 0.98 & 0.99 \\ 
-  AL (b,s) &  &  &  &  &  &  &  &  &  & 0.50 & 0.67 & 0.91 & 0.97 \\ 
-  AL (b,w,s) &  &  &  &  &  &  &  &  &  &  & 0.65 & 0.89 & 0.94 \\ 
-  GA &  &  &  &  &  &  &  &  &  &  &  & 0.82 & 0.86 \\ 
-  GA (b,w) &  &  &  &  &  &  &  &  &  &  &  &  & 0.52 \\ 
-  & & & & & & & & & & & & & \\
-\multicolumn{6}{l}{\kern-2em \textbf{Leave-one-out cross-validation:}} & & & & & & & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} \\ 
-  \hline
-GBM-CV & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.72 & 0.99 & 0.93 & 0.96 & 0.98 & 1.00 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL (b,w) &  &  &  & 0.78 & 0.91 & 0.82 & 0.90 & 0.97 & 0.94 & 0.99 & 1.00 & 1.00 & 0.99 \\ 
-  AL (s) &  &  &  &  & 0.53 & 0.60 & 0.70 & 0.79 & 0.83 & 0.94 & 0.94 & 0.96 & 0.95 \\ 
-  AL (b,w,s) &  &  &  &  &  & 0.55 & 0.63 & 0.73 & 0.80 & 0.92 & 0.97 & 0.98 & 0.94 \\ 
-  GA &  &  &  &  &  &  & 0.59 & 0.66 & 0.75 & 0.89 & 0.89 & 0.88 & 0.90 \\ 
-  SPLS &  &  &  &  &  &  &  & 0.58 & 0.68 & 0.83 & 0.87 & 0.88 & 0.85 \\ 
-  SPLS (s) &  &  &  &  &  &  &  &  & 0.63 & 0.80 & 0.83 & 0.84 & 0.80 \\ 
-  PLS &  &  &  &  &  &  &  &  &  & 0.65 & 0.68 & 0.69 & 0.70 \\ 
-  GA (b) &  &  &  &  &  &  &  &  &  &  & 0.49 & 0.49 & 0.52 \\ 
-  AL (b) &  &  &  &  &  &  &  &  &  &  &  & 0.46 & 0.50 \\ 
-  AL (b,s) &  &  &  &  &  &  &  &  &  &  &  &  & 0.51 \\ 
-  
-    \end{tabular}}
-    \caption{Under leave-one-year-out (top) and leave-one-out (bottom) cross validation, frequency of the mean AUROC rank of each method (rows) exceeding that of the other methods (columns).
-    \label{tab:AUROC-comprehensive}}
-\end{table}
-
-\begin{table}[h!]
-    \centering
-\resizebox{0.8\textwidth}{!}{%
-    \begin{tabular}{rccccccc}
-
-\multicolumn{6}{l}{\kern-4em \textbf{Leave-one-year-out cross-validation:}} & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
-  \hline
-GBM-CV & 0.58 & 0.96 & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 0.94 & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.52 & 0.88 & 0.94 & 0.99 & 1.00 \\ 
-  SPLS &  &  &  & 0.87 & 0.93 & 1.00 & 1.00 \\ 
-  PLS &  &  &  &  & 0.59 & 0.91 & 1.00 \\ 
-  SPLS (s) &  &  &  &  &  & 0.83 & 1.00 \\ 
-  AL (s) &  &  &  &  &  &  & 1.00 \\ 
-  & & & & & & & \\
-\multicolumn{6}{l}{\kern-4em \textbf{Leave-one-out cross-validation:}} & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
-  \hline
-GBM-CV & 0.66 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  GBM-OOB &  & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
-  AL &  &  & 0.73 & 0.80 & 0.85 & 0.93 & 1.00 \\ 
-  SPLS (s) &  &  &  & 0.57 & 0.66 & 0.82 & 1.00 \\ 
-  SPLS &  &  &  &  & 0.52 & 0.75 & 1.00 \\ 
-  PLS &  &  &  &  &  & 0.69 & 1.00 \\ 
-  AL (s) &  &  &  &  &  &  & 0.99 \\ 
-  
-    \end{tabular}}
-    \caption{Under leave-one-year-out (top) or leave-one-out (bottom) cross validation, frequency of the mean PRESS rank of each method (rows) exceeding that of the other methods (columns).}
-    \label{table:press.pairs.annual-comprehensive}
-\end{table}
-
-\subsubsection{Comprehensive counts from simulating the models in
-use:}\label{comprehensive-counts-from-simulating-the-models-in-use}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-thompson.png}
-\caption{At Thompson, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-maslowski.png}
-\caption{At Maslowski, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-kreher.png}
-\caption{At Kreher, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-neshotah.png}
-\caption{At Neshotah, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-redarrow.png}
-\caption{At Red Arrow, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-point.png}
-\caption{At Point, the number of predictions from every prediction
-method that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figure/counts-barcharts-comprehensive-hika.png}
-\caption{At Hika, the number of predictions from every prediction method
-that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.}
-\end{figure}
-
-\input{appendix/thompson.tex} \input{appendix/maslowski.tex}
-\input{appendix/kreher.tex}
-
-\input{appendix/neshotah.tex} \input{appendix/redarrow.tex}
-\input{appendix/point.tex} \input{appendix/hika.tex}
 
 \end{document}
+
