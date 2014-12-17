@@ -170,6 +170,8 @@ atmospheric modeling, and manual sampling. A listing of the covariates
 included for modeling the FIB concentration at each beach site is in the
 Appendix.
 
+[[Figure 1 about here]]
+
 \subsection{Site descriptions}\label{site-descriptions}
 
 \subsubsection{Chequamegon Bay sites}\label{chequamegon-bay-sites}
@@ -623,6 +625,8 @@ GBM-OOB, GBM-CV, or AL exceeded each of the other modeling methods for
 the leave-one-year-out and the leave-one-out analyses were also computed
 (Table 3).
 
+[[Figure 2 about here]]
+
 \begin{table}
     \resizebox{\textwidth}{!}{
     \begin{tabular}{rccccccccccccc}
@@ -662,6 +666,8 @@ pairwise comparison between modeling methods, the frequency that the
 mean PRESS rank of GBM-OOB, GBM-CV, or AL exceeded each of the other
 modeling methods for the leave-one-year-out and the leave-one-out
 analyses were computed (Table 4).
+
+[[Figure 3 about here]]
 
 \begin{table}
     \centering
@@ -740,6 +746,8 @@ commonly resulting in a few more correct decisions than AL. There are,
 however, exceptions where AL results had more correct decisions (e.g.,
 Hika and Red Arrow).
 
+[[Figure 4 about here]]
+
 \subsection{Covariate selection}\label{covariate-selection}
 
 It was noted in Section 4.3 that GBM-OOB and AL are two of the three
@@ -747,6 +755,8 @@ best-ranked methods. One difference between the two is that AL does
 covariate selection while GBM-OOB uses all of the available covariates.
 We explore here how many covariates were used in AL models compared to
 the GBM-OOB models (Figure 5).
+
+[[Figure 5 about here]]
 
 At most of the sites, AL uses only a small fraction of the available
 covariates, but at Point beach, AL uses almost all of the available
@@ -758,7 +768,7 @@ with the response. As our dataset grows, then, we should expect more
 covariates to be selected for an AL model, and Point has far more
 observations than the other sites.
 
-\section{Discussion}\label{discussion}
+\section{Conclusions}\label{discussion}
 
 The GBM-CV, GBM-OOB, and AL methods showed the best results by both
 PRESS and AUROC, under LOO and LOYO cross validation. Though GBM-CV was
@@ -776,8 +786,7 @@ The predictive performance of the AL models was somewhat worse than that
 of the GBM models, but by including a covariate selection step, the AL
 models reduce the number of covariates that must be measured in order to
 make daily predictions. A model that requires fewer covariates is less
-expensive and more robust (as the probability of encountering some
-missing data increases with the number of required covariates). This is
+expensive and more robust (since each additional covariate increases the chance of missing data). This is
 particularly important for manually-collected covariates because
 collecting data by hand takes more time and is more costly than
 accessing publically available data from a web service. Across all of
@@ -790,6 +799,20 @@ at every site in the AL models (and other models that include a
 covariate selection step). The manually-collected covariates that were
 consistently selected for the models were the (log) turbidity in the
 beach water, and wave height at the beach.
+
+Another advantage of the AL over GBM-type models is interpretability. As
+a linear regression technique, fitting an AL model means generating a
+set of coefficients, which can be interpreted as the marginal effect of
+a change in the corresponding covariate. On the other hand, GBM produces
+black-box models that typically make more accurate predictions but are
+difficult to intrepret. One common way to interpret a random forest
+model (such as from the GBM algorithm) is to observe the proportion of
+splits in the underlying trees that involve a particular covariate. The
+split proportion is a measurement of that covariate's importance to the
+model but gives no indication of how the covariate affects the
+bacterial concentraion.
+
+\section{Discussion}
 
 Where minimizing the number of covariates is important, the selection
 criterion used here (\(\text{AIC}_{\tt c}\)) may not be ideal. In that
@@ -805,18 +828,6 @@ derived from the standpoint of identifying the most probable model,
 rather than minimizing the predictive error. It is therefore likely that
 an AL model using the BIC for covariate selection will have slightly
 worse predictive performance than one using the \(\text{AIC}_{\tt c}\).
-
-Another advantage of the AL over GBM-type models is interpretability. As
-a linear regression technique, fitting an AL model means generating a
-set of coefficients, which can be interpreted as the marginal effect of
-a change in the corresponding covariate. On the other hand, GBM produces
-black-box models that typically make more accurate predictions but are
-difficult to intrepret. One common way to interpret a random forest
-model (such as from the GBM algorithm) is to observe the proportion of
-splits in the underlying trees that involve a particular covariate. The
-split proportion is a measurement of that covariate's importance to the
-model but gives no indication of how that covariate affects the
-bacterial concentraion.
 
 All statistical methods and the comparison for this study were carried
 out in the R statistical software environment \citep{R-2014}. Scripts and
@@ -850,7 +861,7 @@ right are the AUROC rankings from the leave-one-out cross validation
 (b).
 
 \subsection{Figure 3}
-{Mean ranking of the methods by predictive error sum of squares
+Mean ranking of the methods by predictive error sum of squares
 (PRESS) across all sites (higher is better). The error bars are 90\%
 confidence intervals computed by the bootstrap. At left are the PRESS
 rankings from the leave-one-year-out cross validation (a), at right are

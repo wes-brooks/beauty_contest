@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.5-0.9999.3 (MiKTeX 2.9) (preloaded format=xelatex 2014.6.23)  4 DEC 2014 20:52
+This is XeTeX, Version 3.1415926-2.5-0.9999.3 (MiKTeX 2.9) (preloaded format=xelatex 2014.6.23)  16 DEC 2014 10:59
 entering extended mode
 **manuscript.tex
 (C:\Users\wrbrooks\git\beauty_contest\writeup\manuscript.tex
@@ -446,7 +446,7 @@ Overfull \vbox (39.65776pt too high) has occurred while \output is active []
 
 
 ] [2] [3] [4] [5] [6] [7] [8] [9]
-Overfull \hbox (0.8697pt too wide) in paragraph at lines 327--333
+Overfull \hbox (0.8697pt too wide) in paragraph at lines 329--335
 \T1/cmr/m/n/12 tech-nique uses one of five mod-el-ing al-go-rithms: the gra-di-
 ent boost-ing ma-chine (GBM),
  []
@@ -460,7 +460,7 @@ Requested font "cmtt8" at 6.0pt
 (C:\Users\wrbrooks\git\beauty_contest\writeup\manuscript.aux) )
 (\end occurred inside a group at level 1)
 
-### simple group (level 1) entered at line 853 ({)
+### simple group (level 1) entered at line 864 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
  3750 strings out of 428791
@@ -469,6 +469,6 @@ Here is how much of TeX's memory you used:
  6965 multiletter control sequences out of 15000+200000
  25618 words of font info for 81 fonts, out of 3000000 for 9000
  1096 hyphenation exceptions out of 8191
- 32i,16n,34p,1639b,358s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 32i,16n,34p,1639b,350s stack positions out of 5000i,500n,10000p,200000b,50000s
 
 Output written on manuscript.pdf (34 pages).
