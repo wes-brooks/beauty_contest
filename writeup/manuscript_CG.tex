@@ -29,8 +29,9 @@
 \usepackage{setspace}
 \doublespacing
 
-\usepackage{lineno}
-\linenumbers
+\usepackage{multirow}
+%\usepackage{lineno}
+%\linenumbers
 
 \mathchardef\mhyphen="2D % Define a "math hyphen"
 
@@ -79,7 +80,7 @@
 \address[usgs-wiwsc]{Wisconsin Water Science Center, United States Geological Survey, 8505 Research Way, Middleton, WI 53562}
 
 \begin{abstract}
-Epidemiological studies have indicated that the concentration of fecal indicator bacteria (FIB) in beach water is associated with illnesses among people who have contact with the water. In order to mitigate public health impacts, many beaches are managed so that an advisory is posted when the concentration of FIB exeeds a beach action value. The most commonly used method of measuring FIB concentration takes $18 - 24$ hours before returning a result. It has become common to base beach management decisions on the output from nowcast models that use environmental and meteorological conditions to predict the current concentration of FIB, avoiding the 24h lag. Most commonly, nowcast models are estimated using ordinary least squares regression, but other regression methods from the statistical and machine learning literature are sometimes used for FIB nowcast models. The choice of regression method is quite important to the accuracy of the nowcast model, and the literature comparing the performance of different methods has often made those comparisons at a single site, which may or may not be representative. We compare several regression methods to identify which produces the most accurate predictions. The comparison is made at several sites in Wisconsin, including beaches on Lake Superior and Lake Michigan. A random forest model is identified as the most accurate. That is followed by the adaptive Lasso, which also includes a variable selection step that reduces the number of covariates that need to be measured in order to make predictions.
+Epidemiological studies have indicated that the concentration of fecal indicator bacteria (FIB) in beach water is associated with illnesses among people who have contact with the water. In order to mitigate public health impacts, many beaches are managed so that an advisory is posted when the concentration of FIB exeeds a beach action value. The most commonly used method of measuring FIB concentration takes $18 - 24$ hours before returning a result. It has become common to base beach management decisions on the output from nowcast models that use environmental and meteorological conditions to predict the current concentration of FIB, avoiding the 24h lag. Most commonly, nowcast models are estimated using ordinary least squares regression, but other regression methods from the statistical and machine learning literature are sometimes used for FIB nowcast models. The choice of regression method is quite important to the accuracy of the nowcast model, and the literature comparing the performance of different methods has often made those comparisons at a single site, which may or may not be representative. We compare several regression methods to identify which produces the most accurate predictions. The comparison is made at several sites in Wisconsin, including beaches on Lake Superior and Lake Michigan. A random forest model is identified as the most accurate. That is followed by the adaptive Lasso, which also includes a variable selection step that reduces the number of environmental surrogate variables that need to be measured in order to make predictions.
 \end{abstract}
 
 \begin{keyword}
@@ -116,18 +117,18 @@ opportunities.
 
 In order to have more immediate knowledge of the FIB concentration, it
 is now common to use regression models that ``nowcast'' the FIB
-concentration based on easily observed environmental surrogates,
+concentration based on environmental surrogate variables,
 e.g.~turbidity or $24$ h rainfall total \citep{Brandt:2006gj,Olyphant:2004yq}. Ordinary least squares (OLS) regression is the most popular
 regression method for FIB nowcast models
 \citep{Nevers:2005ln,Francy:2007yv,deBrauwere-Koffi-Servais-2014}. However, OLS is well-known for
-drawbacks like overfitting, difficulty of covariate selection, and the
+drawbacks like overfitting, difficulty of variable selection, and the
 inflexibility of its linear modeling structure \citep{Ge:2007ou}. 
 In order to avoid the pitfalls of OLS, several other regression methods have been used in
  nowcast models of FIB concentration. They include 
 partial least squares (PLS) \citep{Hou:2006nf,Brooks-Fienen-Corsi-2013}, logistic regression \citep{Waschbusch:2004bd,Jin:2006tr}, decision trees \citep{Stidson-2012}, random forests
 \citep{Parkhurst:2005zf,Jones-Liu-Dorovitch-2012}, and artificial
 neural networks \citep{Kashefipour-Lin-Falconer-2005,He:2008jx}. A
-thorough review of the regression techniques being used in nowcast
+thorough review of the regression methods being used in nowcast
 models for FIB concentration is provided by
 \cite{deBrauwere-Koffi-Servais-2014}. An assessment of seven methods of
 regression for FIB concentration in beach water at Santa Monica Beach in
@@ -135,38 +136,31 @@ California identified classification trees, artificial neural networks,
 and logistic regression as the three best methods
 \citep{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}.
 
-The literature suggests that many regression techniques have been
+The literature suggests that many regression methods have been
 successfully used for nowcast modeling, but most of the available results are 
-specific to a single site. In addition, each study seems to use different methods of data manipulation and performance validation. Thus, while there are published results indicating that any number of regression methods may outperform OLS for an FIB nowcast model, the existing literature does not to compare different methods models at different sites. In this
-study, fourteen regression techniques are evaluated in nowcast models at
-seven Wisconsin Great Lakes beaches with four years of data. The results
-are compared to identify the techniques that most accurately predict
+specific to a single site. In addition, each study seems to use different standards to manipulate data and summarize performance. Thus, while there are published results indicating that several regression methods outperform OLS for an FIB nowcast model, the existing literature does not compare different methods across a range of sites. In this
+study, fourteen regression methods are evaluated in nowcast models at
+seven Wisconsin Great Lakes beaches. The results
+are compared to identify the methods that most accurately predict
 instances when a swimmer's advisory should be posted. This study is designed to 
 campare several regression methods across a range of conditions in order to identify which 
-methods consistently produce the best predictions.
+methods consistently make the best predictions. Accuracy of the predictions is evaluated by comparison to counts made from the traditional FIB analysis method. That is, the FIB count from a cultured sample of beach water is considered the gold standard for evaluation of the predictive nowcast methods.
 
-The remainder of the paper is organized as follows: in the next section
-we discuss data collection and handling, describe the regression
-techniques, and explain how the comparisons were made. Next, we present
-the results of comparing the methods by several metrics including: area
-under the receiver operating characteristic (ROC) curve; predictive
-error sum of squares; and raw number of correct/incorrect predictions.
-Finally, we discuss what the comparison suggests about which are the
-best choices for a regression technique in a nowcast model.
+The performance criteria for comparing models should reflect a study's aims and the interests of end users \citep{Jakeman-Letcher-Norton-2006,Bennett-Croke-Guariso-Guillaume-Hamilton-Jakeman-Marsili-Libelli-Newham-Norton-Perrin-Pierce-Robson-Seppelt-Voinov-Fath-Andreassian-2013}. Accordingly, the performance criteria in the current study were chosen to answer which method best distinguished between exceedances and nonexceedances of the BAV. Area under the receiver operating characteristic (ROC) curve was used to measure a model's ability to separate exceedances from nonexceedances; methods were ranked at each site in order to facilitate comparison across sites. A secondary consideration (because it doesn't directly address the goal of sorting predictions into exceedances and nonexceedances) is how well the predictions matched the measured FIB concentrations. Predictive error sum of squares was used to assess prediction accuracy in this sense, and once again the methods were ranked at each site in order to facilitate a comparison across sites. The raw number of correct and incorrect predictions is presented to illustrate the range of predictive performance that was acheived in this study.
 
 \section{Data}\label{data}
 
 The seven beach sites analyzed in this study are located within two
  regions of Wisconsin (Figure 1). Three of the
 sites are on Chequamegon Bay in Lake Superior and the remaining five are
-in Manitowoc County along Lake Michigan. For each site in the study, the
-data used to estimate the predictive models for FIB concentration were
-measured by a combination of automatic sensing, hydrodynamic and
-atmospheric modeling, and manual sampling. A listing of the covariates
-included for modeling the FIB concentration at each beach site is in the
+in Manitowoc County along Lake Michigan. The data used in the study are the daily FIB concentration and several environmental surrogate variables at each beach during the summer beach seasons of 2010-2013. The surrogates that were used in the predictive models came from a variety of sources. Some were manually measured at the beach sites, some were measured remotely by automated instruments, and the remainder were generated by hydrodynamic and atmospheric models. Examples of data derived from models are wind vectors and lake current vectors. A listing of the surrogates used for predicting the FIB concentration at each beach site is in the
 Appendix.
 
-[[Figure 1 about here]]
+\begin{figure}
+\includegraphics[width=\textwidth]{fig1/FIG1.png}
+\caption{Map showing the location of the seven Wisconsin beaches for which models were analyzed in this work.
+}
+\end{figure}
 
 \subsection{Site descriptions}\label{site-descriptions}
 
@@ -176,18 +170,14 @@ Chequamegon Bay is approximately \(19\) km long and ranges from 3 to 10
 km in width, with a maximum depth of \(11\) m. Water quality at the
 three Chequamegon Bay/Lake Superior beaches is influenced by nearby
 streams, as well as by urban runoff from Ashland and Washburn,
-Wisconsin. Thompson beach is within the small town of Washburn, on the
-north side of the bay. Next to the beach are a playground, RV campsites,
-piers and boat launch. There are two flowing artesian wells that drain
-to the beach. Thompson Creek, about \(300\) m from the beach, is the
-nearest stream. Maslowski beach is on the west side of Ashland, on the
-south side of the Chequamegon Bay. A playground and parking area are
-near the beach. Two flowing artesian wells are near the swim area, and
+Wisconsin. Thompson Beach is within the city of Washburn, on the
+north side of the bay. There are two flowing artesian wells that drain
+to the beach and Thompson Creek, about \(300\) m from the beach, is the
+nearest stream. Maslowski Beach is on the west side of Ashland, on the
+south side of the Chequamegon Bay. Two flowing artesian wells are near the swim area, and
 Fish Creek (\(1.5\) km west of the beach) and Whittlesley Creek (\(3\)
-km northwest) are the nearest streams. Kreher beach is in Ashland, \(4\)
-km northeast of Maslowski beach. Kreher Park has an RV campground,
-playground and boat launch, and is nearest to Bay City Creek, which is
-\(1\) km east of the beach. All of the listed streams are influenced by
+km northwest) are the nearest streams. Kreher Beach is in Ashland, \(4\)
+km northeast of Maslowski beach and \(1\) km west of Bay City Creek. All of the listed streams are influenced by
 areas of agricultural and forested land use, with Bay City Creek also
 influenced by urban land use \citep{Francy-et-al-2013}. Contributions
 from Fish Creek are dynamic due to a wetland at the creek's outlet that
@@ -195,13 +185,13 @@ is influenced by the lake level.
 
 \subsubsection{Manitowoc County sites}\label{manitowoc-county-sites}
 
-Red Arrow beach is within the city of Manitowoc. It has numerous
+Red Arrow Beach is within the city of Manitowoc. It has numerous
 potential influences on water quality, including the mouth of the
-Manitowoc River one mile north and urban runoff draining to the beach
+Manitowoc River \(2\) km north and urban runoff draining to the beach
 through storm sewer outlets. The Manitowoc River is dominated by
 agricultural land use, but there is some urban influence from the city
 of Manitowoc. The Manitowoc sewage treatment plant sits at the mouth of
-the Manitowoc River. Neshotah beach is in the small community of Two
+the Manitowoc River. Neshotah Beach is in the city of Two
 Rivers. Small storm sewers drain to the north and to the south directly
 adjacent to the beach boundaries, and the mouth of the Twin River is
 \(1\) km south of the beach. The Twin River drains an agricultural
@@ -213,8 +203,8 @@ River is \(26\) km north of Point Beach State Park. The Kewaunee River
 is also dominated by agricultural land use. FIB concentration was
 measured at three beaches within Point Beach State Park, with the
 samples being considered in the models as three independent
-observations. Hika beach is south of the city of Manitowoc near the
-small community of Cleveland. Large floating mats of \emph{Cladophora}
+observations. Hika Beach is south of the city of Manitowoc near the
+village of Cleveland. Large floating mats of \emph{Cladophora}
 algae are common. Centerville Creek, a small stream dominated by
 agricultural land use, drains to the lake adjacent to the beach.
 
@@ -223,60 +213,56 @@ agricultural land use, drains to the lake adjacent to the beach.
 Field data collection and sample analysis followed methods described in
 \cite{Francy-et-al-2013}. Concentration of \emph{E. coli} was measured at each
 beach \(2-4\) times per week for \(12-14\) weeks between Memorial Day 
-and Labor Day from 2010 through 2013. During the study period, Memorial Day fell between May 26 and May 31 and Labor Day fell between September 2 and September 6. Samples were collected from the 
+and Labor Day from 2010 through 2013 (during the study period, Memorial Day fell between May 26 and May 31 and Labor Day fell between September 2 and September 6.) Samples were collected from the 
 center of the length of the beach, \(30\) cm below the water surface
 where total water depth was \(60\) cm. All samples were quantified by
 use of the Colilert® QuantiTray/2000 method, and are reported as the
 most probable number (MPN) of \emph{E. coli} colony forming units (CFU)
 and were read after \(24\) hours of incubation \citep{Colilert}.
 
-Additional covariates were compiled from a variety of sources including
-online data and manual measurements. Online data were accessed using
-Environmental Data Discovery and Transformation (EnDDaT), a web service
-that accesses data from a variety of sources, compiles and processes the
-data, and performs common transformations \citep{EnDDaT-2014}. Three
-sources of data were accessed: The U.S. Geological survey National Water
+Environmental surrogate variables came from 
+online data and manual measurements. Online data were compiled using the publicly available web service 
+Environmental Data Discovery and Transformation (EnDDaT). EnDDaT collects data from  public web services provided by federal agencies, aligns the observation times, and performs common transformations \citep{EnDDaT-2014}. For this study, three data sources were accessed through EnDDaT: The U.S. Geological survey National Water
 Information System (NWIS) \citep{NWIS}, the National Weather Service
 North Central River Forecasting Center \citep{NCRFC}, and the Great Lakes
-Costal Forecasting System \citep{Schwab-Bedford-1999}. Covariates
+Costal Forecasting System \citep{Schwab-Bedford-1999}. Surrogates
 acquired through these sources included: river discharge, precipitation,
 lake current vectors, wave height, wave direction, lake level, water
 temperature, air temperature, wind vector, and percent cloud cover.
 
-Most covariates from online sources were available in hourly increments
+Most surrogates from online sources were available in hourly increments
 with the exception of NWIS data which were available in 15 minute
-increments. In order to make best use of this high-frequency data for
-daily predictions, several summary statistics were calculated over
-several time windows for use as potential covariates. The use of $1$, $2$,
+increments. In order to make best use of the online data for
+daily predictions, summary statistics were calculated over
+several time windows for use as potential surrogates. The statistics by which EnDDaT summarizes measurements during a window period are the mean, minimum, maximum, range, sum, and
+standard deviation. The use of $1$, $2$,
 $6$, $12$, $24$, $48$, $72$, and $120$ hour time windows for calculating the summary
-statistics followed recent research showing that selecting from windowed
-and lagged versions of raw high-frequency covariates can improve the
+statistics followed research showing that selecting from windowed
+and lagged versions of high-frequency surrogates can improve the
 predictive accuracy of regression models
-\citep{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012}. The choice of
-summary statistics to include as potential covariates was guided by
-scientific judgement regarding phenomena that could affect the FIB
-concentration. For example, standard deviation of water temperature
-measurements over the window period reflected the variability in water
-temperature, which may affect the survival and growth of FIB; the sum of
-rainfall measurements over the window period indicated the magnitude of
-recent rain events, which may be associated with FIB washed into the
-lake from sources on land; and the mean of cloud cover measurements over
-the window period may measure the degree to which UV light was inhibited
-from breaking down FIB colonies in the water. The summary statistics
-computed by EnDDaT were the mean, minimum, maximum, difference, sum, and
-standard deviation.
+\citep{Cyterski-Zhang-White-Molina-Wolfe-Parmar-Zepp-2012}. The choice of which
+summary statistics to compute for each environmental surrogate variable was guided by
+scientific judgement about how the surrogate could affect the FIB
+concentration. Some examples of this judgement are listed here. Variability in water
+temperature may affect the survival and growth of FIB so the standard deviation of water temperature
+measurements during each window was used as an explanatory variable. The magnitude of
+recent rain events may determine how much FIB washes into a
+lake from sources on land, so the sum of
+rainfall measurements during the window was included as an explanatory variable.
+Another example: UV light breaks down FIB colonies in the water but this action is inhibited when clouds obscure the sun, so the mean cloud cover measurements during
+the window was included as an explanatory variable.
 
-Manually observed data were instantaneous observations that had the
+Manually collected data were measurements from a specific location and point in time that had the
 benefit of being measured when and where the FIB samples were collected.
-However, these covariates were measured only once per day and at greater
+However, these surrogates were measured only once per day and at greater
 expense than the online data because the data had to be collected by
-field personnel. Manual data collection techniques were guided by the
+field personnel. Scientists from the University of Wisconsin-Oshkosh, Northland College, and Bayfield County collected the data as prescribed by the
 USEPA's Great Lakes Beach Sanitary Survey \citep{USEPA:2008ib}. Among the
 manually measured data were turbidity, wave height, number of birds
 present, number of people present, amount of algae floating in the swim
 area and on the beach, specific conductance, water and air temperature,
 wind direction, and wind speed. Every beach dataset included turbidity,
-but other field covariates occasionally had to be dropped from some of
+but other manually collected surrogates occasionally had to be dropped from some of
 the datasets because of missing values or questionable reliability.
 
 \subsection{Data transformations}\label{data-transformations}
@@ -284,20 +270,26 @@ the datasets because of missing values or questionable reliability.
 The response for the continuous regression models was the base-10
 logarithm of the FIB concentration. For the binary regression models,
 the response is an indicator of whether the concentration exceeds the
-BAV. Transformations were applied to some of the covariates during
+BAV. Transformations were applied to some of the surrogates during
 pre-processing: the beach water turbidity and the discharge of
 tributaries near each beach were log-transformed, and rainfall
-covariates were all square root transformed. These transformations were
+totals were all square root transformed. These transformations were
 based on the performance of previous studies and were applied to all
 datasets \citep{Ge:2007ou,Frick:2008jo}.
 
 \section{Methods}\label{methods}
 
+All of the computations for this study were carried
+out in the R statistical software environment \citep{R-2014}. Scripts and
+details of the how the modeling methods were implemented are in the
+online supplement. The genetic algorithm, partial least squares, and gradient boosted modeling algorithms are also available as modules in Virtual Beach, a freely-avalable software package for predicting exceedances of recreational water quality limits \citep{VB3-2013}. An implementation of
+the adaptive lasso is also an anticipated addition to Virtual Beach.
+
 \subsection{Definitions}\label{definitions}
 
 For each site, let \(\bm{y}=(y_1, \dots, y_n)\) be the vector of
 \(\log_{10}\) FIB concentration measurements, let \(n\) be the number of
-observations, and let \(p\) be the number of explanatory covariates. The
+observations, and let \(p\) be the number of explanatory variables. The
 BAV of \(235\) CFU / \(100\) mL is represented
 symbolically in equations by \(\delta\). Define an exceedance as an observed FIB concentration that exceeds the BAV. Conversely, a
 nonexceedance is an observed FIB concentration that does not exceed the
@@ -321,12 +313,12 @@ important detail that is discussed in Section 5.4.
 \subsection{Listing of statistical
 techniques}\label{listing-of-statistical-techniques}
 
-Fourteen different regression modeling techniques were considered (Table
-1). Each technique uses one of five modeling algorithms: the gradient
+Fourteen different regression modeling methods were considered. The  (Table
+1). Each method uses one of five modeling algorithms: the gradient
 boosting machine (GBM), the adaptive Lasso (AL), the genetic algorithm
-(GA), partial least squares (PLS), or sparse PLS (SPLS). Each technique
+(GA), partial least squares (PLS), or sparse PLS (SPLS). Each method
 is applied to either continuous or binary regression and to either
-covariate selection and model estimation, or covariate selection only.
+variable selection and model estimation, or variable selection only.
 
 \subsubsection{Continuous vs.~binary
 regression}\label{continuous-vs.binary-regression}
@@ -345,7 +337,7 @@ which we predict the state of the binary indicator \(z_{i}\):
 where \(y_i\) is the FIB concentration and \(\delta\) is the BAV. The
 indicator is coded as zero when the concetration is below the BAV and
 one when the concentration exceeds the BAV. All of the binary modeling
-techniques herein use logistic regression \citep{Hosmer-Lemeshow-2004}.
+methods herein use logistic regression \citep{Hosmer-Lemeshow-2004}.
 Binary regression methods are indicated with a (b).
 
 \subsubsection{Weighting of observations in binary
@@ -357,7 +349,7 @@ can be subject to a large degree of spatiotemporal heterogeneity
 observed to fall near the BAV, there is considerable uncertainty as to
 whether an independent sample from the same date and location would or
 would not exceed the BAV. A weighting scheme for the binary regression
-techniques was designed to reflect this ambiguity by giving more weight
+methods was designed to reflect this ambiguity by giving more weight
 to observations far from the BAV. In the weighting scheme, observations
 were given weights \(w_i\) for \(i=1,\dots,n\), where
 
@@ -370,7 +362,7 @@ were given weights \(w_i\) for \(i=1,\dots,n\), where
 \]
 
 That is, the weights are equal to the number of standard deviations that
-the observed concentration lies from the BAV. All the techniques that
+the observed concentration lies from the BAV. All the methods that
 were implemented with this weighting scheme were separately implemented
 without any weighting of the observations. The methods using the
 weighting scheme are indicated by (w).
@@ -378,8 +370,8 @@ weighting scheme are indicated by (w).
 \subsubsection{Selection-only methods}\label{selection-only-methods}
 
 Modeling methods indicated by an (s) were applied only to select
-covariates for a regression model. Once the covariates were selected,
-the regression model using the selected covariates was estimated using
+surrogates for a regression model. Once the surrogates were selected,
+the regression model using the selected surrogates was estimated using
 ordinary least squares for the continuous methods, or ordinary logistic
 regression for the binary methods.
 
@@ -391,8 +383,8 @@ algorithms}\label{listing-of-modeling-algorithms}
 A GBM model is a so-called random forest model - a collection of many
 regression trees, each fit to a randomly drawn subsample of the training
 data \citep{Friedman-2001}. Prediction is done by averaging the outputs
-of the trees. Two GBM-based techniques were studied - we refer to them
-as GBM-OOB and GBM-CV. The difference between these two techniques is in
+of the trees. Two GBM-based algorithms were studied - we refer to them
+as GBM-OOB and GBM-CV. The difference between the two is in
 how the optimal number of trees is determined - GBM-CV selects the
 number of trees in a model using leave-one-out cross validation (CV),
 while GBM-OOB uses the so-called out-of-bag error estimate, where the
@@ -409,9 +401,9 @@ more accurately estimate the prediction error.
 
 The least absolute shrinkage and selection operator (Lasso) is a
 penalized regression method that simultaneously selects relevant
-covariates and estimates their coefficients \citep{Tibshirani-1996}. The
+variables and estimates their coefficients \citep{Tibshirani-1996}. The
 AL is a refinement of the Lasso that possesses the so-called ``oracle''
-properties of asymptotically selecting exactly the correct covariates
+properties of asymptotically selecting exactly the correct variables
 and estimating them as accurately as would be possible if their
 identities were known in advance \citep{Zou-2006}. To use the AL for
 prediction requires selecting a tuning parameter. In this study, the AL
@@ -424,9 +416,9 @@ continuous regression models is
 \end{align}
 
 where \(\hat{\sigma}^2\) is the variance estimate from the model that
-used all of the covariates, \(n\) is the sample size, \(y_i\) and
+used all of the surrogates, \(n\) is the sample size, \(y_i\) and
 \(\hat{y}_i\) are respectively the observed and fitted value of the
-\(i\)th FIB measurement, and \(df\) is the number of covariates in the
+\(i\)th FIB measurement, and \(df\) is the number of surrogates in the
 model. For binary regression models, the \(\text{AIC}_{\tt c}\) is
 
 \begin{align}\label{eq:AICc-binary}
@@ -438,9 +430,9 @@ value of the \(i\)th BAV exceedance indicator.
 
 \paragraph{Genetic algorithm}\label{genetic-algorithm}
 
-The GA was used to select covariates for either an OLS or a logistic
+The GA was used to select surrogates for either an OLS or a logistic
 regression model. By analogy to natural selection, so-called chromosomes
-in the GA represent regression models \citep{Fogel-1998}. A covariate is
+in the GA represent regression models \citep{Fogel-1998}. A surrogate is
 included in the model if the corresponding element of the chromosome is
 one, but not otherwise. Chromosomes are produced in successive
 generations, where the first generation is produced randomly and
@@ -454,13 +446,13 @@ chromosome is calculated by the \(\text{AIC}_{\tt c}\)
 \paragraph{PLS}\label{pls}
 
 Partial least squares (PLS) regression is a tool for building regression
-models with many covariates \citep{Wold-Sjostrum-Eriksson-2001}. PLS
-works by decomposing the covariates into mutually orthogonal components,
+models with many explanatory variables \citep{Wold-Sjostrum-Eriksson-2001}. PLS
+works by decomposing the explanatory variables into mutually orthogonal components,
 with the components then used as the covariates in a regression model.
 This is similar to principal components regression (PCR), but the way
 PLS components are chosen ensures that they are aligned with the
 response, whereas PCR is sometimes criticised for decomposing the
-covariates into components that are unrelated to the response. To use
+explanatory variables into components that are unrelated to the response. To use
 PLS, one must decide how many components to use in the model. Following
 \citep{Brooks-Fienen-Corsi-2013}, we use the PRESS statistic to select
 the number of components.
@@ -468,7 +460,7 @@ the number of components.
 \paragraph{SPLS}\label{spls}
 
 Sparse PLS (SPLS) combines the orthogonal decompositions of PLS with the
-sparsity of Lasso-type covariate selection \citep{Chun-Keles-2010}. To do
+sparsity of Lasso-type variable selection \citep{Chun-Keles-2010}. To do
 so, SPLS uses two tuning parameters: one that controls the number of
 orthogonal components and one that controls the Lasso-type penalty. The
 optimal parameters are those that minimize the mean squared prediction
@@ -478,10 +470,12 @@ by 10-fold cross-validation.
 \begin{table}
 \centering
 \begin{tabular}{lcccc}                       
-Name & Algorithm & Binary & Weighted & \begin{tabular}{c}Selection\\Only\end{tabular} \\
+Abbreviation & Algorithm & Binary & Weighted & \begin{tabular}{c}Selection\\Only\end{tabular} \\
 \hline
 GBM-OOB & Gradient boosting & & & \\
+ & out-of-bag tree estimate & & & \\
 GBM-CV & Gradient boosting     & & & \\
+ & cross-validation tree estimate     & & & \\
 AL & Adaptive Lasso & & & \\
 AL (s) & Adaptive Lasso & & & X \\
 AL (b) & Adaptive Lasso & X & & \\
@@ -495,7 +489,7 @@ PLS & Patrial least squares & & & \\
 SPLS & Sparse partial least squares & & & \\
 SPLS (s) & Sparse partial least squares & & & X \\
 \end{tabular}
-\caption{Comprehensive list of the modeling methods analyzed in this study. Listed for each method are the method's abbreviation, the algorithm used by the method, and indicators of whether the method uses binary regression, observation weighting, and/or covariate selection separately from estimation. The two methods GBM-CV and GBM-OOB differ in how the number of GBM trees are selected, as described in the main text.}
+\caption{Comprehensive list of the modeling methods analyzed in this study. Listed for each method are the method's abbreviation, the algorithm used by the method, and indicators of whether the method uses binary regression, observation weighting, and/or variable selection separately from estimation. The two methods GBM-CV and GBM-OOB differ in how the number of GBM trees are selected, as described in the main text.}
 \label{table:methods}
 \end{table}
 
@@ -503,7 +497,7 @@ SPLS (s) & Sparse partial least squares & & & X \\
 
 \subsection{Cross Validation}\label{cross-validation}
 
-Our assessment of the modeling techniques was based on their performance
+Our assessment of the modeling methods was based on their performance
 in predicting exceedances of the BAV. Two types of cross validation were
 used to measure the performance in prediction: leave-one-out (LOO) and
 leave-one-year-out (LOYO). In LOO CV, one day's observation was held out
@@ -515,7 +509,7 @@ held out observation(s), and the process - including estimating a new
 predictive model - was repeated for each date with available data. On
 the other hand, each cycle of LOYO CV held out an entire year's worth of
 data for validation instead of a single observation. It was intended to
-approximate the performance of the modeling technique under a typical
+approximate the performance of the modeling method under a typical
 use case: a new model is estimated before the start of each annual beach
 season and then used for predicting exceedances during the season. The
 LOYO models in this study were estimated using all the available data
@@ -558,7 +552,7 @@ statistics used to compare predictive performance (area under the ROC
 curve and predictive error sum of squares) were calculated from the
 table. Confidence intervals for the summary statistics were computed via
 the bootstrap by resampling (with replacement) the rows of the results
-table.}
+tables.}
 \label{table:hika-results}
 \end{table}
 
@@ -608,6 +602,34 @@ resampling the rows of each results table and recalculating the ranks
 for each bootstrap sample. We used \(1,000\) bootstrap samples of each
 results table in the analysis that follows.
 
+\subsection{Classifying responses under a specific decision
+threshold}\label{section:threshold}
+
+While AUROC 
+measures how well exceedances and nonexcedances are sorted among the
+predictions, AUROC is an average accuracy over all possible thresholds.
+In order to provide the assessment most relevant for operational use,
+the LOYO CV results were analyzed to count how many correct and incorrect
+predictions would be seen with a
+specific choice of decision threshold. Using the LOYO CV results
+simulates the common scenario that a model is estimated at the beginning
+of each beach season and used to make predictions during that season,
+with a new model incorporating the new season of data estimated the
+following year into the new model's training data.
+
+Intuitively, the decision threshold should adapt to the conditions that
+are observed in the beach's training data. If, for instance, exceedances
+were rare in the training data, then we expect few exceedances in the
+future, and should set the decision threshold high to reflect this
+expectation. On the other hand, if the bacterial concentration often
+exceeds the BAV, then the decision threshold should be set lower in
+order to properly flag more of those exceedances. This intuition was
+encoded into how the decision threshold was set for the LOYO models.
+Specifically, the decision threshold \(\hat{\delta}\) was set to the
+\(q^{th}\) quantile of the fitted values of non-exceedances in the
+training set, where \(q\) is the proportion of training set observations
+that are non-exceedances.
+
 \section{Results}\label{results}
 
 \subsection{AUROC}\label{auroc}
@@ -620,7 +642,15 @@ GBM-OOB, GBM-CV, or AL exceeded each of the other modeling methods for
 the leave-one-year-out and the leave-one-out analyses were also computed
 (Table 3).
 
-[[Figure 2 about here]]
+\begin{figure}
+\includegraphics[width=\textwidth]{fig2/auroc-rank.PDF}
+\caption{Mean ranking of the methods across all sites by area
+under the receiver operating characteristic curve (AUROC). Higher is better, with a value of \(14\) indicating that the method had the greatest AUROC at every site. The error bars are
+\(90\%\) confidence intervals computed by the bootstrap. At left are the
+AUROC rankings from the leave-one-year-out cross validation (a), at
+right are the AUROC rankings from the leave-one-out cross validation
+(b).}
+\end{figure}
 
 \begin{table}
     \resizebox{\textwidth}{!}{
@@ -655,14 +685,21 @@ PRESS because it directly measures the models' abilities to distinguish
 exceedances from nonexceedances. That said, we expect the two statistics
 to usually agree on which modeling methods perform best.
 
-The top three techniques under both LOO and LOYO analysis as determined
+The top three methods under both LOO and LOYO analysis as determined
 by PRESS were GBM-CV, GBM-OOB, and AL (Figure 3). Again, to facilitate a
 pairwise comparison between modeling methods, the frequency that the
 mean PRESS rank of GBM-OOB, GBM-CV, or AL exceeded each of the other
 modeling methods for the leave-one-year-out and the leave-one-out
 analyses were computed (Table 4).
 
-[[Figure 3 about here]]
+\begin{figure}
+\includegraphics[width=\textwidth]{fig3/press-rank.PDF}
+\caption{Mean ranking of the methods across all sites by predictive error sum of squares
+(PRESS). Higher is better, with a value of \(8\) indicating that the method had the minimum PRESS at every site. The error bars are \(90\%\)
+confidence intervals computed by the bootstrap. At left are the PRESS
+rankings from the leave-one-year-out cross validation (a), at right are
+the PRESS rankings from the leave-one-out cross validation (b).}
+\end{figure}
 
 \begin{table}
     \centering
@@ -702,65 +739,71 @@ fourth-ranked method by PRESS, SPLS, on 52\% of bootstraps. Therefore,
 we consider only the GBM methods and AL for the following analyses
 because they consistently outperform the other methods.
 
-\subsection{Classification of responses, and the decision
-threshold}\label{threshold}
-
-In operational use, a model's performance will be judged by how well it
-distinguishes between exceedances and nonexceedances. While AUROC
-measures how well exceedances and nonexcedances are sorted among the
-predictions, AUROC is an average accuracy over all possible thresholds.
-In order to provide the assessment most relevant for operational use,
-the LOYO CV results were used to simulate how many correct and incorrect
-predictions would be seen from an AL, GBM-OOB, or GBM-CV model with a
-specific choice of decision threshold. Using the LOYO CV results
-simulates the common scenario that a model is estimated at the beginning
-of each beach season and used to make predictions during that season,
-with a new model incorporating the new season of data estimated the
-following year into the new model's training data.
-
-Intuitively, the decision threshold should adapt to the conditions that
-are observed in the beach's training data. If, for instance, exceedances
-were rare in the training data, then we expect few exceedances in the
-future, and should set the decision threshold high to reflect this
-expectation. On the other hand, if the bacterial concentration often
-exceeds the BAV, then the decision threshold should be set lower in
-order to properly flag more of those exceedances. This intuition was
-encoded into how the decision threshold was set for the LOYO models.
-Specifically, the decision threshold \(\hat{\delta}\) was set to the
-\(q^{th}\) quantile of the fitted values of non-exceedances in the
-training set, where \(q\) is the proportion of training set observations
-that are non-exceedances.
-
-In Figure 4, we examine the counts on a per-beach basis of four
+\subsection{Performance with a specific threshold}
+The AUROC results are abstract because the AUROC is computed by averaging over all possible decision thresholds. More concrete results can be reported if we set a decision threshold for each model, which we do in the manner described in Section \ref{section:threshold}. In Figure 4, we present the counts on a per-beach basis of four
 categories of decisions: true negatives (correct predictions of
 nonexceedances), false positives (incorrect predictions of exceedances)
 true positives (correct predictions of exceedances), and false negatives
 (incorrect predictions of nonexceedances). In most cases, the counts
-were similar between the three techniques, with GBM-OOB and GBM-CV
+were similar between the three methods, with GBM-OOB and GBM-CV
 commonly resulting in a few more correct decisions than AL. There are,
 however, exceptions where AL results had more correct decisions (e.g.,
 Hika and Red Arrow).
 
-[[Figure 4 about here]]
+The specificity, sensitivity, and overall proportion correct for these models are reported in Table 5. 
 
-\subsection{Covariate selection}\label{covariate-selection}
+\begin{table}
+\resizebox{\textwidth}{!}{\begin{tabular}{l|ccc|ccc|ccc}
+ & \multicolumn{3}{c}{AL} & \multicolumn{3}{c}{GBM-OOB} & \multicolumn{3}{c}{GBM-CV} \\
+ Site & sensitivity & specificity & correct & sensitivity & specificity & correct & sensitivity & specificity & correct \\
+\hline
+Hika & 69 & 64 & 68 & 61 & 62 & 61 & 62 & 60 & 61 \\
+Maslowski & 65 & 30 & 58 & 75 & 30 & 66 & 78 & 30 & 68 \\
+Kreher & 70 & 48 & 67 & 77 & 29 & 69 & 85 & 24 & 75 \\
+Thompson & 93 & 57 & 90 & 92 & 57 & 89 & 92 & 57 & 89 \\
+Point & 72 & 59 & 70 & 87 & 66 & 84 & 86 & 65 & 83 \\
+Neshotah & 88 & 57 & 85 & 93 & 29 & 88 & 93 & 36 & 88 \\
+Red Arrow & 71 & 78 & 73 & 65 & 86 & 71 & 65 & 86 & 71 \\
+\hline
+Mean & 75 & 56 & 73 & 78 & 51 & 73 & 80 & 51 & 76\\
+Total & 75 & 60 & 72 & 81 & 60 & 78 & 82 & 59 & 78 
+\end{tabular}}
+\caption{Performance of the predictive models at each of the sites in this study are summarized in terms of specificity, sensitivity, and overall proportion of correct decisions. The models summarized here were estimated using the adaptive lasso (AL), gradient boosted modeling with out-of-bag estimate for the tree number (GBM-OOB), and GBM with cross-validation estimate for the tree number (GBM-CV). The entries are multiplied by \(100\) to be percentages rather than proportions. The ``Total" row reports the sensitivity, specificity, and overall proportion correct by first summing the true positives, true negatives, false positives, and false negatives from the seven sites, then calculating the summary statistics. The ``Mean" row reports the average of the seven site rows.}
+\end{table}
+
+\begin{figure}
+\includegraphics[width=\textwidth]{fig4/truepos.pdf}
+\caption{At each site, the number of predictions from AL, GBM-OOB, and
+GBM-CV that fell into four categories, from left: true negatives, false
+positives, true positive, and false negatives.}
+\end{figure}
+
+\subsection{Variable selection}\label{covariate-selection}
 
 It was noted in Section 4.3 that GBM-OOB and AL are two of the three
 best-ranked methods. One difference between the two is that AL does
-covariate selection while GBM-OOB uses all of the available covariates.
-We explore here how many covariates were used in AL models compared to
+variable selection while GBM-OOB uses all of the available surrogates.
+We explore here how many surrogates were used in AL models compared to
 the GBM-OOB models (Figure 5).
 
-[[Figure 5 about here]]
+\begin{figure}
+\includegraphics[width=\textwidth]{fig5/covariate-count.PDF}
+\caption{At each site, the mean number of surrogates that were selected
+for the AL model, and the total number of surrogates, all of which were
+used in the gradient boosting machine with an out-of-bag estimate of the
+optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the
+surrogate counts are broken down by whether the data values were
+collected automatically from web services or manually at the beach.}
+\end{figure}
 
 At most of the sites, AL uses only a small fraction of the available
-covariates, but at Point beach, AL uses almost all of the available
-covariates. This is due to the covariate selection criterion we used
+surrogates, but at Point beach, AL uses almost all of the available
+surrogates. This is due to the variable selection criterion we used
 (\(\text{AIC}_{\tt c}\)) which is intended to minimize predictive error.
 As the amount of data increases, we accumulate enough information to
-discern an effect even of covariates that are only slightly correlated
+discern an effect even of surrogates that are only slightly correlated
 with the response. As our dataset grows, then, we should expect more
-covariates to be selected for an AL model, and Point has far more
+surrogates to be selected for an AL model, and Point has far more
 observations than the other sites.
 
 \section{Conclusions}\label{discussion}
@@ -778,63 +821,51 @@ anticipated in acquiring the data, it is hard to argue against using a
 GBM-type model.
 
 The predictive performance of the AL models was somewhat worse than that
-of the GBM models, but by including a covariate selection step, the AL
-models reduce the number of covariates that must be measured in order to
-make daily predictions. A model that requires fewer covariates is less
-expensive and more robust (since each additional covariate increases the chance of missing data). This is
-particularly important for manually-collected covariates because
+of the GBM models, but by including a variable selection step, the AL
+models reduce the number of surrogates that must be measured in order to
+make daily predictions. A model that requires fewer surrogates is less
+expensive and more robust (since each new environmental surrogate variable increases the chance of missing data). This is
+particularly important for manually-collected surrogates because
 collecting data by hand takes more time and is more costly than
-accessing publically available data from a web service. Across all of
+accessing publicly available data from a web service. Across all of
 the sites, the ratio of manually-collected to automatically collected
-covariates in the AL models seems to mirror the ratio among all
-available covariates, indicating that neither the manually- nor
-automatically-collected covariates are systematically more important to
-predicting the bacterial concentration. Some covariates tended to appear
+surrogates in the AL models seems to mirror the ratio among all
+available surrogates, indicating that neither the manually- nor
+automatically-collected surrogates are consistently more important to
+predicting the bacterial concentration. Some surrogates tended to appear
 at every site in the AL models (and other models that include a
-covariate selection step). The manually-collected covariates that were
+variable selection step). The manually-collected surrogates that were
 consistently selected for the models were the (log) turbidity in the
 beach water, and wave height at the beach.
 
 Another advantage of the AL over GBM-type models is interpretability. As
-a linear regression technique, fitting an AL model means generating a
+a linear regression method, fitting an AL model means estimating a
 set of coefficients, which can be interpreted as the marginal effect of
-a change in the corresponding covariate. On the other hand, GBM produces
+a change in the corresponding surrogate. On the other hand, GBM produces
 black-box models that typically make more accurate predictions but are
 difficult to intrepret. One common way to interpret a random forest
 model (such as from the GBM algorithm) is to observe the proportion of
-splits in the underlying trees that involve a particular covariate. The
-split proportion is a measurement of that covariate's importance to the
-model but gives no indication of how the covariate affects the
+splits in the underlying trees that involve a particular surrogate. The
+split proportion is a measurement of that surrogate's importance to the
+model but gives no indication of how the surrogate affects the
 bacterial concentration.
 
 \section{Discussion}
 
-Where minimizing the number of covariates is important, the selection
+Where it is important to minimize the number of environmental surrogate variables in a model, the selection
 criterion used here (\(\text{AIC}_{\tt c}\)) may not be ideal. In that
-case it may be advantageous to use a criterion that is more parsimonious
-about including covariates in the model, such as the Bayesian
+case it may be advantageous to use a criterion that is more conservative
+about including surrogates, such as the Bayesian
 information criterion (BIC), for which the penalty term
 \(2df + 2df(df+1)/(n-df-1)\) in (\ref{eq:AICc-continuous}) or
 (\ref{eq:AICc-binary}) would be replaced by \(n \times df\), which grows
 with the sample size \(n\). The BIC does not exhibit the property of the
-AIC (or \(\text{AIC}_{\tt c}\)) where more covariates are included in
+AIC (or \(\text{AIC}_{\tt c}\)) where more surrogates are included in
 the model as the number of observations increases. However, the BIC is
 derived from the standpoint of identifying the most probable model,
 rather than minimizing the predictive error. It is therefore likely that
-an AL model using the BIC for covariate selection will have slightly
+an AL model using the BIC for variable selection will have slightly
 worse predictive performance than one using the \(\text{AIC}_{\tt c}\).
-
-All statistical methods and the comparison for this study were carried
-out in the R statistical software environment \citep{R-2014}. Scripts and
-details of the how the modeling methods were implemented are in the
-online supplement. Often times, beach management practitioners are not
-very familiar with statistical analysis and rely on more accessible
-software to help guide them through development of models for
-recreational water quality predictions. For this purpose, the Virtual
-Beach software was developed \citep{VB3-2013}. The GA, PLS, and GBM
-algorithms used in this study are based on simplified versions of the
-comparable algorithms in Virtual Beach version 3.0. An implementation of
-AL is also an anticipated addition to Virtual Beach.
 
 \section{Acknowledgments}\label{acknowledgments}
 
@@ -842,38 +873,6 @@ The predictive models for this study were generated on facilities and
 software (HTCondor) provided by the University of Wisconsin-Madison's
 Center for High Throughput Computing.
 
-\section{Figure Captions}
-
-\subsection{Figure 1}
-Map showing the location of the seven Wisconsin beaches for which models were analyzed in this work.
-
-\subsection{Figure 2}
-Mean ranking of the methods across all seven sites by area
-under the receiver operating characteristic curve (AUROC). The error bars are
-90\% confidence intervals computed by the bootstrap. At left are the
-AUROC rankings from the leave-one-year-out cross validation (a), at
-right are the AUROC rankings from the leave-one-out cross validation
-(b).
-
-\subsection{Figure 3}
-Mean ranking of the methods by predictive error sum of squares
-(PRESS) across all sites (higher is better). The error bars are 90\%
-confidence intervals computed by the bootstrap. At left are the PRESS
-rankings from the leave-one-year-out cross validation (a), at right are
-the PRESS rankings from the leave-one-out cross validation (b).
-
-\subsection{Figure 4}
-At each site, the number of predictions from AL, GBM-OOB, and
-GBM-CV that fell into four categories, from left: true negatives, false
-positives, true positive, and false negatives.
-
-\subsection{Figure 5}
-At each site, the mean number of covariates that were selected
-for the AL model, and the total number of covariates, all of which were
-used in the gradient boosting machine with an out-of-bag estimate of the
-optimal tree count (GBM-OOB) models. For both AL and GBM-OOB, the
-covariate counts are broken down by whether the covariate values were
-collected automatically from web services or manually at the beach.
 
 \section{References}\label{references}
 \bibliographystyle{chicago}
@@ -885,6 +884,11 @@ Akaike, H. (1973).
   principle.
 \newblock In {\em Second international symposium on information theory}, pp.\
   267--281. Akademinai Kiado.
+  
+\bibitem[\protect\citeauthoryear{}{Bennett et~al.}{2013}]{Bennett-Croke-Guariso-Guillaume-Hamilton-Jakeman-Marsili-Libelli-Newham-Norton-Perrin-Pierce-Robson-Seppelt-Voinov-Fath-Andreassian-2013}
+Bennett, N.~D., B.~F.~W.~Croke, G.~Guariso, J.~H.~A.~Guillaume, S.~H.~Hamilton, A.~J.~Jakeman, S.~Marsili-Libelli, L.~T.~H.~Newham, J.~P.~Norton, C.~Perrin, S.~A.~Pierce, B.~Robson, R.~Seppelt, A.~A.~Voinov, B.~D.~Fath, and V.~Andreassian (2013).
+\newblock Characterizing performance of environmental models.
+\newblock {\em Environmental Modeling and Software\/}~{\em 30}, 1--20.
 
 \bibitem[\protect\citeauthoryear{Brandt, Schwab, Croley, Belestky, and
   Whitman}{Brandt et~al.}{2006}]{Brandt:2006gj}
@@ -1042,6 +1046,11 @@ Hurvich, C.~M., J.~S. Simonoff, and C.-L. Tsai (1998).
 \newblock {\em Journal of the Royal Statistical Society: Series B
   (Methodology)\/}~{\em 60\/}(2), 271--293.
 
+\bibitem[\protect\citeauthoryear{}{Jakeman et~al.}{2013}]{Jakeman-Letcher-Norton-2006}
+A.~J.~Jakeman, R.~A.~Letcher, J.~P.~Norton (2006).
+\newblock Ten iterative steps in development and evaluation of environmental models.
+\newblock {\em Environmental Modeling and Software\/}~{\em 21}, 602--614.
+
 \bibitem[\protect\citeauthoryear{Jin and Englande~Jr.}{Jin and
   Englande~Jr.}{2006}]{Jin:2006tr}
 Jin, G. and A.~J. Englande~Jr. (2006).
@@ -1072,8 +1081,9 @@ National environmental methods index (2013).
 \bibitem[\protect\citeauthoryear{{National Oceanic and Atmospheric
   Administration}}{{National Oceanic and Atmospheric
   Administration}}{2012}]{NCRFC}
-{National Oceanic and Atmospheric Administration} (2012).
-\newblock North {C}entral {R}iver {F}orecasting {C}enter.
+{National Oceanic and Atmospheric Administration} (2012)
+\newblock North {C}entral {R}iver {F}orecasting {C}enter. 
+\newblock http://www.crh.noaa.gov/ncrfc/.
 
 \bibitem[\protect\citeauthoryear{Nevers and Whitman}{Nevers and
   Whitman}{2005}]{Nevers:2005ln}
@@ -1156,10 +1166,12 @@ Tibshirani, R. (1996).
 \bibitem[\protect\citeauthoryear{{United States Geological Survey}}{{USGS}}{2014a}]{EnDDaT-2014}
 {United States Geological Survey} (2014a).
 \newblock Environmental {D}ata {D}iscovery and {T}ransformation.
+\newblock http://cida.usgs.gov/enddat/.
 
 \bibitem[\protect\citeauthoryear{{United States Geological Survey}}{{USGS}}{2014b}]{NWIS}
 {United States Geological Survey} (2014b).
 \newblock The {N}ational {W}ater {I}nformation {S}ystem.
+\newblock http://waterdata.usgs.gov/nwis.
 
 \bibitem[\protect\citeauthoryear{Wade, Calderon, Brenner, Sams, Beach,
   Haugland, Wymer, and Dufour}{Wade et~al.}{2008}]{Wade:2008yi}

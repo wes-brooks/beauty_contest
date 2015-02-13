@@ -44,4 +44,5 @@ roc.naive.barchart = ggplot(a) +
     ylim(0, 14) +
     scale_x_discrete(labels=a$method %>% levels %>% pretty) +
     theme_minimal() +
+    theme(text=element_text(size=rel(2))) +
     theme(axis.text.x=element_text(angle=65, hjust=1, vjust=0.95))
