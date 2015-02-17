@@ -1,4 +1,5 @@
-- Methods for estimatng predictive models of beach water quality are compared.
+- Methods for estimating predictive models of beach water quality are compared.
 - Fourteen methods are compared at seven Great Lakes beaches.
-- A random forest model consistently ranks highest among the methods.
-- The adaptive lasso is consistently the next highest ranking method.
+- Methods are compared on basis of area under the ROC curve and predictive error sum of squares.
+- A random forest model consistently ranks best for predictive eperformance.
+- The adaptive lasso is consistently the next best ranked method.

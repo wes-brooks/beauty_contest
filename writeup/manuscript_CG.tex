@@ -80,14 +80,15 @@
 \address[usgs-wiwsc]{Wisconsin Water Science Center, United States Geological Survey, 8505 Research Way, Middleton, WI 53562}
 
 \begin{abstract}
-Epidemiological studies have indicated that the concentration of fecal indicator bacteria (FIB) in beach water is associated with illnesses among people who have contact with the water. In order to mitigate public health impacts, many beaches are managed so that an advisory is posted when the concentration of FIB exeeds a beach action value. The most commonly used method of measuring FIB concentration takes $18 - 24$ hours before returning a result. It has become common to base beach management decisions on the output from nowcast models that use environmental and meteorological conditions to predict the current concentration of FIB, avoiding the 24h lag. Most commonly, nowcast models are estimated using ordinary least squares regression, but other regression methods from the statistical and machine learning literature are sometimes used for FIB nowcast models. The choice of regression method is quite important to the accuracy of the nowcast model, and the literature comparing the performance of different methods has often made those comparisons at a single site, which may or may not be representative. We compare several regression methods to identify which produces the most accurate predictions. The comparison is made at several sites in Wisconsin, including beaches on Lake Superior and Lake Michigan. A random forest model is identified as the most accurate. That is followed by the adaptive Lasso, which also includes a variable selection step that reduces the number of environmental surrogate variables that need to be measured in order to make predictions.
+Epidemiological studies indicate that fecal indicator bacteria (FIB) in beach water is associated with illnesses among people who have contact with the water. In order to mitigate public health impacts, many beaches are posted with an advisory when the concentration of FIB exeeds a beach action value. The most commonly used method of measuring FIB concentration takes $18 - 24$ hours before returning a result. In order to avoid the $24$h lag, it has become common to "nowcast" the FIB concentration using statistical regressions on environmental surrogate variables. Most commonly, nowcast models are estimated using ordinary least squares regression, but other regression methods from the statistical and machine learning literature are sometimes used. This study compares several regression methods across several beaches in Wisconsin to identify which consistently produces the most accurate predictions. A random forest model is identified as the most accurate, followed by the adaptive lasso.
 \end{abstract}
 
 \begin{keyword}
-Beach water quality, Statistical model, Performance evaluation, Real-time prediction
+Regression model; Performance evaluation; Beach health; Water quality
 \end{keyword}
 
 \end{frontmatter}
+
 
 \section{Introduction}\label{introduction}
 
@@ -128,13 +129,14 @@ In order to avoid the pitfalls of OLS, several other regression methods have bee
 partial least squares (PLS) \citep{Hou:2006nf,Brooks-Fienen-Corsi-2013}, logistic regression \citep{Waschbusch:2004bd,Jin:2006tr}, decision trees \citep{Stidson-2012}, random forests
 \citep{Parkhurst:2005zf,Jones-Liu-Dorovitch-2012}, and artificial
 neural networks \citep{Kashefipour-Lin-Falconer-2005,He:2008jx}. A
-thorough review of the regression methods being used in nowcast
-models for FIB concentration is provided by
-\cite{deBrauwere-Koffi-Servais-2014}. An assessment of seven methods of
-regression for FIB concentration in beach water at Santa Monica Beach in
-California identified classification trees, artificial neural networks,
-and logistic regression as the three best methods
-\citep{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}.
+thorough review of the regression methods in use by nowcast
+models for FIB concentration is available in
+\cite{deBrauwere-Koffi-Servais-2014}.
+
+Of particular interest is the one known example of a study that compared predictive models of FIB concentration using several different regression methods. That assessment of seven models for FIB concentration at Santa Monica Beach in
+California identified classification trees (CT), artificial neural networks (ANN),
+and binary logistic regression (BLR) with threshold adjustment as the three best methods based on sensitivity, specificity, and total proportion of correct predictions
+\citep{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}. The current study evaluates a different suite of regression methods, though there is overlap. Both studies include partial least squares (PLS) regression, multiple linear regression (MLR), and BLR. In neither study are these among the best performers, though BLR-T, which includes a threshold adjustment was a top performer in \cite{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}. All of the methods in the current study use threshold adjustment, which seems to improve predictive performance by identifying exceedances of the BAV more often without unduly increasing the number of false positives. Variable selection for the MLR and BLR models of \cite{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014} was by stepwise selection; variable selection for the comparable models in the current study was by the genetic algorithm. Models using CT and ANN are not considered in the current study, though we do consider random forest models that consist of thousands of regression trees. We also consider MLR models using the adaptive lasso for variable selection and coefficient estimation.
 
 The literature suggests that many regression methods have been
 successfully used for nowcast modeling, but most of the available results are 
@@ -146,7 +148,9 @@ instances when a swimmer's advisory should be posted. This study is designed to
 campare several regression methods across a range of conditions in order to identify which 
 methods consistently make the best predictions. Accuracy of the predictions is evaluated by comparison to counts made from the traditional FIB analysis method. That is, the FIB count from a cultured sample of beach water is considered the gold standard for evaluation of the predictive nowcast methods.
 
-The performance criteria for comparing models should reflect a study's aims and the interests of end users \citep{Jakeman-Letcher-Norton-2006,Bennett-Croke-Guariso-Guillaume-Hamilton-Jakeman-Marsili-Libelli-Newham-Norton-Perrin-Pierce-Robson-Seppelt-Voinov-Fath-Andreassian-2013}. Accordingly, the performance criteria in the current study were chosen to answer which method best distinguished between exceedances and nonexceedances of the BAV. Area under the receiver operating characteristic (ROC) curve was used to measure a model's ability to separate exceedances from nonexceedances; methods were ranked at each site in order to facilitate comparison across sites. A secondary consideration (because it doesn't directly address the goal of sorting predictions into exceedances and nonexceedances) is how well the predictions matched the measured FIB concentrations. Predictive error sum of squares was used to assess prediction accuracy in this sense, and once again the methods were ranked at each site in order to facilitate a comparison across sites. The raw number of correct and incorrect predictions is presented to illustrate the range of predictive performance that was acheived in this study.
+The performance criteria for comparing models should reflect a study's aims and the interests of end users \citep{Jakeman-Letcher-Norton-2006,Bennett-Croke-Guariso-Guillaume-Hamilton-Jakeman-Marsili-Libelli-Newham-Norton-Perrin-Pierce-Robson-Seppelt-Voinov-Fath-Andreassian-2013}. Accordingly, the performance criteria in the current study were chosen to answer which method most consistently distinguished between exceedances and nonexceedances of the BAV across the range of sites. Area under the receiver operating characteristic (ROC) curve was used to measure a model's ability to separate exceedances from nonexceedances; methods were ranked at each site in order to facilitate comparison across sites. A secondary consideration (because it doesn't directly address the goal of sorting predictions into exceedances and nonexceedances) is how well the predictions matched the measured FIB concentrations. Predictive error sum of squares was used to assess prediction accuracy in this sense, and once again the methods were ranked at each site in order to facilitate a comparison across sites.
+
+Sensitivity, specificity, and total proportion of correct predictions are familiar metrics for evaluating the predictive performance of models for FIB concentration \citep{Thoe-Gold-Griesbach-Grimmer-Taggart-Boehm-2014}. Since calculating these metrics requires a specific choice of decision threshold, we propose a method for setting the threshold and evaluate the sensitivity, specificity, and total proportion correct under this choice of threshold.
 
 \section{Data}\label{data}
 
@@ -162,7 +166,7 @@ Appendix.
 }
 \end{figure}
 
-\subsection{Site descriptions}\label{site-descriptions}
+\subsection{Site descriptions}\label{site-descriptions} 
 
 \subsubsection{Chequamegon Bay sites}\label{chequamegon-bay-sites}
 
@@ -216,7 +220,7 @@ beach \(2-4\) times per week for \(12-14\) weeks between Memorial Day
 and Labor Day from 2010 through 2013 (during the study period, Memorial Day fell between May 26 and May 31 and Labor Day fell between September 2 and September 6.) Samples were collected from the 
 center of the length of the beach, \(30\) cm below the water surface
 where total water depth was \(60\) cm. All samples were quantified by
-use of the Colilert® QuantiTray/2000 method, and are reported as the
+use of the Colilert QuantiTray/2000 method, and are reported as the
 most probable number (MPN) of \emph{E. coli} colony forming units (CFU)
 and were read after \(24\) hours of incubation \citep{Colilert}.
 
@@ -430,8 +434,8 @@ value of the \(i\)th BAV exceedance indicator.
 
 \paragraph{Genetic algorithm}\label{genetic-algorithm}
 
-The GA was used to select surrogates for either an OLS or a logistic
-regression model. By analogy to natural selection, so-called chromosomes
+The GA was used to select surrogates for either an MLR or a BLR
+ model. By analogy to natural selection, so-called chromosomes
 in the GA represent regression models \citep{Fogel-1998}. A surrogate is
 included in the model if the corresponding element of the chromosome is
 one, but not otherwise. Chromosomes are produced in successive
@@ -482,9 +486,9 @@ AL (b) & Adaptive Lasso & X & & \\
 AL (b,w)  &  Adaptive Lasso & X & X & \\
 AL (s,b) & Adaptive Lasso & X & & X \\
 AL (s,b,w) & Adaptive Lasso & X & X & X \\
-GA & Genetic algorithm & & & \\
-GA (b) & Genetic algorithm & X & & \\
-GA (b,w) & Genetic algorithm & X & X & \\
+MLR & Genetic algorithm & & & \\
+BLR (b) & Genetic algorithm & X & & \\
+BLR (b,w) & Genetic algorithm & X & X & \\
 PLS & Patrial least squares & & & \\
 SPLS & Sparse partial least squares & & & \\
 SPLS (s) & Sparse partial least squares & & & X \\
@@ -630,7 +634,7 @@ Specifically, the decision threshold \(\hat{\delta}\) was set to the
 training set, where \(q\) is the proportion of training set observations
 that are non-exceedances.
 
-\section{Results}\label{results}
+\section{Results and discussion}\label{results}
 
 \subsection{AUROC}\label{auroc}
 
@@ -657,14 +661,14 @@ right are the AUROC rankings from the leave-one-out cross validation
     \begin{tabular}{rccccccccccccc}
 
 \multicolumn{6}{l}{\kern-2em \textbf{Leave-one-year-out cross-validation:}} & & & & & & & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} \\ 
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}MLR\end{tabular} & \begin{tabular}{c}BLR \\ (b,w)\end{tabular} & \begin{tabular}{c}BLR\\(b) \end{tabular} \\ 
   \hline
 GBM-CV & 0.86 & 0.87 & 0.98 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
   GBM-OOB &  & 0.69 & 0.92 & 0.95 & 1.00 & 0.99 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
   AL &  &  & 0.96 & 0.87 & 1.00 & 0.97 & 0.98 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
   & & & & & & & & & & & & & \\
 \multicolumn{6}{l}{\kern-2em \textbf{Leave-one-out cross-validation:}} & & & & & & & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}GA \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}GA \\ (b,w)\end{tabular} \\ 
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}AL \\ (b,w)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (b,w,s)\end{tabular} & \begin{tabular}{c}MLR\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}BLR\\(b)\end{tabular} & \begin{tabular}{c}AL \\ (b)\end{tabular} & \begin{tabular}{c}AL \\ (b,s)\end{tabular} & \begin{tabular}{c}BLR \\ (b,w)\end{tabular} \\ 
   \hline
 GBM-CV & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
   GBM-OOB &  & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
@@ -707,14 +711,14 @@ the PRESS rankings from the leave-one-out cross validation (b).}
     
 
 \multicolumn{6}{l}{\kern-4em \textbf{Leave-one-year-out cross-validation:}} & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}MLR\end{tabular} \\ 
   \hline
 GBM-CV & 0.58 & 0.96 & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
   GBM-OOB &  & 0.94 & 0.96 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
   AL &  &  & 0.52 & 0.88 & 0.94 & 0.99 & 1.00 \\ 
   & & & & & & & \\
 \multicolumn{6}{l}{\kern-4em \textbf{Leave-one-out cross-validation:}} & & \\
- & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}GA\end{tabular} \\ 
+ & \begin{tabular}{c}GBM- \\ OOB\end{tabular} & \begin{tabular}{c}AL\end{tabular} & \begin{tabular}{c}SPLS \\ (s)\end{tabular} & \begin{tabular}{c}SPLS\end{tabular} & \begin{tabular}{c}PLS\end{tabular} & \begin{tabular}{c}AL \\ (s)\end{tabular} & \begin{tabular}{c}MLR\end{tabular} \\ 
   \hline
 GBM-CV & 0.66 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
   GBM-OOB &  & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\ 
@@ -750,12 +754,12 @@ commonly resulting in a few more correct decisions than AL. There are,
 however, exceptions where AL results had more correct decisions (e.g.,
 Hika and Red Arrow).
 
-The specificity, sensitivity, and overall proportion correct for these models are reported in Table 5. 
+The specificity, sensitivity, and overall proportion correct for these models are reported in Table 5. The mean specificity and percentage of correct predictions was greatest under the GBM-CV method, at \(80\%\) and \(76\%\), respectively. However, mean sensitivity was greatest for the AL method, at \(56\%\), compared to \(51\%\) for both of the GBM methods.
 
 \begin{table}
 \resizebox{\textwidth}{!}{\begin{tabular}{l|ccc|ccc|ccc}
  & \multicolumn{3}{c}{AL} & \multicolumn{3}{c}{GBM-OOB} & \multicolumn{3}{c}{GBM-CV} \\
- Site & sensitivity & specificity & correct & sensitivity & specificity & correct & sensitivity & specificity & correct \\
+ Site & specificity & sensitivity & correct & specificity & sensitivity & correct & specificity & sensitivity & correct \\
 \hline
 Hika & 69 & 64 & 68 & 61 & 62 & 61 & 62 & 60 & 61 \\
 Maslowski & 65 & 30 & 58 & 75 & 30 & 66 & 78 & 30 & 68 \\
@@ -765,10 +769,9 @@ Point & 72 & 59 & 70 & 87 & 66 & 84 & 86 & 65 & 83 \\
 Neshotah & 88 & 57 & 85 & 93 & 29 & 88 & 93 & 36 & 88 \\
 Red Arrow & 71 & 78 & 73 & 65 & 86 & 71 & 65 & 86 & 71 \\
 \hline
-Mean & 75 & 56 & 73 & 78 & 51 & 73 & 80 & 51 & 76\\
-Total & 75 & 60 & 72 & 81 & 60 & 78 & 82 & 59 & 78 
+Mean & 75 & 56 & 73 & 78 & 51 & 73 & 80 & 51 & 76
 \end{tabular}}
-\caption{Performance of the predictive models at each of the sites in this study are summarized in terms of specificity, sensitivity, and overall proportion of correct decisions. The models summarized here were estimated using the adaptive lasso (AL), gradient boosted modeling with out-of-bag estimate for the tree number (GBM-OOB), and GBM with cross-validation estimate for the tree number (GBM-CV). The entries are multiplied by \(100\) to be percentages rather than proportions. The ``Total" row reports the sensitivity, specificity, and overall proportion correct by first summing the true positives, true negatives, false positives, and false negatives from the seven sites, then calculating the summary statistics. The ``Mean" row reports the average of the seven site rows.}
+\caption{Performance of the predictive models at each of the sites in this study are summarized in terms of specificity, sensitivity, and overall proportion of correct decisions. The models summarized here were estimated using the adaptive lasso (AL), gradient boosted modeling with out-of-bag estimate for the tree number (GBM-OOB), and GBM with cross-validation estimate for the tree number (GBM-CV). The entries are multiplied by \(100\) to be percentages rather than proportions. The ``Mean" row reports the average of the seven site rows.}
 \end{table}
 
 \begin{figure}
@@ -780,11 +783,9 @@ positives, true positive, and false negatives.}
 
 \subsection{Variable selection}\label{covariate-selection}
 
-It was noted in Section 4.3 that GBM-OOB and AL are two of the three
-best-ranked methods. One difference between the two is that AL does
+One difference between the AL and GBM algorithms is that AL does
 variable selection while GBM-OOB uses all of the available surrogates.
-We explore here how many surrogates were used in AL models compared to
-the GBM-OOB models (Figure 5).
+In Figure 5, the number of surrogates selected by the AL is compared to the total number of available surrogates.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{fig5/covariate-count.PDF}
@@ -797,7 +798,7 @@ collected automatically from web services or manually at the beach.}
 \end{figure}
 
 At most of the sites, AL uses only a small fraction of the available
-surrogates, but at Point beach, AL uses almost all of the available
+surrogates, but at Point Beach, AL uses almost all of the available
 surrogates. This is due to the variable selection criterion we used
 (\(\text{AIC}_{\tt c}\)) which is intended to minimize predictive error.
 As the amount of data increases, we accumulate enough information to
@@ -805,6 +806,21 @@ discern an effect even of surrogates that are only slightly correlated
 with the response. As our dataset grows, then, we should expect more
 surrogates to be selected for an AL model, and Point has far more
 observations than the other sites.
+
+Where it is important to minimize the number of environmental surrogate variables in a model, the selection
+criterion used here (\(\text{AIC}_{\tt c}\)) may not be ideal. In that
+case it may be advantageous to use a criterion that is more conservative
+about including surrogates, such as the Bayesian
+information criterion (BIC), for which the penalty term
+\(2df + 2df(df+1)/(n-df-1)\) in (\ref{eq:AICc-continuous}) or
+(\ref{eq:AICc-binary}) would be replaced by \(n \times df\), which grows
+with the sample size \(n\). The BIC does not exhibit the property of the
+AIC (or \(\text{AIC}_{\tt c}\)) where more surrogates are included in
+the model as the number of observations increases. However, the BIC is
+derived from the standpoint of identifying the most probable model,
+rather than minimizing the predictive error. It is therefore likely that
+an AL model using the BIC for variable selection will have slightly
+worse predictive performance than one using the \(\text{AIC}_{\tt c}\).
 
 \section{Conclusions}\label{discussion}
 
@@ -832,7 +848,7 @@ the sites, the ratio of manually-collected to automatically collected
 surrogates in the AL models seems to mirror the ratio among all
 available surrogates, indicating that neither the manually- nor
 automatically-collected surrogates are consistently more important to
-predicting the bacterial concentration. Some surrogates tended to appear
+predicting the FIB concentration. Some surrogates tended to appear
 at every site in the AL models (and other models that include a
 variable selection step). The manually-collected surrogates that were
 consistently selected for the models were the (log) turbidity in the
@@ -850,28 +866,12 @@ split proportion is a measurement of that surrogate's importance to the
 model but gives no indication of how the surrogate affects the
 bacterial concentration.
 
-\section{Discussion}
-
-Where it is important to minimize the number of environmental surrogate variables in a model, the selection
-criterion used here (\(\text{AIC}_{\tt c}\)) may not be ideal. In that
-case it may be advantageous to use a criterion that is more conservative
-about including surrogates, such as the Bayesian
-information criterion (BIC), for which the penalty term
-\(2df + 2df(df+1)/(n-df-1)\) in (\ref{eq:AICc-continuous}) or
-(\ref{eq:AICc-binary}) would be replaced by \(n \times df\), which grows
-with the sample size \(n\). The BIC does not exhibit the property of the
-AIC (or \(\text{AIC}_{\tt c}\)) where more surrogates are included in
-the model as the number of observations increases. However, the BIC is
-derived from the standpoint of identifying the most probable model,
-rather than minimizing the predictive error. It is therefore likely that
-an AL model using the BIC for variable selection will have slightly
-worse predictive performance than one using the \(\text{AIC}_{\tt c}\).
 
 \section{Acknowledgments}\label{acknowledgments}
 
-The predictive models for this study were generated on facilities and
+The authors note with gratitude the contributions made by these organizations and their people. Beach water samples and the manual surrogates were collected by scientists from the University of Wisconsin-Oshkosh, Northland College, and Bayfield County. The collection effort was coordinated by the Wisconsin Department of Natural Resources. The predictive models for this study were generated using facilities and
 software (HTCondor) provided by the University of Wisconsin-Madison's
-Center for High Throughput Computing.
+Center for High Throughput Computing. The remotely sensed surrogates were measured and made available by the National Weather Service's North Central River Forecasting Center and Great Lakes Coastal Forecasting System, and the USGS' National Water Information Service. The Environmental Data Discovery and Tranformation tool that was used to access the remotely sensed surrogates was created by the USGS' Center for Integrated Data Analytics.
 
 
 \section{References}\label{references}
@@ -1073,7 +1073,7 @@ Kashefipour, S.~M., B.~Lin, and R.~A. Falconer (2005).
   Management\/}~{\em 158\/}(3), 111--118.
 
 \bibitem[\protect\citeauthoryear{National environmental methods index}{National
-  environmental methods index}{2013}]{Colilert}
+  {E}nvironmental {M}ethods {I}ndex}{2013}]{Colilert}
 National environmental methods index (2013).
 \newblock {\em Colilert Test Kit Procedure}.
 \newblock National environmental methods index.

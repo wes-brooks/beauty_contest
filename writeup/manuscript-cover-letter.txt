@@ -1,0 +1,36 @@
+Dear Editor,
+Enclosed please find my manuscript entitled "Predicting recreational water quality advisories: A
+comparison of statistical methods", co-authored with Mr. Steven R. Corsi, Ms. Rebecca B. Carvin, and Dr.
+Michael N. Fienen. We would appreciate your consideration for its possible publication in Water
+Research.
+
+Over the years, use of models for real-time prediction of water quality exceedances at beaches using 
+statistical models driven by multiple variables that describe environmental variability has become quite 
+common. The standard technique that has been used in the past is ordnary least squares regression, but 
+numerous other statistical techniques have been used as well. Several efforts have been undertaken to 
+compare some of these methods, but have all been quite limited in scope with few beaches and only a few 
+of the methods. With numerous modeling approaches in consideration and the fact that each beach has different 
+environmental influences, a more comprehensive evaluation of statistical methods over numerous beaches is needed.
+
+In this manuscript, we have evaluated fourteen statistical modeling methods at seven beaches with a varying set 
+of land use profiles. A significant result is that the most common method (OLS regression) is most commonly the 
+least accurate method. Gradient boosting machines (GBM) was found to be the most accurate for the majority of these seven beaches.
+
+Another significant outcome is that the three methods that are included in the latest version of the EPA and USGS recreational 
+water qualtiy model development software "Virtual Beach 3.0". This software is widely used by beach managers for 
+providing "now-casting" results for daily beach advisory determination. GBM is one of the new methods that was included in 
+Virtual Beach 3.0.
+
+For these reasons, we feel that this manuscript will prove to be important to recreational water practitioners
+and help them make informed decisions on predicitve modeling activities.
+
+
+Thank you.
+Yours sincerely,
+Wesley Brooks
+United States Geological Survey
+Wisconsin Water Science Center
+Middleton, WI
+
+
+
